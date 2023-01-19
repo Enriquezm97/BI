@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+        
+        {%load plotly_dash%}
+        {% plotly_header %}
+        {% plotly_direct name='contenedores_exportados_1' %}
+        {% plotly_footer %}
+        
+{%endblock%}

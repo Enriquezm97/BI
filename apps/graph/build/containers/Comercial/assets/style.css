@@ -1,0 +1,9 @@
+.dash-spinner {
+    background-image: url("http://i.stack.imgur.com/SBv4T.gif");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  
+  .dash-spinner * {
+    display: none !important;
+  }

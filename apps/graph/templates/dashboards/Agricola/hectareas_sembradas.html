@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    {% load plotly_dash %}
+    
+    {% plotly_header %}
+    {% plotly_direct name='hectarea_sembrada'%}
+    {% plotly_footer %}
+{%endblock%}

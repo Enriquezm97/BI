@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+        
+        {%load plotly_dash%}
+        {% plotly_header %}
+        {% plotly_direct name='ventas_exportacion' %}
+        {% plotly_footer %}
+        
+{%endblock%}

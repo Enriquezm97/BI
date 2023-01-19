@@ -1,0 +1,92 @@
+{% load static %}
+
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+  
+    <ul class="nav">
+      <!--
+      <li class="nav-item">
+        <a class="nav-link" href="#" id="profileDropdown">
+          <div align="center"><img class="menu-title" src="{{user.usuario.empresa.picture_empresa.url}}" alt="empresa" width="40" height="40"/></div>
+          <span class="mr-2 d-none d-lg-inline text-black-600 small">{{user.usuario.empresa.name_empresa }}</span>
+        </a>
+      </li>-->
+      <li class="nav-item">
+        <a class="nav-link" href="{% url "home" %}">
+          <i class="icon-grid menu-icon"></i>
+          <span class="menu-title">Inicio</span>
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+          <i class="icon-bar-graph menu-icon"></i>
+          <span class="menu-title">Comercial</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="form-elements">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"><a class="nav-link" href="{% url "informe_ventas" %}">Informe de Ventas</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ventas_exportacion" %}">Ventas Exportación</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ventas_1" %}">Ventas 1</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ventas_2" %}">Ventas 2</a></li>
+           
+            
+            
+          </ul>
+        </div>
+      </li>
+      
+      
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
+          <i class="icon-bar-graph menu-icon"></i>
+          <span class="menu-title">Finanzas</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="icons">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"><a class="nav-link" href="{% url "indicador_all" %}">Todos los Indicadores</a></li>
+           
+            <li class="nav-item"><a class="nav-link" href="{% url "create_indicador" %}">Crear Indicador</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "gastos_operativos" %}"> Gastos Operativos </a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "cargas_personal" %}"> Cargas de Personal </a></li>
+            <!--<li class="nav-item"> <a class="nav-link" href="{% url "estado_resultados" %}"> Estado de Resultados </a></li>-->
+            <li class="nav-item"> <a class="nav-link" href="{% url "estado_situacion" %}"> Estados de Situación </a></li>
+          
+          </ul>
+        </div>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+          <i class="icon-bar-graph menu-icon"></i>
+          <span class="menu-title">Producción</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="tables">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url "plan_siembra" %}">Plan de Siembra</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "costos_campaña" %}">Detalle de Costos</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "variables_agricolas" %}">Recursos Agrícolas</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "hectareas_sembradas" %}">Hectáreas Sembradas</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+          <i class="icon-bar-graph menu-icon"></i>
+          <span class="menu-title">En Pruebas</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="auth">
+          <ul class="nav flex-column sub-menu">
+            
+            <li class="nav-item"><a class="nav-link" href="{% url "ctrl_contenedores_1" %}">Indicador x Contenedor</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ctrl_contenedores_2" %}">Indicador x kg</a></li>
+          </ul>
+        </div>
+      </li>
+      
+    </ul>
+  </nav>

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+
+
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title">Todos los Indicadores Creados</p>
+               <div class="table-responsive pt-3">
+                  <table class="table" id="data" class="display responsive nowrap" style="width:100%"><!--table-bordered-->
+                    <thead class="table-dark">
+                      <tr>
+                        
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Formula</th>
+                        <th scope="col">Tipo de Indicador</th>
+                        
+                       
+                        <th scope="col">Visualizar</th>
+                      </tr>  
+                    </thead>
+                    <tbody>
+                        {% for indicador in indicadores %}
+                        <tr>
+                            
+                            <td>{{indicador.name}}</td>
+                            <td>{{indicador.formula}}</td>
+                            <td>{{indicador.indicador_tipo}}</td>
+                            
+                            <td>
+                                <button type="button" class="btn btn-success btn-xs" onclick="location.href='{% url 'indicador' indicador.id %}'"><i class="ti-bar-chart"></i></button>
+                              
+                            </td>
+                        </tr>
+                        {% endfor%}
+                    </tbody>
+                  </table>
+               </div>
+             </div>
+            
+            <!--<div class="card-footer">
+              <div class="card-footer">
+               
+                    <i class="ti-plus"></i>Nuevo Indicador
+                </button>
+              </div>-->
+            </div>
+
+{%endblock%}
+{% block javascript %}
+<script type="application/javascript">
+  $(function () {
+      $('#data').DataTable({
+        
+          responsive: true,
+          
+          autoWidth: false,
+          "language":{
+            url:'{% static 'lib/datatables-1.10.20/spanish.txt' %}'
+          },
+          //"columns": [
+          //      { "data": "Id" },
+          //      { "data": "Nombre"},
+          //      { "data": "Formula"},
+          //      { "data": "Tipo de Indicador" },
+          //      { "data": "Favorito" },
+          //      { "data": "Opciones" }                 
+          //      ],
+      });
+
+  });
+</script>
+{% endblock %}

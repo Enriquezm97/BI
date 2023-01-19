@@ -1,0 +1,9 @@
+{%  extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <p>
+    lo sentimos no pudimos procesar tu peticion
+  </p>
+  <a href="{% url 'core:test' %}">Seguir navegando en la pagina</a>
+
+{% endblock %}

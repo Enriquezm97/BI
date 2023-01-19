@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="row">   
+        
+        <div class="col-12">
+                <div align="center"><h3>{{name|safe}}</h3></div>
+        </div>
+        
+</div>
+        {{graph|safe}}
+        
+
+        {%load plotly_dash%}
+        {% plotly_header %}
+        {% plotly_direct name='TESTVIEW'%}
+        {% plotly_footer %}
+        
+    
+    
+{%endblock%}

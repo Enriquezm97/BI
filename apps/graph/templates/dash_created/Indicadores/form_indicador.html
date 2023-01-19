@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+        {{graph|safe}}
+        
+
+        {%load plotly_dash%}
+        {% plotly_header %}
+        {% plotly_direct name='form_indicador'%}
+        {% plotly_footer %}
+        
+    
+    
+{%endblock%}
