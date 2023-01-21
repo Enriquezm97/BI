@@ -48,17 +48,8 @@ def informeVentas(empresa,staff_comment):
             ]),
             dbc.Row([
                 dbc.Col([
-                        select("year","Año")
-                        #dbc.Label('Año'),
-                        #dcc.Dropdown(
-                        #        id='year',
-                        #        multi=False,
-                        #        searchable= True,
-                        #        placeholder= 'All',
-                        #        options=[],
-                        #        value=sorted(df_informe_ventas['YEAR'].unique())[-1],
-                        #        style={'font-size': "80%"},
-                        #)
+                        select(ids="year",texto="Año",value=sorted(df_informe_ventas['YEAR'].unique())[-1])
+              
                     ],
                     width=1,className="col-xl-1 col-md-12 col-sm-12 col-12 mb-3"),
                     dbc.Col([
@@ -339,7 +330,7 @@ def ventasExportacion(empresa,staff_comment):
                     dbc.Col([
                         #value=sorted(df_ventas_expo['YEAR'].unique())[-1],
                         #select("year","Año"),
-                        select(ids="year",texto="Año",place="")
+                        select(ids="year",texto="Año",place="",value=sorted(df_ventas_expo['YEAR'].unique())[-1])
                         
                     ],
                     width=1,className="col-xl-1 col-md-12 col-sm-12 col-12 mb-3"),

@@ -64,74 +64,178 @@ def formIndicador(empresa):
 
                         ]),
                         dbc.Row([
-                            
                             dbc.Col([
-                                numberInput(label="Desde",ids="desde1"),
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-                            dbc.Col([
-                                numberInput(label="Hasta",ids="hasta1"),
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-                            dbc.Col([
-                                dbc.Label(""),
-                                dbc.Input(
-                                    type="color",
-                                    id="color1",
-                                    value="#F70808",
-                                    style={"width": 100, "height": 40},
-                                ),
+                                dmc.Card(
+                                children=[
+                                    
+                                    dmc.CardSection(
+                                        dmc.Center(
+                                            style={"width": "100%"},
+                                            children=[
+                                                #
+                                                dbc.Row([
+                                                    dbc.Col([
+                                                        dmc.Center(
+                                                                style={"height":"100%", "width": "100%"},#
+                                                                children=[
+                                                                    dmc.Text("Rango Negativo :", weight=450),
+                                                                ],
+                                                            ),
+                                                                                                                                
+                                                            ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                                    numberInput(label="Desde",ids="desde1"),
+                                                                ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                                    numberInput(label="Hasta",ids="hasta1"),
+                                                                ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                                    dbc.Label(""),
+                                                                    dbc.Input(
+                                                                        type="color",
+                                                                        id="color1",
+                                                                        value="#F70808",
+                                                                        style={"width": 45, "height": 40},
+                                                                    ),
 
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
+                                                                ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+                                                ]),
+                                            ],
+                                        ),
+                                        
+                                    ),
+                                    
+                                ],
+                                withBorder=True,
+                                shadow="sm",
+                                radius="md",
+                                py="xs"
+                                #style={"width": 350},
+                            ),
+                                
 
-
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
                         ]),
+                            
                         dbc.Row([
-                            
                             dbc.Col([
-                                numberInput(label="Desde",ids="desde2"),
+                                dmc.Card(
+                                children=[
+                                    
+                                    dmc.CardSection(
+                                        dmc.Center(
+                                            style={"width": "100%"},
+                                            children=[
+                                                dbc.Row([
+                            
+                                                    dbc.Col([
+                                                        dmc.Center(
+                                                            style={"height":"100%", "width": "100%"},#
+                                                            children=[dmc.Text("Rango Medio :", weight=450),],
+                                                        ),
+                                                        
+                                                        
+
+                                                    ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        numberInput(label="Desde",ids="desde2"),
+
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        numberInput(label="Hasta",ids="hasta2"),
+
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        dbc.Label(""),
+                                                        dbc.Input(
+                                                            type="color",
+                                                            id="color2",
+                                                            value="#FFF817",
+                                                            style={"width": 45, "height": 40},
+                                                        ),
+
+                                                    ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+
+
+                                                ]),
+                                            ]),
+                                        
+
+                                    ),
+                                    
+                                ],
+                                withBorder=True,
+                                shadow="sm",
+                                radius="md",
+                                py="xs"
+                                #style={"width": 350},
+                            ),
                                 
 
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-                            dbc.Col([
-                                numberInput(label="Hasta",ids="hasta2"),
-
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-                            dbc.Col([
-                                dbc.Label(""),
-                                dbc.Input(
-                                    type="color",
-                                    id="color2",
-                                    value="#FFF817",
-                                    style={"width": 100, "height": 40},
-                                ),
-
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-
-
-                        ]),
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                        ]),    
+                            
                         dbc.Row([
-                            
                             dbc.Col([
-                                numberInput(label="Desde",ids="desde3"),
+                                dmc.Card(
+                                children=[
+                                    
+                                    dmc.CardSection(
+                                        dmc.Center(
+                                            style={"width": "100%"},
+                                            children=[
+                                                dbc.Row([
+                                                    dbc.Col([
+                                                        dmc.Center(
+                                                                style={"height":"100%", "width": "100%"},#
+                                                                children=[
+                                                                    dmc.Text("Rango Positivo :", weight=450),
+                                                                ],
+                                                            ),
+                                                                                                                                
+                                                            ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        numberInput(label="Desde",ids="desde3"),
+                                                        
+
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        numberInput(label="Hasta",ids="hasta3"),
+                                                        
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        dbc.Label(""),
+                                                        dbc.Input(
+                                                            type="color",
+                                                            id="color3",
+                                                            value="#66FF2E",
+                                                            style={"width": 45, "height": 40},
+                                                        ),
+
+                                                    ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+
+
+                                                ]),
+                                            ]),
+                                        
+
+                                    ),
+                                    
+                                ],
+                                withBorder=True,
+                                shadow="sm",
+                                radius="md",
+                                py="xs"
+                                #style={"width": 350},
+                            ),
                                 
 
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-                            dbc.Col([
-                                numberInput(label="Hasta",ids="hasta3"),
-                                
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-                            dbc.Col([
-                                dbc.Label(""),
-                                dbc.Input(
-                                    type="color",
-                                    id="color3",
-                                    value="#66FF2E",
-                                    style={"width": 100, "height": 40},
-                                ),
-
-                            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-
-
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
                         ]),
+
+                        
+                        
+                        
                         dbc.Row([
                             
                             dbc.Col([

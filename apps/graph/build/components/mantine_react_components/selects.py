@@ -14,6 +14,7 @@ def select(ids,texto,place="",value=None,data=[]):
             placeholder=place,
             style={'font-size': "90%"},
             value=value,
+            #searchable=True,
             #style={"width": 200},
             #icon=DashIconify(icon="radix-icons:magnifying-glass"),
             #rightSection=DashIconify(icon="radix-icons:chevron-down"),

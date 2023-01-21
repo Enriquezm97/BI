@@ -132,7 +132,7 @@ def plandeSiembra(empresa):
     df_general=data[0]
     df_general_pivot=data[1]
     #DATAFRAME FOR FILTRO AND VALUE YEAR
-    df_produccion=df_general.groupby(['AÑO_CAMPAÑA','CULTIVO','VARIEDAD','DSCVARIABLE'])[['CANTIDAD']].sum().reset_index()
+    df_produccion=df_general.groupby(['AÑO_CAMPAÑA','CULTIVO','AÑO_CULTIVO','VARIEDAD','DSCVARIABLE'])[['CANTIDAD']].sum().reset_index()
     external_stylesheets = [dbc.themes.LITERA]#
     app = DjangoDash('vagricola',external_stylesheets=external_stylesheets)
     app.layout = html.Div([
@@ -150,8 +150,9 @@ def plandeSiembra(empresa):
                 #html.H4(id='title', style={'margin-bottom': '0px', 'color': 'black','textAlign': 'left'}),
                 
             ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-3 col-sm-12 col-12 mb-3"),
-            dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+            #dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-3 col-sm-12 col-12 mb-3"),
+            #dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+            dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=5,className="col-xl-5 col-md-5 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_variedad",texto="Variedad")],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
             dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
             
@@ -279,44 +280,50 @@ def plandeSiembra(empresa):
     ])
     offcanvasAction(app)
     @app.callback(Output('drop_anio','data'),
-                Output('drop_cultivo', 'data'),
+                #Output('drop_cultivo', 'data'),
                 Output('drop_variedad', 'data'),
                 Output('check-agricola','options'),
                 Output('check-agricola','value'),  
                   #Output('drop_variedad', 'options'),
               [Input('drop_anio','value'),
-               Input('drop_cultivo','value'), 
+               #Input('drop_cultivo','value'), 
                Input('drop_variedad','value'),
               ])
-    def update_drop_cultivo(year,cultivo,variedad):
+    def update_drop_cultivo(year_cultivo,variedad):#,cultivo
         
         #df=DataAgricola.data_general(ip)
-        if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
+        #if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
+        #    options=df_produccion
+        #elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
+        #    options=df_produccion[df_produccion['AÑO_CAMPAÑA']==year]
+        #elif year==None and (cultivo!=None or len(cultivo)>0)and variedad==None:
+        #    options=df_produccion[df_produccion['CULTIVO'].isin(cultivo)]
+        #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad==None:# or len(cultivo)>0
+        #    options=df_produccion[(df_produccion['CULTIVO'].isin(cultivo))&(df_produccion['AÑO_CAMPAÑA']==year)]
+
+        #elif year==None and (cultivo==None or len(cultivo)==0) and variedad!=None:
+        #    options=df_produccion[df_produccion['VARIEDAD']==variedad]
+        #elif year!=None and (cultivo==None or len(cultivo)==0) and variedad!=None:
+        #    options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)]
+        #elif year==None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
+        #    options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CULTIVO'].isin(cultivo))]
+        #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
+        #    options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)&(df_produccion['CULTIVO'].isin(cultivo))]
+        if year_cultivo==None and variedad==None:
             options=df_produccion
-        elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
-            options=df_produccion[df_produccion['AÑO_CAMPAÑA']==year]
-        elif year==None and (cultivo!=None or len(cultivo)>0)and variedad==None:
-            options=df_produccion[df_produccion['CULTIVO'].isin(cultivo)]
-        elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad==None:# or len(cultivo)>0
-            options=df_produccion[(df_produccion['CULTIVO'].isin(cultivo))&(df_produccion['AÑO_CAMPAÑA']==year)]
+        elif year_cultivo!=None and variedad==None:
+            options=df_produccion[df_produccion['AÑO_CULTIVO']==year_cultivo]
+        elif year_cultivo!=None and variedad!=None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)]
 
-        elif year==None and (cultivo==None or len(cultivo)==0) and variedad!=None:
-            options=df_produccion[df_produccion['VARIEDAD']==variedad]
-        elif year!=None and (cultivo==None or len(cultivo)==0) and variedad!=None:
-            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)]
-        elif year==None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
-            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CULTIVO'].isin(cultivo))]
-        elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
-            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)&(df_produccion['CULTIVO'].isin(cultivo))]
-
-        anio=[{'label': i, 'value': i} for i in options['AÑO_CAMPAÑA'].unique()]
-        cultivo=[{'label': i, 'value': i} for i in options['CULTIVO'].unique()]
+        anio=[{'label': i, 'value': i} for i in options['AÑO_CULTIVO'].unique()]
+        #cultivo=[{'label': i, 'value': i} for i in options['CULTIVO'].unique()]
         variedad=[{'label': i, 'value': i} for i in options['VARIEDAD'].unique()]
         #check=checkboxChild(options['DSCVARIABLE'].unique())
         check=[{'label': i, 'value': i} for i in options['DSCVARIABLE'].unique()]
         
 
-        return anio,cultivo,variedad,check,options['DSCVARIABLE'].unique()
+        return anio,variedad,check,options['DSCVARIABLE'].unique()
     
     
 
@@ -369,7 +376,7 @@ def plandeSiembra(empresa):
         #Output('tabs','children'),
         #Output('owo', 'children'),
         [Input('drop_anio','value'),
-         Input('drop_cultivo','value'),
+         #Input('drop_cultivo','value'),
          Input('drop_variedad','value'),
          Input('check-agricola','value'),
          Input('recursos','value'),
@@ -379,26 +386,31 @@ def plandeSiembra(empresa):
 
          ]
     )   
-    def table_cultivo_plansiembra(year,cultivo,variedad,check,recursos,active_cell):
+    def table_cultivo_plansiembra(year_cultivo,variedad,check,recursos,active_cell):#,cultivo
         df=df_general_pivot.copy()
-        if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
-            dff=df
-        elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
-                dff=df[df['AÑO_CAMPAÑA']==year]
-        elif year==None and (cultivo!=None or len(cultivo)>0)and variedad==None:
-                dff=df[df['CULTIVO'].isin(cultivo)]
-        elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad==None:# or len(cultivo)>0
-                dff=df[(df['CULTIVO'].isin(cultivo))&(df['AÑO_CAMPAÑA']==year)]
+        #if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
+        #    dff=df
+        #elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
+        #        dff=df[df['AÑO_CAMPAÑA']==year]
+        #elif year==None and (cultivo!=None or len(cultivo)>0)and variedad==None:
+        #        dff=df[df['CULTIVO'].isin(cultivo)]
+        #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad==None:# or len(cultivo)>0
+        #        dff=df[(df['CULTIVO'].isin(cultivo))&(df['AÑO_CAMPAÑA']==year)]
 
-        elif year==None and (cultivo==None or len(cultivo)==0) and variedad!=None:
-                dff=df[df['VARIEDAD']==variedad]
-        elif year!=None and (cultivo==None or len(cultivo)==0) and variedad!=None:
-                dff=df[(df['VARIEDAD']==variedad)&(df['AÑO_CAMPAÑA']==year)]
-        elif year==None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
-                dff=df[(df['VARIEDAD']==variedad)&(df['CULTIVO'].isin(cultivo))]
-        elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
-                dff=df[(df['VARIEDAD']==variedad)&(df['AÑO_CAMPAÑA']==year)&(df['CULTIVO'].isin(cultivo))]
-        
+        #elif year==None and (cultivo==None or len(cultivo)==0) and variedad!=None:
+        #        dff=df[df['VARIEDAD']==variedad]
+        #elif year!=None and (cultivo==None or len(cultivo)==0) and variedad!=None:
+        #        dff=df[(df['VARIEDAD']==variedad)&(df['AÑO_CAMPAÑA']==year)]
+        #elif year==None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
+        #        dff=df[(df['VARIEDAD']==variedad)&(df['CULTIVO'].isin(cultivo))]
+        #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
+        #        dff=df[(df['VARIEDAD']==variedad)&(df['AÑO_CAMPAÑA']==year)&(df['CULTIVO'].isin(cultivo))]
+        if year_cultivo==None and variedad==None:
+            dff=df
+        elif year_cultivo!=None and variedad==None:
+            dff=df[df['AÑO_CULTIVO']==year_cultivo]
+        elif year_cultivo!=None and variedad!=None:
+            dff=df[(df['AÑO_CULTIVO']==year_cultivo)&(df['VARIEDAD']==variedad)]
         ##DATAFRAME GENERAL FILTRADA dff
         
         ##TABLA PIVOT
@@ -467,14 +479,14 @@ def plandeSiembra(empresa):
         #Output('horas', 'figure'),
         Output('tabs','children'),
         [Input('drop_anio','value'),    
-         Input('drop_cultivo','value'),
+         #Input('drop_cultivo','value'),
          Input('drop_variedad','value'),
          Input('check-agricola','value'),
          Input('radio-st','value'),]
          #Input('cultivo_cell', 'value'),
     )  
 
-    def LineMultivar(year,cultivo,variedad,check,radio_st):#,cultivo_cell
+    def LineMultivar(year_cultivo,variedad,check,radio_st):#,cultivo_cell#,cultivo
         #if cultivo_cell == None:
         
         #    df_produccion=df_general
@@ -482,24 +494,29 @@ def plandeSiembra(empresa):
         #    df_produccion=df_general[df_general['CULTIVO']==cultivo_cell]
         
         df_produccion=df_general
-        if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
+        #if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
+        #    dff=df_produccion
+        #elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
+        #    dff=df_produccion[df_produccion['AÑO_CAMPAÑA']==year]
+        #elif year==None and (cultivo!=None or len(cultivo)>0)and variedad==None:
+        #    dff=df_produccion[df_produccion['CULTIVO'].isin(cultivo)]
+        #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad==None:# or len(cultivo)>0
+        #    dff=df_produccion[(df_produccion['CULTIVO'].isin(cultivo))&(df_produccion['AÑO_CAMPAÑA']==year)]
+
+        #elif year==None and (cultivo==None or len(cultivo)==0) and variedad!=None:
+        #    dff=df_produccion[df_produccion['VARIEDAD']==variedad]
+        #elif year!=None and (cultivo==None or len(cultivo)==0) and variedad!=None:
+        #    dff=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)]
+        #elif year==None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
+        #    dff=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CULTIVO'].isin(cultivo))]
+        #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
+        #    dff=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)&(df_produccion['CULTIVO'].isin(cultivo))]
+        if year_cultivo==None and variedad==None:
             dff=df_produccion
-        elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
-            dff=df_produccion[df_produccion['AÑO_CAMPAÑA']==year]
-        elif year==None and (cultivo!=None or len(cultivo)>0)and variedad==None:
-            dff=df_produccion[df_produccion['CULTIVO'].isin(cultivo)]
-        elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad==None:# or len(cultivo)>0
-            dff=df_produccion[(df_produccion['CULTIVO'].isin(cultivo))&(df_produccion['AÑO_CAMPAÑA']==year)]
-
-        elif year==None and (cultivo==None or len(cultivo)==0) and variedad!=None:
-            dff=df_produccion[df_produccion['VARIEDAD']==variedad]
-        elif year!=None and (cultivo==None or len(cultivo)==0) and variedad!=None:
-            dff=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)]
-        elif year==None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
-            dff=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CULTIVO'].isin(cultivo))]
-        elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
-            dff=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)&(df_produccion['CULTIVO'].isin(cultivo))]
-
+        elif year_cultivo!=None and variedad==None:
+            dff=df_produccion[df_produccion['AÑO_CULTIVO']==year_cultivo]
+        elif year_cultivo!=None and variedad!=None:
+            dff=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)]
 
 
 
@@ -1122,7 +1139,7 @@ def costosAgricola(empresa):
                 return title,title2
     @app.callback(
         Output('table-cultivo', 'data'),#children
-        Output('cultivo_cell', 'value'),
+        #Output('cultivo_cell', 'value'),
         Output('table-cultivo', 'columns'),
         Input('drop_anio','value'),
          Input('drop_cultivo','value'),
@@ -1130,10 +1147,10 @@ def costosAgricola(empresa):
          Input('rbtn_dinero','value'),
          #Input('check-recursos','value'),
          Input('radio-costos','value'),#rbtn_dinero
-         Input('table-cultivo', 'active_cell'),
+         #Input('table-cultivo', 'active_cell'),
          Input('check-recursos','value'),
     )   
-    def actualizar_table_cultivo(year,cultivo,variedad,radio,radio_costos,active_cell,check):#,active_cell,check
+    def actualizar_table_cultivo(year,cultivo,variedad,radio,radio_costos,check):#,active_cell,check#,active_cell
         df_campaña_ccc=df_costos_agricolas[df_costos_agricolas['TIPO'].isin(check)]
         #df_campaña_ccc=df_campaña_ccc[df_campaña_ccc['TIPO'].isin(check)]
        
@@ -1179,14 +1196,14 @@ def costosAgricola(empresa):
             dff_cultivo=dff_cultivo.drop(['CODSIEMBRA','CODCAMPAÑA'], axis=1)
         except:
             pass
-        if active_cell is None:
-                return no_update
-        row = active_cell["row"]
-        cultivo = dff_cultivo.iloc[row,0] 
-        print(cultivo)
+        #if active_cell is None:
+        #        return no_update
+        #row = active_cell["row"]
+        #cultivo = dff_cultivo.iloc[row,0] 
+        #print(cultivo)
                 
         col=[{"name": c, "id": c,"type": "numeric", "format": Format(group=",", precision=0,scheme="f")} for c in dff_cultivo]
-        return dff_cultivo.to_dict('rows'),cultivo,col
+        return dff_cultivo.to_dict('rows'),col#,cultivo
         
     @app.callback(
         Output('table-lote', 'children'),
@@ -1197,24 +1214,24 @@ def costosAgricola(empresa):
          Input('rbtn_dinero','value'),
          Input('check-recursos','value'),
          Input('radio-costos','value'),
-         Input('cultivo_cell','value'),
+         #Input('cultivo_cell','value'),
     )   
-    def actualizar_table_lote(year,cultivo,variedad,radio,check,radio_costos,cultivo_cell):
+    def actualizar_table_lote(year,cultivo,variedad,radio,check,radio_costos):#,cultivo_cell
         
         df_campaña_ccc=df_costos_agricolas[df_costos_agricolas['TIPO'].isin(check)]
         #if cultivo !='TOTAL':
         #    df_campaña_ccc=df_campaña_ccc[df_campaña_ccc['CULTIVO']==cultivo]
 
 
-        if cultivo_cell == None and (cultivo==None or len(cultivo)==0):
-            df_campaña=df_campaña_ccc.copy()
-        elif cultivo_cell == None and (cultivo!=None or len(cultivo)>0):
-            df_campaña=df_campaña_ccc[df_campaña_ccc['CULTIVO'].isin(cultivo)]
+        #if cultivo_cell == None and (cultivo==None or len(cultivo)==0):
+        #    df_campaña=df_campaña_ccc.copy()
+        #elif cultivo_cell == None and (cultivo!=None or len(cultivo)>0):
+        #    df_campaña=df_campaña_ccc[df_campaña_ccc['CULTIVO'].isin(cultivo)]
         
-        elif cultivo_cell != None and cultivo_cell !='TOTAL':
-            df_campaña=df_campaña_ccc[df_campaña_ccc['CULTIVO']==cultivo_cell]
+        #elif cultivo_cell != None and cultivo_cell !='TOTAL':
+        #    df_campaña=df_campaña_ccc[df_campaña_ccc['CULTIVO']==cultivo_cell]
 
-        dff_end_pivot= df_campaña.pivot(index=('CODCULTIVO','CULTIVO','VARIEDAD','AREA_CAMPAÑA','IDCONSUMIDOR','NCONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=(radio),columns=('TIPO'))
+        dff_end_pivot= df_campaña_ccc.pivot(index=('CODCULTIVO','CULTIVO','VARIEDAD','AREA_CAMPAÑA','IDCONSUMIDOR','NCONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=(radio),columns=('TIPO'))
         dff_pivot=pd.DataFrame(dff_end_pivot.to_records())
         if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
             dff=dff_pivot

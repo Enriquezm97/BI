@@ -34,14 +34,21 @@ def cleanVariablesAgricolas(df_consumidores,df_variedad,df_cultivos,df_fertiliza
     df_general['SEM']=df_general['SEM'].replace('8','08')
     df_general['SEM']=df_general['SEM'].replace('9','09')
     df_general['week']=df_general['SEM']
+    df_general['AÑO_CULTIVO']=df_general['CULTIVO']
+
     semanas=sorted(df_general['SEM'].unique())
     for anio in df_general['AÑO_FECHA'].unique():
         for i in semanas:
             df_general['week'].loc[df_general['AÑO_FECHA']==anio]=df_general['week'].replace(i,str(anio)+'-'+'Sem'+''+str(i))
+
+    cultivo=sorted(df_general['CULTIVO'].unique())
+    for anio in df_general['AÑO_CAMPAÑA'].unique():
+        for i in cultivo:
+            df_general['AÑO_CULTIVO'].loc[df_general['AÑO_CAMPAÑA']==anio]=df_general['AÑO_CULTIVO'].replace(i,str(anio)+'-'+str(i))        
     return df_general
 
 def variablesAgricolasPivot(df_general):
-    df_general_pivot=df_general.pivot_table(index=('CULTIVO','VARIEDAD','CODCONSUMIDOR','CONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','FECHA','AÑO_CAMPAÑA','AREA_CAMPAÑA','AREA_PLANIFICADA','week','AÑO_FECHA','SEMANA'),values=('CANTIDAD'),columns=('DSCVARIABLE'))
+    df_general_pivot=df_general.pivot_table(index=('CULTIVO','VARIEDAD','CODCONSUMIDOR','CONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','FECHA','AÑO_CAMPAÑA','AREA_CAMPAÑA','AREA_PLANIFICADA','week','AÑO_FECHA','SEMANA','AÑO_CULTIVO'),values=('CANTIDAD'),columns=('DSCVARIABLE'))
     df_general_pivot.reset_index()
     df_general_pivot=pd.DataFrame(df_general_pivot.to_records())
     df_general_pivot=df_general_pivot.fillna(0)
