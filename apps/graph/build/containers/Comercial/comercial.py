@@ -1206,7 +1206,7 @@ def ventas1(empresa,staff_comment):
                 )
             pais_importe_peso.update_layout(xaxis_title="PAIS",yaxis_title=radio,legend_title="")
             pais_importe_peso.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
-            df_table=options.groupby(['Pais','Cultivo'])[[importe,'Peso']].sum().reset_index().sort_values(importe,ascending=True)
+            df_table=options.groupby(['Pais','Cultivo'])[[importe,'Peso']].sum().reset_index().sort_values(importe,ascending=False)
             df_table=df_table.rename(columns={'Peso':'Kg',importe:'Importe'})
             table=TableDtScrolling_no_color(df_table,'10px')
             #col=[{"name": c, "id": c,"type": "numeric", "format": Format(group=",", precision=2,scheme="f")} for c in df_table],
