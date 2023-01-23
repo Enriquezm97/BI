@@ -328,7 +328,67 @@ def EvaluarFormula(formula,df_ratios):#rbtnmoneda,ejex
         DEUDAESTR=df_ratios['DEUDA_ESTR']
     except:
         pass
- 
+    ### POR AHOR HASTA TERMINAR ALGORITMO
+    try:
+        CAJABANCOS=df_ratios['Caja Bancos']
+    except:
+        pass
+    
+    try:
+        CLIENTES=df_ratios['Clientes']
+    except:
+        pass
+    
+    try:
+        CUENTASPORCOBRARDIVERSAS=df_ratios['Cuentas por Cobrar Diversas']
+    except:
+        pass
+
+    try:
+        CUENTASPORCOBRARAACCYPERSONAL=df_ratios['Cuentas por Cobrar a Acc. y Personal']
+    except:
+        pass
+    try:
+        CUENTASPORPAGARDIVERSAS=df_ratios['Cuentas por Pagar Diversas']
+    except:
+        pass
+    try:
+        DEPRECIACIONYARMOTIZACIONACUMULADA=df_ratios['Depreciación y Amortizacion Acumulada']
+    except:
+        pass
+    try:
+        EXISTENCIAS=df_ratios['Existencias']
+    except:
+        pass
+    try:
+        INMUEBLEMAQUINARIAYEQUIPO=df_ratios['Inmueble, Maquinaria y Equipo']
+    except:
+        pass
+    
+    try:
+        INTANGIBLES=df_ratios['Intangibles']
+    except:
+        pass
+
+    try:
+        PROVEEDORES=df_ratios['Proveedores']
+    except:
+        pass
+
+    try:
+        REMUNERACIONESPORPAGAR=df_ratios['Remuneraciones por Pagar']
+    except:
+        pass
+
+    try:
+        RESERVAS=df_ratios['Reservas']
+    except:
+        pass
+    
+    try:
+        TRIBUTOSPORPAGAR=df_ratios['Tributos por Pagar']
+    except:
+        pass
     #CAPITALADICIONAL=df_ratios['Capital Adicional']
     
     #CUENTASPORCOBRARDIVERSASRELACIONADAS=df_ratios['Cuentas Por Cobrar Diversas -  Relacionadas']

@@ -417,9 +417,9 @@ def estadodeSituacionFinanzas(empresa):
         )
     def output_dash(year,moneda):
         if year==None:
-            df_bcomprobacion=df
+            df_bcomprobacion=df[df['year']==sorted(df['year'].unique())[-1]]
         else:
-            df_bcomprobacion=df[df['year']==year]
+            df_bcomprobacion=df[df['year'].isin([str(year),str(year-1)])]
         #TABLE
         df_bcomprobacion_year=df_bcomprobacion.groupby(['grupo1','grupo2','grupo3','year'])[[moneda]].sum().sort_values('year',ascending=False).reset_index()
         last_years=sorted(df_bcomprobacion_year['year'].unique(), reverse=True)[:2]
