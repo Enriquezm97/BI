@@ -15,8 +15,11 @@ from apps.graph.build.containers.Formularios.form_crear_indicador import *
 from django.contrib.auth.models import User
 from apps.users.models import Empresa,Usuario
 from apps.graph.models import Indicador
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class FormIndicadorView(View):
+
+class FormIndicadorView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
@@ -33,7 +36,8 @@ class FormIndicadorView(View):
 #    context={'indicadores':indicadores}
     
 #    return render(request,'dash_created/Indicadores/mostrar_all.html',context)
-class IndicadorAllView(View):
+class IndicadorAllView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
         
@@ -45,10 +49,12 @@ class IndicadorAllView(View):
         context={'indicadores':indicadores}
         return render(request,'dash_created/Indicadores/mostrar_all.html',context)
 
-class IndicadorShowView(DetailView):
+class IndicadorShowView(LoginRequiredMixin,DetailView):
+
     models=Indicador
     template_name= 'dash_created/Indicadores/mostrar_indicador.html'
     pk_url_kwarg='pk'
+    login_url = reverse_lazy('login')#'/user/login/'
     #if pk == None:
     #    template_name= 'dash_created/Indicadores/mostrar_indicador.html'
     #elif pk !=None:

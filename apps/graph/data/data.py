@@ -12,6 +12,7 @@ import apps.graph.data.clients.Aerodiana as aero
 import apps.graph.data.clients.Greenfruits as green
 import apps.graph.data.clients.Manuelita as manu
 import apps.graph.data.clients.Arona as aro
+import apps.graph.data.clients.Nisira as nisira
 
 
 
@@ -39,6 +40,7 @@ df_bcomprobacion_nisira='owo'
 df_bc_default=cleanBalanceComprobacion(df_bcomprobacion_default)
 df_bc_greenfruits=cleanBalanceComprobacion(green.df_bcomprobacion_greenfruits)
 df_bc_aerodiana=cleanBalanceComprobacion(aero.df_bcomprobacion_aerodiana)
+#df_bc_nisira=cleanBalanceComprobacion(nisira.df_bcomprobacion_nisira)
 #df_bc_manuelita=cleanBalanceComprobacion(manu.df_bcomprobacion_manuelita)
 #df_bc_arona=cleanBalanceComprobacion(aro.df_bcomprobacion_arona)
 
@@ -58,6 +60,7 @@ def dataBcEmpresa(empresa):
         #df_bcomprobacion=df_bc_manuelita[df_bc_manuelita['year'].isin(df_bc_manuelita['year'].unique()[-5:])]
         df_bcomprobacion=df_bc_default
     else:
+        #df_bcomprobacion=df_bc_nisira
         df_bcomprobacion=df_bc_default
     
     return df_bcomprobacion
@@ -180,6 +183,7 @@ df_ventas_detalle=cleanVentas(df_ventas_default)
 #df_ventas_detalle_arona=cleanVentas(aro.df_ventas_arona)
 df_ventas_detalle_greenfruits=cleanVentas(green.df_ventas_greenfruits)
 df_ventas_detalle_aerodiana=cleanVentas(aero.df_ventas_aerodiana)
+#df_ventas_detalle_nisira=cleanVentas(nisira.df_ventas_nisira)
 #df_ventas_detalle_manuelita=cleanVentas(manu.df_ventas_manuelita)
 
 def dataVentasEmpresa(empresa):
@@ -194,8 +198,8 @@ def dataVentasEmpresa(empresa):
         #df_ventas_expo=df_ventas_detalle_manuelita
         df_ventas_expo=df_ventas_detalle_greenfruits
     else:
+        #df_ventas_expo=df_ventas_detalle_nisira
         df_ventas_expo=df_ventas_detalle_greenfruits
-    
     return df_ventas_expo
 
 ################ last dashboards

@@ -26,6 +26,7 @@ from apps.graph.models import Indicador
 from apps.users.models import Empresa,Usuario
 from apps.graph.build.containers.test import *
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def home(request):
     #owo=request.user.id
@@ -38,9 +39,10 @@ def liveUpdate(request):
     context={'dashboard':dashboard}
     return render(request, 'live_update.html',context)
 
-class TestView(View):
+class TestView(LoginRequiredMixin,View):
     models=Usuario
     template_name='test.html'
+    login_url = reverse_lazy('login')#'/user/login/'
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
         dashboard=index()
@@ -67,7 +69,9 @@ class Test2View(View):
 
 
 ##AGRICOLA
-class PlanSiembraView(View):
+class PlanSiembraView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')
+
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
@@ -76,7 +80,8 @@ class PlanSiembraView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/plansiembra.html',context)
 
-class CostosCampañaView(View):
+class CostosCampañaView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
@@ -85,7 +90,8 @@ class CostosCampañaView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/costos_campaña.html',context)
 
-class VariablesAgricolasView(View):
+class VariablesAgricolasView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
@@ -94,7 +100,9 @@ class VariablesAgricolasView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/variables_agricolas.html',context)
 
-class HectareasSembradasView(View):
+class HectareasSembradasView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
@@ -103,7 +111,9 @@ class HectareasSembradasView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/hectareas_sembradas.html',context)
 
-class CostosCultivoView(View):
+class CostosCultivoView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')
+
     def get(self,request,*args, **kwargs):
         
         #dashboard=hectareaSembrada('68.168.108.184')
@@ -114,7 +124,9 @@ class CostosCultivoView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/costos_cultivo.html',context)
 
-class CargasdePersonalView(View):
+class CargasdePersonalView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
     def get(self,request,*args, **kwargs):
       
         id_user=self.request.user.id
@@ -125,7 +137,9 @@ class CargasdePersonalView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Otros/cargas_personal.html',context)
 
-class EstadodeResultadosView(View):
+class EstadodeResultadosView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')
+
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
@@ -135,7 +149,9 @@ class EstadodeResultadosView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Otros/estado_resultados.html',context)
 
-class EstadodeSituacionView(View):
+class EstadodeSituacionView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
        
@@ -145,7 +161,9 @@ class EstadodeSituacionView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Otros/estado_situacion.html',context)
 
-class GastosOperativosView(View):
+class GastosOperativosView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
        
@@ -160,7 +178,9 @@ class GastosOperativosView(View):
 
 
 
-class InformedeVentas1View(View):
+class InformedeVentas1View(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
     def get(self,request,*args, **kwargs):
         
         id_user=self.request.user.id
@@ -175,7 +195,9 @@ class InformedeVentas1View(View):
         return render(request,'dashboards/Comercial/informe_ventas_1.html',context)
 
 
-class VentasExportacionView(View):
+class VentasExportacionView(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
@@ -186,7 +208,8 @@ class VentasExportacionView(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventas_exportacion.html',context)
 
-class Ventas1View(View):
+class Ventas1View(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
@@ -199,7 +222,9 @@ class Ventas1View(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventas1.html',context)
 
-class Ventas2View(View):
+class Ventas2View(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
@@ -210,7 +235,9 @@ class Ventas2View(View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventas2.html',context)
 
-class ContenedoresExportView1(View):
+class ContenedoresExportView1(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
     def get(self,request,*args, **kwargs):
         #id_user=self.request.user.id
         #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
@@ -220,7 +247,9 @@ class ContenedoresExportView1(View):
         context = {'dashboard':dashboard}
        
         return render(request,'dashboards/Comercial/contenedores_exportados_1.html',context)
-class ContenedoresExportView2(View):
+class ContenedoresExportView2(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+    
     def get(self,request,*args, **kwargs):
         #id_user=self.request.user.id
         #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))

@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from apps.graph.views import Error404View,Error505View
+#app_name = "users_app"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
