@@ -1632,8 +1632,8 @@ def variablesAgricolas(empresa):
                         
                 ]),
         dbc.Row([
-            dbc.Row([#dbc.Card(dcc.Graph(id='card1'),className="shadow-sm")
-                dbc.Col([loadingOverlay(html.Div(id='card1'))],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),#dbc.Card(dcc.Graph(id='card1'),className="shadow-sm")
+            dbc.Row([#
+                dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='card1'),className="shadow-sm"))],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),#dbc.Card(dcc.Graph(id='card1'),className="shadow-sm")
                 dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='card2'),className="shadow-sm"))],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
                 dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='card3'),className="shadow-sm"))],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
                 dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='card4'),className="shadow-sm"))],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
@@ -1748,7 +1748,7 @@ def variablesAgricolas(empresa):
             return option_cultivo,option_variedad,option_consumidor#,marks
 
     @app.callback(
-            Output("card1","children"),
+            Output("card1","figure"),
             Output("card2","figure"),
             Output("card3","figure"),
             Output("card4","figure"),
@@ -1797,7 +1797,7 @@ def variablesAgricolas(empresa):
                     options=df_agricola_lastyears[(df_agricola['CONSUMIDOR']==consumidor)&(df_agricola_lastyears['VARIEDAD']==variedad)]  
                     
             #graph_bar_agricola2
-            df_recursos=options.groupby(['AÑO_FECHA','FECHA','TIPO','DSCVARIABLE',])[['CANTIDAD']].sum().reset_index()
+            df_recursos=options.groupby(['AÑO_FECHA','TIPO','DSCVARIABLE',])[['CANTIDAD']].sum().reset_index()
             df_recursos['AÑO_FECHA']=df_recursos['AÑO_FECHA'].astype('string')
             df_recursos['AÑO_FECHA']=df_recursos['AÑO_FECHA']+'-'
             #options=options.sort_values(['AÑO_CAMPAÑA','SEMANA'],ascending=True)
@@ -1813,8 +1813,8 @@ def variablesAgricolas(empresa):
             total_mano=df_manodeobra['CANTIDAD'].sum()
             total_insumos=df_insumos['CANTIDAD'].sum()
 
-            #card1=card_agricola1(total_riego,None,'Total de Riego en Metros Cúbicos')
-            card1=cardMantine('Total de Riego en Metros Cúbicos',total_riego,df_riego,'FECHA','CANTIDAD')
+            card1=card_agricola1(total_riego,None,'Total de Riego en Metros Cúbicos')
+            #card1=cardMantine('Total de Riego en Metros Cúbicos',total_riego,df_riego,'FECHA','CANTIDAD')
             card2=card_agricola1(total_maquinaria,None,'Total de Horas Máquina')
             card3=card_agricola1(total_mano,None,'Total de Jornales trabajados')
             card4=card_agricola1(total_insumos,None,'Total de Insumos en Kilogramos')

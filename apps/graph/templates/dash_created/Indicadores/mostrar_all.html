@@ -36,7 +36,7 @@
                             <td>{{indicador.indicador_tipo}}</td>
                             
                             <td>
-                                <button type="button" class="btn btn-success btn-xs" onclick="location.href='{% url 'indicador' indicador.id %}'"><i class="ti-bar-chart"></i></button>
+                                <button type="button" class="btn btn-success btn-xs" onclick="location.href='{% url 'indicador' pk=indicador.id  username=user.usuario.username%}'"><i class="ti-bar-chart"></i></button>
                               
                             </td>
                         </tr>

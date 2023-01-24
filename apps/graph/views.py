@@ -27,6 +27,7 @@ from apps.users.models import Empresa,Usuario
 from apps.graph.build.containers.test import *
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
 
 def home(request):
     #owo=request.user.id
@@ -180,6 +181,11 @@ class GastosOperativosView(LoginRequiredMixin,View):
 
 class InformedeVentas1View(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
+    #model=Usuario
+    #def get_object(self):
+    #    return get_object_or_404(Usuario, username=self.kwargs['username'])
+    #def get_success_url(self):
+    #    return reverse_lazy('informe_ventas', kwargs={"pk": self.request.user.id})
 
     def get(self,request,*args, **kwargs):
         

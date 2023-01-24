@@ -25,10 +25,10 @@
         </a>
         <div class="collapse" id="form-elements">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"><a class="nav-link" href="{% url "informe_ventas" %}">Informe de Ventas</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url "ventas_exportacion" %}">Ventas Exportación</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url "ventas_1" %}">Ventas 1</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url "ventas_2" %}">Ventas 2</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "informe_ventas" user.usuario.username %}">Informe de Ventas</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ventas_exportacion" user.usuario.username %}">Ventas Exportación</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas 1</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ventas_2" user.usuario.username %}">Ventas 2</a></li>
            
             
             
@@ -45,13 +45,13 @@
         </a>
         <div class="collapse" id="icons">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"><a class="nav-link" href="{% url "indicador_all" %}">Todos los Indicadores</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "indicador_all" user.usuario.username%}">Todos los Indicadores</a></li>
            
-            <li class="nav-item"><a class="nav-link" href="{% url "create_indicador" %}">Crear Indicador</a></li>
-           <!-- <li class="nav-item"> <a class="nav-link" href="{% url "gastos_operativos" %}"> Gastos Operativos </a></li>-->
-           <!-- <li class="nav-item"> <a class="nav-link" href="{% url "cargas_personal" %}"> Cargas de Personal </a></li>-->
-            <!--<li class="nav-item"> <a class="nav-link" href="{% url "estado_resultados" %}"> Estado de Resultados </a></li>-->
-            <!--<li class="nav-item"> <a class="nav-link" href="{% url "estado_situacion" %}"> Estados de Situación </a></li>-->
+            <li class="nav-item"><a class="nav-link" href="{% url "create_indicador" user.usuario.username%}">Crear Indicador</a></li>
+           <!-- <li class="nav-item"> <a class="nav-link" href="{% url "gastos_operativos" user.usuario.username %}"> Gastos Operativos </a></li>-->
+           <!-- <li class="nav-item"> <a class="nav-link" href="{% url "cargas_personal" user.usuario.username %}"> Cargas de Personal </a></li>-->
+            <!--<li class="nav-item"> <a class="nav-link" href="{% url "estado_resultados" user.usuario.username %}"> Estado de Resultados </a></li>-->
+            <!--<li class="nav-item"> <a class="nav-link" href="{% url "estado_situacion" user.usuario.username %}"> Estados de Situación </a></li>-->
           
           </ul>
         </div>
@@ -65,10 +65,10 @@
         </a>
         <div class="collapse" id="tables">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="{% url "plan_siembra" %}">Plan de Siembra</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{% url "costos_campaña" %}">Detalle de Costos</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{% url "variables_agricolas" %}">Recursos Agrícolas</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{% url "hectareas_sembradas" %}">Hectáreas Sembradas</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "plan_siembra"  user.usuario.username %}">Plan de Siembra</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "costos_campaña" user.usuario.username %}">Detalle de Costos</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "variables_agricolas" user.usuario.username %}">Recursos Agrícolas</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "hectareas_sembradas" user.usuario.username %}">Hectáreas Sembradas</a></li>
           </ul>
         </div>
       </li>
@@ -82,8 +82,8 @@
         <div class="collapse" id="auth">
           <ul class="nav flex-column sub-menu">
             
-            <li class="nav-item"><a class="nav-link" href="{% url "ctrl_contenedores_1" %}">Indicador x Contenedor</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url "ctrl_contenedores_2" %}">Indicador x kg</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ctrl_contenedores_1" user.usuario.username %}">Indicador x Contenedor</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url "ctrl_contenedores_2" user.usuario.username %}">Indicador x kg</a></li>
           </ul>
         </div>
       </li>
