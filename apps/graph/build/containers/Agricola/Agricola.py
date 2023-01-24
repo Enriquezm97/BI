@@ -149,10 +149,10 @@ def plandeSiembra(empresa):
                 dmc.Title(id='title',children='Plan de Siembra', order=2),
                 #html.H4(id='title', style={'margin-bottom': '0px', 'color': 'black','textAlign': 'left'}),
                 
-            ],width=4,className="col-xl-4 col-md-12 col-sm-12 col-12 mb-3"),
+            ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
             #dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-3 col-sm-12 col-12 mb-3"),
             #dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
-            dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=5,className="col-xl-5 col-md-5 col-sm-12 col-12 mb-3"),
+            dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_variedad",texto="Variedad")],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
             dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
             
@@ -517,6 +517,8 @@ def plandeSiembra(empresa):
             dff=df_produccion[df_produccion['AÑO_CULTIVO']==year_cultivo]
         elif year_cultivo!=None and variedad!=None:
             dff=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)]
+        elif year_cultivo == None and variedad!=None:
+            dff=df_produccion[(df_produccion['VARIEDAD']==variedad)]
 
 
 
@@ -1806,7 +1808,7 @@ def variablesAgricolas(empresa):
             df_riego=df_recursos[df_recursos['TIPO']=='Riego']
             df_maquinaria=df_recursos[df_recursos['TIPO']=='Maquinaria']
             df_manodeobra=df_recursos[df_recursos['TIPO']=='Mano de obra']
-            df_insumos=df_recursos[df_recursos['TIPO']=='Insumos']
+            df_insumos=df_recursos[df_recursos['TIPO']=='Insumos']  
 
             total_riego=df_riego['CANTIDAD'].sum()
             total_maquinaria=df_maquinaria['CANTIDAD'].sum()

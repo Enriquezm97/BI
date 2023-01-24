@@ -51,22 +51,22 @@ def informeVentas(empresa,staff_comment):
                         select(ids="year",texto="Año",value=sorted(df_informe_ventas['YEAR'].unique())[-1])
               
                     ],
-                    width=1,className="col-xl-1 col-md-12 col-sm-12 col-12 mb-3"),
+                    width=2,className="col-xl-2 col-md-2     col-sm-12 col-12 mb-3"),
                     dbc.Col([
                         select("cliente","Cliente")
                         
                     ],
-                    width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"), 
+                    width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"), 
                     dbc.Col([
                         select("cultivo","Cultivo")
                         
                     ],
-                    width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
+                    width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
                     dbc.Col([
                         select("variedad","Variedad")
                         
                     ],
-                    width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
+                    width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
                     dbc.Col([
                         radioGroup(ids='radio-moneda',texto='Moneda',value='Dolares',
                                    children=[dmc.Radio(label='S/', value='Soles'),dmc.Radio(label='$', value='Dolares'),
@@ -74,7 +74,7 @@ def informeVentas(empresa,staff_comment):
                         ]),
                         
                     ],
-                    width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
+                    width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
 
             ]),
             dbc.Row([
@@ -333,29 +333,29 @@ def ventasExportacion(empresa,staff_comment):
                         select(ids="year",texto="Año",place="",value=sorted(df_ventas_expo['YEAR'].unique())[-1])
                         
                     ],
-                    width=1,className="col-xl-1 col-md-12 col-sm-12 col-12 mb-3"),
+                    width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
                     dbc.Col([
                         select(ids="cliente",texto="Cliente",place="")
                        
                                     ],
-                    width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"), 
+                    width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"), 
                     dbc.Col([
                         select(ids="cultivo",texto="Cultivo",place="")
                         
                         
-                    ]),
+                    ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
                     dbc.Col([
                         select(ids="variedad",texto="Variedad",place="")
                         
                     ],
-                    width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
+                    width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
                     dbc.Col([
                          radioGroup(ids='radio-moneda',texto='Moneda',value='Dolares',
                                    children=[dmc.Radio(label='S/', value='Soles'),dmc.Radio(label='$', value='Dolares'),
 
                         ]),
                     ],
-                    width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
+                    width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
         ]),
  
         dbc.Row([
@@ -723,7 +723,7 @@ def ventas1(empresa,staff_comment):
                             html.H3(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
                             html.H5(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
 
-                           ],width=10,className="col-xl-10 col-md-10 col-sm-12 col-12 mb-3"),
+                           ],width=11,className="col-xl-11 col-md-11 col-sm-11 col-11 mb-3"),
                         dbc.Col([
                             btnFilter(),
                             offcanvas(componentes=[
@@ -736,7 +736,7 @@ def ventas1(empresa,staff_comment):
                                                     dmc.Radio(label='$', value='Dolares'),
                                           ]),
                             ]),
-                        ],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
+                        ],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
                         
                         
                     ]),

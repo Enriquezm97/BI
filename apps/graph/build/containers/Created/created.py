@@ -457,7 +457,7 @@ def IndicadorDash(nombres,formulas,
             dbc.Col([
                 radioGroup(ids="rbtn-moneda",
                                texto="Moneda",
-                               children=[dmc.Radio(label='Soles', value='soles'),dmc.Radio(label='Dolares', value='dolares')],
+                               children=[dmc.Radio(label='S/', value='soles'),dmc.Radio(label='$', value='dolares')],
                                value="soles",
                     ),
                 
