@@ -15,6 +15,7 @@ from apps.graph.save import RegistrarIndicador
 from dash import html,dcc
 
 from apps.graph.build.components.mantine_react_components.title import *
+from apps.graph.models import Indicador,TipoIndicador
 
 from apps.graph.build.components.mantine_react_components.selects import *
 from apps.graph.build.components.mantine_react_components.textbox import *
@@ -25,9 +26,15 @@ from apps.graph.build.components.mantine_react_components.spoiler import *
 from apps.graph.build.components.mantine_react_components.loaders import loadingOverlay
 
 
-def formIndicador(empresa):
+
+def formIndicador(empresa,usuario):
     df_bcomprobacion=dataBcEmpresa(empresa)
-    
+    idind_list=list(TipoIndicador.objects.all().values_list('id',flat=True))
+    tipoind_list=list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True))
+    list_dicts=[]
+    for (i,j) in zip(tipoind_list,idind_list):
+        list_dicts.append({'label': i, 'value': j})
+
     app = DjangoDash('form_indicador', external_stylesheets=[dbc.themes.BOOTSTRAP])#
     app.layout = html.Div([
     dbc.Row([
@@ -38,9 +45,7 @@ def formIndicador(empresa):
                  
                         dbc.Row([
                             dbc.Col([
-                                select(ids="tipo-indicador",texto="Tipo de Indicador",place="Seleccione Tipo",data=[{"value": "Liquidez", "label": "Liquidez"},
-                                                                                                                    {"value": "Rentabilidad", "label": "Rentabilidad"},
-                                                                                                                    {"value": "Solvencia", "label": "Solvencia"}]),
+                                select(ids="tipo-indicador",texto="Tipo de Indicador",place="Seleccione Tipo",data=list_dicts),
                             ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
                             dbc.Col([
                                 textInput(label="Nombre de Indicador",ids="nombre-indicador"),
@@ -422,7 +427,7 @@ def formIndicador(empresa):
         nombre=nombre.upper()
         formula=formula.upper()
         if guardar:
-           RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario,favorito,empresa)
+           RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario,favorito,empresa,usuario)
            
            return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)]),"","","","","","","","","",""
         else:

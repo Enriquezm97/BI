@@ -15,6 +15,23 @@ from django.contrib.auth.models import User
 #    	os.remove(full_path)
 
 # Create your models here.
+RUBRO = (
+    ('Comercial','Comercial'),
+    ('Agricola', 'Agricola'),
+    ('Agroindustrial','Agroindustrial'),
+    ('Industrial','Industrial'),
+)
+class Rubro(models.Model):
+    
+    
+    name_rubro = models.CharField(max_length=50, blank=True,null=True)
+    create_rubro = models.DateTimeField(auto_now_add=True,null=True)
+    modified_rubro = models.DateTimeField(auto_now=True,null=True)
+
+    def __str__(self):
+
+        return self.name_rubro
+
 class Empresa(models.Model):
     
     #user_empresa =  models.OneToOneField(User,on_delete=models.CASCADE)
@@ -22,9 +39,13 @@ class Empresa(models.Model):
     phone_number_empresa = models.CharField(max_length=20, blank=True,null=True)
     picture_empresa = models.ImageField(upload_to='media',blank=True,null=True)
     codigo_empresa= models.CharField(max_length=15, blank=True,null=True)
+
+    rubro_empresa=models.ForeignKey(Rubro,on_delete=models.CASCADE)
+    
     create_empresa = models.DateTimeField(auto_now_add=True,null=True)
     modified_empresa = models.DateTimeField(auto_now=True,null=True)
-
+    
+    
     def __str__(self):
 
         return self.name_empresa

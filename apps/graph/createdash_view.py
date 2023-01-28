@@ -25,7 +25,7 @@ class FormIndicadorView(LoginRequiredMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        dashboard=formIndicador(empresa[0])
+        dashboard=formIndicador(empresa[0],id_user)
         context = {'dashboard':dashboard}
         return render(request,'dash_created/Indicadores/form_indicador.html',context)
 

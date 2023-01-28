@@ -7,6 +7,17 @@ RATIOS = (
     ('Solvencia','Solvencia'),
 )
 
+class TipoIndicador(models.Model):
+    
+    
+    name_tipo_indicador = models.CharField(max_length=100, blank=True,null=True)
+    create_tipo_indicador = models.DateTimeField(auto_now_add=True,null=True)
+    modified_tipo_indicador = models.DateTimeField(auto_now=True,null=True)
+
+    def __str__(self):
+
+        return self.name_tipo_indicador
+
 class Indicador(models.Model): 
     name =models.CharField(max_length=150)
     formula=models.CharField(max_length=150)
@@ -24,7 +35,10 @@ class Indicador(models.Model):
     valor_minimo=models.FloatField(null=True)
     valor_maximo=models.FloatField(null=True)
     dataframe=models.CharField(max_length=150,null=True)
-    indicador_tipo=models.CharField(max_length=50,choices=RATIOS,default="Rentabilidad")
+
+    
+    indicador_tipo=models.OneToOneField(TipoIndicador,on_delete=models.CASCADE)
+
     indicador_favorito=models.BooleanField(default=False)
     indicador_comentario=models.CharField(max_length=500,null=True)
     tipo_graph=models.CharField(max_length=50,null=True)

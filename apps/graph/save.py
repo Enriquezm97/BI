@@ -1,10 +1,14 @@
 
 import apps.graph.models as gm
+import apps.users.models as um
 
-def RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario,favorito,empresa):
+def RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario,favorito,empresa,id_usuario):
     #from home.models import Ratios
+    TipoIndicador=gm.TipoIndicador
     Indicador=gm.Indicador()
-    Indicador.indicador_tipo=tipo
+    #Usuario=um.Usuario()
+    #cliente.tipo_cliente = TipoCliente.objects.get(codigo = request.POST['tipo_cliente'])
+    Indicador.indicador_tipo=TipoIndicador.objects.get(id=tipo)
     Indicador.name=nombre
     Indicador.formula=formula
 
@@ -24,5 +28,6 @@ def RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,co
     Indicador.indicador_comentario=comentario
     Indicador.indicador_favorito= favorito
     Indicador.dataframe=empresa
+    Indicador.usuario=um.Usuario.objects.get(id=id_usuario)
 
     return Indicador.save()

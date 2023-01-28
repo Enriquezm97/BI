@@ -22,7 +22,7 @@ from apps.graph.build.containers.Otros.Otros import *
 from apps.graph.build.containers.Created.created import *
 from apps.graph.build.containers.Scraper.scraper import *
 
-from apps.graph.models import Indicador
+from apps.graph.models import Indicador,TipoIndicador
 from apps.users.models import Empresa,Usuario
 from apps.graph.build.containers.test import *
 from django.contrib.auth.models import User
@@ -77,8 +77,10 @@ class PlanSiembraView(LoginRequiredMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        
         dashboard=plandeSiembra(empresa[0])
         context = {'dashboard':dashboard}
+        print(list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True)))
         return render(request,'dashboards/Agricola/plansiembra.html',context)
 
 class CostosCampañaView(LoginRequiredMixin,View):
