@@ -119,17 +119,16 @@ def paisFacturado(df_pais_pie,template,importe):
     pais_top_facturado.update_layout(paper_bgcolor='#f7f7f7')
     return pais_top_facturado
 
-def cultivoFacturado(df_cultivo_top,template,importe):
+def cultivoFacturado(df_cultivo_top,template,importe,title,label):
     cultivo_top_facturado = go.Figure()
 
 
-    cultivo_top_facturado.add_trace(go.Pie(labels=df_cultivo_top['CULTIVO'], values=df_cultivo_top[importe],hole=.5))#,rotation=100
+    cultivo_top_facturado.add_trace(go.Pie(labels=df_cultivo_top[label], values=df_cultivo_top[importe],hole=.5))#,rotation=100
     cultivo_top_facturado.update_traces(hoverinfo="label+value+percent")#, hole=.4)#label+value+percent
         #fig.update_traces(textposition='inside', textinfo='percent+label')
-    cultivo_top_facturado.update_traces(textposition='outside', textinfo='label+percent',textfont=dict(size=10),rotation=150, marker=dict(colors=px.colors.qualitative.T10))#line=dict(color='#000000', width=1)#, marker=dict(colors=colors)
+    cultivo_top_facturado.update_traces(textposition='outside', textinfo='label+percent',textfont=dict(size=8),rotation=150, marker=dict(colors=px.colors.qualitative.T10))#line=dict(color='#000000', width=1)#, marker=dict(colors=colors)
     cultivo_top_facturado.update_layout(
-                                title={
-                                'text': 'Ventas por Cultivo',},
+                                title=title,
                                 #'y':0.9,
                                 #'x':0.5,
                                 

@@ -5,19 +5,15 @@ from dash_iconify import DashIconify
 
 
 
-def cardIndex(title,link,image,shadou,descripcion="Descripción"):
+def cardIndex(title,link,graph,shadou,descripcion="Descripción"):
     return html.Div(
         dmc.Card(
                                 children=[
                                     dmc.CardSection(
                                         dmc.Group(
                                             children=[
-                                                dmc.Anchor(
-                                                        #"Gastos Operativos", href="/gastos-operativos", 
-                                                        title,
-                                                        href=link,
-                                                        underline=False, 
-                                                    ),
+                                                html.A(title, href=link, className="alert-link"),
+                                                
                                             ],
                                             position="apart",
                                         ),
@@ -27,11 +23,12 @@ def cardIndex(title,link,image,shadou,descripcion="Descripción"):
                                     ),
                                     
                                     dmc.CardSection(
-                                        dmc.Image(
-                                            src=image,
-                                            mt="sm",
-                                            height=300
-                                        ),
+                                        children=[graph],
+                                        #dmc.Image(
+                                        #    src=image,
+                                        #    mt="sm",
+                                        #    height=300
+                                        #),
                                     ),
                                     dmc.Text(
                                         children=[
@@ -50,7 +47,7 @@ def cardIndex(title,link,image,shadou,descripcion="Descripción"):
                                 ],
                                 withBorder=True,
                                 shadow=shadou,
-                                radius="lg",
+                                radius="md",
                                 #style={"width": 350},
                             )
     )

@@ -301,7 +301,7 @@ def formIndicador(empresa,usuario):
             #    "Todos los Indicadores",
             #    href="/indicadores/",
             #)
-            html.A("Todos los Indicadores Financieros", href="/indicadores", className="alert-link"),
+            html.A("Todos los Indicadores Financieros", href="../indicadores", className="alert-link"),
            # html.A("Todos los Indicadores", href="/indicadores", className="alert-link"),
         ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
     ])

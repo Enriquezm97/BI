@@ -23,8 +23,9 @@ from apps.graph.build.containers.Created.created import *
 from apps.graph.build.containers.Scraper.scraper import *
 
 from apps.graph.models import Indicador,TipoIndicador
-from apps.users.models import Empresa,Usuario
-from apps.graph.build.containers.test import *
+from apps.users.models import Empresa,Usuario,Rubro
+#from apps.graph.build.containers.test import *
+from apps.graph.build.containers.index import index
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
@@ -36,7 +37,7 @@ def home(request):
     return render(request, 'home.html',context)
 
 def liveUpdate(request):
-    dashboard=live_update()
+    dashboard=HomeScraper()
     context={'dashboard':dashboard}
     return render(request, 'live_update.html',context)
 
@@ -45,8 +46,15 @@ class TestView(LoginRequiredMixin,View):
     template_name='test.html'
     login_url = reverse_lazy('login')#'/user/login/'
     def get(self,request,*args, **kwargs):
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        username=list(Usuario.objects.filter(user_id=id_user).values_list('username',flat=True))
+        empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
+        empresa_name=(Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True))
+        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
+        
         #dashboard=tailwindcss()
-        dashboard=index()
+        dashboard=index(empresa_name[0],rubro[0],username[0])
         
         context = {'dashboard':dashboard}
         return render(request,'test.html',context)
@@ -58,6 +66,7 @@ class Test2View(View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+         
         dashboard=prueba2()
         print(empresa)
         print(type(empresa))
@@ -80,7 +89,7 @@ class PlanSiembraView(LoginRequiredMixin,View):
         
         dashboard=plandeSiembra(empresa[0])
         context = {'dashboard':dashboard}
-        print(list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True)))
+        
         return render(request,'dashboards/Agricola/plansiembra.html',context)
 
 class CostosCampañaView(LoginRequiredMixin,View):
@@ -194,10 +203,13 @@ class InformedeVentas1View(LoginRequiredMixin,View):
         id_user=self.request.user.id
        
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
+        empresa_name=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        
+        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
         staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
         
-        dashboard=informeVentas(empresa[0],staff_filter[0])
+        dashboard=informeVentas(empresa_name[0],rubro[0],staff_filter[0])
         
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/informe_ventas_1.html',context)
