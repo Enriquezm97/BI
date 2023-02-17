@@ -30,7 +30,11 @@ urlpatterns = [
     path('<str:username>/informe-ventas', views.InformedeVentas1View.as_view(),name='informe_ventas'),
     path('<str:username>/ventas-exportacion',views.VentasExportacionView.as_view(),name='ventas_exportacion'),
     path('<str:username>/ventas-1',views.Ventas1View.as_view(),name='ventas_1'),
-    path('<str:username>/ventas-2',views.Ventas2View.as_view(),name='ventas_2'),
+    path('<str:username>/ventas-2',views.VentasTipo.as_view(),name='ventas_2'),
+    path('<str:username>/ventas-productos',views.VentasProductos.as_view(),name='venproductos'),
+    path('<str:username>/ventas-tipo',views.VentasTipo.as_view(),name='ventipo'),
+    path('ventas-comparativo',views.VentasComparativo.as_view(),name='vencomparativo'),
+
 
     path('<str:username>/ctrl-contenedores-1',views.ContenedoresExportView1.as_view(),name='ctrl_contenedores_1'),
     path('<str:username>/ctrl-contenedores-2',views.ContenedoresExportView2.as_view(),name='ctrl_contenedores_2'),

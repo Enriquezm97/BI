@@ -297,7 +297,7 @@ def formIndicador(empresa,usuario):
 
     dbc.Row([
         dbc.Col([
-            #dmc.Anchor(
+            #dmc.Anchor(z
             #    "Todos los Indicadores",
             #    href="/indicadores/",
             #)

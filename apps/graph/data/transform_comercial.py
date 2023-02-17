@@ -12,7 +12,12 @@ def cleanVentas(df_ventas_detalle):
     df_ventas_detalle.loc[df_ventas_detalle.CULTIVO =='','CULTIVO']='NO DEFINIDO'
     df_ventas_detalle.loc[df_ventas_detalle.VARIEDAD =='','VARIEDAD']='SIN VARIEDAD'
     df_ventas_detalle.loc[df_ventas_detalle.PAIS ==None,'PAIS']='PAIS NO DEFINIDO'
+    df_ventas_detalle['PAIS']=df_ventas_detalle['PAIS'].fillna('NO ESPECIFICADO')
     df_ventas_detalle['FECHA'] =pd.to_datetime(df_ventas_detalle['FECHA'], format="%Y/%m/%d")
+    #df_ventas_detalle['FECHA']=pd.to_datetime(df_ventas_detalle['FECHA'], format='%Y-%m-%d %H:%M:%S')
+    #df_ventas_detalle['FECHA']=pd.to_datetime(df_ventas_detalle['FECHA'], format='%Y-%m-%d')
+    #df_ventas_detalle['FECHA']=df_ventas_detalle['FECHA'].dt.strftime('%Y-%m-%d')
+    
     df_ventas_detalle['DAY'] = df_ventas_detalle['FECHA'].dt.day
     df_ventas_detalle['MONTH'] = df_ventas_detalle['FECHA'].dt.month
     df_ventas_detalle['YEAR'] = df_ventas_detalle['FECHA'].dt.year
@@ -76,6 +81,7 @@ def changeVentasCol(df_ventas_detalle):
                                                                 'PESONETO_PRODUCTO':'Peso',
                                                                 'SEMANA':"Semana",
                                                                 'DESCRIPCION':'Producto',
+                                                                'GRUPO':'Grupo de Venta'
 
                                                         })
         return df_ventas_detalle_ejes

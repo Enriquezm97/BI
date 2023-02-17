@@ -37,7 +37,7 @@ def card(total_if,template,importe):
 #GRAPH - BAR HORIZONTAL
 def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
     Bar_top_naviera = go.Figure()
-    Bar_top_naviera.add_trace(go.Bar(x=df_naviera_top_facturado[importe]/1000000,y=df_naviera_top_facturado['DESCRIPCION'],text=df_naviera_top_facturado[importe],orientation='h',
+    Bar_top_naviera.add_trace(go.Bar(x=df_naviera_top_facturado[importe],y=df_naviera_top_facturado['DESCRIPCION'],text=df_naviera_top_facturado[importe],orientation='h',
                                     textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
                                     marker_color="#145f82",
                                     hovertemplate =
@@ -57,7 +57,7 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
                             #  showscale=False),
                             #))
     Bar_top_naviera.update_layout(title={
-                                            'text':'Ventas por Producto (Millón $)',
+                                            'text':'Ventas por Producto',
                                             
                                         },
                                 titlefont={'size': 13},
@@ -71,7 +71,7 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
             #width=,
             #height=380,
             margin=dict(
-                l=30,
+                l=120,
                 r=20,
                 b=25,
                 t=50,
@@ -142,10 +142,10 @@ def cultivoFacturado(df_cultivo_top,template,importe,title,label):
 # BAR VERTICAL
 def mesTop(df_mes_top,template,importe):
     mes_top = go.Figure()
-    mes_top.add_trace(go.Bar(x=df_mes_top['MES_TEXT'],y=df_mes_top[importe]/1000000,text=df_mes_top[importe],orientation='v',textposition='outside',texttemplate='%{text:.2s}',marker_color="#145f82",))#,marker_color="#01B8AA"
+    mes_top.add_trace(go.Bar(x=df_mes_top['MES_TEXT'],y=df_mes_top[importe],text=df_mes_top[importe],orientation='v',textposition='outside',texttemplate='%{text:.2s}',marker_color="#145f82",))#,marker_color="#01B8AA"
     mes_top.update_layout(
                             title={
-                                    'text':'Ventas por Mes (Millón $)',
+                                    'text':'Ventas por Mes',
                                         'y': 0.93,
                                         'x': 0.5,
                                         'xanchor': 'center',
@@ -293,10 +293,10 @@ def card_ventas(valor,prefijo,title):
             mode = "number+delta",
             #mode = "number",
             #number_font_color="black",
-            number_font_size=25,
+            number_font_size=35,
             value =valor,#d.total_if,
             #delta = {"reference": 0, "valueformat": ".0f"},
-            title = {"text": title,"font": {'size': 12}},#"font": {'size': 15,'family': "Arial"}
+            title = {"text": title,"font": {'size': 16}},#"font": {'size': 15,'family': "Arial"}
             number = {'prefix':prefijo },
             #position="top",
             #domain = {'y': [0, 1], 'x': [0.25, 0.75]}

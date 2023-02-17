@@ -464,17 +464,17 @@ def IndicadorDash(nombres,formulas,
             ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
         ]),
         dbc.Row([
-            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-prueba')))],width=9,className="col-xl-9 col-md-12 col-sm-12 col-12 mb-3"),
+            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-stack2')))],width=9,className="col-xl-9 col-md-12 col-sm-12 col-12 mb-3"),
             dbc.Col([loadingOverlay(html.Div(id='tablet',style={'max-height': '390px','overflow': "auto"}))],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3")
         ]),
         
-        dbc.Row([
-            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-comparativo')))],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+        dbc.Row([#graph-prueba
+            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-prueba')))],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
             
             
         ]),
-        dbc.Row([
-            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-stack2')))],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+        dbc.Row([#graph-comparativo
+            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-comparativo')))],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
             dbc.Col([#dbc.Alert(comentario, color="primary")
                     html.Div(
                     [
@@ -605,19 +605,22 @@ def IndicadorDash(nombres,formulas,
         #px.bar(df_stack, x=x, y='valor',text='valor', facet_row="Año",template="plotly_white",title="Comparativo",color_discrete_sequence=px.colors.qualitative.G10)
         #fig.update_yaxes(matches=None)
 
-        fig2 = px.line(df_stack, x=x, y='valor',text='valor',template="none",title="Comparativo",color='Año')#, facet_row="Año",facet_row_spacing=0.1
+        fig2 = px.line(df_stack, x=x, y='valor',template="none",title="Comparativo por Año (Line)",color='Año', markers=True)#, facet_row="Año",facet_row_spacing=0.1#,text='valor'
         fig2.update_layout(autosize=True,margin=dict(l=60,r=40,b=40,t=50))
-        fig2.update_traces(textposition="bottom center",texttemplate='%{text:.3f}',textfont_size=12)#,texttemplate='%{text:.2s}'
+        #fig2.update_traces(textposition="bottom center",texttemplate='%{text:.3f}',textfont_size=12)#,texttemplate='%{text:.2s}'
         #fig2.update_xaxes(showline=True, linewidth=1, linecolor='black', mirror=True,gridcolor='#f9f4f4')
         #fig2.update_yaxes(showline=True, linewidth=1, linecolor='black', mirror=True,gridcolor='#f9f4f4')
         fig2.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+        fig2.add_hrect(y0=0,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.1)
+        fig2.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.1)
+        fig2.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.1)
         #fig2.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
         #fig2.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
         #fig2.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
         #fig2.update_yaxes(showticklabels=False)
         #fig2.update_traces(texttemplate='%{text:.4s}', textposition='inside')
         #fig2.update_layout(hovermode="x unified")
-        fig_comparative = px.bar(df_stack, x=x, y='valor',color="Año", barmode='group',height=400,template='none',text="valor",title="Comparativo por Año",)
+        fig_comparative = px.bar(df_stack, x=x, y='valor',color="Año", barmode='group',height=400,template='none',text="valor",title="Comparativo por Año (Bar)",)
         fig_comparative.update_traces(textposition='outside',texttemplate='%{text:.3f}')
         fig_comparative.update_layout(margin=dict(l=30,r=30,b=30,t=50,pad=0,autoexpand=True))  
         fig_comparative.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')

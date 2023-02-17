@@ -28,8 +28,10 @@
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"><a class="nav-link" href="{% url "informe_ventas" user.usuario.username %}">Informe de Ventas</a></li>
                   <li class="nav-item"><a class="nav-link" href="{% url "ventas_exportacion" user.usuario.username %}">Ventas Exportación</a></li>
-                  <li class="nav-item"><a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas 1</a></li>
-                  <li class="nav-item"><a class="nav-link" href="{% url "ventas_2" user.usuario.username %}">Ventas 2</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas por Cliente</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url "venproductos" user.usuario.username %}">Ventas por Producto</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url "ventipo" user.usuario.username %}">Ventas por Tipo</a></li>
+                  <!-- <li class="nav-item"><a class="nav-link" href="{% url "ventas_2" user.usuario.username %}">Ventas 2</a></li>-->
                 
                   
                   
@@ -106,8 +108,10 @@
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"><a class="nav-link" href="{% url "informe_ventas" user.usuario.username %}">Informe de Ventas</a></li>
                   <li class="nav-item"><a class="nav-link" href="{% url "ventas_exportacion" user.usuario.username %}">Ventas Exportación</a></li>
-                  <li class="nav-item"><a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas 1</a></li>
-                  <li class="nav-item"><a class="nav-link" href="{% url "ventas_2" user.usuario.username %}">Ventas 2</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas por Cliente</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url "venproductos" user.usuario.username %}">Ventas por Producto</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url "ventipo" user.usuario.username %}">Ventas por Tipo</a></li>
+                <!--  <li class="nav-item"><a class="nav-link" href="{% url "ventas_2" user.usuario.username %}">Ventas 2</a></li>-->
                 
                   
                   
@@ -137,7 +141,7 @@
             </li>
             
             
-
+          <!--  
             <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
                 <i class="icon-bar-graph menu-icon"></i>
@@ -152,6 +156,7 @@
                 </ul>
               </div>
             </li>
+          -->
    {% endif %}
   </ul>
 </nav>

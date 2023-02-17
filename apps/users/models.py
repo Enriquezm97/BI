@@ -6,15 +6,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-#def user_profile_directory_path(instance, filename):
-#    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-#    profile_pic_name = 'users/{0}/profile.jpg'.format(instance.account)
-#    full_path = os.path.join(settings.MEDIA_ROOT, profile_pic_name)
-
-#    if os.path.exists(full_path):
-#    	os.remove(full_path)
-
-# Create your models here.
 RUBRO = (
     ('Comercial','Comercial'),
     ('Agricola', 'Agricola'),
@@ -41,7 +32,7 @@ class Empresa(models.Model):
     codigo_empresa= models.CharField(max_length=15, blank=True,null=True)
 
     rubro_empresa=models.ForeignKey(Rubro,on_delete=models.CASCADE)
-    
+
     create_empresa = models.DateTimeField(auto_now_add=True,null=True)
     modified_empresa = models.DateTimeField(auto_now=True,null=True)
     

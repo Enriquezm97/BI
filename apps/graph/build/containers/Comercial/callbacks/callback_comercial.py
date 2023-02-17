@@ -135,7 +135,7 @@ def filtroInformeVentas2(app,rubro,df):
                 
                 return option_year,option_tipo,option_grupo,option_cliente
 
-def titleInformeVentas(app,rubro):
+def titleInformeVentas(app,rubro,titulo):
     
         @app.callback(
         
@@ -149,7 +149,7 @@ def titleInformeVentas(app,rubro):
         )
         def title_ventas(year,cultivo,cliente,moneda):
             if rubro == 'Agricola' or rubro == 'Agroindustrial':
-                general='Informe de Ventas'+' '+str(moneda)
+                general=str(titulo)+' '+str(moneda)
                 if year == None:
                     title=general
                 else:
@@ -165,7 +165,7 @@ def titleInformeVentas(app,rubro):
                     
                 return title,subtitle
             else:
-                general='Informe de Ventas'+' '+str(moneda)
+                general=str(titulo)+' '+str(moneda)
                 tipo=cultivo
                 if year == None:
                     title=general
@@ -193,6 +193,7 @@ def drawGraphInformeVentas(app,rubro,df):
         Output("pais_top_facturado","figure"),
         Output("cultivo_top_facturado","figure"),
         Output("mes_top","figure"),
+        #Output("graph-last","figure"),
         #Output("bar_top_cultivo","figure"),
         #Input('filter-data', 'data'),
         Input("year","value"),
@@ -272,9 +273,29 @@ def drawGraphInformeVentas(app,rubro,df):
                 #CULTIVO PESO
                 #df_cultivo_peso=options.groupby(['CULTIVO'])[['PESONETO_PRODUCTO']].sum().reset_index().sort_values('PESONETO_PRODUCTO',ascending=True)#
                 #TEMPLATE STYLES
+                #graph3=options.groupby(['RAZON_SOCIAL'])[[importe]].sum().reset_index().sort_values(importe,ascending=True).tail(15)
+                #cliente_importe = go.Figure()
+                #cliente_importe.add_trace(go.Bar(x=graph3['RAZON_SOCIAL'],y=graph3[importe],text=graph3[importe],orientation='v',textposition='inside',texttemplate='%{text:.2s}',name=importe))#,marker_color="#01B8AA"
+                #cliente_importe.update_layout(title='Ventas por Cliente (Top15)',titlefont={'size': 15},uniformtext_minsize=8,template='none')
+                #cliente_importe.update_layout(autosize=True,height=350,margin=dict(l=70,r=70,b=100,t=80),xaxis=dict(showticklabels=True,tickfont=dict(size=11)),
+                #            yaxis=dict( tickfont=dict(size=11)))
+                #cliente_importe.update_layout(
+                #        showlegend=True,
+                #        legend=dict(
+                #        orientation="h",
+                #        yanchor="bottom",
+                #        y=1.02,
+                #        xanchor="right",
+                #        x=1
+
+                #        )
+
+                #    )
+                #cliente_importe.update_layout(xaxis_title="Cliente",yaxis_title=radio,legend_title="")
+                #cliente_importe.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
             
 
-                return card(total,'none',importe),barNaviera(df_naviera_top_facturado,'none',importe,radio,'Producto'),paisFacturado(df_pais_pie,'none',importe),cultivoFacturado(df_cultivo_top,'none',importe,'Venta por Cultivo','CULTIVO'),mesTop(df_mes_top,'none',importe)#,barCultivo(df_cultivo_peso,template)
+                return card(total,'none',importe),barNaviera(df_naviera_top_facturado,'none',importe,radio,'Producto'),paisFacturado(df_pais_pie,'none',importe),cultivoFacturado(df_cultivo_top,'none',importe,'Venta por Cultivo','CULTIVO'),mesTop(df_mes_top,'none',importe)#,cliente_importe#,barCultivo(df_cultivo_peso,template)
             else:
                 tipo=cultivo
                 grupo=variedad
@@ -336,13 +357,249 @@ def drawGraphInformeVentas(app,rubro,df):
                 #PAIS PIE
                 df_pais_pie=options.groupby(['PAIS'])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
                 #TOP DE CULTIVOS
-                df_cultivo_top=options.groupby(['TIPOVENTA'])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
+                df_cultivo_top=options.groupby(['GRUPO'])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
                 #MES TOP
                 df_mes_top=options.groupby(['MES_TEXT','MONTH'])[[importe]].sum().reset_index().sort_values('MONTH',ascending=True).reset_index()
                 df_mes_top['%']=(df_mes_top[importe]/options[importe].sum())*100
                 #CULTIVO PESO
                 #df_cultivo_peso=options.groupby(['CULTIVO'])[['PESONETO_PRODUCTO']].sum().reset_index().sort_values('PESONETO_PRODUCTO',ascending=True)#
                 #TEMPLATE STYLES
+                #graph3=options.groupby(['RAZON_SOCIAL'])[[importe]].sum().reset_index().sort_values(importe,ascending=True).tail(15)
+                #cliente_importe = go.Figure()
+                #cliente_importe.add_trace(go.Bar(x=graph3['RAZON_SOCIAL'],y=graph3[importe],text=graph3[importe],orientation='v',textposition='inside',texttemplate='%{text:.2s}',name=importe))#,marker_color="#01B8AA"
+                #cliente_importe.update_layout(title='Ventas por Cliente (Top15)',titlefont={'size': 15},uniformtext_minsize=8,template='none')
+                #cliente_importe.update_layout(autosize=True,height=350,margin=dict(l=70,r=70,b=100,t=80),xaxis=dict(showticklabels=True,tickfont=dict(size=11)),
+                #            yaxis=dict( tickfont=dict(size=11)))
+                #cliente_importe.update_layout(
+                #        showlegend=True,
+                #        legend=dict(
+                #        orientation="h",
+                #        yanchor="bottom",
+                #        y=1.02,
+                #        xanchor="right",
+                #        x=1
+
+                #        )
+
+                #    )
+                #cliente_importe.update_layout(xaxis_title="Cliente",yaxis_title=radio,legend_title="")
+                #cliente_importe.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
             
 
-                return card(total,'none',importe),barNaviera(df_naviera_top_facturado,'none',importe,radio,'Producto'),paisFacturado(df_pais_pie,'none',importe),cultivoFacturado(df_cultivo_top,'none',importe,'Venta por Tipo','TIPOVENTA'),mesTop(df_mes_top,'none',importe)
+                return card(total,'none',importe),barNaviera(df_naviera_top_facturado,'none',importe,radio,'Producto'),paisFacturado(df_pais_pie,'none',importe),cultivoFacturado(df_cultivo_top,'none',importe,'Grupo de Venta','GRUPO'),mesTop(df_mes_top,'none',importe)#,cliente_importe
+            
+def drawGraphExportacionVentas(app,rubro,df):
+        df_ventas=df
+    
+        @app.callback(
+        Output('card-export', 'figure'),
+        Output('pie-export', 'figure'),
+        Output('bar-mesvariedad', 'figure'),
+        #Output('bar-mesformato', 'figure'),
+        Output('map-vpais', 'figure'),
+        #Output("bar_top_cultivo","figure"),
+        #Input('filter-data', 'data'),
+        Input("year","value"),
+        Input("cultivo-tipo","value"),
+        Input("variedad-grupo","value"),
+        Input("cliente","value"),
+        #Input(ThemeSwitchAIO.ids.switch("theme"), "value"),
+        Input("radio-moneda","value")
+        )
+        def ventas(year,cultivo,variedad,cliente,radio):
+            if rubro == 'Agricola' or rubro == 'Agroindustrial':
+            #options=pd.read_json(data, orient='split')
+                if year==None and cultivo == None and variedad== None and cliente==None:
+                    options=df_ventas
+
+                elif year!=None and cultivo == None and variedad== None and cliente==None:    
+                    options=df_ventas[df_ventas['YEAR']==year]
+                elif year==None and cultivo != None and variedad== None and cliente==None:    
+                    options=df_ventas[df_ventas['CULTIVO']==cultivo]
+                
+                elif year==None and cultivo == None and variedad!= None and cliente==None:    
+                    options=df_ventas[df_ventas['VARIEDAD']==variedad]
+                
+                elif year==None and cultivo == None and variedad== None and cliente!=None:    
+                    options=df_ventas[df_ventas['RAZON_SOCIAL']==cliente]
+                
+                elif year!=None and cultivo != None and variedad== None and cliente==None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['CULTIVO']==cultivo)]
+                
+                elif year!=None and cultivo == None and variedad!= None and cliente==None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['VARIEDAD']==variedad)]
+                
+                elif year!=None and cultivo == None and variedad== None and cliente!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['RAZON_SOCIAL']==cliente)]
+
+                
+                elif year==None and cultivo != None and variedad== None and cliente!=None:
+                    options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year==None and cultivo != None and variedad!= None and cliente==None:
+                    options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)]
+                
+                elif year==None and cultivo == None and variedad!= None and cliente!=None:
+                    options=df_ventas[(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and cultivo != None and variedad!= None and cliente==None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)]
+
+                elif year!=None and cultivo != None and variedad== None and cliente!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['CULTIVO']==cultivo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and cultivo == None and variedad!= None and cliente!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
+
+                elif year==None and cultivo != None and variedad!= None and cliente!=None:
+                    options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and cultivo != None and variedad!= None and cliente!=None:
+                    options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['YEAR']==year)]
+
+                if radio=='Soles':
+                    importe='IMPORTEMOF'
+                    simbolo="S/"
+                    
+                elif radio=='Dolares':
+                    importe='IMPORTEMEX'
+                    simbolo="$"
+                
+                #card
+                total=options[importe].sum()
+                
+                #pie
+                df_totalv_variedad=options.groupby(['VARIEDAD'])[[importe]].sum().reset_index()
+                #bar exportación
+
+                df_exportacion=options.groupby(['FECHA','RAZON_SOCIAL'])[[importe]].sum().reset_index()
+                
+                
+                
+                #BAR EXPORTACION 2
+
+                df_totalv_meses_peso=options.groupby(['MONTH','MES_TEXT','UNDEX'])[[importe]].sum().sort_values('MONTH',ascending=True).reset_index()
+                
+                
+                #MAP
+
+                df_ventas_for_pais=options.groupby(['PAIS','latitud','longitud'])[[importe]].sum().reset_index()
+                #df_ventas_for_pais=df_ventas_for_pais[df_ventas_for_pais['latitud'].notnull()]
+                df_ventas_for_pais=df_ventas_for_pais[df_ventas_for_pais[importe]>0]
+
+                
+                line_graph = px.line(df_exportacion, x="FECHA", y=importe,title=f'Serie de Tiempo de Ventas',template='none',hover_data=['RAZON_SOCIAL'])
+                line_graph.update_layout(height=400,margin=dict(l=55, r=30, t=70, b=40),xaxis_title='Fecha',
+                    yaxis_title=radio,)
+                line_graph.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+                
+
+                
+                return (Cards.cardPrefix(total,'Ventas Totales',None,None,simbolo,'none'),
+                        #PieChartLegendLeft(df_totalv_variedad['VARIEDAD'],df_totalv_variedad['IMPORTEMOF'],'Total Ventas por Variedad'),
+                        Piechart.legendLeft(df_totalv_variedad['VARIEDAD'],df_totalv_variedad[importe],'Ventas por Variedad','none'),
+                        #Barchart.horizontalExport(df_exportacion,'FECHA','total_resumen',None,f'Ventas por Mes por Tipo de Venta {title}',False,'FECHA',radio,importe,template),
+                        line_graph,
+                        #Barchart.horizontalExport(df_totalv_meses_peso,'MES_TEXT','total_resumen','UNDEX',f'Ventas por Mes y Formato {title}',False,'Mes',radio,importe,template),
+                        Maps.mapPais(df_ventas_for_pais,'latitud','longitud','PAIS',importe,'none'),
+                        )
+
+                #card
+                
+            else:
+                tipo=cultivo
+                grupo=variedad
+                if year==None and tipo == None and grupo== None and cliente==None:
+                    options=df_ventas
+
+                elif year!=None and tipo == None and grupo== None and cliente==None:    
+                    options=df_ventas[df_ventas['YEAR']==year]
+                elif year==None and tipo != None and grupo== None and cliente==None:    
+                    options=df_ventas[df_ventas['TIPOVENTA']==tipo]
+                
+                elif year==None and tipo == None and grupo!= None and cliente==None:    
+                    options=df_ventas[df_ventas['GRUPO']==grupo]
+                
+                elif year==None and tipo == None and grupo== None and cliente!=None:    
+                    options=df_ventas[df_ventas['RAZON_SOCIAL']==cliente]
+                
+                elif year!=None and tipo != None and grupo== None and cliente==None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['TIPOVENTA']==tipo)]
+                
+                elif year!=None and tipo == None and grupo!= None and cliente==None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['GRUPO']==grupo)]
+                
+                elif year!=None and tipo == None and grupo== None and cliente!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['RAZON_SOCIAL']==cliente)]
+
+                
+                elif year==None and tipo != None and grupo== None and cliente!=None:
+                    options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year==None and tipo != None and grupo!= None and cliente==None:
+                    options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)]
+                
+                elif year==None and tipo == None and grupo!= None and cliente!=None:
+                    options=df_ventas[(df_ventas['GRUPO']==grupo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and tipo != None and grupo!= None and cliente==None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)]
+
+                elif year!=None and tipo != None and grupo== None and cliente!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['TIPOVENTA']==tipo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and tipo == None and grupo!= None and cliente!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['GRUPO']==tipo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+
+                elif year==None and tipo != None and grupo!= None and cliente!=None:
+                    options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and tipo != None and grupo!= None and cliente!=None:
+                    options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)&(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['YEAR']==year)]
+
+                if radio=='Soles':
+                    importe='IMPORTEMOF'
+                    simbolo="S/"
+                    
+                elif radio=='Dolares':
+                    importe='IMPORTEMEX'
+                    simbolo="$"
+                
+                #card
+                total=options[importe].sum()
+                
+                #pie
+                df_totalv_variedad=options.groupby(['TIPOVENTA'])[[importe]].sum().reset_index()
+                #bar exportación
+
+                df_exportacion=options.groupby(['FECHA','RAZON_SOCIAL'])[[importe]].sum().reset_index()
+                
+                
+                
+                #BAR EXPORTACION 2
+
+                df_totalv_meses_peso=options.groupby(['MONTH','MES_TEXT','UNDEX'])[[importe]].sum().sort_values('MONTH',ascending=True).reset_index()
+                
+                
+                #MAP
+
+                df_ventas_for_pais=options.groupby(['PAIS','latitud','longitud'])[[importe]].sum().reset_index()
+                #df_ventas_for_pais=df_ventas_for_pais[df_ventas_for_pais['latitud'].notnull()]
+                df_ventas_for_pais=df_ventas_for_pais[df_ventas_for_pais[importe]>0]
+
+                
+                line_graph = px.line(df_exportacion, x="FECHA", y=importe,title=f'Serie de Tiempo de Ventas',template='none',hover_data=['RAZON_SOCIAL'])
+                line_graph.update_layout(height=400,margin=dict(l=55, r=30, t=70, b=40),xaxis_title='Fecha',
+                    yaxis_title=radio,)
+                line_graph.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+                
+
+                
+                return (Cards.cardPrefix(total,'Ventas Totales',None,None,simbolo,'none'),
+                        #PieChartLegendLeft(df_totalv_variedad['VARIEDAD'],df_totalv_variedad['IMPORTEMOF'],'Total Ventas por Variedad'),
+                        Piechart.legendLeft(df_totalv_variedad['TIPOVENTA'],df_totalv_variedad[importe],'Ventas por Tipo','none'),
+                        #Barchart.horizontalExport(df_exportacion,'FECHA','total_resumen',None,f'Ventas por Mes por Tipo de Venta {title}',False,'FECHA',radio,importe,template),
+                        line_graph,
+                        #Barchart.horizontalExport(df_totalv_meses_peso,'MES_TEXT','total_resumen','UNDEX',f'Ventas por Mes y Formato {title}',False,'Mes',radio,importe,template),
+                        Maps.mapPais(df_ventas_for_pais,'latitud','longitud','PAIS',importe,'none'),
+                        )

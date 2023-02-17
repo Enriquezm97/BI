@@ -30,6 +30,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 
+from django.core.cache import cache
+
 def home(request):
     #owo=request.user.id
     dashboard=HomeScraper()
@@ -54,7 +56,10 @@ class TestView(LoginRequiredMixin,View):
         rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
         
         #dashboard=tailwindcss()
+        
         dashboard=index(empresa_name[0],rubro[0],username[0])
+        #if cache.get(dashboard):
+
         
         context = {'dashboard':dashboard}
         return render(request,'test.html',context)
@@ -221,9 +226,12 @@ class VentasExportacionView(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
+        empresa_name=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        
+        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
         staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
-        dashboard=ventasExportacion(empresa[0],staff_filter[0])
+        dashboard=ventasExportacion(empresa_name[0],rubro[0],staff_filter[0])
         
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventas_exportacion.html',context)
@@ -254,6 +262,56 @@ class Ventas2View(LoginRequiredMixin,View):
         
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventas2.html',context)
+    
+
+
+class VentasProductos(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
+    def get(self,request,*args, **kwargs):
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
+        dashboard=ventasProductos(empresa[0],staff_filter[0])
+        
+
+        context = {'dashboard':dashboard}
+        return render(request,'dashboards/Comercial/ventasProductos.html',context)
+
+class VentasTipo(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
+    def get(self,request,*args, **kwargs):
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
+        dashboard=tipoVenta(empresa[0],staff_filter[0])
+        
+
+        context = {'dashboard':dashboard}
+        return render(request,'dashboards/Comercial/tipoVenta.html',context)
+    
+class VentasComparativo(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+
+    def get(self,request,*args, **kwargs):
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
+        dashboard=ventasComparativo(empresa[0],staff_filter[0])
+        
+
+        context = {'dashboard':dashboard}
+        return render(request,'dashboards/Comercial/ventasComparativo.html',context)
+
+
+
+
+
+
 
 class ContenedoresExportView1(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
