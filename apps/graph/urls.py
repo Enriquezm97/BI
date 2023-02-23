@@ -33,7 +33,7 @@ urlpatterns = [
     path('<str:username>/ventas-2',views.VentasTipo.as_view(),name='ventas_2'),
     path('<str:username>/ventas-productos',views.VentasProductos.as_view(),name='venproductos'),
     path('<str:username>/ventas-tipo',views.VentasTipo.as_view(),name='ventipo'),
-    path('ventas-comparativo',views.VentasComparativo.as_view(),name='vencomparativo'),
+    path('<str:username>/ventas-comparativo',views.VentasComparativo.as_view(),name='vencomparativo'),
 
 
     path('<str:username>/ctrl-contenedores-1',views.ContenedoresExportView1.as_view(),name='ctrl_contenedores_1'),

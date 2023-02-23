@@ -14,3 +14,15 @@ def btnFilter(variant="default",color="blue"):
                             mb=10,
                         ),
         )
+
+def btnCollapse(variant="default",color="blue"):
+    return html.Div(
+            dmc.ActionIcon(
+                            DashIconify(icon="feather:chevron-up"), 
+                            color=color, 
+                            variant=variant,
+                            id="btn-collapse",
+                            n_clicks=0,
+                            mb=10,
+                        ),
+        )

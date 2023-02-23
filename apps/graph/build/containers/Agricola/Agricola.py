@@ -1598,7 +1598,7 @@ def variablesAgricolas(empresa):
     value_1=sorted(df_agricola_1['AÑO_FECHA'].unique())[-2]
     value_2=sorted(df_agricola_1['AÑO_FECHA'].unique())[-1]
     year_list=sorted(df_agricola_1['AÑO_FECHA'].unique())
-    lista_year=lista_anios=[str(x) for x in year_list]
+    lista_year=[str(x) for x in year_list]
     app = DjangoDash('variables_agricolas', external_stylesheets=[dbc.themes.BOOTSTRAP])#
 
     app.layout = html.Div([

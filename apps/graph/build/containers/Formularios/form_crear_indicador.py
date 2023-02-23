@@ -426,6 +426,7 @@ def formIndicador(empresa,usuario):
     def update_graph(guardar,tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario,favorito):
         nombre=nombre.upper()
         formula=formula.upper()
+        print(tipo)
         if guardar:
            RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario,favorito,empresa,usuario)
            

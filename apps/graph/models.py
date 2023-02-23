@@ -37,7 +37,7 @@ class Indicador(models.Model):
     dataframe=models.CharField(max_length=150,null=True)
 
     
-    indicador_tipo=models.OneToOneField(TipoIndicador,on_delete=models.CASCADE)
+    indicador_tipo=models.ForeignKey(TipoIndicador,on_delete=models.CASCADE,null=True)
 
     indicador_favorito=models.BooleanField(default=False)
     indicador_comentario=models.CharField(max_length=500,null=True)

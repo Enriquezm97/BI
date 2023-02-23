@@ -14,6 +14,8 @@ def cleanVentas(df_ventas_detalle):
     df_ventas_detalle.loc[df_ventas_detalle.PAIS ==None,'PAIS']='PAIS NO DEFINIDO'
     df_ventas_detalle['PAIS']=df_ventas_detalle['PAIS'].fillna('NO ESPECIFICADO')
     df_ventas_detalle['FECHA'] =pd.to_datetime(df_ventas_detalle['FECHA'], format="%Y/%m/%d")
+    df_ventas_detalle['DESCRIPCION']=df_ventas_detalle['DESCRIPCION'].apply(lambda x: x.strip())
+    df_ventas_detalle['RAZON_SOCIAL']=df_ventas_detalle['RAZON_SOCIAL'].apply(lambda x: x.strip())
     #df_ventas_detalle['FECHA']=pd.to_datetime(df_ventas_detalle['FECHA'], format='%Y-%m-%d %H:%M:%S')
     #df_ventas_detalle['FECHA']=pd.to_datetime(df_ventas_detalle['FECHA'], format='%Y-%m-%d')
     #df_ventas_detalle['FECHA']=df_ventas_detalle['FECHA'].dt.strftime('%Y-%m-%d')
@@ -41,7 +43,7 @@ def cleanVentas(df_ventas_detalle):
     df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].astype("string")
 
     df_ventas_detalle['TRIM']=df_ventas_detalle['FECHA'].dt.quarter
-    df_ventas_detalle['DESCRIPCION']=df_ventas_detalle['DESCRIPCION'].apply(lambda x: x.split('-')[-1])
+    #df_ventas_detalle['DESCRIPCION']=df_ventas_detalle['DESCRIPCION'].apply(lambda x: x.split('-')[-1])
     for years in df_ventas_detalle['YEAR'].unique():
         
                 df_ventas_detalle['TRIM'].loc[df_ventas_detalle.YEAR==years]=df_ventas_detalle['FECHA'].dt.quarter
@@ -53,11 +55,12 @@ def cleanVentas(df_ventas_detalle):
     df_ventas_detalle['PAIS']=df_ventas_detalle['PAIS'].str.rstrip()
     df_ventas_detalle.loc[df_ventas_detalle.PAIS == 'COREA, REPÚBLICA DE','PAIS'] ='COREA'
     df_ventas_detalle.loc[df_ventas_detalle.PAIS == 'EL BRASIL','PAIS'] ='BRASIL'
-    df_ventas_detalle.loc[df_ventas_detalle.RAZON_SOCIAL == 'SERVICIOS Y TRANSPORTES FRANCHESS SOCIEDAD COMERCIAL DE RESPONSABILIDAD LIMITADA','RAZON_SOCIAL'] ='SERVICIOS Y TRANSPORTES FRANCHESS SOCIEDAD'
-    df_ventas_detalle.loc[df_ventas_detalle.RAZON_SOCIAL == 'FRUTOS TROPICALES PERU EXPORT SOCIEDAD ANONIMA CERRADA','RAZON_SOCIAL'] ='FRUTOS TROPICALES PERU EXPORT'
+
+    #df_ventas_detalle.loc[df_ventas_detalle.RAZON_SOCIAL == 'SERVICIOS Y TRANSPORTES FRANCHESS SOCIEDAD COMERCIAL DE RESPONSABILIDAD LIMITADA','RAZON_SOCIAL'] ='SERVICIOS Y TRANSPORTES FRANCHESS SOCIEDAD'
+    #df_ventas_detalle.loc[df_ventas_detalle.RAZON_SOCIAL == 'FRUTOS TROPICALES PERU EXPORT SOCIEDAD ANONIMA CERRADA','RAZON_SOCIAL'] ='FRUTOS TROPICALES PERU EXPORT'
             #FRUTOS TROPICALES PERU EXPORT SOCIEDAD ANONIMA CERRADA
     df_coordenadas_all=coordenadas_paises()
-    df_ventas_detalle.loc[df_ventas_detalle.RAZON_SOCIAL == 'CORPORACION MEDIOAMBIENTAL AMPCO PERU SOCIEDAD ANONIMA CERRADA - CM AMPCO PERU S.A.C.','RAZON_SOCIAL'] ='CORPORACION MEDIOAMBIENTAL AMPCO PERU'
+    #df_ventas_detalle.loc[df_ventas_detalle.RAZON_SOCIAL == 'CORPORACION MEDIOAMBIENTAL AMPCO PERU SOCIEDAD ANONIMA CERRADA - CM AMPCO PERU S.A.C.','RAZON_SOCIAL'] ='CORPORACION MEDIOAMBIENTAL AMPCO PERU'
     df_ventas_detalle=df_ventas_detalle.merge(df_coordenadas_all,how='left',left_on='PAIS',right_on='etiqueta')
     return df_ventas_detalle
 
