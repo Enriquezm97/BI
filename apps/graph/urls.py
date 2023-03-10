@@ -14,7 +14,7 @@ urlpatterns = [
     path('live',views.TestView,name='test'),
     path('test/<int:codigo>/<slug:empresa>',views.Test2View.as_view(),name='test2'),
     
-    path('<str:username>/plan-siembra',views.PlanSiembraView.as_view(),name='plan_siembra'),
+    path('<str:username>/plan-ejecucion',views.PlanSiembraView.as_view(),name='plan_siembra'),
     path('<str:username>/costos-campaña',views.CostosCampañaView.as_view(),name='costos_campaña'),
     path('<str:username>/variables-agricolas',views.VariablesAgricolasView.as_view(),name='variables_agricolas'),
     path('<str:username>/hectareas-sembradas',views.HectareasSembradasView.as_view(),name='hectareas_sembradas'),

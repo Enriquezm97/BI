@@ -26,4 +26,24 @@ dict_cultivos={'Arandano':'#7A325A',
                 'Granada':"#D77477",
                 'Ensayos':"#000000",
 
+               #'Citrico':
+               'Naranja':"#ffbf75",
+               'Palto':"#527E03",
+               'Zarzamora':"#ff35c2",
+               'Duraznos':"#e4c5c4",                
+               'Maiz':"#f4ff91",
+               'Ninguno':"#1d3d33",
+
+               'Ciruelo':"#ff5f7c",
+
+               'Manzano':"#9dc09d",
+               'Kaki':"#e6a15c",
+               'Arandanos':"#b93af8",
+               'Tangelo':"#fd971c",
+               'Lima':"#97db51",
+               'Citrico':"#a0fb0e",
+               'Granada':"#d35d1d",
+               'Palto produccion':"#527E03",
+               'Zapallo':"#cbe03d",
+
               }

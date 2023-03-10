@@ -42,14 +42,14 @@ df_bc_greenfruits=cleanBalanceComprobacion(green.df_bcomprobacion_greenfruits)
 df_bc_aerodiana=cleanBalanceComprobacion(aero.df_bcomprobacion_aerodiana)
 df_bc_nisira=cleanBalanceComprobacion(nisira.df_bcomprobacion_nisira)
 #df_bc_manuelita=cleanBalanceComprobacion(manu.df_bcomprobacion_manuelita)
-#df_bc_arona=cleanBalanceComprobacion(aro.df_bcomprobacion_arona)
+df_bc_arona=cleanBalanceComprobacion(aro.df_bcomprobacion_arona)
 
 def dataBcEmpresa(empresa):
     #if empresa == 'Nisira':
     #    df_bcomprobacion=df_bc
     if empresa =='ARONA':
-        #df_bcomprobacion=df_bc_arona
-        df_bcomprobacion=df_bc_default
+        df_bcomprobacion=df_bc_arona
+        #df_bcomprobacion=df_bc_default
     elif empresa =='GREENFRUITS':
         df_bcomprobacion=df_bc_greenfruits
     elif empresa =='AERODIANA':
@@ -88,10 +88,10 @@ df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
                                                   df_variedad,
                                                   df_cultivos,
                                                   df_fertilizacion)
-#df_var_agricolas_arona=cleanVariablesAgricolas(aro.df_consumidores_arona,
-#                                               aro.df_variedad_arona,
-#                                               aro.df_cultivo_arona,
-#                                               aro.df_fertilizacion_arona)
+df_var_agricolas_arona=cleanVariablesAgricolas(aro.df_consumidores_arona,
+                                               aro.df_variedad_arona,
+                                               aro.df_cultivo_arona,
+                                              aro.df_fertilizacion_arona)
 df_var_agricolas_greenfruits=cleanVariablesAgricolas(green.df_consumidores_greenfruits,
                                                      green.df_variedad_greenfruits,
                                                      green.df_cultivo_greenfruits,
@@ -114,21 +114,21 @@ df_var_agricolas_pivot_aerodiana=variablesAgricolasPivot(df_var_agricolas_aerodi
 #df_var_agricolas_pivot_manuelita=variablesAgricolasPivot(df_var_agricolas_manuelita)
 
 df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
-#df_costos_agricola_arona=costosAgricolas(aro.df_costos_arona,aro.df_consumidores_arona,aro.df_cultivo_arona,aro.df_variedad_arona)
+df_costos_agricola_arona=costosAgricolas(aro.df_costos_arona,aro.df_consumidores_arona,aro.df_cultivo_arona,aro.df_variedad_arona)
 df_costos_agricola_greenfruits=costosAgricolas(green.df_costos_greenfruits,green.df_consumidores_greenfruits,green.df_cultivo_greenfruits,green.df_variedad_greenfruits)
 df_costos_agricola_aerodiana=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
 #df_costos_agricola_manuelita=costosAgricolas(manu.df_costos_manuelita,manu.df_consumidores_manuelita,manu.df_cultivo_manuelita,manu.df_variedad_manuelita)
 
 def dataAgricolaEmpresa(empresa):
     if empresa =='ARONA':
-        #df_general=df_var_agricolas_arona
-        #df_general_pivot=df_var_agricolas_pivot_arona
-        #df_general_costos=df_costos_agricola_arona
-        #consumidores=aro.df_consumidores_arona
-        df_general=df_var_agricolas_default
-        df_general_pivot=df_var_agricolas_pivot_default
-        df_general_costos=df_costos_agricola_default
-        consumidores=df_consumidores
+        df_general=df_var_agricolas_arona
+        df_general_pivot=df_var_agricolas_pivot_arona
+        df_general_costos=df_costos_agricola_arona
+        consumidores=aro.df_consumidores_arona
+        #df_general=df_var_agricolas_default
+        #df_general_pivot=df_var_agricolas_pivot_default
+        #df_general_costos=df_costos_agricola_default
+        #consumidores=df_consumidores
     elif empresa =='GREENFRUITS':
         df_general=df_var_agricolas_greenfruits
         df_general_pivot=df_var_agricolas_pivot_greenfruits
@@ -180,7 +180,7 @@ df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RP
 
 
 df_ventas_detalle=cleanVentas(df_ventas_default)
-#df_ventas_detalle_arona=cleanVentas(aro.df_ventas_arona)
+df_ventas_detalle_arona=cleanVentas(aro.df_ventas_arona)
 df_ventas_detalle_greenfruits=cleanVentas(green.df_ventas_greenfruits)
 df_ventas_detalle_aerodiana=cleanVentas(aero.df_ventas_aerodiana)
 df_ventas_detalle_nisira=cleanVentas(nisira.df_ventas_nisira)
@@ -188,8 +188,8 @@ df_ventas_detalle_nisira=cleanVentas(nisira.df_ventas_nisira)
 
 def dataVentasEmpresa(empresa):
     if empresa =='ARONA':
-        df_ventas_expo=df_ventas_detalle_greenfruits
-        #df_ventas_expo=df_ventas_detalle_arona
+        #f_ventas_expo=df_ventas_detalle_greenfruits
+        df_ventas_expo=df_ventas_detalle_arona
     elif empresa =='GREENFRUITS':
         df_ventas_expo=df_ventas_detalle_greenfruits
     elif empresa =='AERODIANA':
@@ -221,14 +221,14 @@ df_control_expo_arona = pd.read_csv("https://raw.githubusercontent.com/Enriquezm
 
 df_control_contenedores_default=cleanContenedores(df_control_expo_arona)
 df_control_contenedores_greenfruits=cleanContenedores(green.df_contenedores_greenfruits)
-#df_control_contenedores_arona=cleanContenedores(aro.df_contenedores_arona)
+df_control_contenedores_arona=cleanContenedores(aro.df_contenedores_arona)
 df_control_contenedores_aerodiana=cleanContenedores(aero.df_contenedores_aerodiana)
 #df_control_contenedores_manuelita=cleanContenedores(manu.df_contenedores_manuelita)
 
 def dataContenedoresEmpresa(empresa):
     if empresa =='ARONA':
-        df_contenedores=df_control_contenedores_default
-        #df_contenedores=df_control_contenedores_arona
+        #df_contenedores=df_control_contenedores_default
+        df_contenedores=df_control_contenedores_arona
     elif empresa =='GREENFRUITS':
         df_contenedores=df_control_contenedores_greenfruits
     elif empresa =='AERODIANA':

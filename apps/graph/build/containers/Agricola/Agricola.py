@@ -146,7 +146,7 @@ def plandeSiembra(empresa):
         dbc.Row([
             
             dbc.Col([
-                dmc.Title(id='title',children='Plan de Siembra', order=2),
+                dmc.Title(id='title',children='Plan de Ejecución', order=2),
                 #html.H4(id='title', style={'margin-bottom': '0px', 'color': 'black','textAlign': 'left'}),
                 
             ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
@@ -335,9 +335,9 @@ def plandeSiembra(empresa):
     )
     def update_title(anio,recursos,cultivo):
         if cultivo == None:
-            text="Plan de Siembra"
+            text="Plan de Ejecución"
         else: 
-            text="Plan de Siembra"+' '+str(cultivo)
+            text="Plan de Ejecución"+' '+str(cultivo)
         if recursos =='cantidad':
             
             if anio == None:
@@ -482,11 +482,12 @@ def plandeSiembra(empresa):
          #Input('drop_cultivo','value'),
          Input('drop_variedad','value'),
          Input('check-agricola','value'),
-         Input('radio-st','value'),]
+         Input('radio-st','value'),
+         Input('recursos','value'),]
          #Input('cultivo_cell', 'value'),
     )  
 
-    def LineMultivar(year_cultivo,variedad,check,radio_st):#,cultivo_cell#,cultivo
+    def LineMultivar(year_cultivo,variedad,check,radio_st,recursos):#,cultivo_cell#,cultivo
         #if cultivo_cell == None:
         
         #    df_produccion=df_general
@@ -520,9 +521,11 @@ def plandeSiembra(empresa):
         elif year_cultivo == None and variedad!=None:
             dff=df_produccion[(df_produccion['VARIEDAD']==variedad)]
 
-
-
-
+        print(dff)
+        df_ha_sembrado=dff.groupby(['CONSUMIDOR',radio_st,'SEMANA','CULTIVO','VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA','AREA_CAMPAÑA','AÑO_CULTIVO'])[['CANTIDAD']].sum().reset_index()
+        df_ha_total=df_ha_sembrado.groupby(['CONSUMIDOR',radio_st,'SEMANA','VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
+        df_ha_st=df_ha_total.groupby([radio_st,'SEMANA','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
+        df_ha_st=df_ha_st[[radio_st,'AREA_CAMPAÑA']]
         
             #if drop_anio==None:
 
@@ -533,10 +536,14 @@ def plandeSiembra(empresa):
             #    x='SEMANA'
             #    df_test2=dff.groupby(['DSCVARIABLE','SEMANA'])[['CANTIDAD']].sum().sort_values('SEMANA',ascending=True).reset_index()
         df_graph=dff.groupby(['DSCVARIABLE','TIPO',radio_st,'AÑO_FECHA','SEMANA'])[['CANTIDAD']].sum().reset_index()
+        df_graph=df_graph.merge(df_ha_st, how='inner', left_on=[radio_st], right_on=[radio_st])
 
         df_graph.loc[df_graph.DSCVARIABLE == 'Nitrógeno','DSCVARIABLE'] =  'Nitrogeno'  
         df_graph.loc[df_graph.DSCVARIABLE == 'Fósforo','DSCVARIABLE'] =  'Fosforo'  
         df_graph=df_graph[df_graph['DSCVARIABLE'].isin(check)]
+        if recursos == 'hectarea':
+              df_graph['CANTIDAD']=df_graph['CANTIDAD']/df_graph['AREA_CAMPAÑA']
+        print(df_graph)
         list_tipo=df_graph['TIPO'].unique()
 
         df_fer=df_graph[df_graph['TIPO']=='Insumos']
@@ -731,7 +738,7 @@ def Table_LOTE_COSTOS(dff):
                                         'overflowY': 'auto'},
                                     page_action='none',
                                     sort_action="native",
-                                    fixed_rows={'headers': True},
+                                    fixed_rows={'headers': True},   
                                     #page_size=10,
                                     #style_table={'overflowY': 'auto'},
                                     #selected_rows=[],
@@ -739,7 +746,7 @@ def Table_LOTE_COSTOS(dff):
                                     #fixed_rows={'headers': True},
                                  )
     return fig
-def BarGOV_SX(x, y,title,prueba,dinero,x_title,y_title,promedio,y2):
+def BarGOV_SX(x, y,title,prueba,dinero,x_title,y_title,promedio,y2,eyey2=False,basex=''):
     fig = go.Figure()
     fig.add_trace(go.Bar(x=y,y=x,name=title,text=x,orientation='v',textposition='outside',texttemplate='%{text:.2s}',marker={'color':[dict_cultivos[i]for i in prueba]}))#,marker={'color':[diccionario[i]for i in prueba]}
     fig.update_layout(title={
@@ -775,7 +782,7 @@ def BarGOV_SX(x, y,title,prueba,dinero,x_title,y_title,promedio,y2):
         #modeclic='event+select'
         xaxis=dict(
             
-            showticklabels=True,
+            #showticklabels=True,
             #showline=False,
             #showgrid=False,
             #linecolor='black',
@@ -807,36 +814,33 @@ def BarGOV_SX(x, y,title,prueba,dinero,x_title,y_title,promedio,y2):
         legend_title="",
         
         )
-    fig.add_trace( go.Scatter( x=y, y=promedio,name='Promedio',mode='lines' ))#[1.5, 1, 1.3, 0.7, 0.8, 0.9]
-    fig.update_layout(showlegend=True,legend=dict(
-                    orientation="h",
-                    yanchor="bottom",
-                    y=1.02,
-                    xanchor="right",
-                    x=1
+    if eyey2==True:
+        fig.add_trace( go.Scatter( x=y, y=promedio,name='Promedio',mode='lines' ))#[1.5, 1, 1.3, 0.7, 0.8, 0.9]
+        fig.update_layout(showlegend=True,legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=1.02,
+                        xanchor="right",
+                        x=1
 
-                    ))
-    fig.add_trace(go.Scatter(
-                        x=y,
-                        y=y2,
-                        name="Hectáreas",
-                        yaxis="y4",
-                        text=y2,
-                        #marker_color="#1f1587",
-                        textposition='bottom right',
-                        texttemplate='{text:.2s}'
-                    ))
-    fig.update_layout(
-                    yaxis4=dict(title="Hectáreas",anchor="x",overlaying="y",side="right",titlefont_size=12,tickfont_size=12)
-                    )
+                        ))
+        fig.add_trace(go.Scatter(
+                            x=y,
+                            y=y2,
+                            name="Hectáreas",
+                            yaxis="y4",
+                            text=y2,
+                            #marker_color="#1f1587",
+                            textposition='bottom right',
+                            texttemplate='{text:.2s}'
+                        ))
+        fig.update_layout(
+                        yaxis4=dict(title="Hectáreas",anchor="x",overlaying="y",side="right",titlefont_size=12,tickfont_size=12)
+                        )
     fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
-    #fig.add_trace(go.Scatter(x=[2, 6], y=[1,1]), row=1, col=1)
-    if dinero=='soles':
-        fig.update_yaxes(tickprefix="S./")
-    elif dinero== 'dolares': 
-        fig.update_yaxes(tickprefix="$")
-    elif dinero==None:
-        fig.update_yaxes(tickprefix="")
+    if basex == 'CONSUMIDOR':
+        fig.update_xaxes(showticklabels=False)
+    
     return fig
 def TableDtScrolling_no_format(dff):
     #df = get_data()
@@ -1233,7 +1237,7 @@ def costosAgricola(empresa):
         #elif cultivo_cell != None and cultivo_cell !='TOTAL':
         #    df_campaña=df_campaña_ccc[df_campaña_ccc['CULTIVO']==cultivo_cell]
 
-        dff_end_pivot= df_campaña_ccc.pivot(index=('CODCULTIVO','CULTIVO','VARIEDAD','AREA_CAMPAÑA','IDCONSUMIDOR','NCONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=(radio),columns=('TIPO'))
+        dff_end_pivot= df_campaña_ccc.pivot(index=('CODCULTIVO','CULTIVO','VARIEDAD','AREA_CAMPAÑA','IDCONSUMIDOR','CONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=(radio),columns=('TIPO'))
         dff_pivot=pd.DataFrame(dff_end_pivot.to_records())
         if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
             dff=dff_pivot
@@ -1255,7 +1259,7 @@ def costosAgricola(empresa):
 
 
 
-        dff_lote=dff.groupby(['IDCONSUMIDOR','NCONSUMIDOR']).sum().reset_index()
+        dff_lote=dff.groupby(['IDCONSUMIDOR','CONSUMIDOR']).sum().reset_index()
         if radio_costos == 'CH':
             for cultivo in check:
                 dff_lote[cultivo]=dff_lote[cultivo]/dff_lote['AREA_CAMPAÑA']
@@ -1302,8 +1306,10 @@ def costosAgricola(empresa):
          #   df_campaña=df_campaña_ccc[df_campaña_ccc['CULTIVO']==cultivo_cell]
 
         
-        dff_pivot= df_campaña_ccc.pivot(index=('CODCULTIVO','VARIEDAD','CULTIVO','AREA_CAMPAÑA','IDCONSUMIDOR','NCONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=(radio),columns=('TIPO'))
+        dff_pivot= df_campaña_ccc.pivot(index=('CODCULTIVO','VARIEDAD','CULTIVO','AREA_CAMPAÑA','IDCONSUMIDOR','CONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=(radio),columns=('TIPO'))
         dff_pivot=pd.DataFrame(dff_pivot.to_records())
+        #df_ha=dff_pivot.groupby(['CONSUMIDOR','AREA_CAMPAÑA']).sum().reset_index()
+        #dff_pivot['AREA_CAMPAÑA']=df_ha['AREA_CAMPAÑA']
         if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
             dff=dff_pivot
         elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
@@ -1327,6 +1333,13 @@ def costosAgricola(empresa):
             dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('object')
             dff_lote.loc[:,'TOTAL']= dff_lote.sum(numeric_only=True, axis=1)
             dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('float64')
+
+            if ejey =='Lote':
+                  df_ha=dff.groupby(['CONSUMIDOR','AREA_CAMPAÑA']).sum().reset_index()
+            elif ejey =='Variedad':
+                  df_ha=dff.groupby(['VARIEDAD','CONSUMIDOR','AREA_CAMPAÑA']).sum().reset_index()
+            elif ejey =='Cultivo':
+                  df_ha=dff.groupby(['CULTIVO','CONSUMIDOR','AREA_CAMPAÑA']).sum().reset_index()
             
             if radio_costos == 'CT':
                 
@@ -1355,7 +1368,8 @@ def costosAgricola(empresa):
 
             elif radio_costos == 'CH':
 
-                dff_lote['AH']=dff_lote['TOTAL']/dff_lote['AREA_CAMPAÑA']
+                #dff_lote['AH']=dff_lote['TOTAL']/dff_lote['AREA_CAMPAÑA']
+                dff_lote['AH']=dff_lote['TOTAL']/df_ha['AREA_CAMPAÑA']
                 dff_lote=dff_lote.sort_values('AH',ascending=False)
                 x=dff_lote[cols[0]]
                 y=dff_lote['AH']
@@ -1376,10 +1390,10 @@ def costosAgricola(empresa):
                 dff_lote['PROMEDIO']=promedio
                 ejetotal='AH_y'
             
-            return BarGOV_SX(dff_lote[ejetotal],x,title,color,None,ejey,simbolo, dff_lote['PROMEDIO'],dff_lote['AREA_CAMPAÑA'])       
+            return BarGOV_SX(dff_lote[ejetotal],x,title,color,None,ejey,simbolo, dff_lote['PROMEDIO'],dff_lote['AREA_CAMPAÑA'],cols[0])       
                 #scatter=dff_lote_mof['AH']
                 #return dff_lote_mof.to_dict("records")
-        lotes=tabs_cvl(dff,['NCONSUMIDOR','CULTIVO'],radio_costos,'Lote')
+        lotes=tabs_cvl(dff,['CONSUMIDOR','CULTIVO'],radio_costos,'Lote')
         variedad=tabs_cvl(dff,['VARIEDAD','CULTIVO'],radio_costos,'Variedad')
         cultivo=tabs_cvl(dff,['CULTIVO'],radio_costos,'Cultivo')
         return lotes,variedad,cultivo

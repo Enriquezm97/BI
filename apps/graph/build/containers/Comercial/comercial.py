@@ -2346,11 +2346,46 @@ def tipoVenta(empresa,staff_comment):
            
             df_mes_top=df_mes_top.sort_values(importe,ascending=True)#.tail(15).reset_index()
             df_mes_top=df_mes_top.sort_values('MONTH',ascending=True)
+            #(dff_lote['TOTAL_y'].sum())/len(dff_lote[cols[0]].unique()) 
+            pronm=(df[importe].sum())/len(df['Tipo de Venta'].unique())
+            print(df[importe].sum())
+            print(df['Tipo de Venta'].unique())
+            print(len(df['Tipo de Venta'].unique()))
+            df_mes_top['avg']=pronm
+
+            print(pronm)
           
             df_mes_tipov = px.line(df_mes_top, x='Mes', y=importe,template="none",title=f"Tipo de Ventas por Mes",color='Tipo de Venta',markers=True,category_orders=meses_list,color_discrete_sequence=px.colors.qualitative.Dark24)#, facet_row="Año",facet_row_spacing=0.1
             df_mes_tipov.update_layout(autosize=True,margin=dict(l=60,r=40,b=40,t=50))
+            #df_mes_tipov.add_hline(y=pronm, line_dash="dot")
             
             df_mes_tipov.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7',legend=dict(font=dict(size= 8)))
+            
+            
+            df_mes_tipov.add_trace(go.Scatter(
+                                x=df_mes_top['Mes'],
+                                y=df_mes_top['avg'],
+                                name="avg",
+                                yaxis="y2",
+                                text=df_mes_top['avg'],
+                                #marker_color="#1f1587",
+                                textposition='bottom right',
+                                texttemplate='{text:.2s}'
+                            ))
+            df_mes_tipov.update_layout(
+                
+                yaxis2=dict(
+                    title="yaxis3 title",
+                    titlefont=dict(
+                        color="#2741d6"
+                    ),
+                    tickfont=dict(
+                        color="#2741d6"
+                    ),
+                    anchor="x",
+                    overlaying="y",
+                    side="right"
+                ),)
             tab_st=html.Div([
                     
                     dbc.Row(
