@@ -30,7 +30,7 @@ def figure__line(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color
     )
     
     fig.update_layout(template='none', title=name)
-    fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
     fig.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
     fig.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
     fig.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)

@@ -43,7 +43,8 @@ dict_cultivos={'Arandano':'#7A325A',
                'Lima':"#97db51",
                'Citrico':"#a0fb0e",
                'Granada':"#d35d1d",
-               'Palto produccion':"#527E03",
+               'Palto p roduccion':"#527E03",
                'Zapallo':"#cbe03d",
+               'Limon':"#93EE59"
 
               }

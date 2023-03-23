@@ -1,6 +1,7 @@
 import pandas as pd
 from apps.graph.data.gets import getApi
 
+
 token_greenfruits='0G10O10F10F10Q10T10O10A10D10M10N1lpu0N10O10H10G10T1sgk0Q10D10N10D10O10Z1lpu0q10d10n10d10o10z1lpu0B10m10K10r10z1asd0C1sdf0Z10S10Y10i1qws0u1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhmkimkiloinjhrtgqwsrtgsdfsdfdfg'
 
 api_greenfruits_ventas='http://64.150.180.23:3005/api/consulta/NSP_RPT_VENTAS_DETALLADO'
@@ -43,3 +44,4 @@ df_variedad_greenfruits=pd.DataFrame(variedades_lista_greenfruits)#,dtype={'CODC
 df_cultivo_greenfruits=pd.DataFrame(cultivos_lista_greenfruits)#,dtype={'CODCULTIVO':str}
 df_fertilizacion_greenfruits=pd.DataFrame(fertilizacion_lista_greenfruits)
 df_costos_greenfruits=pd.DataFrame(costos_lista_greenfruits)
+

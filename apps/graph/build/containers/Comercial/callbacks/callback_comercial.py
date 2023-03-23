@@ -295,7 +295,7 @@ def drawGraphInformeVentas(app,rubro,df):
                 #cliente_importe.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
             
 
-                return card(total,'none',importe),barNaviera(df_naviera_top_facturado,'none',importe,radio,'Producto'),paisFacturado(df_pais_pie,'none',importe),cultivoFacturado(df_cultivo_top,'none',importe,'Venta por Cultivo','CULTIVO'),mesTop(df_mes_top,'none',importe)#,cliente_importe#,barCultivo(df_cultivo_peso,template)
+                return card(total,'none',importe),barNaviera(df_naviera_top_facturado,'none',importe,radio,''),paisFacturado(df_pais_pie,'none',importe),cultivoFacturado(df_cultivo_top,'none',importe,'Venta por Cultivo','CULTIVO'),mesTop(df_mes_top,'none',importe)#,cliente_importe#,barCultivo(df_cultivo_peso,template)
             else:
                 tipo=cultivo
                 grupo=variedad
@@ -469,7 +469,16 @@ def drawGraphExportacionVentas(app,rubro,df):
                 total=options[importe].sum()
                 
                 #pie
-                df_totalv_variedad=options.groupby(['VARIEDAD'])[[importe]].sum().reset_index()
+                df_totalv_variedad=options.groupby(['PAIS'])[[importe]].sum().reset_index()
+                #fig_sun = px.sunburst(df_totalv_variedad, path=['PAIS','CULTIVO','VARIEDAD'], values=importe,color_continuous_scale='RdBu')
+                #fig_sun.update_layout(title={'text': 'test'},
+                #          template="plotly_white"
+                #          )
+                #fig_sun.update_layout(margin = dict(t=40, b=45, l=30, r=0),height=280)
+                #fig_sun.update_layout(font=dict(size=9))
+                #fig_sun.update_traces(textinfo="label+'percent root")
+
+
                 #bar exportación
 
                 df_exportacion=options.groupby(['FECHA','RAZON_SOCIAL'])[[importe]].sum().reset_index()
@@ -491,13 +500,14 @@ def drawGraphExportacionVentas(app,rubro,df):
                 line_graph = px.line(df_exportacion, x="FECHA", y=importe,title=f'Serie de Tiempo de Ventas',template='none',hover_data=['RAZON_SOCIAL'])
                 line_graph.update_layout(height=400,margin=dict(l=55, r=30, t=70, b=40),xaxis_title='Fecha',
                     yaxis_title=radio,)
-                line_graph.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+                #line_graph.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
                 
 
                 
-                return (Cards.cardPrefix(total,'Ventas Totales',None,None,simbolo,'none'),
+                return (Cards.cardPrefix(total,'Ventas de Exportación',None,None,simbolo,'none'),
                         #PieChartLegendLeft(df_totalv_variedad['VARIEDAD'],df_totalv_variedad['IMPORTEMOF'],'Total Ventas por Variedad'),
-                        Piechart.legendLeft(df_totalv_variedad['VARIEDAD'],df_totalv_variedad[importe],'Ventas por Variedad','none'),
+                        Piechart.legendLeft(df_totalv_variedad['PAIS'],df_totalv_variedad[importe],'Ventas Exportadas','none'),
+                        #fig_sun,
                         #Barchart.horizontalExport(df_exportacion,'FECHA','total_resumen',None,f'Ventas por Mes por Tipo de Venta {title}',False,'FECHA',radio,importe,template),
                         line_graph,
                         #Barchart.horizontalExport(df_totalv_meses_peso,'MES_TEXT','total_resumen','UNDEX',f'Ventas por Mes y Formato {title}',False,'Mes',radio,importe,template),
@@ -595,7 +605,7 @@ def drawGraphExportacionVentas(app,rubro,df):
                 
 
                 
-                return (Cards.cardPrefix(total,'Ventas Totales',None,None,simbolo,'none'),
+                return (Cards.cardPrefix(total,'Ventas de Exportación',None,None,simbolo,'none'),
                         #PieChartLegendLeft(df_totalv_variedad['VARIEDAD'],df_totalv_variedad['IMPORTEMOF'],'Total Ventas por Variedad'),
                         Piechart.legendLeft(df_totalv_variedad['TIPOVENTA'],df_totalv_variedad[importe],'Ventas por Tipo','none'),
                         #Barchart.horizontalExport(df_exportacion,'FECHA','total_resumen',None,f'Ventas por Mes por Tipo de Venta {title}',False,'FECHA',radio,importe,template),

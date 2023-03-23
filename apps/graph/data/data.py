@@ -52,6 +52,7 @@ def dataBcEmpresa(empresa):
         #df_bcomprobacion=df_bc_default
     elif empresa =='GREENFRUITS':
         df_bcomprobacion=df_bc_greenfruits
+        #df_bcomprobacion=df_bc_default
     elif empresa =='AERODIANA':
         df_bcomprobacion=df_bc_aerodiana
     #elif empresa =='NISIRA':
@@ -93,10 +94,10 @@ df_var_agricolas_arona=cleanVariablesAgricolas(aro.df_consumidores_arona,
                                                aro.df_cultivo_arona,
                                               aro.df_fertilizacion_arona)
 df_var_agricolas_greenfruits=cleanVariablesAgricolas(green.df_consumidores_greenfruits,
-                                                     green.df_variedad_greenfruits,
-                                                     green.df_cultivo_greenfruits,
-                                                     green.df_fertilizacion_greenfruits           
-                                                    )
+                                                    green.df_variedad_greenfruits,
+                                                    green.df_cultivo_greenfruits,
+                                                    green.df_fertilizacion_greenfruits           
+                                                   )
 df_var_agricolas_aerodiana=cleanVariablesAgricolas(df_consumidores,
                                                   df_variedad,
                                                   df_cultivos,
@@ -134,6 +135,10 @@ def dataAgricolaEmpresa(empresa):
         df_general_pivot=df_var_agricolas_pivot_greenfruits
         df_general_costos=df_costos_agricola_greenfruits
         consumidores=green.df_consumidores_greenfruits
+        #df_general=df_var_agricolas_default
+        #df_general_pivot=df_var_agricolas_pivot_default
+        #df_general_costos=df_costos_agricola_default
+        #consumidores=df_consumidores
     elif empresa =='AERODIANA':
         df_general=df_var_agricolas_aerodiana
         df_general_pivot=df_var_agricolas_pivot_aerodiana
@@ -192,11 +197,14 @@ def dataVentasEmpresa(empresa):
         df_ventas_expo=df_ventas_detalle_arona
     elif empresa =='GREENFRUITS':
         df_ventas_expo=df_ventas_detalle_greenfruits
+        #df_ventas_expo=df_ventas_detalle_arona
     elif empresa =='AERODIANA':
         df_ventas_expo=df_ventas_detalle_aerodiana
     elif empresa =='MANUELITA':
         #df_ventas_expo=df_ventas_detalle_manuelita
-        df_ventas_expo=df_ventas_detalle_greenfruits
+
+        #df_ventas_expo=df_ventas_detalle_greenfruits
+        df_ventas_expo=df_ventas_detalle_arona
     else:
         df_ventas_expo=df_ventas_detalle_nisira
         #df_ventas_expo=df_ventas_detalle_greenfruits
@@ -231,6 +239,7 @@ def dataContenedoresEmpresa(empresa):
         df_contenedores=df_control_contenedores_arona
     elif empresa =='GREENFRUITS':
         df_contenedores=df_control_contenedores_greenfruits
+        #df_contenedores=df_control_contenedores_arona
     elif empresa =='AERODIANA':
         df_contenedores=df_control_contenedores_aerodiana
     elif empresa =='MANUELITA':

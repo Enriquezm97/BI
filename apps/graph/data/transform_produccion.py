@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import datetime
 
 def cleanVariablesAgricolas(df_consumidores,df_variedad,df_cultivos,df_fertilizacion):
     
@@ -11,18 +12,21 @@ def cleanVariablesAgricolas(df_consumidores,df_variedad,df_cultivos,df_fertiliza
     df_consumidores['FECHAFIN_CAMPAÑA'] =pd.to_datetime(df_consumidores['FECHAFIN_CAMPAÑA'], format="%Y/%m/%d")
     df_consumidores['AÑO_CAMPAÑA']=df_consumidores['AÑO_CAMPAÑA'].astype(object)
     df_fertilizacion['FECHA'] =pd.to_datetime(df_fertilizacion['FECHA'], format="%Y/%m/%d")
-    df_fertilizacion['SEMANA']=df_fertilizacion['FECHA'].dt.isocalendar().week 
+    df_fertilizacion['FECHA']=df_fertilizacion['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    df_fertilizacion['SEMANA']=pd.DatetimeIndex(df_fertilizacion['FECHA']).week 
     df_fertilizacion['SEMANA']=df_fertilizacion['SEMANA'].astype(object)
+   
             #JOINS DATA
     df_cultivo_variedad = df_cultivos.merge(df_variedad, how='inner', left_on=["CODCULTIVO"], right_on=["CODCULTIVO"])
     df_consumidor_cultivo_variedad = df_consumidores.merge(df_cultivo_variedad, how='inner', left_on=["CODCULTIVO","CODVARIEDAD"], right_on=["CODCULTIVO","CODVARIEDAD"])
     df_general=df_fertilizacion.merge(df_consumidor_cultivo_variedad, how='inner', left_on=["CODCONSUMIDOR","CODSIEMBRA","CODCAMPAÑA"], right_on=["CODCONSUMIDOR","CODSIEMBRA","CODCAMPAÑA"])
             #TABLE GENERAL
+    
     df_general=df_general.drop(['NCULTIVO', 'FECHAINICIO_CAMPAÑA', 'FECHAFIN_CAMPAÑA','NCULTIVO'], axis=1)
     df_general=df_general[df_general["CULTIVO"]!='COMPOST']
     df_general['DSCVARIABLE']=df_general['DSCVARIABLE'].str.strip()
     ## crear semana caracter
-    df_general['AÑO_FECHA'] = df_general['FECHA'].dt.year
+    df_general['AÑO_FECHA'] = pd.DatetimeIndex(df_general['FECHA']).year#df_general['FECHA'].datetime
     df_general['SEM']=df_general['SEMANA'].astype('string')
     df_general['SEM']=df_general['SEM'].replace('1','01')
     df_general['SEM']=df_general['SEM'].replace('2','02')
@@ -64,6 +68,8 @@ def costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad):
         df_campaña_cc=df_costos_campana.merge(df_consumidores, how='inner', left_on=["IDCONSUMIDOR","CODSIEMBRA","CODCAMPAÑA"], right_on=["CODCONSUMIDOR","CODSIEMBRA","CODCAMPAÑA"])
         df_campaña_ccc=df_campaña_cc.merge(df_cultivos, how='inner', left_on=["CODCULTIVO"], right_on=["CODCULTIVO"])
         df_campaña_ccc=df_campaña_ccc.merge(df_variedad, how='inner', left_on=["CODCULTIVO","CODVARIEDAD"], right_on=["CODCULTIVO","CODVARIEDAD"])
+        df_campaña_ccc['FECHAINICIO_CAMPAÑA']=df_campaña_ccc['FECHAINICIO_CAMPAÑA'].apply(lambda a: pd.to_datetime(a).date()) 
+        df_campaña_ccc['FECHAFIN_CAMPAÑA']=df_campaña_ccc['FECHAFIN_CAMPAÑA'].apply(lambda a: pd.to_datetime(a).date()) 
         df_campaña_ccc.sort_values('FECHAINICIO_CAMPAÑA',ascending=True)
         df_campaña_ccc=df_campaña_ccc[df_campaña_ccc["CULTIVO"]!='Compost']
         conditionlist = [(df_campaña_ccc['NCONSUMIDOR']=='            '),

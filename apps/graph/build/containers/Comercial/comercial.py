@@ -62,7 +62,7 @@ def informeVentas(empresa,rubro_empresa,staff_comment):
     app.layout = html.Div([
 
             dbc.Row([
-                dbc.Col([ThemeSwitchAIO(aio_id="theme",icons={"left": "bi bi-moon", "right": "bi bi-sun"},themes=[url_theme1, url_theme2])],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
+                #dbc.Col([ThemeSwitchAIO(aio_id="theme",icons={"left": "bi bi-moon", "right": "bi bi-sun"},themes=[url_theme1, url_theme2])],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
                 dbc.Col([
                     html.H3(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
                     html.H5(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
@@ -173,11 +173,11 @@ def ventasExportacion(empresa,rubro_empresa,staff_comment):
     )
     app.layout = html.Div([
         dbc.Row([
-                dbc.Col([ThemeSwitchAIO(aio_id="theme",icons={"left": "bi bi-moon", "right": "bi bi-sun"},themes=[url_theme1, url_theme2])],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
+                #dbc.Col([ThemeSwitchAIO(aio_id="theme",icons={"left": "bi bi-moon", "right": "bi bi-sun"},themes=[url_theme1, url_theme2])],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
                 dbc.Col([
                     html.H3(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
                     html.H5(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
-                    ],width=10,className="col-xl-10 col-md-12 col-sm-12 col-12 mb-3")
+                    ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
             ]),
         dbc.Row([
                     dbc.Col([
@@ -270,7 +270,7 @@ def ventasExportacion(empresa,rubro_empresa,staff_comment):
             ])
         else :
             trash=html.Div('-')
-        return trash
+        return trash    
     titleInformeVentas(app,rubro_empresa,'Ventas de Exportación ')
     drawGraphExportacionVentas(app,rubro_empresa,df_ventas_expo)
 
@@ -360,19 +360,19 @@ def ventas1(empresa,staff_comment):
                                           children=[dmc.Radio(label='S/', value='Soles'),
                                                     dmc.Radio(label='$', value='Dolares'),
                                           ]),
-                                dbc.Checklist(  
-                                    id="check-igv",
-                                    options=[{'label':'CON IGV','value':'IGV'}],
+                                #dbc.Checklist(  
+                                #    id="check-igv",
+                                #    options=[{'label':'CON IGV','value':'IGV'}],
                                     #value=value,
-                                    inline=False,
+                                #    inline=False,
                                     #label_checked_style={"color": "red"},
-                                    input_checked_style={
-                                        "backgroundColor": "rgb(34, 139, 230)",
-                                        "borderColor": "rgb(34, 139, 230)",
-                                    },     
-                                    label_style={'font-size': '12px'} ,
-                                    value="IGV"
-                                ),
+                                #    input_checked_style={
+                                #        "backgroundColor": "rgb(34, 139, 230)",
+                                #        "borderColor": "rgb(34, 139, 230)",
+                                #    },     
+                                #    label_style={'font-size': '12px'} ,
+                                #    value="IGV"
+                                #),
                                 
                             ]),
                         ],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
@@ -654,32 +654,32 @@ def ventas1(empresa,staff_comment):
             Output("graph-5","children"),
             Input("data-values","data"),
             Input("radio-moneda","value"),
-            Input("check-igv","value"),
+            #Input("check-igv","value"),
             
             #Input("filter-tab","value"),
 
             )
-    def ventas(data, radio,igv ):#year,cultivo,variedad,cliente,
+    def ventas(data, radio ):#year,cultivo,variedad,cliente,
 
         options=pd.read_json(data, orient='split')
         
 
         
-        if igv == 'IGV' or igv[-1] == 'IGV' :
-            if radio=='Soles':
+        #if igv == 'IGV' or igv[-1] == 'IGV' :
+        if radio=='Soles':
                 importe='Importe en Soles'
-            else:
+        else:
                 importe='Importe en Dolares'
             #options[importe]=options[importe]
             
-        else:
-            if radio=='Soles':
+        #else:
+        #    if radio=='Soles':
                 
-                options['Importe en Soles-']=options['Importe en Soles']-(options['Importe en Soles']*0.18)
-                importe='Importe en Soles-'
-            else:
-                options['Importe en Dolares-']=options['Importe en Dolares']-(options['Importe en Dolares']*0.18)
-                importe='Importe en Dolares-'
+        #        options['Importe en Soles-']=options['Importe en Soles']-(options['Importe en Soles']*0.18)
+        #        importe='Importe en Soles-'
+        #    else:
+        #        options['Importe en Dolares-']=options['Importe en Dolares']-(options['Importe en Dolares']*0.18)
+        #        importe='Importe en Dolares-'
                 
             
             
@@ -698,13 +698,13 @@ def ventas1(empresa,staff_comment):
                                                     '<br><b>Importe($)</b>: %{x}<br>',
                                                 marker_color="#145f82",
                                                 hoverlabel=dict(
-                                                font_size=10,
+                                                font_size=12,
                                                 ),
                                                 name=''
                                             ))#.2s
 
         top_productos.update_layout(title={'text':'Clientes con mas Ventas'},titlefont={'size': 15},template='none')
-        top_productos.update_layout(autosize=True,height=1000,margin=dict(l=350,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=9))#l=400,
+        top_productos.update_layout(autosize=True,height=1000,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=8,tickfont_size=8))#l=400,
         top_productos.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
         top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
 
@@ -717,6 +717,7 @@ def ventas1(empresa,staff_comment):
            
         df_table=options.groupby(['Pais','Cliente'])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
         df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        #df_table[importe]=df_table[importe].astype(int)
         def create_table(df):
                 columns, values = df.columns, df.values
                 header = [html.Tr([html.Th(col) for col in columns])]
@@ -746,28 +747,28 @@ def ventas1(empresa,staff_comment):
             Input("data-values","data"),
             Input("radio-moneda","value"),
             Input("filter-tab","value"),
-            Input("check-igv","value"),
+            #Input("check-igv","value"),
 
             )
-    def ventas(data, radio  ,filtro ,igv):#year,cultivo,variedad,cliente,
+    def ventas(data, radio  ,filtro ):#year,cultivo,variedad,cliente,
             options=pd.read_json(data, orient='split')
-            print(igv)
+            
 
-            if igv == 'IGV' or igv[-1] == 'IGV':
-                if radio=='Soles':
+            #if igv == 'IGV' or igv[-1] == 'IGV':
+            if radio=='Soles':
                     importe='Importe en Soles'
-                else:
+            else:
                     importe='Importe en Dolares'
                 #options[importe]=options[importe]
                 
-            else:
-                if radio=='Soles':
+            #else:
+            #    if radio=='Soles':
                 
-                    options['Importe en Soles-']=options['Importe en Soles']-(options['Importe en Soles']*0.18)
-                    importe='Importe en Soles-'
-                else:
-                    options['Importe en Dolares-']=options['Importe en Dolares']-(options['Importe en Dolares']*0.18)
-                    importe='Importe en Dolares-'
+            #        options['Importe en Soles-']=options['Importe en Soles']-(options['Importe en Soles']*0.18)
+            #        importe='Importe en Soles-'
+            #    else:
+            #        options['Importe en Dolares-']=options['Importe en Dolares']-(options['Importe en Dolares']*0.18)
+            #        importe='Importe en Dolares-'
 
             data_filtro=options['Cliente'].unique()
             
@@ -798,6 +799,7 @@ def ventas1(empresa,staff_comment):
             
             df_mes_cliente = px.line(df_mes_top, x='Mes', y=importe,template="none",title=f"Ventas por Mes",color='Cliente',markers=True,category_orders=meses_list,color_discrete_sequence=px.colors.qualitative.Dark24)#, facet_row="Año",facet_row_spacing=0.1
             df_mes_cliente.update_layout(autosize=True,margin=dict(l=60,r=40,b=40,t=50))
+            df_mes_cliente.update_yaxes(title_text="<b>Cliente</b>")
             df_mes_cliente.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7',legend=dict(font=dict(size= 8)))
 
             tab_st=html.Div([
@@ -2809,8 +2811,8 @@ def ventasComparativo(empresa,staff_comment):
                                         max=year_max,
                                         value=[value_1,value_2 ],
                                         step=None,
-                                        className="p-0",
-                                        tooltip={"placement": "bottom", "always_visible": True},
+                                        #className="p-0",
+                                        #tooltip={"placement": "bottom", "always_visible": True},
                                         marks=dict(zip(lista_year, lista_year))
                                         #mb=35,
                                     ),
@@ -3119,9 +3121,12 @@ def ventasComparativo(empresa,staff_comment):
             
             fig_st = px.bar(df_year, x='Año', y=importe,template="none",title=f"Ventas Anuales")#, facet_row="Año",facet_row_spacing=0.1
             fig_st.update_layout(autosize=True,margin=dict(l=60,r=40,b=40,t=50),height=290,bargap=0.15)
-            fig_st.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7',xaxis = dict(
-                tickmode = 'array',
-            ))  
+            #fig_st.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7',xaxis = dict(
+            #    tickmode = 'array',
+            #))  
+            fig_st.update_xaxes(type='category')
+            fig_st.update_traces(marker_color='#3049AD', marker_line_color='#070809',
+                  marker_line_width=1.5, opacity=0.8)
                 #df_mes_cliente.update_traces(textposition="bottom center",texttemplate='%{text:.3f}',textfont_size=12)#,texttemplate='%{text:.2s}'
                 #df_mes_cliente.update_layout(showlegend=False)
             #fig_st.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')

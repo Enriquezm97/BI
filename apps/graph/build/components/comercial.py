@@ -32,7 +32,7 @@ def card(total_if,template,importe):
         )
     card.update_xaxes(visible=False, fixedrange=True)
     card.update_yaxes(visible=False, fixedrange=True)
-    card.update_layout(paper_bgcolor='#f7f7f7')
+    #card.update_layout(paper_bgcolor='#f7f7f7')
     return card
 #GRAPH - BAR HORIZONTAL
 def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
@@ -42,10 +42,10 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
                                     marker_color="#145f82",
                                     hovertemplate =
                                         '<br><b>Producto</b>:%{y}'+
-                                        '<br><b>Importe</b>: %{x}<br>',
+                                        '<br><b>Importe</b>: %{x:.2f}<br>',
                                     hoverlabel=dict(
                                     #bgcolor="white",
-                                    font_size=10,
+                                    font_size=11,
                                     #font_family="Arial"
                                     ),
                                     name=''
@@ -71,9 +71,9 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
             #width=,
             #height=380,
             margin=dict(
-                l=120,
-                r=20,
-                b=25,
+                l=250,
+                r=50,
+                b=40,
                 t=50,
                 #pad=4,
                 #autoexpand=True
@@ -95,7 +95,7 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
         legend_title="",
         
         )
-    Bar_top_naviera.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    #Bar_top_naviera.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
     return Bar_top_naviera
 
 def paisFacturado(df_pais_pie,template,importe):
@@ -116,7 +116,7 @@ def paisFacturado(df_pais_pie,template,importe):
                                 template=template
                                 )
     pais_top_facturado.update_layout(margin = dict(t=40, b=10, l=10, r=30),height=250)#,height=330
-    pais_top_facturado.update_layout(paper_bgcolor='#f7f7f7')
+    #pais_top_facturado.update_layout(paper_bgcolor='#f7f7f7')
     return pais_top_facturado
 
 def cultivoFacturado(df_cultivo_top,template,importe,title,label):
@@ -137,7 +137,7 @@ def cultivoFacturado(df_cultivo_top,template,importe,title,label):
                                 template=template
                                 )
     cultivo_top_facturado.update_layout(margin = dict(t=40, b=10, l=30, r=30),height=250)#,height=330
-    cultivo_top_facturado.update_layout(paper_bgcolor='#f7f7f7')
+    #cultivo_top_facturado.update_layout(paper_bgcolor='#f7f7f7')
     return cultivo_top_facturado
 # BAR VERTICAL
 def mesTop(df_mes_top,template,importe):
@@ -234,7 +234,7 @@ def mesTop(df_mes_top,template,importe):
         showlegend=False,
 
     )
-    mes_top.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    #mes_top.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
     return mes_top
 
 def barCultivo(df_cultivo_peso,template):
@@ -312,7 +312,7 @@ def card_ventas(valor,prefijo,title):
         )
     card.update_xaxes(visible=False, fixedrange=True)
     card.update_yaxes(visible=False, fixedrange=True)
-    card.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    #card.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
     return card
 
 class Cards():
@@ -323,7 +323,7 @@ class Cards():
                 go.Indicator(
                         mode = "number+delta",number_font_size=35,
                         value = values,
-                        delta = {"reference": delta, "valueformat": ".0f"},
+                        delta = {"reference": delta, "valueformat": "f"},
                         title = {"text": title,"font": {'size': 20}},#'font = {'color': "darkblue", 'family': "Arial"},'family': "Arial"}"font": {'size': 15}
                         number = {'prefix': prefix},
                     )
@@ -346,7 +346,7 @@ class Cards():
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         
-        fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+        #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
         return fig
 
 
@@ -408,7 +408,7 @@ class Piechart():
         fig.update_layout(margin = dict(t=40, b=45, l=30, r=0),height=280)
         fig.update_layout(showlegend=True)
         fig.update_layout(font=dict(size=9))
-        fig.update_layout(paper_bgcolor='#f7f7f7')
+        #fig.update_layout(paper_bgcolor='#f7f7f7')
         #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
         return fig
 
@@ -428,6 +428,6 @@ class Maps():
                     autosize=True,
                     hoverlabel=dict( font_size=15)
         )
-        mapbox.update_layout(paper_bgcolor='#f7f7f7')
+        #mapbox.update_layout(paper_bgcolor='#f7f7f7')
         
         return mapbox

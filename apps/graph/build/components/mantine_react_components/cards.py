@@ -12,7 +12,11 @@ def cardIndex(title,link,graph,shadou,descripcion="Descripción"):
                                     dmc.CardSection(
                                         dmc.Group(
                                             children=[
-                                                html.A(title, href=link, className="alert-link"),
+                                                dmc.Anchor(
+                                                title,
+                                                href=link,
+                                            )
+                                               
                                                 
                                             ],
                                             position="apart",

@@ -21,9 +21,12 @@ from apps.graph.data.transform_finanzas import balancePivot
 
 def costos_agricolas(dff,cols,radio_costos,ejey,simbolo):
             dff_lote=dff.groupby(cols).sum().reset_index()
-            dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('object')
-            dff_lote.loc[:,'TOTAL']= dff_lote.sum(numeric_only=True, axis=1)
-            dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('float64')
+            try:
+                dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('object')
+                dff_lote.loc[:,'TOTAL']= dff_lote.sum(numeric_only=True, axis=1)
+                dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('float64')
+            except:
+                pass
             
             if radio_costos == 'CT':
                 
@@ -74,7 +77,7 @@ def costos_agricolas(dff,cols,radio_costos,ejey,simbolo):
                 ejetotal='AH_y' 
             #last_year=str(sorted(dff_lote['AÑO_CAMPAÑA'].unique())[-1])
             #titulo_core=f"{title}"+", ".join([last_year])#f"{title} "+", ".join([ultimo_year])
-            return BarGOV_SX(dff_lote[ejetotal],x,title,color,None,ejey,simbolo, dff_lote['PROMEDIO'],dff_lote['AREA_CAMPAÑA'])  
+            return BarGOV_SX(dff_lote[ejetotal],x,title,color,None,ejey,simbolo)  
 
 def container_index(empresa,tipo_empresa,username):
     if tipo_empresa == "Agricola" or tipo_empresa == "Agroindustrial":
@@ -92,9 +95,14 @@ def container_index(empresa,tipo_empresa,username):
         fig_recursos=line_agricola_card(df_graph,'week',"CANTIDAD",'DSCVARIABLE',330,'week','Cantidad','Recursos',orders=orderX('week',df_graph),title='Recursos Agricolas')
         ## SEGUNDA FIG AGRICOLA COSTOS
         print(df_costos)
-        dff_costos= df_costos.pivot(index=('CODCULTIVO','VARIEDAD','CULTIVO','AREA_CAMPAÑA','IDCONSUMIDOR','NCONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=("SALDO_MEX"),columns=('TIPO'))#
-        dff_costos=pd.DataFrame(dff_costos.to_records())
-        dff_costos=dff_costos[dff_costos['AÑO_CAMPAÑA']==sorted(dff_costos['AÑO_CAMPAÑA'].unique())[-1]]
+        try:
+            dff_costos= df_costos.pivot(index=('CODCULTIVO','VARIEDAD','CULTIVO','AREA_CAMPAÑA','IDCONSUMIDOR','NCONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=("SALDO_MEX"),columns=('TIPO'))#
+            dff_costos=pd.DataFrame(dff_costos.to_records())
+            dff_costos=dff_costos[dff_costos['AÑO_CAMPAÑA']==sorted(dff_costos['AÑO_CAMPAÑA'].unique())[-1]]
+        except:
+             
+             dff_costos = pd.DataFrame(columns=['CODCULTIVO','VARIEDAD','CULTIVO','AREA_CAMPAÑA','IDCONSUMIDOR','NCONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA','SALDO_MEX','TIPO'],index=range(3))
+             dff_costos=dff_costos.fillna(0)
         fig_costos=costos_agricolas(dff_costos,['CULTIVO'],'CT','Cultivo','$')
 
         ## COMERCIAL
@@ -121,7 +129,7 @@ def container_index(empresa,tipo_empresa,username):
                     dbc.Row(
                     [
                         dbc.Col([
-                            cardIndex('Recursos Agricolas',f'{username}/plan-siembra',dcc.Graph(figure=fig_recursos),"lg")
+                            cardIndex('Recursos Agricolas',f'{username}/plan-ejecucion',dcc.Graph(figure=fig_recursos),"lg")
                             #dcc.Graph(figure=fig_recursos)
                         ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
                         dbc.Col([
@@ -226,7 +234,7 @@ def line_agricola_card(df,x,y,color,heig,x_title,y_title,title_legend,orders={},
     fig.update_xaxes(tickfont=dict(size=10))
     fig.update_yaxes(tickfont=dict(size=10))
     fig.update_layout(hovermode="x unified",hoverlabel=dict(font_size=12,font_family="sans-serif"))
-    fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
     
     
         
