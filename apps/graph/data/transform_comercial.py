@@ -9,6 +9,9 @@ def coordenadas_paises():
         return df_coordenadas_all
 
 def cleanVentas(df_ventas_detalle):
+    ##QUITANDO ANTICIPOS
+    df_ventas_detalle=df_ventas_detalle[df_ventas_detalle['TIPOVENTA']!='001 ANTICIPO DE CLIENTES NACIONALES']
+    ##
     df_ventas_detalle.loc[df_ventas_detalle.CULTIVO =='','CULTIVO']='NO DEFINIDO'
     df_ventas_detalle.loc[df_ventas_detalle.VARIEDAD =='','VARIEDAD']='SIN VARIEDAD'
     df_ventas_detalle.loc[df_ventas_detalle.PAIS ==None,'PAIS']='PAIS NO DEFINIDO'

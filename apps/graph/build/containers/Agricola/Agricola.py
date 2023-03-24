@@ -134,7 +134,7 @@ def plandeSiembra(empresa):
     df_general=data[0]
     df_general_pivot=data[1]
     #DATAFRAME FOR FILTRO AND VALUE YEAR
-    df_produccion=df_general.groupby(['AÑO_CAMPAÑA','CULTIVO','AÑO_CULTIVO','VARIEDAD','DSCVARIABLE','FECHA'])[['CANTIDAD']].sum().reset_index()
+    df_produccion=df_general.groupby(['AÑO_CAMPAÑA','CULTIVO','AÑO_CULTIVO','VARIEDAD','DSCVARIABLE','FECHA','CONSUMIDOR'])[['CANTIDAD']].sum().reset_index()
     external_stylesheets = [dbc.themes.LITERA]#
     app = DjangoDash('vagricola',external_stylesheets=external_stylesheets)
     app.layout = html.Div([
@@ -146,18 +146,19 @@ def plandeSiembra(empresa):
 
                             ),    
         dbc.Row([
-            
+            dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
             dbc.Col([
-                dmc.Title(id='title',children='Plan de Ejecución', order=2),
+                dmc.Title(id='title',children='Ejecución de Campaña', order=3),
                 dmc.Text(id='subtitle', weight=600),
                 #html.H4(id='title', style={'margin-bottom': '0px', 'color': 'black','textAlign': 'left'}),
                 
-            ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
+            ],width=5,className="col-xl-5 col-md-5 col-sm-12 col-12 mb-3"),
             #dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-3 col-sm-12 col-12 mb-3"),
             #dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
-            dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+            dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_variedad",texto="Variedad")],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
-            dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+            dbc.Col([select(ids="drop_lote",texto="Lote")],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+            
             
         ]),
         
@@ -288,12 +289,15 @@ def plandeSiembra(empresa):
                 Output('check-agricola','options'),
                 Output('check-agricola','value'),  
                 Output('subtitle','children'), 
+                Output('drop_lote','data'),
                   #Output('drop_variedad', 'options'),
               [Input('drop_anio','value'),
                #Input('drop_cultivo','value'), 
                Input('drop_variedad','value'),
+               Input('drop_lote','value'),
+               #drop_lote
               ])
-    def update_drop_cultivo(year_cultivo,variedad):#,cultivo
+    def update_drop_cultivo(year_cultivo,variedad,lote):#,cultivo
         
         #df=DataAgricola.data_general(ip)
         #if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
@@ -313,25 +317,39 @@ def plandeSiembra(empresa):
         #    options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CULTIVO'].isin(cultivo))]
         #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
         #    options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)&(df_produccion['CULTIVO'].isin(cultivo))]
-        if year_cultivo==None and variedad==None:
+        if year_cultivo==None and variedad==None and lote==None:
             options=df_produccion
-        elif year_cultivo!=None and variedad==None:
+        elif year_cultivo!=None and variedad==None and lote==None:
             options=df_produccion[df_produccion['AÑO_CULTIVO']==year_cultivo]
-        elif year_cultivo!=None and variedad!=None:
+        elif year_cultivo!=None and variedad!=None and lote==None:
             options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)]
+        elif year_cultivo!=None and variedad!=None and lote!=None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)&(df_produccion['CONSUMIDOR']==lote)] 
+        elif year_cultivo!=None and variedad==None and lote!=None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['CONSUMIDOR']==lote)] 
+        
+        elif year_cultivo==None and variedad!=None and lote!=None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CONSUMIDOR']==lote)]
+        
+        elif year_cultivo==None and variedad!=None and lote==None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)]
+        elif year_cultivo==None and variedad==None and lote!=None:
+            options=df_produccion[(df_produccion['CONSUMIDOR']==lote)]
 
         anio=[{'label': i, 'value': i} for i in options['AÑO_CULTIVO'].unique()]
         #cultivo=[{'label': i, 'value': i} for i in options['CULTIVO'].unique()]
         variedad=[{'label': i, 'value': i} for i in options['VARIEDAD'].unique()]
         #check=checkboxChild(options['DSCVARIABLE'].unique())
         check=[{'label': i, 'value': i} for i in options['DSCVARIABLE'].unique()]
+
+        lotes=[{'label': i, 'value': i} for i in options['CONSUMIDOR'].unique()]
         
         minimo=str(options['FECHA'].min())#
         print(minimo)
         maximo=str(options['FECHA'].max())#.str[0:10]
         print(maximo)
         inicio_fin=str(minimo)+' - '+str(maximo)
-        return anio,variedad,check,options['DSCVARIABLE'].unique(),inicio_fin
+        return anio,variedad,check,options['DSCVARIABLE'].unique(),inicio_fin,lotes
     
     
 
@@ -343,9 +361,9 @@ def plandeSiembra(empresa):
     )
     def update_title(anio,recursos,cultivo):
         if cultivo == None:
-            text="Plan de Ejecución"
+            text="Ejecución de Campaña "
         else: 
-            text="Plan de Ejecución"+' '+str(cultivo)
+            text="Ejecución de Campaña "+' '+str(cultivo)
         if recursos =='cantidad':
             
             if anio == None:

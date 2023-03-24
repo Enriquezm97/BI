@@ -129,7 +129,7 @@ def container_index(empresa,tipo_empresa,username):
                     dbc.Row(
                     [
                         dbc.Col([
-                            cardIndex('Recursos Agricolas',f'{username}/plan-ejecucion',dcc.Graph(figure=fig_recursos),"lg")
+                            cardIndex('Recursos Agricolas',f'{username}/ejecucion-campaña',dcc.Graph(figure=fig_recursos),"lg")
                             #dcc.Graph(figure=fig_recursos)
                         ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
                         dbc.Col([
