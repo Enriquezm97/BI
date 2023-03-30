@@ -1,24 +1,30 @@
 from dash import Dash, dcc, html, Input, Output,State,dash_table,no_update
 from apps.graph.build.components.comercial import *
-
+import dash_mantine_components as dmc
 
 def filtroInformeVentas2(app,rubro,df):
     #if rubro == 'Agricola' or rubro == 'Agroindustrial':
         
         @app.callback(
             Output("year","data"),
+            Output("month","data"),
             Output("cultivo-tipo","data"),
             Output("variedad-grupo","data"),
             Output("cliente","data"),
             Input("year","value"),
+            Input("month","value"),
             Input("cultivo-tipo","value"),
             Input("variedad-grupo","value"),
             Input("cliente","value"),
         )
         #if rubro == 'Agricola' or rubro == 'Agroindustrial':
-        def ventas(year,cultivo,variedad,cliente):
+        def ventas(year,month,cultivo,variedad,cliente):
+            if month != None:
+                df_v=df[df['MES_TEXT']==month]
+            else:
+                df_v=df
             if rubro == 'Agricola' or rubro == 'Agroindustrial':
-                df_ventas=df.groupby(['YEAR','RAZON_SOCIAL','CULTIVO','VARIEDAD'])[['IMPORTEMOF']].sum().reset_index()
+                df_ventas=df_v.groupby(['YEAR','MES_TEXT','RAZON_SOCIAL','CULTIVO','VARIEDAD'])[['IMPORTEMOF']].sum().reset_index()
 
                 if year==None and cultivo == None and variedad== None and cliente==None:
                     options=df_ventas
@@ -72,13 +78,14 @@ def filtroInformeVentas2(app,rubro,df):
                 option_year=[{'label': i, 'value': i} for i in options['YEAR'].unique()] 
                 option_cultivo=[{'label': i, 'value': i} for i in options['CULTIVO'].unique()] 
                 option_variedad=[{'label': i, 'value': i} for i in options['VARIEDAD'].unique()] 
-                option_cliente=[{'label': i, 'value': i} for i in options['RAZON_SOCIAL'].unique()] 
-                
-                return option_year,option_cultivo,option_variedad,option_cliente
+                option_cliente=[{'label': i, 'value': i} for i in options['RAZON_SOCIAL'].unique()]
+                #MES_TEXT 
+                option_mes=[{'label': i, 'value': i} for i in options['MES_TEXT'].unique()]
+                return option_year,option_mes,option_cultivo,option_variedad,option_cliente
             else:
                 tipo=cultivo
                 grupo=variedad
-                df_ventas=df.groupby(['YEAR','RAZON_SOCIAL','TIPOVENTA','GRUPO'])[['IMPORTEMOF']].sum().reset_index()
+                df_ventas=df_v.groupby(['YEAR','MES_TEXT','RAZON_SOCIAL','TIPOVENTA','GRUPO'])[['IMPORTEMOF']].sum().reset_index()
                 
                 if year==None and tipo == None and grupo== None and cliente==None:
                     options=df_ventas
@@ -132,8 +139,10 @@ def filtroInformeVentas2(app,rubro,df):
                 option_tipo=[{'label': i, 'value': i} for i in options['TIPOVENTA'].unique()] 
                 option_grupo=[{'label': i, 'value': i} for i in options['GRUPO'].unique()] 
                 option_cliente=[{'label': i, 'value': i} for i in options['RAZON_SOCIAL'].unique()] 
+                #MES_TEXT 
+                option_mes=[{'label': i, 'value': i} for i in options['MES_TEXT'].unique()]
                 
-                return option_year,option_tipo,option_grupo,option_cliente
+                return option_year,option_mes,option_tipo,option_grupo,option_cliente
 
 def titleInformeVentas(app,rubro,titulo):
     
@@ -148,37 +157,50 @@ def titleInformeVentas(app,rubro,titulo):
         
         )
         def title_ventas(year,cultivo,cliente,moneda):
+            if moneda =='Soles':
+                importe=dmc.Badge(moneda,variant='filled',color='blue', size='lg')
+            elif moneda == 'Dolares':
+                importe=dmc.Badge(moneda,variant='filled',color='blue', size='lg')
+
+
+
             if rubro == 'Agricola' or rubro == 'Agroindustrial':
-                general=str(titulo)+' '+str(moneda)
+                #general=str(titulo)+' '+str(moneda)
                 if year == None:
-                    title=general
+                    title=dmc.Title(children=[titulo,dmc.Badge('ALL',variant='filled',color='gray', size='lg'),importe], order=2,align='center')
                 else:
-                    title=general+' '+str(year)
+                    title=dmc.Title(children=[titulo,dmc.Badge(year,variant='filled',color='gray', size='lg'),importe], order=2,align='center')
+
+
                 if cliente == None and cultivo == None:
-                    subtitle=''
+                    subtitle=dmc.Title(children=[], order=3,align='center')
                 elif cliente != None and cultivo == None:
-                    subtitle=str(cliente)
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg')], order=3,align='center')
+                    #subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
                 elif cliente != None and cultivo != None:
-                    subtitle=str(cliente)+' '+str(cultivo)
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(cultivo,variant='filled',color='indigo', size='lg')], order=3,align='center')
                 elif cliente == None and cultivo != None:
-                    subtitle=str(cultivo)
+                    subtitle=dmc.Title(children=[dmc.Badge(cultivo,variant='filled',color='indigo', size='lg')], order=3,align='center')
                     
                 return title,subtitle
             else:
-                general=str(titulo)+' '+str(moneda)
+                #general=str(titulo)+' '+str(moneda)
                 tipo=cultivo
                 if year == None:
-                    title=general
+                    title=dmc.Title(children=[titulo,dmc.Badge('ALL',variant='filled',color='gray', size='lg'),importe], order=2,align='center')
                 else:
-                    title=general+' '+str(year)
-                if cliente == None and tipo == None:
-                    subtitle=''
-                elif cliente != None and tipo == None:
-                    subtitle=str(cliente)
-                elif cliente != None and tipo != None:
-                    subtitle=str(cliente)+' '+str(tipo)
-                elif cliente == None and tipo != None:
-                    subtitle=str(tipo)
+                    title=dmc.Title(children=[titulo,dmc.Badge(year,variant='filled',color='gray', size='lg'),importe], order=2,align='center')
+
+                if cliente == None and cultivo == None:
+                    subtitle=dmc.Title(children=[], order=3,align='center')
+                elif cliente != None and cultivo == None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg')], order=3,align='center')
+                    #subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
+                elif cliente != None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(tipo,variant='filled',color='indigo', size='lg')], order=3,align='center')
+                elif cliente == None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(tipo,variant='filled',color='indigo', size='lg')], order=3,align='center')
+                    
                     
                     
                 return title,subtitle

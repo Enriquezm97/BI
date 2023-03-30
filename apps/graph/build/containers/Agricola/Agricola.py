@@ -11,6 +11,7 @@ import dash_mantine_components as dmc
 from apps.graph.data.data import *
 from apps.graph.build.utils.controls_utils import *
 from apps.graph.build.utils.dict_colors import *
+from datetime import datetime, date
 
 from apps.graph.build.components.mantine_react_components.loaders import loadingOverlay
 from apps.graph.build.components.mantine_react_components.selects import select,multiSelect
@@ -22,6 +23,45 @@ from apps.graph.build.components.bootstrap_components.offcanvas import offcanvas
 from apps.graph.build.components.mantine_react_components.accordion import accordion
 from apps.graph.utils.callback import *
 from apps.graph.utils.utils import colArea
+from apps.graph.build.components.mantine_react_components.actionIcon import btnFilter,btnCollapse
+
+#import dash_ag_grid as dag
+
+#df2 = pd.read_csv(
+#    "https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv"
+#)
+###SCRIPTS PARA EL DATAPICKER EN ESPAÑOL
+scripts = [
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js",
+]
+
+columnDefs = [
+    {
+        "field": "country",
+        "checkboxSelection": True,
+        "headerCheckboxSelection": True,
+    },
+    {"headerName": "Continent", "field": "continent"},
+    {
+        "headerName": "Life Expectancy",
+        "field": "lifeExp",
+        "type": "rightAligned",
+        "valueFormatter": {"function": "d3.format('.1f')(params.value)"},
+    },
+    {
+        "headerName": "Population",
+        "field": "pop",
+        "type": "rightAligned",
+        "valueFormatter": {"function": "d3.format(',.0f')(params.value)"},
+    },
+    {
+        "headerName": "GDP per Capita",
+        "field": "gdpPercap",
+        "type": "rightAligned",
+        "valueFormatter": {"function": "d3.format('$,.1f')(params.value)"},
+    },
+]
 
 def TableDtScrolling_no_color(dff):
     
@@ -89,6 +129,8 @@ def line_agricola_card(df,x,y,color,heig,x_title,y_title,title_legend,orders={},
                 category_orders=orders,
                 title=title,
                 hover_name=color,
+                custom_data=['CANTXHA'],
+                
                 #text='CANTXHA'
                 #hover_data=[]
                 
@@ -97,6 +139,13 @@ def line_agricola_card(df,x,y,color,heig,x_title,y_title,title_legend,orders={},
                 #               '<br><b>Cantidad</b>: %{y}<br>'+
                 #               '<br> %{color}',
                                )
+    #fig.update_traces(hovertemplate="<br>".join([
+    #                                            "ColX: %{x}",
+    #                                            "ColY: %{y}",
+    ##                                            "Col1: %{customdata[0]}",
+    #                                            
+    #                                        ])
+    #)
     fig.update_layout(margin=dict(l=20,r=20,b=20,t=60,pad=0,autoexpand=True),#height=heig,
         xaxis_title=ejex,
         yaxis_title=y_title,
@@ -104,24 +153,25 @@ def line_agricola_card(df,x,y,color,heig,x_title,y_title,title_legend,orders={},
         
         )
     if title_legend=='Fertilizantes':
-        hover='<br><b>Cantidad</b>: %{y:.1f} Kg<br>'
+        hover='<br><b>Cantidad</b>: %{y:.1f} Kg<br> <b>Kg/Ha</b>: %{customdata[0]:.1f}<br>'
         size_text=12
     elif title_legend=='Horas Máquina':
-        hover='<br><b>Cantidad</b>: %{y:.1f} h<br>'
+        hover='<br><b>Cantidad</b>: %{y:.1f} h<br> <b>Hm/Ha</b>: %{customdata[0]:.1f} <br>'
         size_text=14
     elif title_legend=='Mano de Obra':
-        hover='<br><b>Cantidad</b>: %{y:.1f} jr<br>'
+        hover='<br><b>Cantidad</b>: %{y:.1f} jr<br> <b>Jr/Ha</b>: %{customdata[0]:.1f}<br>'
         size_text=14
     elif title_legend=='Riego':
-        hover='<br><b>Cantidad</b>: %{y:.1f} m3<br>'
+        hover='<br><b>Cantidad</b>: %{y:.1f} m3<br> <b>m3/Ha</b>: %{customdata[0]:.1f}<br>'
         size_text=14
     else: 
-        hover='<br><b>Cantidad</b>: %{y:.1f}<br>{text} '
+        hover='<br><b>Cantidad</b>: %{y:.1f}<br>{text} <b>-/Ha</b>: %{customdata[0]:.1f}<br>'
         size_text=12
     fig.update_traces(hovertemplate =hover)
     fig.update_xaxes(tickfont=dict(size=10))
     fig.update_yaxes(tickfont=dict(size=10))
     fig.update_layout(hovermode="x unified",hoverlabel=dict(font_size=size_text,font_family="sans-serif"))
+
     #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
     
     
@@ -136,7 +186,7 @@ def plandeSiembra(empresa):
     #DATAFRAME FOR FILTRO AND VALUE YEAR
     df_produccion=df_general.groupby(['AÑO_CAMPAÑA','CULTIVO','AÑO_CULTIVO','VARIEDAD','DSCVARIABLE','FECHA','CONSUMIDOR'])[['CANTIDAD']].sum().reset_index()
     external_stylesheets = [dbc.themes.LITERA]#
-    app = DjangoDash('vagricola',external_stylesheets=external_stylesheets)
+    app = DjangoDash('vagricola',external_stylesheets=external_stylesheets,external_scripts=scripts)
     app.layout = html.Div([
             dbc.Modal(
                             id="modal",
@@ -144,20 +194,38 @@ def plandeSiembra(empresa):
                             #size="xl",
                             #style={"max-width": "none", "width": "90%", "max-height":"none", "height":"90%"}
 
-                            ),    
+                            ),
+        dbc.Row([
+            dbc.Col([
+                    html.Div(id='title'),
+            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+        ]),
         dbc.Row([
             dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
-            dbc.Col([
-                dmc.Title(id='title',children='Ejecución de Campaña', order=3),
-                dmc.Text(id='subtitle', weight=600),
-                #html.H4(id='title', style={'margin-bottom': '0px', 'color': 'black','textAlign': 'left'}),
-                
-            ],width=5,className="col-xl-5 col-md-5 col-sm-12 col-12 mb-3"),
-            #dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-3 col-sm-12 col-12 mb-3"),
-            #dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_variedad",texto="Variedad")],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
-            dbc.Col([select(ids="drop_lote",texto="Lote")],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+            dbc.Col([select(ids="drop_lote",texto="Lote")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+            dbc.Col([
+                html.Div(
+                        [
+                            dmc.DateRangePicker(
+                                id="date-range-picker",
+                                label="Fecha inicio y fin - Campaña",
+                                locale="es",
+                                #minDate=date(2020, 8, 5),
+                                #value=[datetime.now().date(), datetime.now().date() + timedelta(days=5)],
+                                #style={"width": 330},
+                            ),
+                            dmc.Space(h=10),
+                            dmc.Text(id="selected-date-date-range-picker"),
+                        ]
+                    )
+            ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+            #dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-3 col-sm-12 col-12 mb-3"),
+            #dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+            
+            
+            dbc.Col([btnCollapse(),],width=1,className="col-xl-1 col-md-1 col-sm-12 col-12 mb-3"),
             
             
         ]),
@@ -189,6 +257,15 @@ def plandeSiembra(empresa):
             
             #checkList(ids="check-agricola",texto="Recursos Agricolas")
         ]),
+    dbc.Collapse(
+                dbc.Row([
+            
+                    #dbc.Col([html.Div(children=loadingOverlay(dbc.Card(dcc.Graph(id='graph-1'),className="shadow-sm")),style={'max-height': '490px','overflow': "auto"})],width=5,className="col-xl-5 col-md-5 col-sm-12 col-12 mb-3"),
+                    dbc.Col([
+                        html.Div(id='badge-lotes')
+                    ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
+                ]),
+            id="collapse",is_open=True),
     dbc.Row([
                 dbc.Col([
                     loadingOverlay(html.Div(id='tabs')),
@@ -274,31 +351,57 @@ def plandeSiembra(empresa):
                 ],texto='Tabla Lotes',value='lote'),
                 
                 ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
-            ])
-        #dbc.Row([
-        #    dbc.Col([dcc.Loading(children=dbc.Card(dcc.Graph(id='multiejes')))],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
-        #]),
+            ]),
+        dbc.Row([
+            dbc.Col([
+                #dag.AgGrid(
+                #    id="datatable-interactivity",
+                #    columnDefs=columnDefs,
+                #    rowData=df2.to_dict("records"),
+                #    dashGridOptions={"rowSelection": "multiple"},
+                #    columnSize="sizeToFit",
+                #    defaultColDef={"resizable": True, "sortable": True, "filter": True},
+                #),
+                #html.Div(id="datatable-interactivity-container"),
+            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
+        ]),
         
         
         
     ])#, style={'backgroundColor':'blue'}
+   
     offcanvasAction(app)
     @app.callback(Output('drop_anio','data'),
                 #Output('drop_cultivo', 'data'),
                 Output('drop_variedad', 'data'),
                 Output('check-agricola','options'),
                 Output('check-agricola','value'),  
-                Output('subtitle','children'), 
+                #Output('subtitle','children'), 
                 Output('drop_lote','data'),
+                Output('badge-lotes','children'),
+                Output("date-range-picker",'value'),#minDate=date(2020, 8, 5),
+                Output("date-range-picker",'minDate'),
+                Output("date-range-picker",'maxDate'),
+                #Output("selected-date-date-range-picker","children"),
+                #Output('estado-ha','children'),
+                
                   #Output('drop_variedad', 'options'),
               [Input('drop_anio','value'),
                #Input('drop_cultivo','value'), 
                Input('drop_variedad','value'),
                Input('drop_lote','value'),
+               #Input("date-range-picker", "value"),
+               #Input('recursos','value'),
                #drop_lote
               ])
-    def update_drop_cultivo(year_cultivo,variedad,lote):#,cultivo
-        
+    def update_drop_cultivo(year_cultivo,variedad,lote):#,cultivo#,recurso#
+        #print(date[0])
+        #print(date[1])
+        #df_produccion = df_produccion[df_produccion["FECHA"].isin(pd.date_range(date[0], date[1]))]
+        #if recurso =='hectarea':
+        #      estado='x Ha'
+        #else:
+        #      estado='x Cantidad'
         #df=DataAgricola.data_general(ip)
         #if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
         #    options=df_produccion
@@ -335,6 +438,7 @@ def plandeSiembra(empresa):
             options=df_produccion[(df_produccion['VARIEDAD']==variedad)]
         elif year_cultivo==None and variedad==None and lote!=None:
             options=df_produccion[(df_produccion['CONSUMIDOR']==lote)]
+        
 
         anio=[{'label': i, 'value': i} for i in options['AÑO_CULTIVO'].unique()]
         #cultivo=[{'label': i, 'value': i} for i in options['CULTIVO'].unique()]
@@ -348,16 +452,32 @@ def plandeSiembra(empresa):
         print(minimo)
         maximo=str(options['FECHA'].max())#.str[0:10]
         print(maximo)
-        inicio_fin=str(minimo)+' - '+str(maximo)
-        return anio,variedad,check,options['DSCVARIABLE'].unique(),inicio_fin,lotes
+        #inicio_fin=str(minimo)+' - '+str(maximo)
+        badges=html.Div([
+              dmc.Stack(
+                    spacing="xs",
+                    children=[
+                        dmc.Group(
+                            [dmc.Badge(lote, variant='dot', color='black',size='lg') for lote in options['CONSUMIDOR'].unique()],
+                            position="center",
+                        )
+                        
+                    ],
+                )
+        ])
+        #datepicker=[date(int(minimo[:4]),int(minimo[-5:-3]),int(minimo[-2:])), date(int(maximo[:4]),int(maximo[-5:-3]),int(maximo[-2:]))],
+        datepicker=[options['FECHA'].min(),options['FECHA'].max()]
+        return anio,variedad,check,options['DSCVARIABLE'].unique(),lotes,badges,datepicker,date(int(minimo[:4]),int(minimo[-5:-3]),int(minimo[-2:])),date(int(maximo[:4]),int(maximo[-5:-3]),int(maximo[-2:]))#,estado
     
     
-
+    """
     @app.callback(
     Output("title","children"),
+    #Output('estado-ha','children'),
     Input("drop_anio","value"),
     Input("recursos","value"),
     Input('cultivo_cell', 'value'),
+
     )
     def update_title(anio,recursos,cultivo):
         if cultivo == None:
@@ -378,7 +498,46 @@ def plandeSiembra(empresa):
             else:
                 title=text+' '+str(anio)
             return title 
+    """
+    @app.callback(
+    Output("title","children"),
+    #Output("estado-variedad","children"),
+    #Output("estado-ha","children"),
+    #Output('estado-ha','children'),
+    Input("drop_anio","value"),
+    Input('drop_variedad','value'),
+    Input("recursos","value"),
+   #Input('cultivo_cell', 'value'),
 
+    )
+    def update_title(campania,variedad,recursos):
+        
+
+        if recursos =='hectarea':
+              estado=dmc.Badge('x Ha',variant='filled',color='blue', size='lg')
+        elif recursos == 'cantidad':
+              estado=dmc.Badge('x Cantidad',variant='filled',color='blue', size='lg')
+
+        if campania == None and variedad == None :
+              badge=dmc.Title(id='title',children=['Ejecución de Campaña ',dmc.Badge('ALL',variant='filled',color='gray', size='lg'),estado], order=2,align='center')
+        elif campania != None and variedad == None :
+              badge=dmc.Title(id='title',children=['Ejecución de Campaña ',dmc.Badge(campania,variant='filled',color='gray', size='lg'),estado], order=2,align='center')
+        elif campania != None and variedad != None :
+              badge=dmc.Title(id='title',children=['Ejecución de Campaña ',dmc.Badge(campania,variant='filled',color='gray', size='lg'),dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
+        elif campania == None and variedad != None :
+              badge=dmc.Title(id='title',children=['Ejecución de Campaña ',dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
+        return badge
+          
+
+    @app.callback(
+        Output("collapse", "is_open"),
+        [Input("btn-collapse", "n_clicks")],
+        [State("collapse", "is_open")],
+        )
+    def toggle_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
     
 
 
@@ -408,14 +567,15 @@ def plandeSiembra(empresa):
          Input('recursos','value'),
          #Input('radio-st','value'), 
          Input('table-cultivo', 'active_cell'),
+         Input('drop_lote','value'),
          #Input('cultivo','active_cell'),
 
          ]
     )   
-    def table_cultivo_plansiembra(year_cultivo,variedad,check,recursos,active_cell):#,cultivo
+    def table_cultivo_plansiembra(year_cultivo,variedad,check,recursos,active_cell,lote):#,cultivo
         print(check)
         print(year_cultivo)
-        df=df_general_pivot.copy()
+        df_produccion=df_general_pivot.copy()
         #if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
         #    dff=df
         #elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
@@ -433,28 +593,32 @@ def plandeSiembra(empresa):
         #        dff=df[(df['VARIEDAD']==variedad)&(df['CULTIVO'].isin(cultivo))]
         #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
         #        dff=df[(df['VARIEDAD']==variedad)&(df['AÑO_CAMPAÑA']==year)&(df['CULTIVO'].isin(cultivo))]
-        print(df['AÑO_CULTIVO'].unique())
-        if year_cultivo==None and variedad==None:
-            dff=df
-        elif year_cultivo!=None and variedad==None:
-            dff=df[df['AÑO_CULTIVO']==year_cultivo]
-        elif year_cultivo!=None and variedad!=None:
-            dff=df[(df['AÑO_CULTIVO']==year_cultivo)&(df['VARIEDAD']==variedad)]
-        ##DATAFRAME GENERAL FILTRADA dff
-        print(df)
-        print(df.columns)
-        print("owo")
-        print(dff.columns)
-        print(dff.size)
-        print(dff)
+        print(df_produccion['AÑO_CULTIVO'].unique())
+        if year_cultivo==None and variedad==None and lote==None:
+            options=df_produccion
+        elif year_cultivo!=None and variedad==None and lote==None:
+            options=df_produccion[df_produccion['AÑO_CULTIVO']==year_cultivo]
+        elif year_cultivo!=None and variedad!=None and lote==None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)]
+        elif year_cultivo!=None and variedad!=None and lote!=None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)&(df_produccion['CONSUMIDOR']==lote)] 
+        elif year_cultivo!=None and variedad==None and lote!=None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['CONSUMIDOR']==lote)] 
         
-        ##TABLA PIVOT
+        elif year_cultivo==None and variedad!=None and lote!=None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CONSUMIDOR']==lote)]
+        
+        elif year_cultivo==None and variedad!=None and lote==None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)]
+        elif year_cultivo==None and variedad==None and lote!=None:
+            options=df_produccion[(df_produccion['CONSUMIDOR']==lote)]
+
+        
 
         
         #df_general_pivot['AÑO_CAMPAÑA']=df_general_pivot['AÑO_CAMPAÑA'].astype(object)
-        dff_area=colArea(dff)
-        print(dff_area)
-        print(dff_area.columns)
+        dff_area=colArea(options)
+        
         dff_pt=dff_area.groupby(['CULTIVO']).sum().reset_index()
         dff_pt=dff_pt.rename(columns={
                                         'Nitrógeno':'Nitrogeno',
@@ -520,11 +684,12 @@ def plandeSiembra(empresa):
          Input('drop_variedad','value'),
          Input('check-agricola','value'),
          Input('radio-st','value'),
-         Input('recursos','value'),]
+         Input('recursos','value'),
+         Input('drop_lote','value'),]
          #Input('cultivo_cell', 'value'),
     )  
 
-    def LineMultivar(year_cultivo,variedad,check,radio_st,recursos):#,cultivo_cell#,cultivo
+    def LineMultivar(year_cultivo,variedad,check,radio_st,recursos,lote):#,cultivo_cell#,cultivo
         #if cultivo_cell == None:
         
         #    df_produccion=df_general
@@ -549,17 +714,27 @@ def plandeSiembra(empresa):
         #    dff=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CULTIVO'].isin(cultivo))]
         #elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
         #    dff=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)&(df_produccion['CULTIVO'].isin(cultivo))]
-        if year_cultivo==None and variedad==None:
-            dff=df_produccion
-        elif year_cultivo!=None and variedad==None:
-            dff=df_produccion[df_produccion['AÑO_CULTIVO']==year_cultivo]
-        elif year_cultivo!=None and variedad!=None:
-            dff=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)]
-        elif year_cultivo == None and variedad!=None:
-            dff=df_produccion[(df_produccion['VARIEDAD']==variedad)]
+        if year_cultivo==None and variedad==None and lote==None:
+            options=df_produccion
+        elif year_cultivo!=None and variedad==None and lote==None:
+            options=df_produccion[df_produccion['AÑO_CULTIVO']==year_cultivo]
+        elif year_cultivo!=None and variedad!=None and lote==None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)]
+        elif year_cultivo!=None and variedad!=None and lote!=None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['VARIEDAD']==variedad)&(df_produccion['CONSUMIDOR']==lote)] 
+        elif year_cultivo!=None and variedad==None and lote!=None:
+            options=df_produccion[(df_produccion['AÑO_CULTIVO']==year_cultivo)&(df_produccion['CONSUMIDOR']==lote)] 
+        
+        elif year_cultivo==None and variedad!=None and lote!=None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CONSUMIDOR']==lote)]
+        
+        elif year_cultivo==None and variedad!=None and lote==None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)]
+        elif year_cultivo==None and variedad==None and lote!=None:
+            options=df_produccion[(df_produccion['CONSUMIDOR']==lote)]
 
         
-        df_ha_sembrado=dff.groupby(['CONSUMIDOR',radio_st,'SEMANA','CULTIVO','VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA','AREA_CAMPAÑA','AÑO_CULTIVO'])[['CANTIDAD']].sum().reset_index()
+        df_ha_sembrado=options.groupby(['CONSUMIDOR',radio_st,'SEMANA','CULTIVO','VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA','AREA_CAMPAÑA','AÑO_CULTIVO'])[['CANTIDAD']].sum().reset_index()
         df_ha_total=df_ha_sembrado.groupby(['CONSUMIDOR',radio_st,'SEMANA','VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
         df_ha_st=df_ha_total.groupby([radio_st,'SEMANA','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
         df_ha_st=df_ha_st[[radio_st,'AREA_CAMPAÑA']]
@@ -572,7 +747,7 @@ def plandeSiembra(empresa):
             #elif drop_anio!=None:
             #    x='SEMANA'
             #    df_test2=dff.groupby(['DSCVARIABLE','SEMANA'])[['CANTIDAD']].sum().sort_values('SEMANA',ascending=True).reset_index()
-        df_graph=dff.groupby(['DSCVARIABLE','TIPO',radio_st,'AÑO_FECHA','SEMANA'])[['CANTIDAD']].sum().reset_index()
+        df_graph=options.groupby(['DSCVARIABLE','TIPO',radio_st,'AÑO_FECHA','SEMANA'])[['CANTIDAD']].sum().reset_index()
         df_graph=df_graph.merge(df_ha_st, how='inner', left_on=[radio_st], right_on=[radio_st])
 
         df_graph.loc[df_graph.DSCVARIABLE == 'Nitrógeno','DSCVARIABLE'] =  'Nitrogeno'  
@@ -581,7 +756,7 @@ def plandeSiembra(empresa):
         df_graph['CANTXHA']=df_graph['CANTIDAD']/df_graph['AREA_CAMPAÑA']
         if recursos == 'hectarea':
               df_graph['CANTIDAD']=df_graph['CANTIDAD']/df_graph['AREA_CAMPAÑA']
-              df_graph['CANTXHA']=df_graph['CANTIDAD']/df_graph['AREA_CAMPAÑA']
+              #df_graph['CANTXHA']=df_graph['CANTIDAD']/df_graph['AREA_CAMPAÑA']
         list_tipo=df_graph['TIPO'].unique()
 
         df_fer=df_graph[df_graph['TIPO']=='Insumos']
@@ -943,12 +1118,12 @@ def costosAgricola(empresa):
         ]),
         dbc.Row([
             
-           
+            dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-12 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produc_costos['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
             dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_variedad",texto="Variedad")],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
             dbc.Col([],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-12 col-sm-12 col-12 mb-3"),
+            
             offcanvas(componentes=[
                     radioGroup(ids="radio-costos",
                                texto="Tipo de Costo",

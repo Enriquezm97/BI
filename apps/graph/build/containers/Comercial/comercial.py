@@ -64,21 +64,23 @@ def informeVentas(empresa,rubro_empresa,staff_comment):
             dbc.Row([
                 #dbc.Col([ThemeSwitchAIO(aio_id="theme",icons={"left": "bi bi-moon", "right": "bi bi-sun"},themes=[url_theme1, url_theme2])],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
                 dbc.Col([
-                    html.H3(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
-                    html.H5(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+                    html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                    html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
                     ],width=10,className="col-xl-10 col-md-12 col-sm-12 col-12 mb-3")
             ]),
             dbc.Row([
-                        dbc.Col([
+                            dbc.Col([
                                 select(ids="year",texto="Año",value=last_year)
                     
                             ],
-                            width=2,className="col-xl-2 col-md-2     col-sm-12 col-12 mb-3"),
+                            
+                            width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+                            
                             dbc.Col([
                                 select("cliente","Cliente")
                                 
                             ],
-                            width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"), 
+                            width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"), 
                             dbc.Col([
                                 select("cultivo-tipo",ticked_1)
                                 
@@ -88,7 +90,7 @@ def informeVentas(empresa,rubro_empresa,staff_comment):
                                 select("variedad-grupo",ticked_2)
                                 
                             ],
-                            width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                            width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
                             dbc.Col([
                                 radioGroup(ids='radio-moneda',texto='Moneda',value='Dolares',
                                         children=[dmc.Radio(label='S/', value='Soles'),dmc.Radio(label='$', value='Dolares'),
@@ -96,6 +98,12 @@ def informeVentas(empresa,rubro_empresa,staff_comment):
                                 ]),
                                 
                             ],
+                            width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+                            dbc.Col([
+                                select(ids="month",texto="Mes")
+                    
+                            ],
+                            
                             width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
 
             ]),
@@ -175,8 +183,8 @@ def ventasExportacion(empresa,rubro_empresa,staff_comment):
         dbc.Row([
                 #dbc.Col([ThemeSwitchAIO(aio_id="theme",icons={"left": "bi bi-moon", "right": "bi bi-sun"},themes=[url_theme1, url_theme2])],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
                 dbc.Col([
-                    html.H3(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
-                    html.H5(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+                    html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                    html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
                     ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
             ]),
         dbc.Row([
@@ -187,11 +195,12 @@ def ventasExportacion(empresa,rubro_empresa,staff_comment):
                         
                     ],
                     width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+                     
                     dbc.Col([
                         select(ids="cliente",texto="Cliente",place="")
                        
                                     ],
-                    width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"), 
+                    width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"), 
                     dbc.Col([
                         select("cultivo-tipo",ticked_1)
                         
@@ -208,7 +217,13 @@ def ventasExportacion(empresa,rubro_empresa,staff_comment):
 
                         ]),
                     ],
-                    width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                    width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+                    dbc.Col([
+                                select(ids="month",texto="Mes")
+                    
+                            ],
+                            
+                            width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),  
         ]),
  
         dbc.Row([
@@ -343,12 +358,6 @@ def ventas1(empresa,staff_comment):
     app.layout = html.Div([
             dbc.Row([   
                         dbc.Col([
-                            html.H3(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
-                            html.H5(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
-
-                           ],width=10,className="col-xl-10 col-md-10 col-sm-10 col-10 mb-3"),
-                        dbc.Col([btnCollapse(),],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
-                        dbc.Col([
                             btnFilter(),
                             
                             offcanvas(componentes=[
@@ -356,6 +365,7 @@ def ventas1(empresa,staff_comment):
                                 select(ids="cliente",texto="Cliente"),
                                 select(ids="cultivo",texto="Cultivo"),
                                 select(ids="variedad",texto="Variedad"),
+                                select(ids="month",texto="Mes"),
                                 radioGroup(ids='radio-moneda',texto='Moneda',value='Dolares',
                                           children=[dmc.Radio(label='S/', value='Soles'),
                                                     dmc.Radio(label='$', value='Dolares'),
@@ -376,6 +386,13 @@ def ventas1(empresa,staff_comment):
                                 
                             ]),
                         ],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+                        dbc.Col([
+                            html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+
+                           ],width=10,className="col-xl-10 col-md-10 col-sm-10 col-10 mb-3"),
+                        dbc.Col([btnCollapse(),],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+                        
                         
                         
                         
@@ -633,19 +650,36 @@ def ventas1(empresa,staff_comment):
             
             )
     def title_ventas(year,cultivo,cliente,moneda):
-        general='Ventas por Clientes '+' '+str(moneda)
-        if year == None:
-            title=general
-        else:
-            title=general+' '+str(year)
-        if cliente == None and cultivo == None:
-            subtitle=''
-        elif cliente != None and cultivo == None:
-            subtitle=str(cliente)
-        elif cliente != None and cultivo != None:
-            subtitle=str(cliente)+' '+str(cultivo)
+        #general='Ventas por Clientes '+' '+str(moneda)
+            if moneda =='Soles':
+                importe=dmc.Badge(moneda,variant='filled',color='blue', size='lg')
+            elif moneda == 'Dolares':
+                importe=dmc.Badge(moneda,variant='filled',color='blue', size='lg')
+
+
+
             
-        return title,subtitle
+                #general=str(titulo)+' '+str(moneda)
+            if year == None:
+                    title=dmc.Title(children=['Ventas por Clientes ',dmc.Badge('ALL',variant='filled',color='gray', size='lg'),importe], order=2,align='center')
+            else:
+                    title=dmc.Title(children=['Ventas por Clientes ',dmc.Badge(year,variant='filled',color='gray', size='lg'),importe], order=2,align='center')
+
+
+            if cliente == None and cultivo == None:
+                    subtitle=dmc.Title(children=[], order=3,align='center')
+            elif cliente != None and cultivo == None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg')], order=3,align='center')
+                    #subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
+            elif cliente != None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(cultivo,variant='filled',color='indigo', size='lg')], order=3,align='center')
+            elif cliente == None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cultivo,variant='filled',color='indigo', size='lg')], order=3,align='center')
+                    
+            return title,subtitle
+        
+            
+        
 
     @app.callback(
             Output("graph-1","figure"),
@@ -706,7 +740,7 @@ def ventas1(empresa,staff_comment):
         top_productos.update_layout(title={'text':'Clientes con mas Ventas'},titlefont={'size': 15},template='none')
         top_productos.update_layout(autosize=True,height=1000,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=8,tickfont_size=8))#l=400,
         top_productos.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
-        top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+        #top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
 
         cantidad_productos=len(options['Producto'])
            
@@ -730,7 +764,7 @@ def ventas1(empresa,staff_comment):
                 withBorder=True,
                 withColumnBorders=True,
                 children=create_table(df_table),
-                style={'backgroundColor': '#f7f7f7'}
+                #style={'backgroundColor': '#f7f7f7'}
 
             )
         return  top_productos,card_ventas(cantidad_productos,None,"N° de Ventas"),card_ventas(cantidad_clientes,None,"N° de Clientes"),table
@@ -1380,12 +1414,7 @@ def ventasProductos(empresa,staff_comment):
     df_ventas_d=changeVentasCol(df_ventas_expo)
     app.layout = html.Div([
             dbc.Row([   
-                        dbc.Col([
-                            html.H3(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
-                            html.H5(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
-
-                           ],width=10,className="col-xl-10 col-md-10 col-sm-10 col-10 mb-3"),
-                        dbc.Col([btnCollapse(),],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+                        
                         dbc.Col([
                             btnFilter(),
 
@@ -1394,6 +1423,7 @@ def ventasProductos(empresa,staff_comment):
                                 select(ids="cliente",texto="Cliente"),
                                 select(ids="cultivo",texto="Cultivo"),
                                 select(ids="variedad",texto="Variedad"),
+                                select(ids="month",texto="Mes"),
                                 radioGroup(ids='radio-moneda',texto='Moneda',value='Dolares',
                                           children=[dmc.Radio(label='S/', value='Soles'),
                                                     dmc.Radio(label='$', value='Dolares'),
@@ -1413,6 +1443,13 @@ def ventasProductos(empresa,staff_comment):
                                 ),
                             ]),
                         ],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+                        dbc.Col([
+                            html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+
+                           ],width=10,className="col-xl-10 col-md-10 col-sm-10 col-10 mb-3"),
+                        dbc.Col([btnCollapse(),],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+                        
                         
                         
                     ]),
@@ -1670,19 +1707,33 @@ def ventasProductos(empresa,staff_comment):
             
             )
     def title_ventas(year,cultivo,cliente,moneda):
-        general='Ventas por Productos '+' '+str(moneda)
-        if year == None:
-            title=general
-        else:
-            title=general+' '+str(year)
-        if cliente == None and cultivo == None:
-            subtitle=''
-        elif cliente != None and cultivo == None:
-            subtitle=str(cliente)
-        elif cliente != None and cultivo != None:
-            subtitle=str(cliente)+' '+str(cultivo)
+        #general='Ventas por Productos '+' '+str(moneda)
+            if moneda =='Soles':
+                importe=dmc.Badge(moneda,variant='filled',color='blue', size='lg')
+            elif moneda == 'Dolares':
+                importe=dmc.Badge(moneda,variant='filled',color='blue', size='lg')
+
+
+
             
-        return title,subtitle
+                #general=str(titulo)+' '+str(moneda)
+            if year == None:
+                    title=dmc.Title(children=['Ventas por Productos ',dmc.Badge('ALL',variant='filled',color='gray', size='lg'),importe], order=2,align='center')
+            else:
+                    title=dmc.Title(children=['Ventas por Productos ',dmc.Badge(year,variant='filled',color='gray', size='lg'),importe], order=2,align='center')
+
+
+            if cliente == None and cultivo == None:
+                    subtitle=dmc.Title(children=[], order=3,align='center')
+            elif cliente != None and cultivo == None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg')], order=3,align='center')
+                    #subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
+            elif cliente != None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(cultivo,variant='filled',color='indigo', size='lg')], order=3,align='center')
+            elif cliente == None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cultivo,variant='filled',color='indigo', size='lg')], order=3,align='center')
+                    
+            return title,subtitle
     
     @app.callback(
             Output("graph-1","figure"),
@@ -1734,7 +1785,7 @@ def ventasProductos(empresa,staff_comment):
             top_productos.update_layout(title={'text':'Productos con mas Ventas'},titlefont={'size': 15},template='none')
             top_productos.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=9))#l=400,
             top_productos.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
-            top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+            #top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
 
             cantidad_productos=len(options['Producto'])
            
@@ -1753,7 +1804,7 @@ def ventasProductos(empresa,staff_comment):
                 withBorder=True,
                 withColumnBorders=True,
                 children=create_table(df_table),
-                style={'backgroundColor': '#f7f7f7'}
+                #style={'backgroundColor': '#f7f7f7'}
 
             )
 
@@ -1931,18 +1982,13 @@ def tipoVenta(empresa,staff_comment):
     app.layout = html.Div([
             dbc.Row([   
                         dbc.Col([
-                            html.H3(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
-                            html.H5(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
-
-                           ],width=10,className="col-xl-10 col-md-10 col-sm-10 col-10 mb-3"),
-                        dbc.Col([btnCollapse(),],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
-                        dbc.Col([
                             btnFilter(),
                             offcanvas(componentes=[
                                 select(ids="year",texto="Año",value=sorted(df_ventas_d['Año'].unique())[-1]),
                                 select(ids="cliente",texto="Cliente"),
                                 select(ids="cultivo",texto="Cultivo"),
                                 select(ids="variedad",texto="Variedad"),
+                                select(ids="month",texto="Mes"),
                                 radioGroup(ids='radio-moneda',texto='Moneda',value='Dolares',
                                           children=[dmc.Radio(label='S/', value='Soles'),
                                                     dmc.Radio(label='$', value='Dolares'),
@@ -1962,6 +2008,13 @@ def tipoVenta(empresa,staff_comment):
                                 ),
                             ]),
                         ],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+                        dbc.Col([
+                            html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+
+                           ],width=10,className="col-xl-10 col-md-10 col-sm-10 col-10 mb-3"),
+                        dbc.Col([btnCollapse(),],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+                        
                         
                         
                     ]),
@@ -2212,19 +2265,33 @@ def tipoVenta(empresa,staff_comment):
             
             )
     def title_ventas(year,cultivo,cliente,moneda):
-        general='Ventas por Tipo '+' '+str(moneda)
-        if year == None:
-            title=general
-        else:
-            title=general+' '+str(year)
-        if cliente == None and cultivo == None:
-            subtitle=''
-        elif cliente != None and cultivo == None:
-            subtitle=str(cliente)
-        elif cliente != None and cultivo != None:
-            subtitle=str(cliente)+' '+str(cultivo)
+        #general='Ventas por Tipo '+' '+str(moneda)
+            if moneda =='Soles':
+                importe=dmc.Badge(moneda,variant='filled',color='blue', size='lg')
+            elif moneda == 'Dolares':
+                importe=dmc.Badge(moneda,variant='filled',color='blue', size='lg')
+
+
+
             
-        return title,subtitle
+                #general=str(titulo)+' '+str(moneda)
+            if year == None:
+                    title=dmc.Title(children=['Ventas por Tipo ',dmc.Badge('ALL',variant='filled',color='gray', size='lg'),importe], order=2,align='center')
+            else:
+                    title=dmc.Title(children=['Ventas por Tipo ',dmc.Badge(year,variant='filled',color='gray', size='lg'),importe], order=2,align='center')
+
+
+            if cliente == None and cultivo == None:
+                    subtitle=dmc.Title(children=[], order=3,align='center')
+            elif cliente != None and cultivo == None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg')], order=3,align='center')
+                    #subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
+            elif cliente != None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(cultivo,variant='filled',color='indigo', size='lg')], order=3,align='center')
+            elif cliente == None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cultivo,variant='filled',color='indigo', size='lg')], order=3,align='center')
+                    
+            return title,subtitle
 ############################################################
     @app.callback(
             Output("graph-1","figure"),
@@ -2274,7 +2341,7 @@ def tipoVenta(empresa,staff_comment):
         top_productos.update_layout(title={'text':'Tipo de Venta'},titlefont={'size': 15},template='none')
         top_productos.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=9))#l=400,
         top_productos.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
-        top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+        #top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
 
         cantidad_productos=len(options['Producto'])
            
@@ -2293,7 +2360,7 @@ def tipoVenta(empresa,staff_comment):
                 withBorder=True,
                 withColumnBorders=True,
                 children=create_table(df_table),
-                style={'backgroundColor': '#f7f7f7'}
+                #style={'backgroundColor': '#f7f7f7'}
 
             )
         return top_productos,card_ventas(cantidad_productos,None,"N° de Ventas"),card_ventas(cantidad_productos_unique,None,"N° de Tipos de Venta"),table
