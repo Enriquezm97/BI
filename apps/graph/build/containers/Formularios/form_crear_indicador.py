@@ -26,9 +26,21 @@ from apps.graph.build.components.mantine_react_components.spoiler import *
 from apps.graph.build.components.mantine_react_components.loaders import loadingOverlay
 
 
+from apps.graph.data.transform_finanzas import *
+from apps.graph.data.gets import getApi
+token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
+api_nisira_finanzas='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
+finanzas_lista_nisira=getApi(api_nisira_finanzas,token_nisira)
+df_owo=pd.DataFrame(finanzas_lista_nisira)
+df_bc_nisira=cleanBalanceComprobacion(df_owo)
 
-def formIndicador(empresa,usuario):
-    df_bcomprobacion=dataBcEmpresa(empresa)
+def formIndicador(empresa,usuario):#empresa,usuario
+    """"""
+    
+    """"""
+    #df_bcomprobacion=dataBcEmpresa(empresa)
+    df_bcomprobacion=df_bc_nisira.copy()
+
     idind_list=list(TipoIndicador.objects.all().values_list('id',flat=True))
     tipoind_list=list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True))
     list_dicts=[]

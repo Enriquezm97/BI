@@ -105,3 +105,24 @@ def BarGOV_SX(x, y,title,prueba,dinero,x_title,y_title):
     elif dinero==None:
         fig.update_yaxes(tickprefix="")
     return fig
+
+
+def barCharTrace(df_,partida,ejex='Año',ejey='dolares'):
+    fig = go.Figure()
+    
+        
+    fig.add_trace(go.Bar(x=df_['Año'],
+                            y=df_[partida],
+                            name=partida,
+                            marker_color='rgb(55, 83, 109)'
+                            ))
+    #fig.add_trace(go.Bar(x=df_pronostico['Año'],s
+    #                        y=df_pronostico[partida],
+    #                        name=f'Pronostico - {partida}',
+    #                        marker_color='rgb(26, 118, 255)'
+    #                        ))
+    fig.update_layout(barmode='stack',title=f'Comparativo por Año - {partida}',template='none')
+    fig.update_layout(legend=dict(yanchor="bottom",y=1.02,xanchor="right",x=1,orientation="h",),height=320)#,bgcolor="#F1F2F7"
+    fig.update_layout(xaxis_title=ejex,yaxis_title=ejey)
+    fig.update_xaxes(type='category')
+    return fig

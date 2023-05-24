@@ -60,7 +60,7 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
                                             'text':'Ventas por Producto',
                                             
                                         },
-                                titlefont={'size': 13},
+                                titlefont={'size': 15},
                             #titlefont={'color': 'black','size': 20},
                             #uniformtext_minsize=8, uniformtext_mode='hide',
                             
@@ -71,7 +71,7 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
             #width=,
             #height=380,
             margin=dict(
-                l=250,
+                l=400,
                 r=50,
                 b=40,
                 t=50,
@@ -80,8 +80,8 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
 
             ),
             yaxis=dict(
-                titlefont_size=7,
-                tickfont_size=7,
+                titlefont_size=8,
+                tickfont_size=8,
                 #showticklabels=False,
                 
                 
@@ -151,18 +151,18 @@ def mesTop(df_mes_top,template,importe):
                                         'xanchor': 'center',
                                         'yanchor': 'top',
                             },
-                            titlefont={'size': 13},
+                            titlefont={'size': 15},
                             uniformtext_minsize=8,# uniformtext_mode='hide',
                             template=template)
     mes_top.update_layout(
             autosize=True,
             #width=100,
-            height=300,
+            height=350,
             margin=dict(
                 l=40,
                 r=40,
                 b=20,
-                t=50,
+                t=70,
                 #pad=4,
                 #autoexpand=True
             ),

@@ -39,3 +39,18 @@ def figure__line(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color
 
     
     return fig
+
+
+def linesChartTrace(df_,partidas,title='',moneda='dolares'):
+    fig = go.Figure()
+    color_line=px.colors.qualitative.T10
+    for partida,colores in zip(partidas,color_line):
+        #for color in color_line:
+            fig.add_trace(go.Scatter(x=df_['al_periodo'], y=df_[partida],
+                                    mode='lines',line=dict(color=colores),
+                                    name=partida))
+            #fig.add_trace(go.Scatter(x=df_pronostico['al_periodo'], y=df_pronostico[partida],
+            #                        line=dict(color=colores, width=4, dash='dot'),
+            #                        name=f'Pronóstico {partida}'))
+    fig.update_layout( title=title,template='none',yaxis_title=moneda,margin=dict(l=60, r=20, t=80, b=40))#,width=280
+    return fig

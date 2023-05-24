@@ -52,6 +52,8 @@ THIRD_PARTY_APPS = [
     'dpd_static_support',
     'channels',
     'channels_redis',
+    #'dash_ag_grid'
+    
 
 
 ]
@@ -210,6 +212,7 @@ PLOTLY_COMPONENTS = [
     'dpd_static_support',
     'dash_bootstrap_components',
     'dash_bootstrap_templates',
+    
     #'dash_ag_grid'
 
     

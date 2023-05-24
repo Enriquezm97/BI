@@ -1,6 +1,6 @@
 import pandas as pd
 from apps.graph.data.gets import getApi
-
+"""
 token_aerodina='0Z10F10O10E10Y10D10Z10Q10Z1lpu0N10O10H1T890Z10F10O10E10Y10D10Z10Q10Z1sgk0Q10D10N10D10O10Z1lpu0q10d10n10d10o10z1lpu0Q10d10n10d10o10z1poiqwsmkiqwsert23dlpumkimkiertlpuertsdfasdasdlpuertbhgnjhmkiertmkiqwssdfsdfsdfloisdfqws'
 
 api_aerodiana_ventas='http://69.64.92.156:3005/api/consulta/NSP_RPT_VENTAS_DETALLADO'
@@ -19,7 +19,7 @@ contenedores_lista_aerodiana=getApi(api_aerodiana_contenedores,token_aerodina)
 pizarra_lista_aerodiana=getApi(api_aerodiana_pizarra,token_aerodina)
 
 #DATAFRAME VENTAS
-df_ventas_aerodiana=pd.DataFrame(ventas_lista_aerodiana)
+df_ventas_aerodiana=p   
 
 #DATAFRAME BALANCE DE COMPROBACION
 df_bcomprobacion_aerodiana=pd.DataFrame(finanzas_lista_aerodiana)
@@ -29,6 +29,9 @@ df_contenedores_aerodiana=pd.DataFrame(contenedores_lista_aerodiana)
 
 #DATAFRAME PIZARRA
 df_pizarra_aerodiana=pd.DataFrame(pizarra_lista_aerodiana)
+
+
+"""
 
 #DATAFRAME VARIABLES AGRICOLAS Y COSTOS
 #df_consumidores_aerodiana=pd.DataFrame(consumidores_lista_aerodiana,dtype={'CODCULTIVO':str,'CODVARIEDAD':str})

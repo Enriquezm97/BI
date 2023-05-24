@@ -23,7 +23,7 @@ urlpatterns = [
     path('<str:username>/cargas-personal/',views.CargasdePersonalView.as_view(),name='cargas_personal'),
     #path(r'cargas-personal/(?P<pk>[\w-]+)/$',login_required(views.CargasdePersonalView),name='cargas_personal'),
     
-    path('<str:username>/estado-de-resultados',views.EstadodeResultadosView.as_view(),name='estado_resultados'),
+    #path('<str:username>/estado-de-resultados',views.EstadodeResultadosView.as_view(),name='estado_resultados'),
     path('<str:username>/estado-de-situacion',views.EstadodeSituacionView.as_view(),name='estado_situacion'),
     path('<str:username>/gastos-operativos',views.GastosOperativosView.as_view(),name='gastos_operativos'),
 
@@ -31,7 +31,7 @@ urlpatterns = [
     path('<str:username>/ventas-exportacion',views.VentasExportacionView.as_view(),name='ventas_exportacion'),
     path('<str:username>/ventas-1',views.Ventas1View.as_view(),name='ventas_1'),
     path('<str:username>/ventas-2',views.VentasTipo.as_view(),name='ventas_2'),
-    path('<str:username>/ventas-productos',views.VentasProductos.as_view(),name='venproductos'),
+    path('<str:username>/ventas-core',views.VentasCore.as_view(),name='vencore'),
     path('<str:username>/ventas-tipo',views.VentasTipo.as_view(),name='ventipo'),
     path('<str:username>/ventas-comparativo',views.VentasComparativo.as_view(),name='vencomparativo'),
 
@@ -44,5 +44,10 @@ urlpatterns = [
     path('<str:username>/indicadores/',createdash_view.IndicadorAllView.as_view(),name='indicador_all'),
     path('<str:username>/indicadores/<int:pk>/',createdash_view.IndicadorShowView.as_view(),name='indicador'),#createdash_view.IndicadorShowView
     path('<str:username>/create-indicador/',createdash_view.FormIndicadorView.as_view(),name='create_indicador'),
-    path('<str:username>/form-indicador',createdash_view.FormIndicadorView.as_view(),name='form')
+    path('<str:username>/form-indicador',createdash_view.FormIndicadorView.as_view(),name='form'),
+
+    path('<str:username>/estado-situacion',views.EstadoSituacionView.as_view(),name='estado_situacion2'),
+    path('<str:username>/estado-gp',views.EstadoGananciasPerdidasView.as_view(),name='estado_gp'),
+    path('<str:username>/costos-generales',views.FinanzasCostosGenerales.as_view(),name='costos_generales'),
+    path('<str:username>/estado-resultados',views.FinanzasEstadoResultados.as_view(),name='estado_r'),
 ]

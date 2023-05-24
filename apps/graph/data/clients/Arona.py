@@ -1,6 +1,9 @@
 import pandas as pd
 from apps.graph.data.gets import getApi
 
+
+
+"""
 token_arona="0Z10O10E10Q10Z1qwsmkiqwsmki0D10Q10X10D10Y10F10Q10X10D10Z1lpubhgrtgpoiertbhgrtgpoiertmkiqwspoiqwsqwsbhglpu0q10d10n10d10o10z10c10z10w10e10o10z10c1lpu0z10y10s10d10q1qwsmkiertloipoi0o10z10o1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhmkimkirtgmkibhgasdnjhbhgbhgrtg"
 api_arona_ventas='http://68.168.102.226:3005/api/consulta/NSP_RPT_VENTAS_DETALLADO'
 api_arona_finanzas='http://68.168.102.226:3005/api/consulta/nsp_eeff_json'
@@ -41,5 +44,7 @@ df_variedad_arona=pd.DataFrame(variedades_lista_arona)#,dtype={'CODCULTIVO':str,
 df_cultivo_arona=pd.DataFrame(cultivos_lista_arona)#,dtype={'CODCULTIVO':str}
 df_fertilizacion_arona=pd.DataFrame(fertilizacion_lista_arona)
 df_costos_arona=pd.DataFrame(costos_lista_arona)
+
+"""
 
 

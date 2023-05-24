@@ -19,60 +19,110 @@ def filtroInformeVentas2(app,rubro,df):
         )
         #if rubro == 'Agricola' or rubro == 'Agroindustrial':
         def ventas(year,month,cultivo,variedad,cliente):
-            if month != None:
-                df_v=df[df['MES_TEXT']==month]
-            else:
-                df_v=df
+            
             if rubro == 'Agricola' or rubro == 'Agroindustrial':
-                df_ventas=df_v.groupby(['YEAR','MES_TEXT','RAZON_SOCIAL','CULTIVO','VARIEDAD'])[['IMPORTEMOF']].sum().reset_index()
+                df_ventas=df.groupby(['YEAR','MES_TEXT','RAZON_SOCIAL','CULTIVO','VARIEDAD'])[['IMPORTEMOF']].sum().reset_index()
 
-                if year==None and cultivo == None and variedad== None and cliente==None:
+                if year==None and cultivo == None and variedad== None and cliente==None and month==None:
                     options=df_ventas
 
-                elif year!=None and cultivo == None and variedad== None and cliente==None:    
+                elif year!=None and cultivo == None and variedad== None and cliente==None and month==None:    
                     options=df_ventas[df_ventas['YEAR']==year]
-                elif year==None and cultivo != None and variedad== None and cliente==None:    
+                elif year==None and cultivo != None and variedad== None and cliente==None and month==None:    
                     options=df_ventas[df_ventas['CULTIVO']==cultivo]
                 
-                elif year==None and cultivo == None and variedad!= None and cliente==None:    
+                elif year==None and cultivo == None and variedad!= None and cliente==None and month==None:    
                     options=df_ventas[df_ventas['VARIEDAD']==variedad]
                 
-                elif year==None and cultivo == None and variedad== None and cliente!=None:    
+                elif year==None and cultivo == None and variedad== None and cliente!=None and month==None:    
                     options=df_ventas[df_ventas['RAZON_SOCIAL']==cliente]
                 
-                elif year!=None and cultivo != None and variedad== None and cliente==None:
+                elif year==None and cultivo == None and variedad== None and cliente==None and month !=None:    
+                    options=df_ventas[df_ventas['MES_TEXT']==cliente]
+
+
+
+
+
+                
+                elif year!=None and cultivo != None and variedad== None and cliente==None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['CULTIVO']==cultivo)]
                 
-                elif year!=None and cultivo == None and variedad!= None and cliente==None:
+                elif year!=None and cultivo == None and variedad!= None and cliente==None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['VARIEDAD']==variedad)]
                 
-                elif year!=None and cultivo == None and variedad== None and cliente!=None:
+                elif year!=None and cultivo == None and variedad== None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and cultivo == None and variedad== None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['MES_TEXT']==month)]
+
 
                 
-                elif year==None and cultivo != None and variedad== None and cliente!=None:
+                elif year==None and cultivo != None and variedad== None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['RAZON_SOCIAL']==cliente)]
                 
-                elif year==None and cultivo != None and variedad!= None and cliente==None:
+                elif year==None and cultivo != None and variedad!= None and cliente==None and month==None:
                     options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)]
+
+                elif year==None and cultivo != None and variedad == None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['MES_TEXT']==month)]
+
+
                 
-                elif year==None and cultivo == None and variedad!= None and cliente!=None:
+                elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
+
+                #elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
+                #    options=df_ventas[(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
                 
-                elif year!=None and cultivo != None and variedad!= None and cliente==None:
+                elif year==None and cultivo == None and variedad!= None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['VARIEDAD']==variedad)&(df_ventas['MES_TEXT']==month)]
+                
+                elif year==None and cultivo == None and variedad== None and cliente!=None and month!=None:
+                    options=df_ventas[(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['MES_TEXT']==month)]
+
+
+
+                
+                elif year!=None and cultivo != None and variedad!= None and cliente==None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)]
 
-                elif year!=None and cultivo != None and variedad== None and cliente!=None:
+                elif year!=None and cultivo != None and variedad== None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['CULTIVO']==cultivo)&(df_ventas['RAZON_SOCIAL']==cliente)]
                 
-                elif year!=None and cultivo == None and variedad!= None and cliente!=None:
-                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                elif year!=None and cultivo != None and variedad== None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['CULTIVO']==cultivo)&(df_ventas['MES_TEXT']==month)]
 
-                elif year==None and cultivo != None and variedad!= None and cliente!=None:
+
+                
+                elif year!=None and cultivo == None and variedad!= None and cliente!=None and month==None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and cultivo == None and variedad!= None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['MES_TEXT']==month)]
+
+
+
+                elif year==None and cultivo != None and variedad!= None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
                 
-                elif year!=None and cultivo != None and variedad!= None and cliente!=None:
+                elif year==None and cultivo != None and variedad!= None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['MES_TEXT']==month)]
+                
+                elif year==None and cultivo == None and variedad!= None and cliente!=None and month!=None:
+                    options=df_ventas[(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['MES_TEXT']==month)]
+                
+
+
+
+
+
+                elif year!=None and cultivo != None and variedad!= None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['YEAR']==year)]
+                
+                elif year!=None and cultivo != None and variedad!= None and cliente!=None and month!=None:
+                    options=df_ventas[(df_ventas['CULTIVO']==cultivo)&(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['YEAR']==year)&(df_ventas['MES_TEXT']==month)]
 
 
                 option_year=[{'label': i, 'value': i} for i in options['YEAR'].unique()] 
@@ -85,55 +135,108 @@ def filtroInformeVentas2(app,rubro,df):
             else:
                 tipo=cultivo
                 grupo=variedad
-                df_ventas=df_v.groupby(['YEAR','MES_TEXT','RAZON_SOCIAL','TIPOVENTA','GRUPO'])[['IMPORTEMOF']].sum().reset_index()
+                df_ventas=df.groupby(['YEAR','MES_TEXT','RAZON_SOCIAL','TIPOVENTA','GRUPO'])[['IMPORTEMOF']].sum().reset_index()
                 
-                if year==None and tipo == None and grupo== None and cliente==None:
+                if year==None and tipo == None and grupo== None and cliente==None and month==None:
                     options=df_ventas
 
-                elif year!=None and tipo == None and grupo== None and cliente==None:    
+                elif year!=None and tipo == None and grupo== None and cliente==None and month==None:    
                     options=df_ventas[df_ventas['YEAR']==year]
-                elif year==None and tipo != None and grupo== None and cliente==None:    
+                elif year==None and tipo != None and grupo== None and cliente==None and month==None:    
                     options=df_ventas[df_ventas['TIPOVENTA']==tipo]
                 
-                elif year==None and tipo == None and grupo!= None and cliente==None:    
+                elif year==None and tipo == None and grupo!= None and cliente==None and month==None:    
                     options=df_ventas[df_ventas['GRUPO']==grupo]
                 
-                elif year==None and tipo == None and grupo== None and cliente!=None:    
+                elif year==None and tipo == None and grupo== None and cliente!=None and month==None:    
                     options=df_ventas[df_ventas['RAZON_SOCIAL']==cliente]
                 
-                elif year!=None and tipo != None and grupo== None and cliente==None:
+                elif year==None and tipo == None and grupo== None and cliente==None and month !=None:    
+                    options=df_ventas[df_ventas['MES_TEXT']==cliente]
+
+
+
+
+
+                
+                elif year!=None and tipo != None and grupo== None and cliente==None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['TIPOVENTA']==tipo)]
                 
-                elif year!=None and tipo == None and grupo!= None and cliente==None:
+                elif year!=None and tipo == None and grupo!= None and cliente==None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['GRUPO']==grupo)]
                 
-                elif year!=None and tipo == None and grupo== None and cliente!=None:
+                elif year!=None and tipo == None and grupo== None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and tipo == None and grupo== None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['MES_TEXT']==month)]
+
 
                 
-                elif year==None and tipo != None and grupo== None and cliente!=None:
+                elif year==None and tipo != None and grupo== None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['RAZON_SOCIAL']==cliente)]
                 
-                elif year==None and tipo != None and grupo!= None and cliente==None:
+                elif year==None and tipo != None and grupo!= None and cliente==None and month==None:
                     options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)]
+
+                elif year==None and tipo != None and grupo == None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['MES_TEXT']==month)]
+
+
                 
-                elif year==None and tipo == None and grupo!= None and cliente!=None:
+                elif year==None and tipo == None and grupo!= None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['GRUPO']==grupo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+
+                #elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
+                #    options=df_ventas[(df_ventas['VARIEDAD']==variedad)&(df_ventas['RAZON_SOCIAL']==cliente)]
                 
-                elif year!=None and tipo != None and grupo!= None and cliente==None:
+                elif year==None and tipo == None and grupo!= None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['GRUPO']==grupo)&(df_ventas['MES_TEXT']==month)]
+                
+                elif year==None and tipo == None and grupo== None and cliente!=None and month!=None:
+                    options=df_ventas[(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['MES_TEXT']==month)]
+
+
+
+                
+                elif year!=None and tipo != None and grupo!= None and cliente==None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)]
 
-                elif year!=None and tipo != None and grupo== None and cliente!=None:
+                elif year!=None and tipo != None and grupo== None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['TIPOVENTA']==tipo)&(df_ventas['RAZON_SOCIAL']==cliente)]
                 
-                elif year!=None and tipo == None and grupo!= None and cliente!=None:
-                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['GRUPO']==tipo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                elif year!=None and tipo != None and grupo== None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['TIPOVENTA']==tipo)&(df_ventas['MES_TEXT']==month)]
 
-                elif year==None and tipo != None and grupo!= None and cliente!=None:
+
+                
+                elif year!=None and tipo == None and grupo!= None and cliente!=None and month==None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['GRUPO']==grupo)&(df_ventas['RAZON_SOCIAL']==cliente)]
+                
+                elif year!=None and tipo == None and grupo!= None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['YEAR']==year)&(df_ventas['GRUPO']==grupo)&(df_ventas['MES_TEXT']==month)]
+
+
+
+                elif year==None and tipo != None and grupo!= None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)&(df_ventas['RAZON_SOCIAL']==cliente)]
                 
-                elif year!=None and tipo != None and grupo!= None and cliente!=None:
+                elif year==None and tipo != None and grupo!= None and cliente==None and month!=None:
+                    options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)&(df_ventas['MES_TEXT']==month)]
+                
+                elif year==None and tipo == None and grupo!= None and cliente!=None and month!=None:
+                    options=df_ventas[(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['GRUPO']==grupo)&(df_ventas['MES_TEXT']==month)]
+                
+
+
+
+
+
+                elif year!=None and tipo != None and grupo!= None and cliente!=None and month==None:
                     options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)&(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['YEAR']==year)]
+                
+                elif year!=None and tipo != None and grupo!= None and cliente!=None and month!=None:
+                    options=df_ventas[(df_ventas['TIPOVENTA']==tipo)&(df_ventas['GRUPO']==grupo)&(df_ventas['RAZON_SOCIAL']==cliente)&(df_ventas['YEAR']==year)&(df_ventas['MES_TEXT']==month)]
                     
                 option_year=[{'label': i, 'value': i} for i in options['YEAR'].unique()] 
                 option_tipo=[{'label': i, 'value': i} for i in options['TIPOVENTA'].unique()] 

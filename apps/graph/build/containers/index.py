@@ -7,16 +7,16 @@ from django_plotly_dash import DjangoDash
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 import pandas as pd
-from apps.graph.data.data import *
+#from apps.graph.data.data import *
 from apps.graph.build.components.mantine_react_components.cards import cardIndex
 import json
 from apps.graph.build.utils.dict_colors import *
-from apps.graph.data.data import *
+#from apps.graph.data.data import *
 from apps.graph.build.components.draw.bar import *
 from apps.graph.build.components.draw.pie import *
 from apps.graph.build.components.draw.line import *
 from apps.graph.build.utils.dict_colors import *
-from apps.graph.data.transform_finanzas import balancePivot
+#from apps.graph.data.transform_finanzas import balancePivot
 
 
 def costos_agricolas(dff,cols,radio_costos,ejey,simbolo):
@@ -78,7 +78,8 @@ def costos_agricolas(dff,cols,radio_costos,ejey,simbolo):
             #last_year=str(sorted(dff_lote['AÑO_CAMPAÑA'].unique())[-1])
             #titulo_core=f"{title}"+", ".join([last_year])#f"{title} "+", ".join([ultimo_year])
             return BarGOV_SX(dff_lote[ejetotal],x,title,color,None,ejey,simbolo)  
-
+""
+"""
 def container_index(empresa,tipo_empresa,username):
     if tipo_empresa == "Agricola" or tipo_empresa == "Agroindustrial":
         agro=dataAgricolaEmpresa(empresa)
@@ -195,6 +196,7 @@ def container_index(empresa,tipo_empresa,username):
                     ),
             ])
     return container
+"""
 def orderX(x,df):
             if x == 'week':
                 order={'week':sorted(df['week'].unique()),'DSCVARIABLE': sorted(df['DSCVARIABLE'].unique())}
@@ -268,7 +270,7 @@ def index(empresa,tipo_empresa,username):
     app.layout = html.Div(
         [
             #container_index(tipo_empresa,fig_recursos)
-            container_index(empresa,tipo_empresa,username)
+            #container_index(empresa,tipo_empresa,username)
             
         ]
     )

@@ -1,6 +1,6 @@
 import pandas as pd
 from apps.graph.data.gets import getApi
-
+"""
 token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
 
 
@@ -16,3 +16,5 @@ df_ventas_nisira=pd.DataFrame(ventas_lista_nisira)
 
 #DATAFRAME BALANCE DE COMPROBACION
 df_bcomprobacion_nisira=pd.DataFrame(finanzas_lista_nisira)
+
+"""

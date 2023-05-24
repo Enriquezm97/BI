@@ -30,6 +30,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 
+from apps.graph.build.containers.Finanzas.finanzas import dashEstadoSituacion,dashEstadoGananciasPerdidas,dashCostosGenerales ,dashER
+
 from django.core.cache import cache
 
 def home(request):
@@ -103,7 +105,8 @@ class CostosCampañaView(LoginRequiredMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        dashboard=costosAgricola(empresa[0])
+        #dashboard=costosAgricola(empresa[0])
+        dashboard=dashCostosProduccionAgricola()
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/costos_campaña.html',context)
 
@@ -113,7 +116,8 @@ class VariablesAgricolasView(LoginRequiredMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        dashboard=variablesAgricolas(empresa[0])
+        #dashboard=variablesAgricolas(empresa[0])
+        dashboard=comparativoRecursos(empresa[0])
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/variables_agricolas.html',context)
 
@@ -265,15 +269,15 @@ class Ventas2View(LoginRequiredMixin,View):
     
 
 
-class VentasProductos(LoginRequiredMixin,View):
+class VentasCore(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
-        id_user=self.request.user.id
-        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
-        dashboard=ventasProductos(empresa[0],staff_filter[0])
+        #id_user=self.request.user.id
+        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        #staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
+        dashboard=dashVentasCore()#ventasProductos(empresa[0],staff_filter[0])
         
 
         context = {'dashboard':dashboard}
@@ -338,6 +342,72 @@ class ContenedoresExportView2(LoginRequiredMixin,View):
        
         return render(request,'dashboards/Comercial/contenedores_exportados_2.html',context)
 ################CREAR INDICADORES
+
+class ContenedoresExportView2(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+    
+    def get(self,request,*args, **kwargs):
+        #id_user=self.request.user.id
+        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        #dashboard=ventas2(empresa[0])
+        dashboard=contenedoresExportados2('ARONA',True)
+        context = {'dashboard':dashboard}
+       
+        return render(request,'dashboards/Comercial/contenedores_exportados_2.html',context)
+    
+class EstadoSituacionView(LoginRequiredMixin,View):
+    #login_url = reverse_lazy('login')#'/user/login/'
+    
+    def get(self,request,*args, **kwargs):
+        #id_user=self.request.user.id
+        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        #dashboard=ventas2(empresa[0])
+        dashboard=dashEstadoSituacion()#contenedoresExportados2('ARONA',True)
+        context = {'dashboard':dashboard}
+       
+        return render(request,'dashboards/Finanzas/estado_situacion.html',context)
+
+
+class EstadoGananciasPerdidasView(LoginRequiredMixin,View):
+    #login_url = reverse_lazy('login')#'/user/login/'
+    
+    def get(self,request,*args, **kwargs):
+        #id_user=self.request.user.id
+        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        #dashboard=ventas2(empresa[0])
+        dashboard=dashEstadoGananciasPerdidas()#contenedoresExportados2('ARONA',True)
+        context = {'dashboard':dashboard}
+       
+        return render(request,'dashboards/Finanzas/estado_gp.html',context)
+    
+class FinanzasCostosGenerales(LoginRequiredMixin,View):
+    #login_url = reverse_lazy('login')#'/user/login/'
+    
+    def get(self,request,*args, **kwargs):
+        #id_user=self.request.user.id
+        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        #dashboard=ventas2(empresa[0])
+        dashboard=dashCostosGenerales()#contenedoresExportados2('ARONA',True)
+        context = {'dashboard':dashboard}
+       
+        return render(request,'dashboards/Finanzas/costos_generales.html',context)
+
+class FinanzasEstadoResultados(LoginRequiredMixin,View):
+    #login_url = reverse_lazy('login')#'/user/login/'
+    
+    def get(self,request,*args, **kwargs):
+        #id_user=self.request.user.id
+        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        #dashboard=ventas2(empresa[0])
+        dashboard=dashER()#contenedoresExportados2('ARONA',True)
+        context = {'dashboard':dashboard}
+       
+        return render(request,'dashboards/Finanzas/estado_resultados.html',context)
 
 
 

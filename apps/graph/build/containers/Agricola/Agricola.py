@@ -24,6 +24,60 @@ from apps.graph.build.components.mantine_react_components.accordion import accor
 from apps.graph.utils.callback import *
 from apps.graph.utils.utils import colArea
 from apps.graph.build.components.mantine_react_components.actionIcon import btnFilter,btnCollapse
+from apps.graph.data.transform_produccion import cleanVariablesAgricolas,variablesAgricolasPivot,costosAgricolas
+from apps.graph.build.components.draw.card import cardGF,calculateCard
+import dash_ag_grid as dag
+
+colors=[
+        "#15CAB6",
+        "#007FFF",
+        "#F6B53D",
+        "#EF8A5A",
+        "#E85E76",
+        "#696CB5",
+        "#0F488C",
+        "#323447",
+        "#3599B8",
+        "#DFBFBF",
+        "#4AC5BB",
+        "#5F6B6D",
+        "#FB8281",
+        "#F4D25A",
+        "#7F898A",
+        "#A4DDEE",
+        "#FDAB89",
+        "#B687AC",
+        "#28738A",
+        "#A78F8F",
+        "#168980",
+        "#293537",
+        "#BB4A4A",
+        "#B59525",
+        "#475052",
+        "#6A9FB0",
+        "#BD7150",
+        "#7B4F71",
+        "#1B4D5C",
+        "#706060",
+        "#0F5C55",
+        "#1C2325",
+    "#1C2325",
+    ]
+
+
+
+
+df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
+df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
+df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+                                                  df_variedad,
+                                                  df_cultivos,
+                                                  df_fertilizacion)
+df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
 
 #import dash_ag_grid as dag
 
@@ -150,26 +204,27 @@ def line_agricola_card(df,x,y,color,heig,x_title,y_title,title_legend,orders={},
         xaxis_title=ejex,
         yaxis_title=y_title,
         legend_title_text=title_legend,
+        height=280,
         
         )
     if title_legend=='Fertilizantes':
-        hover='<br><b>Cantidad</b>: %{y:.1f} Kg<br> <b>Kg/Ha</b>: %{customdata[0]:.1f}<br>'
-        size_text=12
+        hover='<br><b>Cantidad</b>: %{y:.1f} Kg<br> <b>Unidad/Ha</b>: %{customdata[0]:.1f}<br>'
+        size_text=9
     elif title_legend=='Horas Máquina':
         hover='<br><b>Cantidad</b>: %{y:.1f} h<br> <b>Hm/Ha</b>: %{customdata[0]:.1f} <br>'
-        size_text=14
+        size_text=9
     elif title_legend=='Mano de Obra':
         hover='<br><b>Cantidad</b>: %{y:.1f} jr<br> <b>Jr/Ha</b>: %{customdata[0]:.1f}<br>'
-        size_text=14
+        size_text=9
     elif title_legend=='Riego':
         hover='<br><b>Cantidad</b>: %{y:.1f} m3<br> <b>m3/Ha</b>: %{customdata[0]:.1f}<br>'
-        size_text=14
+        size_text=9
     else: 
         hover='<br><b>Cantidad</b>: %{y:.1f}<br>{text} <b>-/Ha</b>: %{customdata[0]:.1f}<br>'
-        size_text=12
+        size_text=8
     fig.update_traces(hovertemplate =hover)
-    fig.update_xaxes(tickfont=dict(size=10))
-    fig.update_yaxes(tickfont=dict(size=10))
+    fig.update_xaxes(tickfont=dict(size=9)) 
+    fig.update_yaxes(tickfont=dict(size=9))
     fig.update_layout(hovermode="x unified",hoverlabel=dict(font_size=size_text,font_family="sans-serif"))
 
     #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
@@ -178,13 +233,36 @@ def line_agricola_card(df,x,y,color,heig,x_title,y_title,title_legend,orders={},
         
     return fig
 
+from apps.graph.data.transform_produccion import *
 
 def plandeSiembra(empresa):
+    """"""
+    #df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    #df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
+    #df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    #df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
+    #df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+    #df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+    #                                              df_variedad,
+    #                                              df_cultivos,
+    #                                              df_fertilizacion)
+    #df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
+    #df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    """"""
+    """
     data=dataAgricolaEmpresa(empresa)
     df_general=data[0]
     df_general_pivot=data[1]
+    """
+    df_general=df_var_agricolas_default
+    df_general_pivot=df_var_agricolas_pivot_default
+
+
+    #data=dataAgricolaEmpresa(empresa)
+    #df_general=data[0]
+    #df_general_pivot=data[1]
     #DATAFRAME FOR FILTRO AND VALUE YEAR
-    df_produccion=df_general.groupby(['AÑO_CAMPAÑA','CULTIVO','AÑO_CULTIVO','VARIEDAD','DSCVARIABLE','FECHA','CONSUMIDOR'])[['CANTIDAD']].sum().reset_index()
+    df_produccion=df_general.groupby(['AÑO_CAMPAÑA','FECHAINICIO_CAMPAÑA','FECHAFIN_CAMPAÑA','CULTIVO','AÑO_CULTIVO','VARIEDAD','DSCVARIABLE','FECHA','CONSUMIDOR'])[['CANTIDAD']].sum().reset_index()
     external_stylesheets = [dbc.themes.LITERA]#
     app = DjangoDash('vagricola',external_stylesheets=external_stylesheets,external_scripts=scripts)
     app.layout = html.Div([
@@ -202,7 +280,7 @@ def plandeSiembra(empresa):
         ]),
         dbc.Row([
             dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
-            dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+            dbc.Col([select(ids="drop_anio",texto="Campaña-Cultivo",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_variedad",texto="Variedad")],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
             dbc.Col([select(ids="drop_lote",texto="Lote")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
             dbc.Col([
@@ -212,6 +290,7 @@ def plandeSiembra(empresa):
                                 id="date-range-picker",
                                 label="Fecha inicio y fin - Campaña",
                                 locale="es",
+                                disabled=True
                                 #minDate=date(2020, 8, 5),
                                 #value=[datetime.now().date(), datetime.now().date() + timedelta(days=5)],
                                 #style={"width": 330},
@@ -257,19 +336,22 @@ def plandeSiembra(empresa):
             
             #checkList(ids="check-agricola",texto="Recursos Agricolas")
         ]),
-    dbc.Collapse(
-                dbc.Row([
+    #dbc.Collapse(
+                #dbc.Row([
             
                     #dbc.Col([html.Div(children=loadingOverlay(dbc.Card(dcc.Graph(id='graph-1'),className="shadow-sm")),style={'max-height': '490px','overflow': "auto"})],width=5,className="col-xl-5 col-md-5 col-sm-12 col-12 mb-3"),
-                    dbc.Col([
-                        html.Div(id='badge-lotes')
-                    ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
-                ]),
-            id="collapse",is_open=True),
+    #                dbc.Col([
+    #                    html.Div(id='badge-lotes')
+    #                ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
+    #           ]),
+    #        id="collapse",is_open=True),
     dbc.Row([
                 dbc.Col([
                     loadingOverlay(html.Div(id='tabs')),
-                ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                ],width=8,className="col-xl-8 col-md-8 col-sm-12 col-12 mb-3"),
+                dbc.Col([
+                    loadingOverlay(html.Div(id='table-grid-lotes')),
+                ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-3"),
                 #dbc.Col([
                 #    dmc.ActionIcon(
                 #                        DashIconify(icon='feather:maximize'), 
@@ -378,7 +460,7 @@ def plandeSiembra(empresa):
                 Output('check-agricola','value'),  
                 #Output('subtitle','children'), 
                 Output('drop_lote','data'),
-                Output('badge-lotes','children'),
+                #Output('badge-lotes','children'),
                 Output("date-range-picker",'value'),#minDate=date(2020, 8, 5),
                 Output("date-range-picker",'minDate'),
                 Output("date-range-picker",'maxDate'),
@@ -448,26 +530,26 @@ def plandeSiembra(empresa):
 
         lotes=[{'label': i, 'value': i} for i in options['CONSUMIDOR'].unique()]
         
-        minimo=str(options['FECHA'].min())#
+        minimo=str(options['FECHAINICIO_CAMPAÑA'].min())#
         print(minimo)
-        maximo=str(options['FECHA'].max())#.str[0:10]
+        maximo=str(options['FECHAFIN_CAMPAÑA'].max())#.str[0:10]
         print(maximo)
         #inicio_fin=str(minimo)+' - '+str(maximo)
-        badges=html.Div([
-              dmc.Stack(
-                    spacing="xs",
-                    children=[
-                        dmc.Group(
-                            [dmc.Badge(lote, variant='dot', color='black',size='lg') for lote in options['CONSUMIDOR'].unique()],
-                            position="center",
-                        )
-                        
-                    ],
-                )
-        ])
+        #badges=html.Div([
+        #      dmc.Stack(
+        #            spacing="xs",
+        #            children=[
+        #                dmc.Group(
+        #                    [dmc.Badge(lote, variant='dot', color='black',size='lg') for lote in options['CONSUMIDOR'].unique()],
+        #                    position="center",
+        #                )
+        #                
+        #            ],
+        #        )
+        #])
         #datepicker=[date(int(minimo[:4]),int(minimo[-5:-3]),int(minimo[-2:])), date(int(maximo[:4]),int(maximo[-5:-3]),int(maximo[-2:]))],
-        datepicker=[options['FECHA'].min(),options['FECHA'].max()]
-        return anio,variedad,check,options['DSCVARIABLE'].unique(),lotes,badges,datepicker,date(int(minimo[:4]),int(minimo[-5:-3]),int(minimo[-2:])),date(int(maximo[:4]),int(maximo[-5:-3]),int(maximo[-2:]))#,estado
+        datepicker=[options['FECHAINICIO_CAMPAÑA'].min(),options['FECHAFIN_CAMPAÑA'].max()]
+        return anio,variedad,check,options['DSCVARIABLE'].unique(),lotes,datepicker,date(int(minimo[:4]),int(minimo[-5:-3]),int(minimo[-2:])),date(int(maximo[:4]),int(maximo[-5:-3]),int(maximo[-2:]))#,estado
     
     
     """
@@ -657,7 +739,7 @@ def plandeSiembra(empresa):
                 dff_pt[recurso]=dff_pt[recurso]/dff_pt['AREA_CAMPAÑA']
             for recurso2 in columns_lote[2:]:
                 dff_lotes[recurso2]=dff_lotes[recurso2]/dff_lotes['AREA_CAMPAÑA']
-
+        dff_lotes=dff_lotes.round(1)
         dff_pt.loc['TOTAL',:]= dff_pt.sum(numeric_only=True, axis=0)      
             #else:
         dff_pt=dff_pt.fillna('TOTAL')
@@ -669,34 +751,48 @@ def plandeSiembra(empresa):
         #for i in check:
         #    fig.add_trace(go.Scatter(x=df_testeo['week'], y=df_testeo[i],
         #                        mode='lines',
-        #                        name='lines'))
-        
+        #    
+        #                    name='lines'))
+        columnDefs = [{"field": i, "type": "rightAligned"} for i in dff_lotes.columns]
+        table_grid=html.Div([
+                dag.AgGrid(
+                columnDefs=columnDefs,
+                rowData=dff_lotes.to_dict("records"),
+                columnSize="sizeToFit",
+                defaultColDef={"resizable": True, "sortable": True, "filter": True, "minWidth":100},
+                #columnDefs=columnDefs,
+            ), 
+        ])
+                
                                  
-        return dff_pt.to_dict('rows'),cultivo_cell,col,TableDtScrolling_no_color(dff_lotes)#,fig  
+        return dff_pt.to_dict('rows'),cultivo_cell,col,table_grid#TableDtScrolling_no_color(dff_lotes)#,fig  
     
     @app.callback(
         #Output('fertilizantes', 'figure'),
         #Output('agua', 'figure'),
         #Output('horas', 'figure'),
         Output('tabs','children'),
+        Output("table-grid-lotes",'children'),
         [Input('drop_anio','value'),    
          #Input('drop_cultivo','value'),
          Input('drop_variedad','value'),
          Input('check-agricola','value'),
          Input('radio-st','value'),
          Input('recursos','value'),
-         Input('drop_lote','value'),]
+        Input('drop_lote','value'),
+         #Input('drop_lote','value')
+         ]
          #Input('cultivo_cell', 'value'),
     )  
 
     def LineMultivar(year_cultivo,variedad,check,radio_st,recursos,lote):#,cultivo_cell#,cultivo
         #if cultivo_cell == None:
-        
+        #lote=None
         #    df_produccion=df_general
         #else:
         #    df_produccion=df_general[df_general['CULTIVO']==cultivo_cell]
         
-        df_produccion=df_general
+        df_produccion=df_general.copy()
         #if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
         #    dff=df_produccion
         #elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
@@ -738,6 +834,7 @@ def plandeSiembra(empresa):
         df_ha_total=df_ha_sembrado.groupby(['CONSUMIDOR',radio_st,'SEMANA','VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
         df_ha_st=df_ha_total.groupby([radio_st,'SEMANA','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
         df_ha_st=df_ha_st[[radio_st,'AREA_CAMPAÑA']]
+        
         
             #if drop_anio==None:
 
@@ -793,7 +890,7 @@ def plandeSiembra(empresa):
                 titulo=f"{title} "+", ".join(cultivo)+" -{}".format(variedad)
             return titulo
 
-        fig_fertilizantes=line_agricola_card(df_fer,radio_st,"CANTIDAD",'DSCVARIABLE',330,radio_st,'Kilogramos','Fertilizantes',orders=orderX(radio_st,df_fer),title='Fertilizantes')
+        fig_fertilizantes=line_agricola_card(df_fer,radio_st,"CANTIDAD",'DSCVARIABLE',330,radio_st,'Unidades','Fertilizantes',orders=orderX(radio_st,df_fer),title='Fertilizantes')
         fig_agua=line_agricola_card(df_agua,radio_st,"CANTIDAD",'DSCVARIABLE',330,radio_st,'Metros Cúbicos','Riego',orders=orderX(radio_st,df_agua),title='Riego')
         #fig_horas=px.line(df_horas, x=x, y="CANTIDAD", color='DSCVARIABLE',template='plotly_white',height=280,margin=dict(l=60,r=40,b=40,t=70,pad=0,autoexpand=True))
         fig_horas=line_agricola_card(df_horas,radio_st,"CANTIDAD",'DSCVARIABLE',330,radio_st,"Cantidad",'Mano de Obra',orders=orderX(radio_st,df_horas),title='Mano de Obra')
@@ -808,15 +905,57 @@ def plandeSiembra(empresa):
                             dmc.Tab(i, value=i)for i in list_tipo
                         ]
                     ),
-                    dmc.TabsPanel(dcc.Graph(figure=fig_agua,style={"height": "90%"}), value='Riego'),
-                    dmc.TabsPanel(dcc.Graph(figure=fig_horas_maquinaria,style={"height": "80%"}), value='Maquinaria'),
-                    dmc.TabsPanel(dcc.Graph(figure=fig_horas,style={"height": "70%"}), value='Mano de obra'),
-                    dmc.TabsPanel(dcc.Graph(figure=fig_fertilizantes,style={"height": "95%"}), value='Insumos'),
+                    #dbc.Card(dcc.Graph(id='graph-partida-pronostico'),className="shadow-sm")
+                    dmc.TabsPanel(dbc.Card(dcc.Graph(figure=fig_agua),className="shadow-sm"), value='Riego'),
+                    dmc.TabsPanel(dbc.Card(dcc.Graph(figure=fig_horas_maquinaria),className="shadow-sm"), value='Maquinaria'),
+                    dmc.TabsPanel(dbc.Card(dcc.Graph(figure=fig_horas),className="shadow-sm"), value='Mano de obra'),
+                    dmc.TabsPanel(dbc.Card(dcc.Graph(figure=fig_fertilizantes),className="shadow-sm"), value='Insumos'),
                 ],
                 value=list_tipo[0],
               ),
         ) 
-        return child
+        df_tablew=df_ha_total.groupby(['CONSUMIDOR',radio_st,'VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA'])[['AREA_CAMPAÑA']].sum().reset_index()
+        
+        table_Dash_plotly=dash_table.DataTable(
+                        data=df_tablew.to_dict('records'),
+                        #columns=[
+                        #    {'name': i, 'id': i}
+                        #    if i != 'Date' else
+                        #    {'name': 'Date', 'id': 'Date', 'type': 'datetime'}
+                        #    for i in df_tablew.columns
+                        #],
+                        style_table={'height': '300px', 'overflowY': 'auto'},
+                        fixed_rows={'headers': True},
+                        style_as_list_view=True,
+                        style_cell={'padding': '12px',
+                                                'font-family': 'sans-serif',
+                                                'font-size': '10px',
+                                                'text_align': 'left',
+
+                                                'overflow': 'hidden',
+                                                    'textOverflow': 'ellipsis',
+                                                    'maxWidth': 0
+                                                #'minWidth': 30, 'maxWidth': 70, #'width': 95
+                                                },
+                        
+                        style_header={
+                                        #'backgroundColor': 'white',
+                                        'fontWeight': 'bold',
+                                        'text_align': 'left',
+                                        'font-size': '11px',    
+                                        #'backgroundColor': 'rgb(30, 30, 30)',
+                                        'color': 'Black'
+                                    },
+                        tooltip_data=[
+                        {
+                            column: {'value': str(value), 'type': 'markdown'}
+                            for column, value in row.items()
+                        } for row in df_tablew.to_dict('records')
+                        ],
+                        tooltip_duration=None,
+                        )
+        
+        return child,table_Dash_plotly
     @app.callback(
     Output("modal", "is_open"),
     Output("modal", "children"),
@@ -972,40 +1111,42 @@ def BarGOV_SX(x, y,title,prueba,dinero,x_title,y_title,promedio,y2,eyey2=True,ba
                                     },
                         titlefont={'color': 'black','size': 15},
                         uniformtext_minsize=8, #uniformtext_mode='hide',
-                        template='plotly_white')
+                        template='none',
+                        bargap=0.15,)
     fig.update_layout(
         autosize=True,
         #width=100,
-        #height=380,
+        height=300,
         margin=dict(
             l=60,
             r=40,
             b=30,
             t=70,
-            pad=0,
-            autoexpand=True
+            #pad=0,
+            #autoexpand=True
         ),
+
         hovermode='closest',
         hoverlabel=dict(
 
         ),
-        paper_bgcolor='white',
-        plot_bgcolor='white',
+        #paper_bgcolor='white',
+        #plot_bgcolor='white',
         
         #showgrid=False,
         #modeclic='event+select'
         
-        yaxis=dict(
-            gridcolor='#F2F2F2',
-            showline=True,
-            showgrid=True,
-            ticks='outside',
-            tickfont=dict(
-                    family='Arial',
-                    color='black',
-                    size=12
-                       )
-        )
+        #yaxis=dict(
+        #    gridcolor='#F2F2F2',
+        #    showline=True,
+        #    showgrid=True,
+        #    ticks='outside',
+        #    tickfont=dict(
+        #            family='Arial',
+        #            color='black',
+        #            size=12
+        #               )
+        #)
     
         )
     fig.update_layout(
@@ -1018,7 +1159,7 @@ def BarGOV_SX(x, y,title,prueba,dinero,x_title,y_title,promedio,y2,eyey2=True,ba
     
     if eyey2==True : 
         #[1.5, 1, 1.3, 0.7, 0.8, 0.9]
-        fig.update_layout(showlegend=True,legend=dict(
+        fig.update_layout(showlegend=False,legend=dict(
                         orientation="h",
                         yanchor="bottom",
                         y=1.02,
@@ -1080,8 +1221,28 @@ def TableDtScrolling_no_format(dff):
                                  )
     return fig
 def costosAgricola(empresa):
+    """"""
+    df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
+    df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
+    df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+    df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+                                                  df_variedad,
+                                                  df_cultivos,
+                                                  df_fertilizacion)
+    df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
+    df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    """"""
+    """
     data=dataAgricolaEmpresa(empresa)
     df_general=data[0]
+    df_costos_agricolas=data[2]
+    """
+    df_general=df_var_agricolas_default
+    df_costos_agricolas=df_costos_agricola_default
+
+
     #df_general_pivot=data[1]
     #df_general_costos=data[2]
     cultivo_columns=['CULTIVO','AREA_CAMPAÑA','INSUMOS','MANO DE OBRA','MAQUINARIA','RIEGO','OTROS','TOTAL','AH']
@@ -1089,7 +1250,7 @@ def costosAgricola(empresa):
 
     external_stylesheets = [dbc.themes.BOOTSTRAP]#
     #df_costos_agricolas=DataAgricola.costos_campaña(ip)
-    df_costos_agricolas=data[2]
+    
     try:
         df_produc_costos=df_costos_agricolas.groupby(['AÑO_CAMPAÑA','CULTIVO','VARIEDAD','TIPO','FECHAINICIO_CAMPAÑA','FECHAFIN_CAMPAÑA'])[['SALDO_MOF']].sum().reset_index()
     except:
@@ -1104,17 +1265,17 @@ def costosAgricola(empresa):
 
     app.layout = html.Div([
         dbc.Row([
-            dbc.Col([
-                dmc.Text(id='if',weight=500),
+            #dbc.Col([
+            #    dmc.Text(id='if',weight=500),
 
-            ],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
+            #],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
             dbc.Col([
                 dmc.Title(id='title', order=3, style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
                 dmc.Title(id='subtitle', order=4, style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
                 
                 #html.H3(id='title'),
                 #html.H5(id='subtitle', style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
-            ],width=10,className="col-xl-10 col-md-12 col-sm-12 col-12 mb-3")
+            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
         ]),
         dbc.Row([
             
@@ -1232,6 +1393,7 @@ def costosAgricola(empresa):
             dbc.Col([
                 accordion(children=[
                   loadingOverlay(html.Div(id='table-lote'),html.Div(id='cultivo_cell')),
+                  dmc.Text(id='if',weight=500),
                 ],texto='Detalle de Costos por Lote',value='lote'),
             ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
         ]), 
@@ -1824,12 +1986,25 @@ def graph_bar_agricola2(df,titulo,name_ejex,name_ejey):
     return fig
 
 def variablesAgricolas(empresa):
-    data=dataAgricolaEmpresa(empresa)
-    #df_general=data[0]
-    #df_general_pivot=data[1]
-    #df_general_costos=data[2]
-    #df_agricola=DataAgricola.data_general(ip)
+    """"""
+    df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
+    df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
+    df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+    df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+                                                  df_variedad,
+                                                  df_cultivos,
+                                                  df_fertilizacion)
+    df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
+    df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    """"""
+    #data=dataAgricolaEmpresa(empresa)
+    """
     df_agricola=data[0]
+    """
+    df_agricola=df_var_agricolas_default.copy()
+    
     df_agricola_1=df_agricola.groupby(['AÑO_FECHA','CULTIVO','VARIEDAD','CONSUMIDOR'])[['CANTIDAD']].sum().reset_index()
     year_min=sorted(df_agricola_1['AÑO_FECHA'].unique())[0]
     year_max=sorted(df_agricola_1['AÑO_FECHA'].unique())[-1]
@@ -2170,12 +2345,25 @@ def graph_lines_agricola1(df,titulo):
     return fig
 
 def hectareaSembrada(empresa):
+    """"""
+    df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
+    df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
+    df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+    df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+                                                  df_variedad,
+                                                  df_cultivos,
+                                                  df_fertilizacion)
+    df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
+    df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    """"""
+    """
     data=dataAgricolaEmpresa(empresa)
-    #df_general=data[0]
-    #df_general_pivot=data[1]
-    #df_general_costos=data[2]
-    #df_agricola=DataAgricola.data_general(ip)
     df_agricola=data[0]
+    """
+    df_agricola=df_var_agricolas_default.copy()
+
     df_agricola_1=df_agricola.groupby(['AÑO_CAMPAÑA','CULTIVO','VARIEDAD','CONSUMIDOR'])[['CANTIDAD']].sum().reset_index()
     app = DjangoDash('hectarea_sembrada', external_stylesheets=[dbc.themes.BOOTSTRAP])#
 
@@ -2504,12 +2692,24 @@ def barline(df,title):
     return fig1
 
 def costosCultivo(empresa):
+    """"""
+    df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
+    df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
+    df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+    df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+                                                  df_variedad,
+                                                  df_cultivos,
+                                                  df_fertilizacion)
+    df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
+    df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    """"""
+    """
     data=dataAgricolaEmpresa(empresa)
-    #df_general=data[0]
-    #df_general_pivot=data[1]
-    #df_general_costos=data[2]
-    
     df_costos_agricolas=data[2]
+    """
+    df_costos_agricolas=df_costos_agricola_default.copy()
     dbc_css = (
     "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
     )
@@ -2743,6 +2943,259 @@ def costosCultivo(empresa):
 
         return barline(df_costos_insumos_cultivo,'Costos Totales por Cultivo'),barline(df_costos_hectarea,'Costos por Hectárea')
 
+def comparativoRecursos(empresa):
+    """"""
+    df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
+    df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
+    df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+    df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+                                                  df_variedad,
+                                                  df_cultivos,
+                                                  df_fertilizacion)
+    df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
+    df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    """"""
+    """
+    data=dataAgricolaEmpresa(empresa)
+    df_agricola=data[0] 
+    """     
+    df_agricola=df_var_agricolas_default.copy()
+
+    df_produccion=df_agricola.groupby(['AÑO_CAMPAÑA','FECHAINICIO_CAMPAÑA','FECHAFIN_CAMPAÑA','CULTIVO','AÑO_CULTIVO','VARIEDAD','DSCVARIABLE','FECHA','CONSUMIDOR'])[['CANTIDAD']].sum().reset_index()
+    app = DjangoDash('variables_agricolas', external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+    app.layout = html.Div([
+            dbc.Row([
+                    dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
+                    dbc.Col([
+                            html.H3(id='title', style={'margin-bottom': '0px', 'color': 'black'}),#,'textAlign': 'center'
+                            html.H5(id='subtitle', style={'margin-bottom': '0px', 'color': 'black'})
+                        ],width=11,className="col-xl-11 col-md-11 col-sm-11 col-11 mb-3"),
+                    
+                    ]),
+                    offcanvas(componentes=[
+                        select(ids="cultivo",texto="Cultivo"),
+                        select(ids="variedad",texto="Variedad"),
+                        select(ids="consumidor",texto="Consumidor"),
+                    ]),
+        dbc.Row([multiSelect(ids="camp-cultivo",texto="Seleccione Campaña - Cultivo"),]),
+
+    
+         dbc.Row([
+            dbc.Col([loadingOverlay(html.Div(id='tabs')),],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+            #dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph2'),className="shadow-sm"))],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-3"),
+         ]),
+         #dbc.Row([
+         #   dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph3'),className="shadow-sm"))],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-3"),
+         #   dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph4'),className="shadow-sm"))],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-3"),
+         #]),
+
+            
+    ])
+    offcanvasAction(app)
+    @app.callback(
+            Output("title","children"),
+            Output("subtitle","children"),
+            
+            Input("cultivo","value"),
+            Input("consumidor","value"),
+            #Input("slider-year","value"),
+            
+            )
+    def title(cultivo,consumidor):
+        general='Recursos Agrícolas'
+        
+        #if slider == None:
+        #    title=general
+        #else:
+        #    title=general+' del año '+str(slider[0])+' al '+str(slider[1])
+        title=general
+        if cultivo == None and consumidor == None:
+            subtitle=''
+        elif cultivo != None and consumidor == None: 
+            subtitle=cultivo
+        elif cultivo == None and consumidor != None: 
+            subtitle=consumidor
+        elif cultivo != None and consumidor != None: 
+            subtitle=cultivo+' '+consumidor
+        
+        return title, subtitle
+    
+    @app.callback(
+            Output("cultivo","data"),
+            Output("variedad","data"),
+            Output("consumidor","data"),
+            Output("camp-cultivo","data"),
+            #Output("range-slider","marks"),
+            
+            Input("cultivo","value"),
+            #Input("cultivo","value"),
+            Input("variedad","value"),
+            Input("consumidor","value"),
+            
+            
+            )
+    def filtrar_agricola1(cultivo,variedad,consumidor):
+
+            if cultivo==None and consumidor==None and variedad==None:
+                    options=df_produccion
+
+            elif cultivo!=None  and consumidor==None and variedad==None:    
+                    options=df_produccion[df_produccion['CULTIVO']==cultivo]
+            elif cultivo==None  and consumidor!=None and variedad==None:    
+                    options=df_produccion[df_produccion['CONSUMIDOR']==consumidor]
+            
+            elif cultivo==None  and consumidor==None and variedad!=None:    
+                    options=df_produccion[df_produccion['VARIEDAD']==variedad]
+
+            elif cultivo!=None  and consumidor!=None and variedad!=None:
+                    options=df_produccion[(df_produccion['CULTIVO']==cultivo)&(df_produccion['CONSUMIDOR']==consumidor)&(df_produccion['VARIEDAD']==variedad)]
+
+            elif cultivo!=None  and consumidor!=None and variedad==None:
+                    options=df_produccion[(df_produccion['CULTIVO']==cultivo)&(df_produccion['CONSUMIDOR']==consumidor)]
+
+            elif cultivo!=None  and consumidor==None and variedad!=None:
+                    options=df_produccion[(df_produccion['CULTIVO']==cultivo)&(df_produccion['VARIEDAD']==variedad)]        
+
+            elif cultivo==None  and consumidor!=None and variedad!=None:
+                    options=df_produccion[(df_produccion['CONSUMIDOR']==consumidor)&(df_produccion['VARIEDAD']==variedad)]  
+                    
+            option_cultivo=[{'label': i, 'value': i} for i in options['CULTIVO'].unique()] 
+            option_variedad=[{'label': i, 'value': i} for i in options['VARIEDAD'].unique()] 
+            option_consumidor=[{'label': i, 'value': i} for i in options['CONSUMIDOR'].unique()]
+            option_camp_cultivo=[{'label': i, 'value': i} for i in options['AÑO_CULTIVO'].unique()] 
+            #list_years=sorted(options['AÑO_FECHA'].unique())
+            #lista_anios=[str(x) for x in list_years]
+            #marks=dict(zip(lista_anios, lista_anios))
+            
+            
+            return option_cultivo,option_variedad,option_consumidor,option_camp_cultivo#,marks
+    
+    @app.callback(
+            Output("tabs","children"),
+            
+            
+            #Output("range-slider","marks"),
+            
+            Input("cultivo","value"),
+            #Input("cultivo","value"),
+            Input("variedad","value"),
+            Input("consumidor","value"),
+            Input("camp-cultivo","value"),
+            
+            
+            )
+    def filtrar_agricola1(cultivo,variedad,consumidor,campaña_cultivo):
+            df_produccion=df_agricola
+            def orderX(x,df):
+                if x == 'week':
+                    order={'week':sorted(df['week'].unique()),'DSCVARIABLE': sorted(df['DSCVARIABLE'].unique())}
+                else: 
+                    order={}
+                return order
+            if cultivo==None and consumidor==None and variedad==None:
+                    options=df_produccion
+
+            elif cultivo!=None  and consumidor==None and variedad==None:    
+                    options=df_produccion[df_produccion['CULTIVO']==cultivo]
+            elif cultivo==None  and consumidor!=None and variedad==None:    
+                    options=df_produccion[df_produccion['CONSUMIDOR']==consumidor]
+            
+            elif cultivo==None  and consumidor==None and variedad!=None:    
+                    options=df_produccion[df_produccion['VARIEDAD']==variedad]
+
+            elif cultivo!=None  and consumidor!=None and variedad!=None:
+                    options=df_produccion[(df_produccion['CULTIVO']==cultivo)&(df_produccion['CONSUMIDOR']==consumidor)&(df_produccion['VARIEDAD']==variedad)]
+
+            elif cultivo!=None  and consumidor!=None and variedad==None:
+                    options=df_produccion[(df_produccion['CULTIVO']==cultivo)&(df_produccion['CONSUMIDOR']==consumidor)]
+
+            elif cultivo!=None  and consumidor==None and variedad!=None:
+                    options=df_produccion[(df_produccion['CULTIVO']==cultivo)&(df_produccion['VARIEDAD']==variedad)]        
+
+            elif cultivo==None  and consumidor!=None and variedad!=None:
+                    options=df_produccion[(df_produccion['CONSUMIDOR']==consumidor)&(df_produccion['VARIEDAD']==variedad)]  
+
+            if campaña_cultivo == None or len(campaña_cultivo) == 0:
+                  options=options.copy()
+            else :
+                  options=options[options['AÑO_CULTIVO'].isin(campaña_cultivo)]
+
+            options.loc[options.DSCVARIABLE == 'Nitrógeno','DSCVARIABLE'] =  'Nitrogeno'  
+            options.loc[options.DSCVARIABLE == 'Fósforo','DSCVARIABLE'] =  'Fosforo'  
+            list_tipo=options['TIPO'].unique()
+            df_fertilizantes=options[options['TIPO']=='Insumos']
+            df_fer=df_fertilizantes.groupby(['AÑO_CULTIVO','DSCVARIABLE'])[['CANTIDAD']].sum().reset_index()
+            #FACE_ROW
+            test=df_fertilizantes.groupby(['AÑO_CULTIVO','DSCVARIABLE','week'])[['CANTIDAD']].sum().reset_index()
+            for campcul in test['AÑO_CULTIVO'].unique():
+                
+                fig2 = px.line(test[test['AÑO_CULTIVO']==campcul]  , x="week", y="CANTIDAD", color='DSCVARIABLE',category_orders=orderX('week',test[test['AÑO_CULTIVO']==campcul]  ),template='none')#, facet_row="AÑO_CULTIVO"
+            #fig2.update_yaxes(matches=None)
+            #df_fer=df_fer.sort_values(by=[radio_st,'AÑO_FECHA','SEMANA'],ascending=True)
+
+            df_agua=options[options['TIPO']=='Riego']
+            df_agua=df_agua.groupby(['AÑO_CULTIVO'])[['CANTIDAD']].sum().reset_index()
+            #df_agua=df_agua.sort_values(by=[radio_st,'AÑO_FECHA','SEMANA'],ascending=True)
+
+            df_horas=options[options['TIPO']=='Mano de obra']
+            df_horas=df_horas.groupby(['AÑO_CULTIVO'])[['CANTIDAD']].sum().reset_index()
+            #df_horas=df_horas.sort_values(by=[radio_st,'AÑO_FECHA','SEMANA'],ascending=True)
+
+            df_horas_maquina=options[options['TIPO']=='Maquinaria']
+            df_horas_maquina=df_horas_maquina.groupby(['AÑO_CULTIVO'])[['CANTIDAD']].sum().reset_index()
+            #df_horas_maquina=df_horas_maquina.sort_values(by=[radio_st,'AÑO_FECHA','SEMANA'],ascending=True)
+                
+            #df_bar_comparativo=options.groupby(['AÑO_CULTIVO'])[['CANTIDAD']].sum().reset_index()
+            def barComparativoAR(df,title='',x='x',y='y',color=None):
+                fig_b = px.bar(df, x=x, y=y,template="none",title=title,color=color)#, facet_row="Año",facet_row_spacing=0.1
+                fig_b.update_layout(autosize=True,margin=dict(l=60,r=40,b=90,t=50),height=350,bargap=0.15)
+                fig_b.update_xaxes(type='category')
+                return fig_b
+            fig_fertilizantes=barComparativoAR(df_fer,title='Fertilizantes',x='AÑO_CULTIVO',y='CANTIDAD',color='DSCVARIABLE')
+            fig_agua=barComparativoAR(df_agua,title='Riego',x='AÑO_CULTIVO',y='CANTIDAD')
+            #fig_horas=px.line(df_horas, x=x, y="CANTIDAD", color='DSCVARIABLE',template='plotly_white',height=280,margin=dict(l=60,r=40,b=40,t=70,pad=0,autoexpand=True))
+            fig_horas=barComparativoAR(df_horas,title='Mano de Obra',x='AÑO_CULTIVO',y='CANTIDAD')
+            fig_horas_maquinaria=barComparativoAR(df_horas_maquina,title='Horas Máquina',x='AÑO_CULTIVO',y='CANTIDAD')
+
+            child=html.Div([
+            
+            dmc.Tabs(
+                [
+                    dmc.TabsList(
+                        [
+                            dmc.Tab(i, value=i)for i in list_tipo
+                        ]
+                    ),
+                    dmc.TabsPanel(dcc.Graph(figure=fig_agua),value='Riego'),
+                    dmc.TabsPanel(dcc.Graph(figure=fig_horas_maquinaria), value='Maquinaria'),
+                    dmc.TabsPanel(dcc.Graph(figure=fig_horas), value='Mano de obra'),
+                    dmc.TabsPanel(dcc.Graph(figure=fig_fertilizantes), value='Insumos'),
+                ],
+                value=list_tipo[0],
+                ),
+            html.Div([dcc.Graph(figure=fig2)])
+            
+            ]),
+
+            
+            return child
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2831,4 +3284,338 @@ def costosCultivo(empresa):
                 
             ],width=3,className="col-xl-3 col-md-4 col-sm-12 col-12 mb-3"),
         ]),
- """       
+ """ 
+external_stylesheets = [dbc.themes.BOOTSTRAP]#
+def Column(content=[],size=12):
+      return dbc.Col(content,width=size,className=f"col-xl-{size} col-md-{size} col-sm-12 col-12 mb-3")
+
+def dashCostosProduccionAgricola():
+      
+    df_general=df_var_agricolas_default.copy()
+    df_general_pivot=df_var_agricolas_pivot_default.copy()
+    df_costos_agricolas=df_costos_agricola_default.copy()
+
+    app = DjangoDash('vcostos',external_stylesheets=external_stylesheets,external_scripts=scripts)
+    app.layout = html.Div([
+        dbc.Row([
+            Column(content=[
+                  btnFilter()
+            ],size=1),
+            Column(content=[
+                  html.Div(id='title')
+            ],size=5),
+            Column(content=[
+                  select(
+                         ids="drop_anio",
+                         texto="Campaña",
+                         value=sorted(df_costos_agricolas['AÑO_CAMPAÑA'].unique())[-1],
+                         data=[{'label': i, 'value': i} for i in df_costos_agricolas['AÑO_CAMPAÑA'].unique()],
+                         size='xs',
+                        )
+            ],size=2),
+            Column(content=[
+                  multiSelect(ids="drop_cultivo",
+                              texto="Cultivos",
+                              size='xs'
+                            )
+            ],size=2),
+            Column(content=[
+                  select(
+                         ids="drop_variedad",
+                         texto="Variedad",
+                         size='xs'
+                        )
+                         
+
+            ],size=2),
+            ######################################################################################
+            offcanvas(componentes=[
+                    radioGroup(ids="radio-costos",
+                               texto="Tipo de Costo",
+                               children=[dmc.Radio(label='Totales', value='CT'),dmc.Radio(label='Por Hectárea', value='CH')],
+                               value="CT",
+                    ),
+                    radioGroup(ids="rbtn_dinero",
+                               texto="Moneda",
+                               children=[dmc.Radio(label='Soles', value='SALDO_MOF'),dmc.Radio(label='Dolares', value='SALDO_MEX')],
+                               value="SALDO_MEX",
+                    ),
+                    dbc.Checklist(
+                                    id="check-recursos",
+                                    inline=False,
+                                    input_checked_style={
+                                        "backgroundColor": "rgb(34, 139, 230)",
+                                        "borderColor": "rgb(34, 139, 230)",
+                                    },     
+                                    label_style={'font-size': '12px'} )
+
+            ]),
+        ]),
+        dbc.Row([
+            Column(content=[
+                html.Div(id='card-total-costos')#tipo de gasto     
+            ],size=4),
+            Column(content=[
+               html.Div(id='card-total-ha')#por cultivo
+            ],size=4),
+            Column(content=[
+               html.Div(id='card-cultivo-costos')#
+            ],size=4),
+        ]),
+        dbc.Row([
+            Column(content=[
+                  dmc.Card(children=[
+                                    dmc.CardSection([dcc.Graph(id='bar-cultivo-costosp')])
+                            ],
+                            withBorder=True,
+                            shadow="lg",
+                            radius="xs"
+                        )
+            ],size=5),
+            Column(content=[
+                  dmc.Card(children=[
+                                    dmc.CardSection([dcc.Graph(id='bar-lote-costosp')])
+                            ],
+                            withBorder=True,
+                            shadow="lg",
+                            radius="xs"
+                        )
+            ],size=7),
+        ]),
+        dbc.Row([
+            
+            Column(content=[
+                  dmc.Card(children=[
+                                    dmc.CardSection([dcc.Graph(id='bar-variedad-costosp')])
+                            ],
+                            withBorder=True,
+                            shadow="lg",
+                            radius="xs"
+                        )
+            ],size=4),
+            Column(content=[
+                  dmc.Card(children=[
+                                    dmc.CardSection([dcc.Graph(id='pie-tipo-costosp')])
+                            ],
+                            withBorder=True,
+                            shadow="lg",
+                            radius="xs"
+                        )
+            ],size=4),
+            Column(content=[
+                  dmc.Card(children=[
+                                    dmc.CardSection([dcc.Graph(id='mapa-costosp')])
+                            ],
+                            withBorder=True,
+                            shadow="lg",
+                            radius="xs"
+                        )
+            ],size=4),
+        ]),
+        
+
+    dcc.Store(id='data-values')     
+    ])
+    offcanvasAction(app)
+    @app.callback(
+                Output('drop_anio','data'),
+                Output('drop_cultivo', 'data'),
+                Output('drop_variedad', 'data'),
+                Output('check-recursos', 'options'),
+                Output('check-recursos', 'value'),
+                Output("data-values","data"),
+              [Input('drop_anio','value'),
+               Input('drop_cultivo','value'), 
+               Input('drop_variedad','value'),
+               #Input('cultivo_cell','value'),
+              ])
+    def update_drop_cultivo(year,cultivo,variedad):#,cultivo_cell
+        df_produccion=df_costos_agricola_default.copy()
+        if year==None and (cultivo==None or len(cultivo)==0) and variedad==None:
+            options=df_produccion
+        elif year!=None and (cultivo==None or len(cultivo)==0)and variedad==None:
+            options=df_produccion[df_produccion['AÑO_CAMPAÑA']==year]
+        elif year==None and (cultivo!=None or len(cultivo)>0)and variedad==None:
+            options=df_produccion[df_produccion['CULTIVO'].isin(cultivo)]
+
+        elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad==None:# or len(cultivo)>0
+            options=df_produccion[(df_produccion['CULTIVO'].isin(cultivo))&(df_produccion['AÑO_CAMPAÑA']==year)]
+
+        elif year==None and (cultivo==None or len(cultivo)==0) and variedad!=None:
+            options=df_produccion[df_produccion['VARIEDAD']==variedad]
+        elif year!=None and (cultivo==None or len(cultivo)==0) and variedad!=None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)]
+        elif year==None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['CULTIVO'].isin(cultivo))]
+        elif year!=None and (cultivo!=None or len(cultivo)>0) and variedad!=None:
+            options=df_produccion[(df_produccion['VARIEDAD']==variedad)&(df_produccion['AÑO_CAMPAÑA']==year)&(df_produccion['CULTIVO'].isin(cultivo))]
+
+        anio=[{'label': i, 'value': i} for i in options['AÑO_CAMPAÑA'].unique()]
+        cultivo=[{'label': i, 'value': i} for i in options['CULTIVO'].unique()]
+        variedad=[{'label': i, 'value': i} for i in options['VARIEDAD'].unique()]
+        check=[{'label': i, 'value': i} for i in options['TIPO'].unique()]
+        #minimo=str(options['FECHAINICIO_CAMPAÑA'].min())#
+        
+        #maximo=str(options['FECHAFIN_CAMPAÑA'].max())#.str[0:10]
+        
+        #inicio_fin=str(minimo)+' - '+str(maximo)
+
+        return anio,cultivo,variedad,check,options['TIPO'].unique(),options.to_json(date_format='iso', orient='split')#,inicio_fin
+
+    @app.callback(
+         Output('card-total-costos','children'),
+         Output('card-total-ha','children'),
+         Output('card-cultivo-costos','children'),
+
+         Output('bar-lote-costosp','figure'),
+         Output('bar-variedad-costosp','figure'),
+         Output('bar-cultivo-costosp','figure'),
+         Output('pie-tipo-costosp','figure'),
+         Output("mapa-costosp","figure"),
+        
+         Input('data-values','data'),
+         Input('rbtn_dinero','value'),
+         Input('radio-costos','value'),#rbtn_dinero
+         Input('check-recursos','value'),
+    )   
+    def actualizar_table_cultivo(data,radio,radio_costos,check):
+        options=pd.read_json(data, orient='split')
+        df_campaña_ccc=options[options['TIPO'].isin(check)]
+        dff_end_pivot= df_campaña_ccc.pivot(index=('CODCULTIVO','CULTIVO','VARIEDAD','AREA_CAMPAÑA','IDCONSUMIDOR','CONSUMIDOR','CODSIEMBRA','CODCAMPAÑA','AÑO_CAMPAÑA'),values=(radio),columns=('TIPO'))
+        dff_end_pivot.reset_index()
+        dff_pivot=pd.DataFrame(dff_end_pivot.to_records())
+        if radio == 'SALDO_MOF':
+            simbolo='S/'
+        elif radio == 'SALDO_MEX':
+            simbolo='$'
+        """
+        dff_cultivo=dff_pivot.groupby(['CODCULTIVO','CULTIVO']).sum().reset_index()
+        if radio_costos == 'CH':
+            columns=dff_cultivo.columns
+            for recurso in columns[4:]:
+                dff_cultivo[recurso]=dff_cultivo[recurso]/dff_cultivo['AREA_CAMPAÑA']
+                
+        dff_cultivo=dff_cultivo.drop(['CODCULTIVO','AÑO_CAMPAÑA'], axis=1)
+        dff_cultivo['AREA_CAMPAÑA']=dff_cultivo['AREA_CAMPAÑA'].astype('object')
+
+        dff_cultivo.loc[:,'TOTAL']= dff_cultivo.sum(numeric_only=True, axis=1)
+        dff_cultivo['AREA_CAMPAÑA']=dff_cultivo['AREA_CAMPAÑA'].astype('float64')
+        dff_cultivo=dff_cultivo.sort_values('TOTAL',ascending=False)#
+        dff_cultivo.loc['TOTAL',:]= dff_cultivo.sum(numeric_only=True, axis=0)
+        dff_cultivo=dff_cultivo.fillna('TOTAL')
+        try:        
+            dff_cultivo=dff_cultivo.drop(['CODSIEMBRA','CODCAMPAÑA'], axis=1)
+        except:
+            pass
+        #col=[{"name": c, "id": c,"type": "numeric", "format": Format(group=",", precision=0,scheme="f")} for c in dff_cultivo]
+        """
+        def tabs_cvl(dff,cols,radio_costos,ejey,tickedx):
+            dff_lote=dff.groupby(cols).sum().reset_index()
+            dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('object')
+            dff_lote.loc[:,'TOTAL']= dff_lote.sum(numeric_only=True, axis=1)
+            dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('float64')
+
+            if ejey =='Lote':
+                  df_ha=dff.groupby(['CONSUMIDOR','AREA_CAMPAÑA']).sum().reset_index()
+            elif ejey =='Variedad':
+                  df_ha=dff.groupby(['VARIEDAD','CONSUMIDOR','AREA_CAMPAÑA']).sum().reset_index()
+            elif ejey =='Cultivo':
+                  df_ha=dff.groupby(['CULTIVO','CONSUMIDOR','AREA_CAMPAÑA']).sum().reset_index()
+            
+            if radio_costos == 'CT':
+                
+                dff_lote=dff_lote.sort_values('TOTAL',ascending=False)
+                #x=dff_lote['NCONSUMIDOR']
+                x=dff_lote[cols[0]]
+                y=dff_lote['TOTAL']
+                color=dff_lote['CULTIVO']
+                dff_lote['PROMEDIO']=(dff_lote['TOTAL'].sum())/len(dff_lote[cols[0]].unique()) 
+                title=f'Costos {simbolo}. / {ejey}'
+                ejetotal='TOTAL'
+
+            #return BarGOV_SX(dff_lote['TOTAL_y'],x,title,color,None,'Lotes',simbolo,dff_lote['PROMEDIO'],dff_lote['AREA_CAMPAÑA'])
+
+            elif radio_costos == 'CH':
+
+                #dff_lote['AH']=dff_lote['TOTAL']/dff_lote['AREA_CAMPAÑA']
+                dff_lote['AH']=dff_lote['TOTAL']/df_ha['AREA_CAMPAÑA']
+                dff_lote=dff_lote.sort_values('AH',ascending=False)
+                x=dff_lote[cols[0]]
+                y=dff_lote['AH']
+                color=dff_lote['CULTIVO']
+                dff_lote['PROMEDIO']=(dff_lote['AH'].sum())/len(dff_lote[cols[0]].unique())   
+                title=f'Costos {simbolo} / Ha x {ejey}'
+                ejetotal='AH'
+            return BarGOV_SX(dff_lote[ejetotal],x,title,color,None,ejey,simbolo, dff_lote['PROMEDIO'],dff_lote['AREA_CAMPAÑA'],False,tickedx)       
+                #scatter=dff_lote_mof['AH']
+        lotes=tabs_cvl(dff_pivot,['CONSUMIDOR','CULTIVO'],radio_costos,'Lote',True)
+        variedad=tabs_cvl(dff_pivot,['VARIEDAD','CULTIVO'],radio_costos,'Variedad',True)
+        cultivo=tabs_cvl(dff_pivot,['CULTIVO'],radio_costos,'Cultivo',False)
+
+        pie_tipo_gasto=df_campaña_ccc.groupby('TIPO')[[radio]].sum().reset_index()
+        fig_pie = go.Figure(data=[go.Pie(labels=pie_tipo_gasto['TIPO'],#,title_text=f"Tipo Gasto",
+                             values=pie_tipo_gasto[radio])])
+        fig_pie.update_layout(title_text="Tipo de Costo",template='none')
+        fig_pie.update_traces(textposition='inside', textinfo='percent+label')
+        fig_pie.update_traces(hoverinfo='label+percent+value', textfont_size=10)
+                        #marker=dict(colors=colors))#line=dict(color='#000000', width=2)
+        fig_pie.update_layout(height=300,margin = dict(t=30, b=50, l=10, r=10))
+        fig_pie.update_layout(showlegend=False)
+        fig_pie.update_layout(title_font_color="black")
+
+        ######################
+        df_loader=df_campaña_ccc.groupby(['CULTIVO'])[[radio]].sum().reset_index()
+        total_card_1=df_loader[radio].sum()
+        lista_cultivo=df_loader['CULTIVO'].unique()
+        total_costos_dict=calculateCard(df_loader,col=radio,color=px.colors.qualitative.G10[:len(lista_cultivo)],list_partidas=lista_cultivo,pivot=False,col_='CULTIVO')
+        ###########################
+        df_ha=dff_pivot.groupby(['CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
+        total_card_2=df_ha['AREA_CAMPAÑA'].sum()
+        lista_cultivo_ha=df_ha['CULTIVO'].unique()
+        total_ha_dict=calculateCard(df_ha,col='AREA_CAMPAÑA',color=px.colors.qualitative.G10[:len(lista_cultivo_ha)],list_partidas=lista_cultivo_ha,pivot=False,col_='CULTIVO')
+        #######################################################
+        costo_x_ha=total_card_1/total_card_2
+        ####maps
+        df_map=df_campaña_ccc[df_campaña_ccc['POLYGON'].notnull()]
+        df_map_polygon=df_map.groupby(['CONSUMIDOR','POLYGON'])[['AREA_CAMPAÑA']].sum().reset_index()
+
+        def createPolygonMap(df):
+            fig = go.Figure()
+            for lista_string,lote in zip(df['POLYGON'].unique(),df['CONSUMIDOR'].unique()):
+                lista_coord=eval(lista_string)
+                fig.add_trace(go.Scattermapbox(
+                    mode="lines",
+                    lon=[coord[0] for coord in lista_coord],
+                    lat=[coord[1] for coord in lista_coord],
+                    fill='toself',
+                    fillcolor='rgba(0, 0, 100, 0.3)',
+                    line=dict(color='rgba(0, 0, 100, 0.3)', width=2),
+                    hovertext=lote,
+                    name=lote,
+                ))
+
+                # Configurar el diseño del mapa
+                fig.update_layout(
+                    mapbox=dict(
+                        center=dict(lon=-79.53234131,lat=-7.03284940),#,-79.53234131
+                        style="carto-positron",
+                        zoom=12
+                    ),
+                    showlegend=False
+                )
+                fig.update_layout(height=300,margin = dict(t=0, b=0, l=0, r=0))
+            return fig
+
+
+        
+         
+        return [
+                cardGF(value_total=f"{simbolo} {round(total_card_1,0)}",text='Costos Totales',list_element=total_costos_dict),
+                cardGF(value_total=f"{round(total_card_2,1)} ha",text='Hectáreas Sembradas',list_element=total_ha_dict),
+                cardGF(value_total=f"{simbolo} {round(costo_x_ha,1)}",text='Costo por Hectárea',list_element=[{'value': 100, 'color': "rgb(51, 102, 204)", 'label': '100%', "tooltip": "Costo por Hectárea"}]),
+                lotes,
+                variedad,
+                cultivo,
+                fig_pie,
+                createPolygonMap(df_map_polygon)
+            ]

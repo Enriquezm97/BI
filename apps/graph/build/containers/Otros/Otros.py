@@ -41,10 +41,19 @@ def table_dash(df):
                     
                     
     ),
+from apps.graph.data.transform_finanzas import *
+from apps.graph.data.gets import getApi
 
 def cargasdePersonalFinanzas(empresa):
+    """"""
+    token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
+    api_nisira_finanzas='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
+    finanzas_lista_nisira=getApi(api_nisira_finanzas,token_nisira)
+    df_bc_nisira=cleanBalanceComprobacion(finanzas_lista_nisira)
+
+    """"""
     
-    df=dataBcEmpresa(empresa)
+    df=df_bc_nisira.copy()
 
     app = DjangoDash('cargas_personal', external_stylesheets=[dbc.themes.BOOTSTRAP])#
 
@@ -168,7 +177,15 @@ def cargasdePersonalFinanzas(empresa):
         return cp_anual,fig,table
 
 def estadodeResultadosFinanzas(empresa):
-    df=dataBcEmpresa(empresa)                             
+    """"""
+    token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
+    api_nisira_finanzas='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
+    finanzas_lista_nisira=getApi(api_nisira_finanzas,token_nisira)
+    df_bc_nisira=cleanBalanceComprobacion(finanzas_lista_nisira)
+
+    """"""
+    df=df_bc_nisira.copy()
+    # df=dataBcEmpresa(empresa)                             
     dbc_css = (
         "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
     )
@@ -335,7 +352,15 @@ def pie_chart_2(df,moneda):
     return fig2
 
 def estadodeSituacionFinanzas(empresa):
-    df=dataBcEmpresa(empresa)
+    """"""
+    token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
+    api_nisira_finanzas='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
+    finanzas_lista_nisira=getApi(api_nisira_finanzas,token_nisira)
+    df_bc_nisira=cleanBalanceComprobacion(finanzas_lista_nisira)
+
+    """"""
+    df=df_bc_nisira.copy()
+    #df=dataBcEmpresa(empresa)
                                 
     dbc_css = (
         "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
@@ -529,8 +554,16 @@ def GraphwithHeader(idd,title):
 
 
 def gastosOperativosFinanzas(empresa):
+    """"""
+    token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
+    api_nisira_finanzas='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
+    finanzas_lista_nisira=getApi(api_nisira_finanzas,token_nisira)
+    df_bc_nisira=cleanBalanceComprobacion(finanzas_lista_nisira)
+
+    """"""
+    df=df_bc_nisira.copy()
     
-    df = dataBcEmpresa(empresa)
+    #df = dataBcEmpresa(empresa)
     
     
     app = DjangoDash('gastos_operativos', external_stylesheets=[dbc.themes.BOOTSTRAP])#url_theme1, dbc.icons.BOOTSTRAP, dbc_css,

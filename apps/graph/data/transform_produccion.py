@@ -13,6 +13,8 @@ def cleanVariablesAgricolas(df_consumidores,df_variedad,df_cultivos,df_fertiliza
     df_consumidores['AÑO_CAMPAÑA']=df_consumidores['AÑO_CAMPAÑA'].astype(object)
     df_fertilizacion['FECHA'] =pd.to_datetime(df_fertilizacion['FECHA'], format="%Y/%m/%d")
     df_fertilizacion['FECHA']=df_fertilizacion['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    df_consumidores['FECHAINICIO_CAMPAÑA'] =df_consumidores['FECHAINICIO_CAMPAÑA'].apply(lambda a: pd.to_datetime(a).date())
+    df_consumidores['FECHAFIN_CAMPAÑA'] =df_consumidores['FECHAFIN_CAMPAÑA'].apply(lambda a: pd.to_datetime(a).date())
     df_fertilizacion['SEMANA']=pd.DatetimeIndex(df_fertilizacion['FECHA']).week 
     df_fertilizacion['SEMANA']=df_fertilizacion['SEMANA'].astype(object)
    
@@ -20,9 +22,10 @@ def cleanVariablesAgricolas(df_consumidores,df_variedad,df_cultivos,df_fertiliza
     df_cultivo_variedad = df_cultivos.merge(df_variedad, how='inner', left_on=["CODCULTIVO"], right_on=["CODCULTIVO"])
     df_consumidor_cultivo_variedad = df_consumidores.merge(df_cultivo_variedad, how='inner', left_on=["CODCULTIVO","CODVARIEDAD"], right_on=["CODCULTIVO","CODVARIEDAD"])
     df_general=df_fertilizacion.merge(df_consumidor_cultivo_variedad, how='inner', left_on=["CODCONSUMIDOR","CODSIEMBRA","CODCAMPAÑA"], right_on=["CODCONSUMIDOR","CODSIEMBRA","CODCAMPAÑA"])
+    #df_general=df_fertilizacion.merge(df_consumidor_cultivo_variedad, how='inner', left_on=["CODCONSUMIDOR"], right_on=["CODCONSUMIDOR"])
             #TABLE GENERAL
     
-    df_general=df_general.drop(['NCULTIVO', 'FECHAINICIO_CAMPAÑA', 'FECHAFIN_CAMPAÑA','NCULTIVO'], axis=1)
+    #df_general=df_general.drop(['NCULTIVO', 'FECHAINICIO_CAMPAÑA', 'FECHAFIN_CAMPAÑA','NCULTIVO'], axis=1)
     df_general=df_general[df_general["CULTIVO"]!='COMPOST']
     df_general['DSCVARIABLE']=df_general['DSCVARIABLE'].str.strip()
     ## crear semana caracter
@@ -48,7 +51,8 @@ def cleanVariablesAgricolas(df_consumidores,df_variedad,df_cultivos,df_fertiliza
     cultivo=sorted(df_general['CULTIVO'].unique())
     for anio in df_general['AÑO_CAMPAÑA'].unique():
         for i in cultivo:
-            df_general['AÑO_CULTIVO'].loc[df_general['AÑO_CAMPAÑA']==anio]=df_general['AÑO_CULTIVO'].replace(i,str(anio)+'-'+str(i))        
+            df_general['AÑO_CULTIVO'].loc[df_general['AÑO_CAMPAÑA']==anio]=df_general['AÑO_CULTIVO'].replace(i,str(anio)+'-'+str(i))    
+    print(df_general.columns)    
     return df_general
 
 def variablesAgricolasPivot(df_general):

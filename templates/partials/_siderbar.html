@@ -29,7 +29,7 @@
                   <li class="nav-item"><a class="nav-link" href="{% url "informe_ventas" user.usuario.username %}">Informe de Ventas</a></li>
                   <li class="nav-item"><a class="nav-link" href="{% url "ventas_exportacion" user.usuario.username %}">Ventas Exportación</a></li>
                   <li class="nav-item"><a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas por Cliente</a></li>
-                  <li class="nav-item"><a class="nav-link" href="{% url "venproductos" user.usuario.username %}">Ventas por Producto</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url "vencore" user.usuario.username %}">Ventas  Core</a></li>
                   <li class="nav-item"><a class="nav-link" href="{% url "ventipo" user.usuario.username %}">Ventas por Tipo</a></li>
                   <li class="nav-item"><a class="nav-link" href="{% url "vencomparativo" user.usuario.username %}">Ventas Comparativo</a></li>
                   <!-- <li class="nav-item"><a class="nav-link" href="{% url "ventas_2" user.usuario.username %}">Ventas 2</a></li>-->
@@ -52,9 +52,14 @@
                   <li class="nav-item"><a class="nav-link" href="{% url "indicador_all" user.usuario.username%}">Todos los Indicadores</a></li>
                 
                 <li class="nav-item"><a class="nav-link" href="{% url "create_indicador" user.usuario.username%}">Crear Indicador</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "estado_situacion2" user.usuario.username%}">Estado de Situación</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "estado_r" user.usuario.username%}">Estado de Resultados</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "estado_gp" user.usuario.username%}">Estado de Ganancias y Pérdidas</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "costos_generales" user.usuario.username%}">Revisión de GF</a></li>
+                
                 <!--<li class="nav-item"> <a class="nav-link" href="{% url "gastos_operativos" user.usuario.username %}"> Gastos Operativos </a></li>
                  <li class="nav-item"> <a class="nav-link" href="{% url "cargas_personal" user.usuario.username %}"> Cargas de Personal </a></li>
-                  <li class="nav-item"> <a class="nav-link" href="{% url "estado_resultados" user.usuario.username %}"> Estado de Resultados </a></li>
+                 
                   <li class="nav-item"> <a class="nav-link" href="{% url "estado_situacion" user.usuario.username %}"> Estados de Situación </a></li>
                 -->
                 </ul>
