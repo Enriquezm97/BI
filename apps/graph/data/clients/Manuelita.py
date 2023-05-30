@@ -1,6 +1,6 @@
 import pandas as pd
 from apps.graph.data.gets import getApi
-"""
+
 token_manuelita='0Q10D10N10D10O10Z1qwsmkiertertlpu0N10H10O10I10Y10Z10M10Z1lpu0n10a10i1lpuert0s10i10c123d0q10m123d0x1ertmki0q1qwsmkiqwsertlpumkimkiertlpuertsdfasdasdlpuertbhgnjhmkiertqwsnjhsdfnjhrtgloiqwsmki'
 
 api_manuelita_ventas='http://209.45.79.42:3005/api/consulta/NSP_RPT_VENTAS_DETALLADO'
@@ -12,7 +12,7 @@ api_manuelita_variedades='http://209.45.79.42:3005/api/consulta/nsp_datos_varied
 api_manuelita_cultivos='http://209.45.79.42:3005/api/consulta/nsp_datos_cultivos'
 api_manuelita_fertilizacion='http://209.45.79.42:3005/api/consulta/nsp_datos_plan_fertilizacion'
 api_manuelita_costos='http://209.45.79.42:3005/api/consulta/nsp_datos_detalle_costos_campana'
-
+"""
 ventas_lista_manuelita=getApi(api_manuelita_ventas,token_manuelita)
 finanzas_lista_manuelita=getApi(api_manuelita_finanzas,token_manuelita)
 contenedores_lista_manuelita=getApi(api_manuelita_contenedores,token_manuelita)

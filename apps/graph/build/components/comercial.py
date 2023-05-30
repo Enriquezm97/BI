@@ -115,7 +115,7 @@ def paisFacturado(df_pais_pie,template,importe):
                                 showlegend=False,
                                 template=template
                                 )
-    pais_top_facturado.update_layout(margin = dict(t=40, b=10, l=10, r=30),height=250)#,height=330
+    pais_top_facturado.update_layout(margin = dict(t=40, b=10, l=10, r=30),height=210)#,height=330
     #pais_top_facturado.update_layout(paper_bgcolor='#f7f7f7')
     return pais_top_facturado
 
@@ -136,7 +136,7 @@ def cultivoFacturado(df_cultivo_top,template,importe,title,label):
                                 showlegend=False,
                                 template=template
                                 )
-    cultivo_top_facturado.update_layout(margin = dict(t=40, b=10, l=30, r=30),height=250)#,height=330
+    cultivo_top_facturado.update_layout(margin = dict(t=40, b=10, l=30, r=30),height=210)#,height=330
     #cultivo_top_facturado.update_layout(paper_bgcolor='#f7f7f7')
     return cultivo_top_facturado
 # BAR VERTICAL

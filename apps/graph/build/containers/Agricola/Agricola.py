@@ -3332,7 +3332,7 @@ def dashCostosProduccionAgricola():
             offcanvas(componentes=[
                     radioGroup(ids="radio-costos",
                                texto="Tipo de Costo",
-                               children=[dmc.Radio(label='Totales', value='CT'),dmc.Radio(label='Por Hectárea', value='CH')],
+                               children=[dmc.Radio(label='Totales', value='CT')],#,dmc.Radio(label='Por Hectárea', value='CH')
                                value="CT",
                     ),
                     radioGroup(ids="rbtn_dinero",
@@ -3417,6 +3417,30 @@ def dashCostosProduccionAgricola():
     dcc.Store(id='data-values')     
     ])
     offcanvasAction(app)
+    @app.callback(
+    Output("title","children"),
+    #Output("subtitle","children"),
+    Input("drop_anio","value"),
+    #Input('cultivo_cell','value'),
+    Input('rbtn_dinero','value'),
+    Input('radio-costos','value')
+    )
+    def update_title(anio,radio,radio_costos):#,cultivo
+        if radio_costos =='CH':
+              estado=dmc.Badge('x Ha',variant='filled',color='blue', size='lg')
+        elif radio_costos == 'CT':
+              estado=dmc.Badge('x Costo',variant='filled',color='blue', size='lg')
+        if radio=='SALDO_MOF':
+              moneda=dmc.Badge('Soles',variant='filled',color='gray', size='lg')
+        elif radio=='SALDO_MEX':
+              moneda=dmc.Badge('Dolares',variant='filled',color='gray', size='lg')
+
+        if anio == None and radio!=None:
+              badge=dmc.Title(id='title',children=['Costos de Campaña ',dmc.Badge('ALL',variant='filled',color='gray', size='lg'),moneda,estado], order=2,align='center')
+        else:
+              badge=dmc.Title(id='title',children=['Costos de Campaña ',dmc.Badge(anio,variant='filled',color='gray', size='lg'),moneda,estado], order=2,align='center')
+        return badge
+    
     @app.callback(
                 Output('drop_anio','data'),
                 Output('drop_cultivo', 'data'),
@@ -3509,8 +3533,9 @@ def dashCostosProduccionAgricola():
             pass
         #col=[{"name": c, "id": c,"type": "numeric", "format": Format(group=",", precision=0,scheme="f")} for c in dff_cultivo]
         """
-        def tabs_cvl(dff,cols,radio_costos,ejey,tickedx):
+        def tabs_cvl(dff,cols,radio_costos,ejey,tickedx,moneda):
             dff_lote=dff.groupby(cols).sum().reset_index()
+            
             dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('object')
             dff_lote.loc[:,'TOTAL']= dff_lote.sum(numeric_only=True, axis=1)
             dff_lote['AREA_CAMPAÑA']=dff_lote['AREA_CAMPAÑA'].astype('float64')
@@ -3548,9 +3573,9 @@ def dashCostosProduccionAgricola():
                 ejetotal='AH'
             return BarGOV_SX(dff_lote[ejetotal],x,title,color,None,ejey,simbolo, dff_lote['PROMEDIO'],dff_lote['AREA_CAMPAÑA'],False,tickedx)       
                 #scatter=dff_lote_mof['AH']
-        lotes=tabs_cvl(dff_pivot,['CONSUMIDOR','CULTIVO'],radio_costos,'Lote',True)
-        variedad=tabs_cvl(dff_pivot,['VARIEDAD','CULTIVO'],radio_costos,'Variedad',True)
-        cultivo=tabs_cvl(dff_pivot,['CULTIVO'],radio_costos,'Cultivo',False)
+        lotes=tabs_cvl(dff_pivot,['CONSUMIDOR','CULTIVO'],radio_costos,'Lote',True,radio)
+        variedad=tabs_cvl(dff_pivot,['VARIEDAD','CULTIVO'],radio_costos,'Variedad',True,radio)
+        cultivo=tabs_cvl(dff_pivot,['CULTIVO'],radio_costos,'Cultivo',False,radio)
 
         pie_tipo_gasto=df_campaña_ccc.groupby('TIPO')[[radio]].sum().reset_index()
         fig_pie = go.Figure(data=[go.Pie(labels=pie_tipo_gasto['TIPO'],#,title_text=f"Tipo Gasto",
@@ -3577,8 +3602,8 @@ def dashCostosProduccionAgricola():
         costo_x_ha=total_card_1/total_card_2
         ####maps
         df_map=df_campaña_ccc[df_campaña_ccc['POLYGON'].notnull()]
-        df_map_polygon=df_map.groupby(['CONSUMIDOR','POLYGON'])[['AREA_CAMPAÑA']].sum().reset_index()
-
+        df_map_polygon=df_map.groupby(['CONSUMIDOR','CULTIVO','POLYGON'])[['AREA_CAMPAÑA']].sum().reset_index()
+        
         def createPolygonMap(df):
             fig = go.Figure()
             for lista_string,lote in zip(df['POLYGON'].unique(),df['CONSUMIDOR'].unique()):
@@ -3588,8 +3613,8 @@ def dashCostosProduccionAgricola():
                     lon=[coord[0] for coord in lista_coord],
                     lat=[coord[1] for coord in lista_coord],
                     fill='toself',
-                    fillcolor='rgba(0, 0, 100, 0.3)',
-                    line=dict(color='rgba(0, 0, 100, 0.3)', width=2),
+                    fillcolor='rgba(0, 0, 100, 0.3)',#
+                    line=dict(color='rgba(0, 0, 100, 0.3)', width=2),##
                     hovertext=lote,
                     name=lote,
                 ))
