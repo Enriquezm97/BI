@@ -26,3 +26,15 @@ def btnCollapse(variant="default",color="blue"):
                             mb=10,
                         ),
         )
+
+def btnDownload(variant="default",color="blue"):
+    return html.Div(
+            dmc.ActionIcon(
+                            DashIconify(icon="feather:download"), 
+                            color=color, 
+                            variant=variant,
+                            id="btn-download",
+                            n_clicks=0,
+                            mb=10,
+                        ),
+        )

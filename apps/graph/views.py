@@ -74,7 +74,11 @@ class Test2View(View):
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
          
-        dashboard=prueba2()
+        #dashboard=dashComercialCliente()
+        #dashboard=dashComercialClienteCultivo()
+        #dashboard=dashComercialProductoCultivo()
+        #dashboard=dashComercialCultivo()
+        dashboard=dashComercialComparativo()
         print(empresa)
         print(type(empresa))
         print(empresa[0])
@@ -428,3 +432,156 @@ class Error505View(TemplateView):
             r.render()
             return r
         return view
+    
+
+#################################VISTAS
+class dashC(View):
+    
+    def get(self,request,*args, **kwargs):
+        #dashboard=tailwindcss()
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+         
+        #dashboard=dashComercialCliente()
+        #dashboard=dashComercialClienteCultivo()
+        #dashboard=dashComercialProductoCultivo()
+        dashboard=dashComercialCultivo()
+        print(empresa)
+        print(type(empresa))
+        print(empresa[0])
+        kwargs['codigo']=id_user
+        kwargs['empresa']=empresa
+        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        #name_empresa
+        return render(request,'dashboards/Comercial/dashcultivo.html',context)
+
+class dashCC(View):
+    
+    def get(self,request,*args, **kwargs):
+        #dashboard=tailwindcss()
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+         
+        dashboard=dashComercialCliente()
+        #dashboard=dashComercialClienteCultivo()
+        #dashboard=dashComercialProductoCultivo()
+        #dashboard=dashComercialCultivo()
+        print(empresa)
+        print(type(empresa))
+        print(empresa[0])
+        kwargs['codigo']=id_user
+        kwargs['empresa']=empresa
+        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        #name_empresa
+        return render(request,'dashboards/Comercial/comercial_cliente.html',context)
+
+class dashCCC(View):
+    
+    def get(self,request,*args, **kwargs):
+        #dashboard=tailwindcss()
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+         
+        #dashboard=dashComercialCliente()
+        dashboard=dashComercialClienteCultivo()
+        #dashboard=dashComercialProductoCultivo()
+        #dashboard=dashComercialCultivo()
+        print(empresa)
+        print(type(empresa))
+        print(empresa[0])
+        kwargs['codigo']=id_user
+        kwargs['empresa']=empresa
+        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        #name_empresa
+        return render(request,'dashboards/Comercial/comercial_cliente_cultivo.html',context)
+
+class dashCP(View):
+    
+    def get(self,request,*args, **kwargs):
+        #dashboard=tailwindcss()
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+         
+        #dashboard=dashComercialCliente()
+        #dashboard=dashComercialClienteCultivo()
+        dashboard=dashComercialProducto()
+        #dashboard=dashComercialProductoCultivo()
+        #dashboard=dashComercialCultivo()
+        print(empresa)
+        print(type(empresa))
+        print(empresa[0])
+        kwargs['codigo']=id_user
+        kwargs['empresa']=empresa
+        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        #name_empresa
+        return render(request,'dashboards/Comercial/comercial_producto.html',context)
+
+class dashCPC(View):
+    
+    def get(self,request,*args, **kwargs):
+        #dashboard=tailwindcss()
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+         
+        #dashboard=dashComercialCliente()
+        #dashboard=dashComercialClienteCultivo()
+        #dashboard=dashComercialProducto()
+        dashboard=dashComercialProductoCultivo()
+        #dashboard=dashComercialCultivo()
+        print(empresa)
+        print(type(empresa))
+        print(empresa[0])
+        kwargs['codigo']=id_user
+        kwargs['empresa']=empresa
+        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        #name_empresa
+        return render(request,'dashboards/Comercial/comercial_producto_cultivo.html',context)
+
+class dashCCultivo(View):
+    
+    def get(self,request,*args, **kwargs):
+        #dashboard=tailwindcss()
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+         
+        #dashboard=dashComercialCliente()
+        #dashboard=dashComercialClienteCultivo()
+        #dashboard=dashComercialProducto()
+        #dashboard=dashComercialProductoCultivo()
+        dashboard=dashComercialCultivo()
+        print(empresa)
+        print(type(empresa))
+        print(empresa[0])
+        kwargs['codigo']=id_user
+        kwargs['empresa']=empresa
+        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        #name_empresa
+        return render(request,'dashboards/Comercial/comercial_cultivo.html',context)
+
+class dashCComparativo(View):
+    
+    def get(self,request,*args, **kwargs):
+        #dashboard=tailwindcss()
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+         
+        #dashboard=dashComercialCliente()
+        #dashboard=dashComercialClienteCultivo()
+        #dashboard=dashComercialProductoCultivo()
+        #dashboard=dashComercialCultivo()
+        dashboard=dashComercialComparativo()
+        print(empresa)
+        print(type(empresa))
+        print(empresa[0])
+        kwargs['codigo']=id_user
+        kwargs['empresa']=empresa
+        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        #name_empresa
+        return render(request,'dashboards/Comercial/comercial_comparativo.html',context)

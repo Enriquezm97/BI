@@ -3,7 +3,7 @@ import dash_mantine_components as dmc
 from dash import html, Output, Input, no_update, callback
 from dash_iconify import DashIconify
 ### DASH PLOTLY "options" - MANTINE "data"
-def select(ids,texto,place="",value=None,data=[],clearable=True,size='md'):
+def select(ids,texto,place="Todos",value=None,data=[],clearable=True,size='md'):
     return  html.Div(
         dmc.Select(
             id=ids,
@@ -23,7 +23,7 @@ def select(ids,texto,place="",value=None,data=[],clearable=True,size='md'):
 
     )
 
-def multiSelect(ids,texto,place="",value=None,data=[],size='md'):
+def multiSelect(ids='w',texto='',place="",value=None,data=[],size='md'):
     return html.Div(
         dmc.MultiSelect(
                     #data=["React", "Angular", "Svelte", "Vue"],

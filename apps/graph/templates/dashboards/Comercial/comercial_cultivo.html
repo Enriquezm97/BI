@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+        
+        {%load plotly_dash%}
+        {% plotly_header %}
+        {% plotly_direct name='comercial_cultivo' %}
+        {% plotly_footer %}
+        
+{%endblock%}

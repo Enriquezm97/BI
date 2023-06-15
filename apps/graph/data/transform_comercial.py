@@ -26,6 +26,7 @@ def cleanVentas(df_ventas_detalle):
     df_ventas_detalle['DAY'] = df_ventas_detalle['FECHA'].dt.day
     df_ventas_detalle['MONTH'] = df_ventas_detalle['FECHA'].dt.month
     df_ventas_detalle['YEAR'] = df_ventas_detalle['FECHA'].dt.year
+    df_ventas_detalle['TRIMESTRE']=df_ventas_detalle['FECHA'].dt.quarter
 
     df_ventas_detalle['MES_TEXT']=df_ventas_detalle['MONTH']
 
@@ -44,7 +45,22 @@ def cleanVentas(df_ventas_detalle):
 
     df_ventas_detalle['SEMANA']=df_ventas_detalle['FECHA'].dt.isocalendar().week 
     df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].astype("string")
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('1','01')
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('2','02')
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('3','03')
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('4','04')
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('5','05')
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('6','06')
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('7','07')
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('8','08')
+    df_ventas_detalle['SEMANA']=df_ventas_detalle['SEMANA'].replace('9','09')
 
+    df_ventas_detalle['Semanas']=df_ventas_detalle['SEMANA']
+    semanas=sorted(df_ventas_detalle['Semanas'].unique())
+    for anio in df_ventas_detalle['YEAR'].unique():
+            for i in semanas:
+                df_ventas_detalle['Semanas'].loc[df_ventas_detalle['YEAR']==anio]=df_ventas_detalle['Semanas'].replace(i,str(anio)+'-'+'Sem'+''+str(i))
+    
     df_ventas_detalle['TRIM']=df_ventas_detalle['FECHA'].dt.quarter
     #df_ventas_detalle['DESCRIPCION']=df_ventas_detalle['DESCRIPCION'].apply(lambda x: x.split('-')[-1])
     for years in df_ventas_detalle['YEAR'].unique():

@@ -22,3 +22,32 @@ def datepickerRange(first=datetime.now().date(), last=datetime.now().date() + ti
                         
                     ]
                 )
+def datePickerRangeId(ids="date-range-picker",text='Fecha inicio y fin - Campaña',value=None,minimo=None,maximo=None):
+    return html.Div([
+        dmc.DateRangePicker(
+                                    id=ids,
+                                    label=text,
+                                    locale="es",
+                                    value=value,
+                                    minDate=minimo,
+                                    maxDate=maximo
+                                    #disabled=True
+                                    #minDate=date(2020, 8, 5),
+                                    #value=[datetime.now().date(), datetime.now().date() + timedelta(days=5)],
+                                    #style={"width": 330},
+                                ),
+    ])
+
+def datePicker(ids="date-range-picker",text='Desde',value=None,minimo=None,maximo=None):
+    return html.Div([
+        dmc.DatePicker(
+            id=ids,
+            label=text,
+            #description="You can also provide a description",
+            minDate=minimo,
+            maxDate=maximo,
+            value=value,
+            locale="es",
+            
+        ),
+    ])

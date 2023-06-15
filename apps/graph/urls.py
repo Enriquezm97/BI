@@ -12,8 +12,15 @@ urlpatterns = [
     path('',views.TestView.as_view(), name='home'),#template_name='app_name/template_name.html'),
     
     path('live',views.TestView,name='test'),
-    path('test/<int:codigo>/<slug:empresa>',views.Test2View.as_view(),name='test2'),
-    
+    path('test',views.Test2View.as_view(),name='test2'),    
+    path('comercial-cliente',views.dashCC.as_view(),name='com-cliente'),  
+    path('comercial-cliente-cultivo',views.dashCCC.as_view(),name='com-cliente-cultivo'), 
+    path('comercial-producto',views.dashCP.as_view(),name='com-producto'),    
+    path('comercial-producto-cultivo',views.dashCPC.as_view(),name='com-producto-cultivo'), 
+    path('comercial-cultivo',views.dashCCultivo.as_view(),name='com-cultivo'), 
+    path('comercial-comparativo',views.dashCComparativo.as_view(),name='com-comparativo'),
+
+
     path('<str:username>/ejecucion-campaña',views.PlanSiembraView.as_view(),name='plan_siembra'),
     path('<str:username>/costos-campaña',views.CostosCampañaView.as_view(),name='costos_campaña'),
     path('<str:username>/variables-agricolas',views.VariablesAgricolasView.as_view(),name='variables_agricolas'),

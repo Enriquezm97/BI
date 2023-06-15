@@ -72,13 +72,19 @@ df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_d
 df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
 df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
 df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
-df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
-                                                  df_variedad,
-                                                  df_cultivos,
-                                                  df_fertilizacion)
-df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
-df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
-
+#df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+#                                                  df_variedad,
+#                                                  df_cultivos,
+#                                                  df_fertilizacion)
+#df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+#df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
+df_var_agricolas_default=pd.read_parquet('agricola.parquet', engine='pyarrow')
+df_costos_agricola_default=pd.read_parquet('costos.parquet', engine='pyarrow')
+df_var_agricolas_pivot_default=pd.read_parquet('pivot.parquet', engine='pyarrow')
+#pd.read_parquet('test.parquet', engine='pyarrow')
+#df_var_agricolas_default.to_parquet('agricola.parquet')
+#df_costos_agricola_default.to_parquet('costos.parquet')
+#df_var_agricolas_pivot_default.to_parquet('pivot.parquet')
 #import dash_ag_grid as dag
 
 #df2 = pd.read_csv(

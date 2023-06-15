@@ -16,3 +16,19 @@ def inputNumber():
             style={"width": 250},
         )
     )
+
+def inputNumPercent(ids='input-num',label="Number input",value=10,minimo=0,maximo=100):
+    return html.Div(
+        dmc.NumberInput(
+            id=ids,
+            label=label,
+            value=value,
+            precision=1,
+            min=minimo,
+            step=1,
+            max=maximo,
+            #style={"width": 100},
+            icon=DashIconify(icon="feather:percent"),
+            #size="md",
+        )
+    )

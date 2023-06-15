@@ -14,4 +14,5 @@ def treemapEstadoSituacion(dataframe,list_path=['grupo1', 'grupo2', 'grupo3'],mo
     fig.update_traces(root_color="white")
     fig.update_layout( title=titulo,margin=dict(l=5, r=5, t=25, b=5))#,height=800
     fig.update_traces(hovertemplate =hover)
+    fig.update_traces(textinfo = "label+value")
     return fig

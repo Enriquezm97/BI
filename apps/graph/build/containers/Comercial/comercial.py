@@ -13,20 +13,22 @@ from apps.graph.build.components.draw.bar import *
 from apps.graph.data.transform_comercial import *
 import dash_mantine_components as dmc
 from apps.graph.build.components.mantine_react_components.loaders import loadingOverlay
-from apps.graph.build.components.mantine_react_components.selects import select
+from apps.graph.build.components.mantine_react_components.selects import select,multiSelect
 from apps.graph.build.components.mantine_react_components.radio import radioGroup
-from apps.graph.build.components.mantine_react_components.actionIcon import btnFilter,btnCollapse
+from apps.graph.build.components.mantine_react_components.actionIcon import btnFilter,btnCollapse,btnDownload
 from apps.graph.build.components.bootstrap_components.offcanvas import offcanvas
 from apps.graph.build.components.mantine_react_components.title import title
-from apps.graph.build.components.mantine_react_components.cards import cardGraph
+from apps.graph.build.components.mantine_react_components.cards import cardGraph,cardTableDag,cardShowTotal
 from apps.graph.utils.callback import *
 from apps.graph.build.containers.Comercial.callbacks.callback_comercial import *
-from apps.graph.build.components.mantine_react_components.datepicker import datepickerRange
+from apps.graph.build.components.mantine_react_components.datepicker import datepickerRange,datePickerRangeId,datePicker
 from apps.graph.data.gets import getApi
 from apps.graph.build.components.draw.table import tableDMC
 import dash_ag_grid as dag
 from apps.graph.build.components.bootstrap_components.layout import Column
-
+from apps.graph.build.components.bootstrap_components.modal import modalMaximize
+from time import sleep
+from apps.graph.build.components.mantine_react_components.inputs import inputNumPercent
 
 
 
@@ -91,8 +93,13 @@ token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N1
 api_nisira_ventas='http://69.64.92.160:3005/api/consulta/nsp_rpt_ventas_detallado'
     
 ventas_lista_nisira=getApi(api_nisira_ventas,token_nisira)
-df_ventas_nisira=pd.DataFrame(ventas_lista_nisira)
-df_ventas_detalle=cleanVentas(df_ventas_nisira)
+
+
+#df_ventas_nisira=pd.DataFrame(ventas_lista_nisira)
+df_ventas_detalle=pd.read_parquet('comercial_clean.parquet', engine='pyarrow')
+#df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
+#df_ventas_detalle=cleanVentas(df_ventas_nisira)
+#df_ventas_detalle.to_parquet('comercial_clean.parquet')
 df_ventas_expo=df_ventas_detalle.copy()
 ##
 
@@ -2990,6 +2997,36 @@ colors=[
         "#1C2325",
     "#1C2325",
     ]
+button_style = {
+    'position': 'absolute',
+    'top': '4px',
+    'right': '4px',
+    'z-index': '99'
+}
+button_style_2 = {
+    'position': 'absolute',
+    'bottom': '4px',
+    'right': '4px',
+    'z-index': '99'
+}
+
+def actionIcon(variant="default",color="blue",ids='btn-filter',style=button_style_2,icono='maximize'):
+    return html.Div(
+            dmc.ActionIcon(
+                            DashIconify(icon=f"feather:{icono}"), 
+                            color=color, 
+                            variant=variant,
+                            id=ids,
+                            n_clicks=0,
+                            mb=10,
+                            style=style
+                        ),
+        )
+
+
+
+
+
 def dashVentasCore():
    
     app = DjangoDash('ventasProductos', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css])#
@@ -3006,6 +3043,9 @@ def dashVentasCore():
 
 
     app.layout = html.Div([
+        dbc.Modal(id="modal-st",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-pie",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-segmented",size='xl',style={'position': 'absolute'}),
         dbc.Row([
             dbc.Col([
                             btnFilter(),
@@ -3033,7 +3073,11 @@ def dashVentasCore():
                         html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
                         html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
 
-                    ],width=5,className="col-xl-5 col-md-5 col-sm-10 col-10 mb-3"),
+                    ],width=10,className="col-xl-10 col-md-10 col-sm-10 col-10 mb-3"),
+            dbc.Col([
+                            btnDownload()
+                    
+                    ],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
         ]),
         dbc.Row([
             dbc.Col([
@@ -3047,13 +3091,14 @@ def dashVentasCore():
                                     value="year-month",
                                     data=[{'label': 'Mensual', 'value': 'year-month'},
                                           {'label': 'Trimestral', 'value': 'Trimestre'},
+                                          {'label': 'Semanal', 'value': 'Semanas'},
                                           {'label': 'FECHA', 'value': 'FECHA'}],
                                     #mt=10,
                                     fullWidth=True,
                                     color='rgb(34, 184, 207)'
                                 ),
-                                    
-                                dcc.Graph(id='st-comercial') 
+                                cardGraph(id_maximize='id-maximize-st',id_download='id-download',id_graph='st-comercial',with_id=True,fig=None,icon_maximize=True)         
+                                #dcc.Graph(id='st-comercial') 
                                 
                             ]),
                                 
@@ -3086,7 +3131,8 @@ def dashVentasCore():
                                     fullWidth=True,
                                     color='rgb(34, 184, 207)'
                                 ),
-                                dcc.Graph(id='pie-comercial')
+                                cardGraph(id_maximize='id-maximize-pie',id_download='id-download',id_graph='pie-comercial',with_id=True,fig=None,icon_maximize=True)         
+                                #dcc.Graph(id='pie-comercial')
                             ]),
                                 
                             ],
@@ -3120,8 +3166,12 @@ def dashVentasCore():
                                 ),
                                 dmc.Grid(
                                     children=[
-                                        dmc.Col(dcc.Graph(id='bar-tventa-comercial'), span=7),
-                                        dmc.Col(html.Div(id='table-comercial'), span=5),
+                                        actionIcon(ids='id_maximize-test',style=button_style),
+                                        dmc.Col(dcc.Graph(id='bar-tventa-comercial'), span=6),
+                                        dmc.Col(
+                                            #html.Div(id='table-comercial')
+                                            cardTableDag(id_table='table-comercial',id_maximize='id-maximize1',id_download='id-download1',size_table='320',data_call=True,icon_maximize=False)
+                                                , span=6),
                                         
                                     ],
                                     gutter="xs",
@@ -3142,7 +3192,8 @@ def dashVentasCore():
             
             #dbc.Col([dbc.Card(dcc.Graph(id='table-comercial'),className="shadow-sm")],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
         ]),
-    dcc.Store(id='data-values') 
+    dcc.Store(id='data-values'),
+    dcc.Download(id="download"),
 
     ])
 
@@ -3287,6 +3338,20 @@ def dashVentasCore():
 
     @app.callback(
             
+            Output("download", "data"),
+            Input("data-values","data"),
+            Input("btn-download", "n_clicks"),
+            prevent_initial_call=True,
+            
+            )
+    def update_download(data,n_clicks_download):
+        options=pd.read_json(data, orient='split')
+        options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        if n_clicks_download:
+            return dcc.send_data_frame( options.to_excel, "informe_ventas.xlsx", sheet_name="Sheet_name_1")
+        
+    @app.callback(
+            
             Output("title","children"),
             Output("subtitle","children"),
             Input("year","value"),
@@ -3297,6 +3362,11 @@ def dashVentasCore():
             
             )
     def title_ventas(year,cultivo,cliente,moneda,month):
+            df_ventas=df_ventas_d.copy()
+            df_filtro=df_ventas[df_ventas['Año']==year]
+            filtro=df_filtro.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
+            lista_mes=filtro['Mes'].unique()
+            rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"
         #general='Ventas por Tipo '+' '+str(moneda)
             if moneda =='Soles':
                 importe=dmc.Badge(moneda,variant='outline',color='blue', size='lg')
@@ -3308,9 +3378,9 @@ def dashVentasCore():
             
                 #general=str(titulo)+' '+str(moneda)
             if year == None and month == None:
-                    title=dmc.Title(children=['Informe de Ventas',dmc.Badge('ALL',variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+                    title=dmc.Title(children=['Informe de Ventas',dmc.Badge('ALL',variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
             elif year != None and month == None:
-                    title=dmc.Title(children=['Informe de Ventas',dmc.Badge(year,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+                    title=dmc.Title(children=['Informe de Ventas',dmc.Badge(year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
             elif year != None and month != None:
                     title=dmc.Title(children=['Informe de Ventas',dmc.Badge(year,variant='outline',color='gray', size='lg'),importe,dmc.Badge(month,variant='outline',color='blue', size='lg')], order=2,align='center')
 
@@ -3330,7 +3400,8 @@ def dashVentasCore():
     @app.callback(Output('st-comercial','figure'),
                   Output('pie-comercial','figure'),
                   Output('bar-tventa-comercial','figure'),
-                  Output('table-comercial','children'),
+                  Output('table-comercial','rowData'),
+                  Output('table-comercial','columnDefs'),
                   Input("data-values","data"),
                   Input("select-st",'value'),
                   Input("radio-moneda","value"),
@@ -3341,6 +3412,7 @@ def dashVentasCore():
     )
     def update_data_components(data,st,moneda,segmented_pie,segmented_bar,top_data ):
         options=pd.read_json(data, orient='split')
+        print(options[st].unique())
         if moneda=='Soles':
                 importe='Importe en Soles'
         else:
@@ -3356,7 +3428,7 @@ def dashVentasCore():
         fig_pie = go.Figure(data=[go.Pie(labels=df_vendedor[segmented_pie],title=f"{segmented_pie}",
                              values=df_vendedor[importe])])
         fig_pie.update_traces(textposition='inside', textinfo='percent+label')
-        fig_pie.update_traces(hoverinfo='label+percent', textfont_size=10,
+        fig_pie.update_traces(hoverinfo='label+percent+value', textfont_size=10,
                         marker=dict(colors=colors, line=dict(color='#000000', width=2)))
         fig_pie.update_layout(height=300,margin = dict(t=30, b=50, l=10, r=10))
         fig_pie.update_layout(showlegend=False)
@@ -3391,52 +3463,75 @@ def dashVentasCore():
             
         df_tablew=df_tipo_venta_cl.groupby([segmented_bar])[[importe]].sum().reset_index().sort_values(importe,ascending=False)
         df_tablew['%']=df_tablew[importe]/df_tablew[importe].sum()
-        df_tablew['% acumulada']=df_tablew['%'].cumsum(axis = 0, skipna = True) 
+        df_tablew['% acumulado']=df_tablew['%'].cumsum(axis = 0, skipna = True) 
         df_tablew['%']=df_tablew['%']*100
-        df_tablew['% acumulada']=df_tablew['% acumulada']*100
+        df_tablew['% acumulado']=df_tablew['% acumulado']*100
         df_tablew=df_tablew.round(2)
         #.round(0)
-        table_Dash_plotly=dash_table.DataTable(
-                        data=df_tablew.to_dict('records'),
-                        #columns=[
-                        #    {'name': i, 'id': i}
-                        #    if i != 'Date' else
-                        #    {'name': 'Date', 'id': 'Date', 'type': 'datetime'}
-                        #    for i in df_tablew.columns
-                        #],
-                        style_table={'height': '300px', 'overflowY': 'auto'},
-                        fixed_rows={'headers': True},
-                        style_as_list_view=True,
-                        style_cell={'padding': '12px',
-                                                'font-family': 'sans-serif',
-                                                'font-size': '12px',
-                                                'text_align': 'left',
+        
+        
 
-                                                'overflow': 'hidden',
-                                                    'textOverflow': 'ellipsis',
-                                                    'maxWidth': 0
-                                                #'minWidth': 30, 'maxWidth': 70, #'width': 95
-                                                },
-                        
-                        style_header={
-                                        #'backgroundColor': 'white',
-                                        'fontWeight': 'bold',
-                                        'text_align': 'left',
-                                        'font-size': '12px',    
-                                        #'backgroundColor': 'rgb(30, 30, 30)',
-                                        'color': 'Black'
-                                    },
-                        tooltip_data=[
-                        {
-                            column: {'value': str(value), 'type': 'markdown'}
-                            for column, value in row.items()
-                        } for row in df_tablew.to_dict('records')
-                        ],
-                        tooltip_duration=None,
-                        )
+        return fig,fig_pie,fig_tventa,df_tablew.to_dict('records'),[{"field": segmented_bar, "type": "leftAligned", "minWidth": 200, "checkboxSelection": True},{"field": importe, "type": "leftAligned", "minWidth": 110},{"field": '%', "type": "leftAligned", "maxWidth": 90},{"field": '% acumulado', "type": "leftAligned", "maxWidth": 90}]#table_Dash_plotly
+
+    @app.callback(
+    Output("modal-st", "is_open"),
+    Output("modal-st", "children"),#modal-table
+    Input("id-maximize-st", "n_clicks"),
+    Input('st-comercial','figure'),
+    )
+    def update_output_modal_st(n_clicks,figure):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(figure)
+        fig.update_layout(height=800),
+        fig.update_layout(yaxis=dict(titlefont_size=10,tickfont_size=13))
+
+        if n_clicks:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+    
+    @app.callback(
+    Output("modal-pie", "is_open"),
+    Output("modal-pie", "children"),#modal-table
+    Input("id-maximize-pie", "n_clicks"),
+    Input('pie-comercial','figure'),
+    )
+    def update_output_modal_pie(n_clicks,figure):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(figure)
+        fig.update_layout(height=700),
+        fig.update_layout(yaxis=dict(titlefont_size=10,tickfont_size=13))
+
+        if n_clicks:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+    
+    @app.callback(
+    Output("modal-segmented", "is_open"),
+    Output("modal-segmented", "children"),#modal-table
+    Input("id-maximize-pie", "n_clicks"),
+    Input('bar-tventa-comercial','figure'),
+    )
+    def update_output_modal_pie(n_clicks,figure):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(figure)
+        fig.update_layout(height=600),
+        fig.update_layout(yaxis=dict(titlefont_size=10,tickfont_size=13))
+
+        if n_clicks:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
 
 
-        return fig,fig_pie,fig_tventa,table_Dash_plotly
+
 
 def ventas1(empresa,staff_comment):
     """"""
@@ -3456,6 +3551,8 @@ def ventas1(empresa,staff_comment):
     df_ventas_d['Tipo de Venta']=df_ventas_d['Tipo de Venta'].str[4:]
     app.layout = html.Div([
         dbc.Modal(id="modal",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-table",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-tab",size='xl',style={'position': 'absolute'}),
 
             dbc.Row([   
                 Column(content=[
@@ -3497,7 +3594,8 @@ def ventas1(empresa,staff_comment):
                             ),
                 ],size=5),       
                 Column(content=[
-                  btnCollapse()
+                  btnCollapse(),
+                  btnDownload()
                 ],size=1),
                 ]),
               
@@ -3509,7 +3607,7 @@ def ventas1(empresa,staff_comment):
                                 cardGraph(id_graph='graph-1',id_maximize='btn-modal'),
                                 
                             ))
-                     ],size=7),
+                     ],size=6),
                      Column(content=[
                         dbc.Row([
                             Column(content=[
@@ -3523,29 +3621,26 @@ def ventas1(empresa,staff_comment):
                         ]),
                         dbc.Row([
                             Column(content=[
-                                loadingOverlay(html.Div(id='graph-5',style={'max-height': '360px','overflow': "auto"}),)
+                                loadingOverlay(
+                                    cardTableDag(data_call=True,id_table='graph-5',id_maximize='btn-table')
+                                )
                             
                             ],size=12),
                         ])
-                     ],size=5),
+                     ],size=6),
 
                 ]),
             id="collapse",is_open=True),
             dbc.Row([
-                Column(content=[
-                  dbc.Card(
-                                dbc.CardBody([
-                                    
-                                        html.Div(id='tabs-g')
-                                    
-                                ]),className="shadow-sm",
-                            ),
-                ],size=12),
+                Column(content=[html.Div(id='tabs-g')],size=12)
             ]),
             
-            
+            #html.Div(id='output'),
+            #html.Div(id='test_table'),
             html.Div(id='comentario'),
-            dcc.Store(id='data-values')  
+            dcc.Store(id='data-values'),  
+            dcc.Download(id="download"),
+
         ])
     offcanvasAction(app)
     @app.callback(
@@ -3690,6 +3785,7 @@ def ventas1(empresa,staff_comment):
     #####################################################################################################################################
     @app.callback(
             Output("data-values","data"),
+            
             #Output('filter-data', 'data'),
             Input("year","value"),
             Input("cultivo","value"),
@@ -3698,9 +3794,10 @@ def ventas1(empresa,staff_comment):
             Input("cliente","value"),
             Input("month","value"),
             
+            
             )
     def filter_ventas(year,cultivo,variedad,cliente,month):
-        df_ventas=df_ventas_d
+        df_ventas=df_ventas_d.copy()
         if year==None and cultivo == None and variedad== None and cliente==None and month==None:
             options=df_ventas
 
@@ -3802,9 +3899,27 @@ def ventas1(empresa,staff_comment):
         elif year!=None and cultivo != None and variedad!= None and cliente!=None and month!=None:
             options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
 
+
+        
+             
+            
+        
         return options.to_json(date_format='iso', orient='split')
     ####################################################################################################################################    
-    
+    @app.callback(
+            
+            Output("download", "data"),
+            Input("data-values","data"),
+            Input("btn-download", "n_clicks"),
+            prevent_initial_call=True,
+            
+            )
+    def update_download(data,n_clicks_download):
+        options=pd.read_json(data, orient='split')
+        options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        if n_clicks_download:
+            return dcc.send_data_frame( options.to_excel, "comercial.xlsx", sheet_name="Sheet_name_1")
+        
     @app.callback(
         Output("comentario","children"),
         Input("year","value"),)
@@ -3833,6 +3948,11 @@ def ventas1(empresa,staff_comment):
             )
     def title_ventas(year,cultivo,cliente,moneda,segmented):
         #general='Ventas por Clientes '+' '+str(moneda)
+            df_ventas=df_ventas_d.copy()
+            df_filtro=df_ventas[df_ventas['Año']==year]
+            filtro=df_filtro.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
+            lista_mes=filtro['Mes'].unique()
+            rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"
             if moneda =='Soles':
                 importe=dmc.Badge(moneda,variant='outline',color='blue', size='lg')
             elif moneda == 'Dolares':
@@ -3845,7 +3965,7 @@ def ventas1(empresa,staff_comment):
             if year == None:
                     title=dmc.Title(children=[f'Venta Anual por {segmented} ',dmc.Badge('ALL',variant='outline',color='gray', size='lg'),importe], order=2,align='center')
             else:
-                    title=dmc.Title(children=[f'Venta Anual por {segmented} ',dmc.Badge(year,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+                    title=dmc.Title(children=[f'Venta Anual por {segmented} ',dmc.Badge(year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
 
 
             if cliente == None and cultivo == None:
@@ -3867,7 +3987,8 @@ def ventas1(empresa,staff_comment):
             Output("graph-1","figure"),
             Output("graph2_1","figure"),
             Output("graph2_2","figure"),
-            Output("graph-5","children"),
+            Output("graph-5","rowData"),
+            Output("graph-5","columnDefs"),
             Input("data-values","data"),
             Input("radio-moneda","value"),
             Input("segmented","value"),
@@ -3886,30 +4007,11 @@ def ventas1(empresa,staff_comment):
         #if igv == 'IGV' or igv[-1] == 'IGV' :
         if radio=='Soles':
                 importe='Importe en Soles'
+                sig='S/'
         else:
                 importe='Importe en Dolares'
-            #options[importe]=options[importe]
-            
-        #else:
-        #    if radio=='Soles':
-                
-        #        options['Importe en Soles-']=options['Importe en Soles']-(options['Importe en Soles']*0.18)
-        #        importe='Importe en Soles-'
-        #    else:
-        #        options['Importe en Dolares-']=options['Importe en Dolares']-(options['Importe en Dolares']*0.18)
-        #        importe='Importe en Dolares-'
-        """
-        ###PARETO
-        df_pareto=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False)
-        #condiciono que todos los totales de los clientes sean mayores a 0
-        df_pareto=df_pareto[df_pareto[importe]>0]
-        df_pareto['percent']=df_pareto[importe]/df_pareto[importe].sum()
-        df_pareto['percent_accu']=df_pareto['percent'].cumsum(axis = 0, skipna = True)
-        #EL 0.2 CORRESPONDE AL 20% DE LOS SEGMENTED TOTALES 
-        list_20_percent=df_pareto[segmented].unique()[:(int(len(df_pareto[segmented].unique())*0.2))] 
-        df_pareto_agg=df_pareto[df_pareto[segmented].isin(list_20_percent)]
-        """
-
+                sig='$'
+        
             
 
             #df_filter=options.groupby([ejex])[[color]].sum().reset_index()#,color
@@ -4031,39 +4133,51 @@ def ventas1(empresa,staff_comment):
             #graph4=options.groupby(['Pais'])[[importe,'Peso']].sum().reset_index().sort_values(importe,ascending=True)
             
         if  radio_top == 'Top 20':  
-            df_table=options.groupby(['Pais',segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0).head(20)
+            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0).head(20)
             df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
         elif radio_top =='All':
-            df_table=options.groupby(['Pais',segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
+            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
             df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
         elif radio_top =='pareto':
             """
-            ###PARETO
-            df_pareto=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False)
-            #condiciono que todos los totales de los clientes sean mayores a 0
-            df_pareto=df_pareto[df_pareto[importe]>0]
-            df_pareto['percent']=df_pareto[importe]/df_pareto[importe].sum()
-            df_pareto['percent_accu']=df_pareto['percent'].cumsum(axis = 0, skipna = True)
-            #EL 0.2 CORRESPONDE AL 20% DE LOS SEGMENTED TOTALES 
-            list_20_percent=df_pareto[segmented].unique()[:(int(len(df_pareto[segmented].unique())*0.2))] 
-            df_pareto_agg=df_pareto[df_pareto[segmented].isin(list_20_percent)]
+            df=df_v.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False)
+                #df['percent']=df[importe]/df[importe].sum()
+                #df['percent_accu']=df['percent'].cumsum(axis = 0, skipna = True)
+                list_20_percent=df[segmented].unique()[:(int(len(df[segmented].unique())*0.2))] 
+                df=df[df[segmented].isin(list_20_percent)].sort_values(importe)
+                #lista_enumerador=[i+1 for i in range(len(df))]
+                #lista_enumerador=lista_enumerador.reverse()
+                #df['N°']=lista_enumerador
+
+                #df['N°']=[i+1 for i in range(len(df))]
+                df['N°']=list(range(len(df),0,-1))
+                df['N°']=df['N°'].astype("string")
+                df[segmented]=df['N°']+'-'+df[segmented]
+                
+                df=df.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True)
             """
-            df_table=options.groupby(['Pais',segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
+            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
+            df_table=df_table[df_table[importe]>0]
+            #df_v=df_v[df_v[importe]>0]  
             list_20_percent=df_table[segmented].unique()[:(int(len(df_table[segmented].unique())*0.2))]
             df_table=df_table[df_table[segmented].isin(list_20_percent)]
-            df_table=options.groupby(['Pais',segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
+            df_table=df_table.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
             df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+
+
             
         elif radio_top =='Top low 20':
-            df_table=options.groupby(['Pais',segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True).round(0)
+            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True).round(0)
+            df_table=df_table[df_table[importe]>0]
             list_20_percent=df_table[segmented].unique()[:(int(len(df_table[segmented].unique())*0.2))]
             df_table=df_table[df_table[segmented].isin(list_20_percent)]
-            df_table=options.groupby(['Pais',segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True).round(0)
+            df_table=df_table.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True).round(0)
             df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
         df_table['N°']=[i+1 for i in range(len(df_table))]
-        df_table=df_table[['N°',segmented,'Pais',importe]]
+        df_table=df_table[['N°',segmented,importe]]
         
         #df_table[importe]=df_table[importe].astype(int)
+        """
         def create_table(df):
                 columns, values = df.columns, df.values
                 header = [html.Tr([html.Th(col) for col in columns])]
@@ -4079,16 +4193,24 @@ def ventas1(empresa,staff_comment):
                 #style={'backgroundColor': '#f7f7f7'}
 
             )
-        return  barSegment(options,segmented,importe,radio,radio_top),card_ventas(cantidad_productos,None,f"Total Ventas ({radio})"),card_ventas(cantidad_clientes,None,f"Total de {segmented}"),table
+        """    
+        return  [barSegment(options,segmented,importe,radio,radio_top),
+                 card_ventas(cantidad_productos,None,f"Total Ventas ({radio})"),
+                 card_ventas(cantidad_clientes,None,f"Total de {segmented}s"),
+                 df_table.to_dict("records"),
+                 [{"field": 'N°', "type": "leftAligned", "maxWidth": 100, "checkboxSelection": True},{"field": segmented, "type": "leftAligned", "minWidth": 350},{"field": importe, "type": "leftAligned", "minWidth": 150}]
+                 ]
     
     @app.callback(
             
             Output('tabs-g','children'),
+            #Output('test_table','children'),
             Input("data-values","data"),
             Input("radio-moneda","value"),
             #Input("filter-tab","value"),
             Input("segmented","value"),
-            Input('radio-top-data','value')
+            Input('radio-top-data','value'),
+            #Input('graph-5','selectedRows')
             #Input("check-igv","value"),
 
             )
@@ -4101,15 +4223,28 @@ def ventas1(empresa,staff_comment):
             #Output("tab-Producto","children"),
             #Output("filter-tab","data"),
             #"""
-    def ventas(data, radio, segmented,radio_top):#year,cultivo,variedad,cliente,
-            options=pd.read_json(data, orient='split')
-
+    def ventas(data, radio, segmented,radio_top):#,selected
+            df_comercial=pd.read_json(data, orient='split')
+            #print(options.columns)
             if radio=='Soles':
                     importe='Importe en Soles'
             else:
                     importe='Importe en Dolares'
             
-            data_filtro=options['Cliente'].unique()
+            #if selected == None:
+            #    df_comercial=options.copy()
+
+            #elif selected != None or selected != []:
+            #    selected_segmented = [s[segmented] for s in selected]
+            #    print(type(selected_segmented))
+            #    print(selected_segmented)
+            #    df_comercial=options[options[segmented].isin(selected_segmented)]
+            #    print(options)
+            #    print(options.columns)
+                #df_v=options.groupby(['Cliente','Pais'])[[importe]].sum().reset_index()
+                
+            
+                
             
             
             """
@@ -4131,8 +4266,8 @@ def ventas1(empresa,staff_comment):
                                 dmc.Tab(children=tab,value=tab)for tab in tabs_cliente
                             ]
                         ),
-                        
-                            html.Div([dmc.TabsPanel(dbc.Card(dcc.Graph(figure=tabVentaDfGraph(options,segmented,tabs_cliente[i],importe,radio_top),className="shadow-sm")), value=tabs_cliente[i]) for i in range(len(tabs_cliente))]),
+                            
+                            html.Div([dmc.TabsPanel(cardGraph(id_maximize='id-cliente',id_download='id-download-cliente',id_graph='id-graph-cliente',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_cliente[i],importe,radio_top),icon_maximize=False), value=tabs_cliente[i]) for i in range(len(tabs_cliente))]),
 
                     ],
                     value=tabs_cliente[0],
@@ -4149,8 +4284,8 @@ def ventas1(empresa,staff_comment):
                                 dmc.Tab(children=tab,value=tab)for tab in tabs_producto
                             ]
                         ),
-                        
-                            html.Div([dmc.TabsPanel(loadingOverlay(dbc.Card(dcc.Graph(figure=tabVentaDfGraph(options,segmented,tabs_producto[i],importe,radio_top)),className="shadow-sm")), value=tabs_producto[i]) for i in range(len(tabs_producto))]),
+                            
+                            html.Div([dmc.TabsPanel(loadingOverlay(cardGraph(id_maximize='id-producto',id_download='id-download-producto',id_graph='id-graph-producto',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_producto[i],importe,radio_top),icon_maximize=False)), value=tabs_producto[i]) for i in range(len(tabs_producto))]),
 
                     ],
                     value=tabs_producto[0],
@@ -4165,44 +4300,4049 @@ def ventas1(empresa,staff_comment):
                                 dmc.Tab(children=tab,value=tab)for tab in tabs_tipoventa
                             ]
                         ),
-                        
-                            html.Div([dmc.TabsPanel(loadingOverlay(dbc.Card(dcc.Graph(figure=tabVentaDfGraph(options,segmented,tabs_tipoventa[i],importe,radio_top)),className="shadow-sm")), value=tabs_tipoventa[i]) for i in range(len(tabs_tipoventa))]),
+                            
+                            html.Div([dmc.TabsPanel(loadingOverlay(cardGraph(id_maximize='id-tventa',id_download='id-download-tventa',id_graph='id-graph-tventa',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_tipoventa[i],importe,radio_top),icon_maximize=False)), value=tabs_tipoventa[i]) for i in range(len(tabs_tipoventa))]),
 
                     ],
                     value=tabs_tipoventa[0],
                 ),
-
             
+                        
             
 
             return tabs
+
+
     @app.callback(
     Output("modal", "is_open"),
-    Output("modal", "children"),
-    Input("btn-modal", "n_clicks"),
+    Output("modal", "children"),#modal-table
 
+    Input("btn-modal", "n_clicks"),
+    #Input("btn-table", "n_clicks"),
+    #Input("radio-moneda","value"),
+    #Input("segmented","value"),
     Input('graph-1','figure'),
+    #Input("graph-5","rowData"),
+    
     #prevent_initial_call=True,
     )
-    def flames_x_modal(n_clicks,bar):
+    def update_output_modal1(n_clicks_bar,bar):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
         fig=go.Figure(bar)
         fig.update_layout(height=1500),
         fig.update_layout(yaxis=dict(titlefont_size=9,tickfont_size=13))
-        children=html.Div(
-            [
-                dbc.ModalHeader(close_button=True),
-                    #dbc.ModalTitle("Pantalla Completa"), close_button=True
-                #),
-                dbc.ModalBody(
-                    [   
-                        
-                        #bar.update_layout(height=1500),
-                        html.Div(dcc.Graph(figure=fig))
-                    ]
-                ),
-            ],
-        )
 
-        if n_clicks:
-            return True, children
-        return False, no_update
+        if n_clicks_bar:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+        
+
+
+
+    @app.callback(
+    Output("modal-table", "is_open"),
+    Output("modal-table", "children"),#modal-table
+    Input("btn-table", "n_clicks"),
+    Input("radio-moneda","value"),
+    Input("segmented","value"),
+    #Input('graph-1','figure'),
+    Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal2(n_clicks_table,moneda,segmented,data_table):#,moneda,segmented,bar,data_table
+        from dash import no_update
+    
+               
+        if moneda=='Soles':
+                importe='Importe en Soles'
+        else:
+                importe='Importe en Dolares'
+
+        
+        if n_clicks_table:
+
+            return True, modalMaximize(
+                dag.AgGrid(
+                                        
+                                        columnDefs=[{"field": 'N°', "type": "leftAligned"},{"field": segmented, "type": "leftAligned","minWidth":600},{"field": importe, "type": "leftAligned","minWidth": 200}],
+                                        rowData=data_table,
+                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
+                                        dashGridOptions={"rowSelection": "multiple"},
+                                        style={'height': '1200px','overflow': "auto"}
+                                        #defaultColDef=
+                                    ),
+            )
+        else:
+            return False, no_update  
+       
+def dashComercialCliente():
+    scripts = [
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js",
+    ]
+    app = DjangoDash('comercial_cliente', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css],external_scripts=scripts)#
+    
+    df_ventas_d=changeVentasCol(df_ventas_expo)
+    df_ventas_d['Tipo de Venta']=df_ventas_d['Tipo de Venta'].str[4:]
+    df_ventas_d['FECHA']=df_ventas_d['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    fecha_minima=str(df_ventas_d['FECHA'].min())
+    fecha_maxima=str(df_ventas_d['FECHA'].max())
+    df=df_ventas_d[df_ventas_d['Año']==sorted(df_ventas_d['Año'].unique())[-1]]
+    app.layout = html.Div([
+        dbc.Modal(id="modal",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-table",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-tab",size='xl',style={'position': 'absolute'}),
+
+            dbc.Row([   
+                Column(content=[
+                  btnFilter(),
+                            
+                            offcanvas(componentes=[
+                                
+                                select(ids="tipoventa",texto="Tipo de Venta"),
+                                select(ids="grupo",texto="Grupo Producto"),
+                                select(ids="subgrupo",texto="Sub Grupo Producto"),
+                                select(ids="consumidor",texto="Codigo"),
+                                select(ids="pais",texto="Pais"),
+
+                                radioGroup(ids='radio-data',texto='Orden por Importe',value='positive',
+                                          children=[dmc.Radio(label='Descendente', value='positive'),
+                                                    dmc.Radio(label='Ascendente', value='negative'),
+                                                    
+                                          ]),
+                                
+                                radioGroup(ids='radio-moneda',texto='Moneda',value='Importe en Dolares',
+                                          children=[dmc.Radio(label='S/', value='Importe en Soles'),
+                                                    dmc.Radio(label='$', value='Importe en Dolares'),
+                                          ]),
+                                
+                                
+                            
+                            ]),
+                ],size=1),
+                Column(content=[
+                    html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+                ],size=5),    
+                Column(content=[
+                      datePicker(ids='date-picker-desde',
+                                 text='Desde',
+                                 value=df['FECHA'].min(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                      
+                ],size=2),
+                Column(content=[
+                    datePicker(ids='date-picker-hasta',
+                                 text='Hasta',
+                                 value=df['FECHA'].max(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                ],size=2),  
+                Column(content=[
+                  inputNumPercent(ids='input-percent',label="% ventas",value=50,minimo=0,maximo=100)
+                ],size=1),  
+                   
+                Column(content=[
+                  btnCollapse(),
+                  btnDownload()
+                ],size=1),
+                ]),
+            
+            dbc.Collapse(
+                dbc.Row([#,style={'max-height': '3490px','overflow': "auto"}
+                    Column(content=[
+                        html.Div(
+                            children=loadingOverlay(
+                                cardGraph(id_graph='graph-1',id_maximize='btn-modal'),
+                                
+                            ))
+                     ],size=6),
+                     Column(content=[
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(html.Div(id="graph2_1"))#graph2_1
+                            
+                            ],size=6),
+                            Column(content=[
+                        
+                            loadingOverlay(html.Div(id="graph2_2"))
+                            ],size=6),
+                        ]),
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(
+                                    cardTableDag(data_call=True,id_table='graph-5',id_maximize='btn-table')
+                                )
+                            
+                            ],size=12),
+                        ])
+                     ],size=6),
+
+                ]),
+            id="collapse",is_open=True),
+            dbc.Row([
+                Column(content=[html.Div(id='tabs-g')],size=12)
+            ]),
+            
+            #html.Div(id='output'),
+            #html.Div(id='test_table'),
+            #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
+            dcc.Store(id='data-values'),  
+            dcc.Download(id="download"),
+            
+
+        ])
+    offcanvasAction(app)
+    @app.callback(
+        Output("collapse", "is_open"),
+        [Input("btn-collapse", "n_clicks")],
+        [State("collapse", "is_open")],
+        )
+    def toggle_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+    
+    @app.callback(Output("data-values","data"),
+                  Output("tipoventa","data"),
+                  Output("grupo","data"),
+                  Output("consumidor","data"),
+                  Output("pais","data"),
+                  Output("subgrupo","data"),
+                  
+                  Input("date-picker-desde","value"),
+                  Input("date-picker-hasta","value"),
+                  Input("tipoventa","value"),
+                  Input("grupo","value"),
+                  Input("consumidor","value"),
+                  Input("pais","value"),
+                  Input("subgrupo","value"),
+                  )
+    def filter_ventas(desde,hasta,tipo_venta,grupo,consumidor,pais,subgrupo):
+        #df_ventas=df_ventas_d.copy()
+        fecha_inicio = datetime.strptime(desde, '%Y-%m-%d').date()
+        fecha_fin = datetime.strptime(hasta, '%Y-%m-%d').date()
+        mask = (df_ventas_d['FECHA'] > fecha_inicio ) & (df_ventas_d['FECHA'] <= fecha_fin)
+        df_ventas=df_ventas_d.loc[mask]
+        
+        #df_ventas=filtered_df.groupby(['Tipo de Venta','Formato','idconsumidor','Pais','IDMEDIDA'])[['Importe en Soles']].sum().reset_index()
+        if tipo_venta==None and grupo == None and consumidor== None and pais==None and subgrupo==None:
+            options=df_ventas.copy()
+
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['Tipo de Venta']==tipo_venta]
+        elif tipo_venta==None and grupo != None and consumidor== None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['Grupo de Venta']==grupo]
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['idconsumidor']==consumidor]
+        
+        elif tipo_venta==None and grupo == None and consumidor== None and pais!=None and subgrupo==None:    
+            options=df_ventas[df_ventas['Pais']==pais]
+        
+        elif tipo_venta==None and grupo == None and consumidor== None and pais==None and subgrupo !=None:    
+            options=df_ventas[df_ventas['SUBGRUPO']==subgrupo]
+
+
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)]
+        
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)]
+        
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+        
+        elif tipo_venta==None and grupo != None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)]
+
+        elif tipo_venta==None and grupo != None and consumidor == None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+        
+        elif tipo_venta==None and grupo == None and consumidor== None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+
+        
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)]
+
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+        
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+        
+
+
+
+
+
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)]
+        
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+        option_tipov=[{'label': i, 'value': i} for i in options['Tipo de Venta'].unique()] 
+        option_grupo=[{'label': i, 'value': i} for i in options['Grupo de Venta'].unique()] 
+        option_consumidor=[{'label': i, 'value': i} for i in options['idconsumidor'].unique()] 
+        option_pais=[{'label': i, 'value': i} for i in options['Pais'].unique()] 
+        option_subgrupo=[{'label': i, 'value': i} for i in options['SUBGRUPO'].unique()] 
+        
+        
+        return options.to_json(date_format='iso', orient='split'),option_tipov,option_grupo,option_consumidor,option_pais,option_subgrupo
+    
+    @app.callback(
+            
+            Output("download", "data"),
+            Input("data-values","data"),
+            Input("btn-download", "n_clicks"),
+            prevent_initial_call=True,
+            
+            )
+    def update_download(data,n_clicks_download):
+        options=pd.read_json(data, orient='split')
+        #options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        if n_clicks_download:
+            return dcc.send_data_frame( options.to_excel, "comercial.xlsx", sheet_name="Sheet_name_1")
+
+    @app.callback(
+            Output("title","children"),
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+        )
+    def title_ventas(data,moneda):
+            options=pd.read_json(data, orient='split')
+            
+            lista_year=sorted(options['Año'].unique())
+            filtro_mes=options.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
+            lista_mes=filtro_mes['Mes'].unique()
+            #if len(lista_year)>1:
+            rango_year=f"{lista_year[0]}-{lista_year[-1]}"if len(lista_year)>1 else f"{lista_year[0]}"
+
+            #rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            if len(lista_year)==1:
+                rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            elif len(lista_year)>1:
+                rango_mes=f"{lista_mes[-1]}"
+
+            importe=dmc.Badge(moneda,variant='outline',color='blue', size='md')if moneda =='Soles' else dmc.Badge(moneda,variant='outline',color='blue', size='md')
+           
+
+            title=dmc.Title(children=[f'Ventas Clientes ',dmc.Badge(rango_year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='md'),importe], order=2,align='center')
+
+                    
+            return title#,subtitle 
+    
+    @app.callback(
+            Output("graph-1","figure"),
+            Output("graph2_1","children"),
+            Output("graph2_2","children"),
+            Output("graph-5","rowData"),
+            Output("graph-5","columnDefs"),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent):
+        options=pd.read_json(data, orient='split')
+        Total=options[importe].sum()#"{:,.0f}".format(
+        cantidad_clientes=len(options['Cliente'].unique())
+        sig="$"if importe =='Importe en Dolares' else "S/"
+        agg_title='en orden descendente' if tipo_value == 'positive' else 'en orden ascendente'
+        bar_data=options.groupby(['Cliente'])[[importe]].sum().reset_index( )  
+        bar_data=bar_data[bar_data[importe]>0]
+        if tipo_value == 'positive':
+       
+            bar_data_order=bar_data.sort_values(importe,ascending=False)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Cliente ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Cliente']
+            print(bar_data_order_percent.columns)
+        elif tipo_value == 'negative':
+ 
+            bar_data_order=bar_data.sort_values(importe,ascending=True)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=False)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Cliente ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Cliente']
+            print(bar_data_order_percent.columns)
+        fig = go.Figure()
+        fig.add_trace(go.Bar(x=bar_data_order_percent[importe],
+                                 y=bar_data_order_percent['Cliente '],
+                                 text=bar_data_order_percent[importe],
+                                 orientation='h',
+                                 textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
+                                 #customdata=[bar_data_order_percent['percent'],bar_data_order_percent['percent_cum']],
+                                 hovertemplate ='<br><b>Cliente</b>:%{y}'+'<br><b>Importe</b>: %{x}<br>',
+                                 marker_color="#145f82",
+                                 hoverlabel=dict(font_size=14),
+                                 name=''
+                                ))#.2s
+
+        fig.update_layout(title={'text':f'Clientes {agg_title}'},template='none')#,'font': {'size': 15, 'color': 'black', 'family': 'Arial'},
+        fig.update_layout(autosize=True,height=490,margin=dict(r=40,b=40,t=40,l=300),yaxis=dict(titlefont_size=8,tickfont_size=10))#l=400,,
+        fig.update_layout(xaxis_title=importe,yaxis_title="",legend_title="")
+        
+        sort_boolean= False if tipo_value == 'positive' else True
+        table_df=bar_data_order_percent.sort_values(importe,ascending=sort_boolean)
+        table_df['N°']=table_df['N°'].astype(int)
+        table_df['%']=(table_df['%']*100).round(3)
+        table_df['% Acumulado']=(table_df['% Acumulado']*100).round(3)
+        table_df[importe]=table_df[importe].round(0)
+        table_df[importe] = table_df.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        
+        
+        return [fig,
+                cardShowTotal(card_id='id-card',title_card='Total de Ventas',value=round(Total,0),simbolo=sig,icon="ion:cash-outline"),
+                cardShowTotal(card_id='id-card2',title_card='Total de Clientes',value=cantidad_clientes,simbolo='',icon="flat:customer"),
+                table_df.to_dict("records"),
+                [{"field": 'N°', "type": "leftAligned", "maxWidth": 90, "checkboxSelection": True},
+                 {"field": 'Cliente', "type": "leftAligned", "minWidth": 280},
+                 {"field": importe, "type": "leftAligned", "minWidth": 100},
+                 {"field": '%', "type": "leftAligned", "minWidth": 80},
+                 {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
+
+                 ],
+                 
+            ]
+    @app.callback(
+            Output('tabs-g','children'),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            Input('graph-5','selectedRows')
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent,selected_table):
+        options=pd.read_json(data, orient='split')
+        #print(type(selected_table))
+        #print(selected_table)
+        
+        #if selected_table != None:
+        #    selected_segmented = [s['Cliente'] for s in selected_table]
+        #    print(selected_segmented)
+        #    print(type(selected_segmented))
+        #else:
+        #    selected_segmented='no hay nada v: '
+
+        
+        def tabVentaDfGraph(df,tab,importe,tipo_value):
+            
+                #df_v=df.groupby([tipo])[[varnum]].sum().reset_index()
+                #df_v=df_v[df_v[varnum]>0]  
+                
+                bar_data=df.groupby(['Cliente',tab])[[importe]].sum().reset_index()  
+                bar_data=bar_data[bar_data[importe]>0]
+                if tipo_value == 'positive':
+                    bar_data_order=bar_data.sort_values(importe,ascending=False)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=False)
+                    
+                elif tipo_value == 'negative':
+                    bar_data_order=bar_data.sort_values(importe,ascending=True)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=True)
+                    
+                fig = px.bar(barstack, x= 'Cliente' , y=importe, color= tab,# text_auto=True,
+                                        title=f'Ventas Cliente por {tab}',template="none")
+                fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
+                fig.update_layout(legend=dict(font=dict(size= 8)))
+                return fig
+
+
+
+
+
+
+
+        tabs_cliente=['Sucursal','Pais','Tipo de Venta','Producto']
+        tabs=loadingOverlay(dmc.Tabs(
+                    [
+                        dmc.TabsList(
+                            [
+                            
+                                dmc.Tab(children=tab,value=tab)for tab in tabs_cliente
+                            ]
+                        ),
+                            
+                            html.Div([dmc.TabsPanel(cardGraph(id_maximize='id-cliente',id_download='id-download-cliente',id_graph='id-graph-cliente',with_id=False,fig=tabVentaDfGraph(options,tabs_cliente[i],importe,tipo_value),icon_maximize=False), value=tabs_cliente[i]) for i in range(len(tabs_cliente))]),
+
+                    ],
+                    value=tabs_cliente[0],
+                )),
+        return tabs
+    @app.callback(
+    Output("modal", "is_open"),
+    Output("modal", "children"),#modal-table
+
+    Input("btn-modal", "n_clicks"),
+    #Input("btn-table", "n_clicks"),
+    #Input("radio-moneda","value"),
+    #Input("segmented","value"),
+    Input('graph-1','figure'),
+    #Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal1(n_clicks_bar,bar):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(bar)
+        fig.update_layout(height=1200),
+        fig.update_layout(yaxis=dict(titlefont_size=9,tickfont_size=13))
+
+        if n_clicks_bar:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+        
+
+
+
+    @app.callback(
+    Output("modal-table", "is_open"),
+    Output("modal-table", "children"),#modal-table
+    Input("btn-table", "n_clicks"),
+    Input("radio-moneda","value"),
+    
+    #Input('graph-1','figure'),
+    Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal2(n_clicks_table,moneda,data_table):#,moneda,segmented,bar,data_table
+        from dash import no_update
+    
+
+        
+        if n_clicks_table:
+
+            return True, modalMaximize(
+                dag.AgGrid(
+                                        
+                                        columnDefs=[{"field": 'N°', "type": "leftAligned"},
+                                                    {"field": 'Cliente', "type": "leftAligned","minWidth":400},
+                                                    {"field": moneda, "type": "leftAligned","minWidth": 200},
+                                                    {"field": '%', "type": "leftAligned", "minWidth": 120},
+                                                    {"field": '% Acumulado', "type": "leftAligned", "minWidth": 120},
+                                                    ],
+                                        rowData=data_table,
+                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
+                                        dashGridOptions={"rowSelection": "multiple"},
+                                        style={'height': '1200px','overflow': "auto"},
+                                        className="ag-theme-balham",
+                                        #defaultColDef=
+                                    ),
+            )
+        else:
+            return False, no_update  
+
+def dashComercialClienteCultivo():
+    scripts = [
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js",
+    ]
+    app = DjangoDash('comercial_cliente_cultivo', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css],external_scripts=scripts)#
+    
+    df_ventas_d=changeVentasCol(df_ventas_expo)
+    df_ventas_d['Tipo de Venta']=df_ventas_d['Tipo de Venta'].str[4:]
+    df_ventas_d['FECHA']=df_ventas_d['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    fecha_minima=str(df_ventas_d['FECHA'].min())
+    fecha_maxima=str(df_ventas_d['FECHA'].max())
+    df=df_ventas_d[df_ventas_d['Año']==sorted(df_ventas_d['Año'].unique())[-1]]
+    app.layout = html.Div([
+        dbc.Modal(id="modal",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-table",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-tab",size='xl',style={'position': 'absolute'}),
+
+            dbc.Row([   
+                Column(content=[
+                  btnFilter(),
+                            
+                            offcanvas(componentes=[
+                                
+                                select(ids="tipoventa",texto="Tipo de Venta"),
+                                select(ids="formato",texto="Formato"),
+                                select(ids="cultivo",texto="Cultivo"),
+                                select(ids="pais",texto="Pais"),
+                                select(ids="variedad",texto="Variedad"),
+                                radioGroup(ids='radio-data',texto='Orden por Importe',value='positive',
+                                          children=[dmc.Radio(label='Descendente', value='positive'),
+                                                    dmc.Radio(label='Ascendente', value='negative'),
+                                                    
+                                          ]),
+                                radioGroup(ids='radio-moneda',texto='Moneda',value='Importe en Dolares',
+                                          children=[dmc.Radio(label='S/', value='Importe en Soles'),
+                                                    dmc.Radio(label='$', value='Importe en Dolares'),
+                                          ]),
+                                
+                                
+                            
+                            ]),
+                ],size=1),
+                Column(content=[
+                    html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+                ],size=5),    
+                Column(content=[
+                      datePicker(ids='date-picker-desde',
+                                 text='Desde',
+                                 value=df['FECHA'].min(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                      
+                ],size=2),
+                Column(content=[
+                    datePicker(ids='date-picker-hasta',
+                                 text='Hasta',
+                                 value=df['FECHA'].max(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                ],size=2),  
+                Column(content=[
+                  inputNumPercent(ids='input-percent',label="% ventas",value=50,minimo=0,maximo=100)
+                ],size=1),  
+                   
+                Column(content=[
+                  btnCollapse(),
+                  btnDownload()
+                ],size=1),
+                ]),
+            
+            dbc.Collapse(
+                dbc.Row([#,style={'max-height': '3490px','overflow': "auto"}
+                    Column(content=[
+                        html.Div(
+                            children=loadingOverlay(
+                                cardGraph(id_graph='graph-1',id_maximize='btn-modal'),
+                                
+                            ))
+                     ],size=6),
+                     Column(content=[
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(html.Div(id="graph2_1"))#graph2_1
+                            
+                            ],size=6),
+                            Column(content=[
+                        
+                            loadingOverlay(html.Div(id="graph2_2"))
+                            ],size=6),
+                        ]),
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(
+                                    cardTableDag(data_call=True,id_table='graph-5',id_maximize='btn-table')
+                                )
+                            
+                            ],size=12),
+                        ])
+                     ],size=6),
+
+                ]),
+            id="collapse",is_open=True),
+            dbc.Row([
+                Column(content=[html.Div(id='tabs-g')],size=12)
+            ]),
+            
+            #html.Div(id='output'),
+            #html.Div(id='test_table'),
+            #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
+            dcc.Store(id='data-values'),  
+            dcc.Download(id="download"),
+            
+
+        ])
+    offcanvasAction(app)
+    @app.callback(
+        Output("collapse", "is_open"),
+        [Input("btn-collapse", "n_clicks")],
+        [State("collapse", "is_open")],
+        )
+    def toggle_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+    
+    @app.callback(Output("data-values","data"),
+                  Output("tipoventa","data"),
+                  Output("formato","data"),
+                  Output("cultivo","data"),
+                  Output("pais","data"),
+                  Output("variedad","data"),
+                  Input("date-picker-desde","value"),
+                  Input("date-picker-hasta","value"),
+                  Input("tipoventa","value"),
+                  Input("formato","value"),
+                  Input("cultivo","value"),
+                  Input("pais","value"),
+                  Input("variedad","value"),
+                  )
+    def filter_ventas(desde,hasta,tipo_venta,formato,cultivo,pais,variedad):
+        #df_ventas=df_ventas_d.copy()
+        fecha_inicio = datetime.strptime(desde, '%Y-%m-%d').date()
+        fecha_fin = datetime.strptime(hasta, '%Y-%m-%d').date()
+        mask = (df_ventas_d['FECHA'] > fecha_inicio ) & (df_ventas_d['FECHA'] <= fecha_fin)
+        df_ventas=df_ventas_d.loc[mask]
+        
+        #df_ventas=filtered_df.groupby(['Tipo de Venta','Formato','idconsumidor','Pais','IDMEDIDA'])[['Importe en Soles']].sum().reset_index()
+        if tipo_venta==None and formato == None and cultivo== None and pais==None and variedad==None:
+            options=df_ventas.copy()
+
+        elif tipo_venta!=None and formato == None and cultivo== None and pais==None and variedad==None:    
+            options=df_ventas[df_ventas['Tipo de Venta']==tipo_venta]
+        elif tipo_venta==None and formato != None and cultivo== None and pais==None and variedad==None:    
+            options=df_ventas[df_ventas['Formato']==formato]
+        
+        elif tipo_venta==None and formato == None and cultivo!= None and pais==None and variedad==None:    
+            options=df_ventas[df_ventas['Cultivo']==cultivo]
+        
+        elif tipo_venta==None and formato == None and cultivo== None and pais!=None and variedad==None:    
+            options=df_ventas[df_ventas['Pais']==pais]
+        
+        elif tipo_venta==None and formato == None and cultivo== None and pais==None and variedad !=None:    
+            options=df_ventas[df_ventas['Variedad']==variedad]
+
+
+        elif tipo_venta!=None and formato != None and cultivo== None and pais==None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)]
+        
+        elif tipo_venta!=None and formato == None and cultivo!= None and pais==None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cultivo']==cultivo)]
+        
+        elif tipo_venta!=None and formato == None and cultivo== None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato == None and cultivo== None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Variedad']==variedad)]
+
+
+        
+        elif tipo_venta==None and formato != None and cultivo== None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato != None and cultivo!= None and pais==None and variedad==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)]
+
+        elif tipo_venta==None and formato != None and cultivo == None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Variedad']==variedad)]
+
+
+        
+        elif tipo_venta==None and formato == None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)]
+
+        elif tipo_venta==None and formato == None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato == None and cultivo!= None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+        
+        elif tipo_venta==None and formato == None and cultivo== None and pais!=None and variedad!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['Variedad']==variedad)]
+
+
+
+        
+        elif tipo_venta!=None and formato != None and cultivo!= None and pais==None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)]
+
+        elif tipo_venta!=None and formato != None and cultivo== None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato != None and cultivo== None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['Variedad']==variedad)]
+
+
+        
+        elif tipo_venta!=None and formato == None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato == None and cultivo!= None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+
+
+
+        elif tipo_venta==None and formato != None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato != None and cultivo!= None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+        
+        elif tipo_venta==None and formato == None and cultivo!= None and pais!=None and variedad!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+        
+
+
+
+
+
+        elif tipo_venta!=None and formato != None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)]
+        
+        elif tipo_venta!=None and formato != None and cultivo!= None and pais!=None and variedad!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Variedad']==variedad)]
+
+
+        option_tipov=[{'label': i, 'value': i} for i in options['Tipo de Venta'].unique()] 
+        option_formato=[{'label': i, 'value': i} for i in options['Formato'].unique()] 
+        option_cultivo=[{'label': i, 'value': i} for i in options['Cultivo'].unique()] 
+        option_pais=[{'label': i, 'value': i} for i in options['Pais'].unique()] 
+        option_variedad=[{'label': i, 'value': i} for i in options['Variedad'].unique()] 
+        
+        
+        return options.to_json(date_format='iso', orient='split'),option_tipov,option_formato,option_cultivo,option_pais,option_variedad
+    
+    @app.callback(
+            
+            Output("download", "data"),
+            Input("data-values","data"),
+            Input("btn-download", "n_clicks"),
+            prevent_initial_call=True,
+            
+            )
+    def update_download(data,n_clicks_download):
+        options=pd.read_json(data, orient='split')
+        #options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        if n_clicks_download:
+            return dcc.send_data_frame( options.to_excel, "comercial.xlsx", sheet_name="Sheet_name_1")
+
+    @app.callback(
+            Output("title","children"),
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+        )
+    def title_ventas(data,moneda):
+            options=pd.read_json(data, orient='split')
+            
+            lista_year=sorted(options['Año'].unique())
+            filtro_mes=options.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
+            lista_mes=filtro_mes['Mes'].unique()
+            #if len(lista_year)>1:
+            rango_year=f"{lista_year[0]}-{lista_year[-1]}"if len(lista_year)>1 else f"{lista_year[0]}"
+
+            #rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            if len(lista_year)==1:
+                rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            elif len(lista_year)>1:
+                rango_mes=f"{lista_mes[-1]}"
+
+            importe=dmc.Badge(moneda,variant='outline',color='blue', size='md')if moneda =='Soles' else dmc.Badge(moneda,variant='outline',color='blue', size='md')
+           
+
+            title=dmc.Title(children=[f'Ventas Clientes (agricola) ',dmc.Badge(rango_year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='md'),importe], order=2,align='center')
+
+                    
+            return title#,subtitle 
+    
+    @app.callback(
+            Output("graph-1","figure"),
+            Output("graph2_1","children"),
+            Output("graph2_2","children"),
+            Output("graph-5","rowData"),
+            Output("graph-5","columnDefs"),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent):
+        options=pd.read_json(data, orient='split')
+        Total=options[importe].sum()#"{:,.0f}".format(
+        cantidad_clientes=len(options['Cliente'].unique())
+        sig="$"if importe =='Importe en Dolares' else "S/"
+        agg_title='en orden descendente' if tipo_value == 'positive' else 'en orden ascendente'
+        bar_data=options.groupby(['Cliente'])[[importe]].sum().reset_index( )  
+        bar_data=bar_data[bar_data[importe]>0]
+        if tipo_value == 'positive':
+       
+            bar_data_order=bar_data.sort_values(importe,ascending=False)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Cliente ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Cliente']
+            print(bar_data_order_percent.columns)
+        elif tipo_value == 'negative':
+ 
+            bar_data_order=bar_data.sort_values(importe,ascending=True)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=False)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Cliente ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Cliente']
+            print(bar_data_order_percent.columns)
+        fig = go.Figure()
+        fig.add_trace(go.Bar(x=bar_data_order_percent[importe],
+                                 y=bar_data_order_percent['Cliente '],
+                                 text=bar_data_order_percent[importe],
+                                 orientation='h',
+                                 textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
+                                 #customdata=[bar_data_order_percent['percent'],bar_data_order_percent['percent_cum']],
+                                 hovertemplate ='<br><b>Cliente</b>:%{y}'+'<br><b>Importe</b>: %{x}<br>',
+                                 marker_color="#145f82",
+                                 hoverlabel=dict(font_size=14),
+                                 name=''
+                                ))#.2s
+
+        fig.update_layout(title={'text':f'Clientes {agg_title}'},template='none')#,'font': {'size': 15, 'color': 'black', 'family': 'Arial'},
+        fig.update_layout(autosize=True,height=490,margin=dict(r=40,b=40,t=40,l=300),yaxis=dict(titlefont_size=8,tickfont_size=10))#l=400,,
+        fig.update_layout(xaxis_title=importe,yaxis_title="",legend_title="")
+        
+        sort_boolean= False if tipo_value == 'positive' else True
+        table_df=bar_data_order_percent.sort_values(importe,ascending=sort_boolean)
+        table_df['N°']=table_df['N°'].astype(int)
+        table_df['%']=(table_df['%']*100).round(3)
+        table_df['% Acumulado']=(table_df['% Acumulado']*100).round(3)
+        table_df[importe]=table_df[importe].round(0)
+        table_df[importe] = table_df.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        
+        
+        return [fig,
+                cardShowTotal(card_id='id-card',title_card='Total de Ventas',value=round(Total,0),simbolo=sig,icon="ion:cash-outline"),
+                cardShowTotal(card_id='id-card2',title_card='Total de Clientes',value=cantidad_clientes,simbolo='',icon="flat:customer"),
+                table_df.to_dict("records"),
+                [{"field": 'N°', "type": "leftAligned", "maxWidth": 90, "checkboxSelection": True},
+                 {"field": 'Cliente', "type": "leftAligned", "minWidth": 280},
+                 {"field": importe, "type": "leftAligned", "minWidth": 100},
+                 {"field": '%', "type": "leftAligned", "minWidth": 80},
+                 {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
+
+                 ],
+                 
+            ]
+    @app.callback(
+            Output('tabs-g','children'),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            Input('graph-5','selectedRows')
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent,selected_table):
+        options=pd.read_json(data, orient='split')
+        #print(type(selected_table))
+        #print(selected_table)
+        
+        #if selected_table != None:
+        #    selected_segmented = [s['Cliente'] for s in selected_table]
+        #    print(selected_segmented)
+        #    print(type(selected_segmented))
+        #else:
+        #    selected_segmented='no hay nada v: '
+
+        
+        def tabVentaDfGraph(df,tab,importe,tipo_value):
+            
+                #df_v=df.groupby([tipo])[[varnum]].sum().reset_index()
+                #df_v=df_v[df_v[varnum]>0]  
+                
+                bar_data=df.groupby(['Cliente',tab])[[importe]].sum().reset_index()  
+                bar_data=bar_data[bar_data[importe]>0]
+                if tipo_value == 'positive':
+                    bar_data_order=bar_data.sort_values(importe,ascending=False)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=False)
+                    
+                elif tipo_value == 'negative':
+                    bar_data_order=bar_data.sort_values(importe,ascending=True)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=True)
+                    
+                fig = px.bar(barstack, x= 'Cliente' , y=importe, color= tab,# text_auto=True,
+                                        title=f'Ventas Cliente por {tab}',template="none")
+                fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
+                fig.update_layout(legend=dict(font=dict(size= 8)))
+                return fig
+
+
+
+
+
+
+
+        tabs_cliente=['Cultivo','Variedad','Sucursal','Pais','Tipo de Venta','Producto']
+        tabs=loadingOverlay(dmc.Tabs(
+                    [
+                        dmc.TabsList(
+                            [
+                            
+                                dmc.Tab(children=tab,value=tab)for tab in tabs_cliente
+                            ]
+                        ),
+                            
+                            html.Div([dmc.TabsPanel(cardGraph(id_maximize='id-cliente',id_download='id-download-cliente',id_graph='id-graph-cliente',with_id=False,fig=tabVentaDfGraph(options,tabs_cliente[i],importe,tipo_value),icon_maximize=False), value=tabs_cliente[i]) for i in range(len(tabs_cliente))]),
+
+                    ],
+                    value=tabs_cliente[0],
+                )),
+        return tabs
+    @app.callback(
+    Output("modal", "is_open"),
+    Output("modal", "children"),#modal-table
+
+    Input("btn-modal", "n_clicks"),
+    #Input("btn-table", "n_clicks"),
+    #Input("radio-moneda","value"),
+    #Input("segmented","value"),
+    Input('graph-1','figure'),
+    #Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal1(n_clicks_bar,bar):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(bar)
+        fig.update_layout(height=1200),
+        fig.update_layout(yaxis=dict(titlefont_size=9,tickfont_size=13))
+
+        if n_clicks_bar:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+        
+
+
+
+    @app.callback(
+    Output("modal-table", "is_open"),
+    Output("modal-table", "children"),#modal-table
+    Input("btn-table", "n_clicks"),
+    Input("radio-moneda","value"),
+    
+    #Input('graph-1','figure'),
+    Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal2(n_clicks_table,moneda,data_table):#,moneda,segmented,bar,data_table
+        from dash import no_update
+    
+
+        
+        if n_clicks_table:
+
+            return True, modalMaximize(
+                dag.AgGrid(
+                                        
+                                        columnDefs=[{"field": 'N°', "type": "leftAligned"},
+                                                    {"field": 'Cliente', "type": "leftAligned","minWidth":400},
+                                                    {"field": moneda, "type": "leftAligned","minWidth": 200},
+                                                    {"field": '%', "type": "leftAligned", "minWidth": 120},
+                                                    {"field": '% Acumulado', "type": "leftAligned", "minWidth": 120},
+                                                    ],
+                                        rowData=data_table,
+                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
+                                        dashGridOptions={"rowSelection": "multiple"},
+                                        style={'height': '1200px','overflow': "auto"},
+                                        className="ag-theme-balham",
+                                        #defaultColDef=
+                                    ),
+            )
+        else:
+            return False, no_update  
+#####################################################
+def dashComercialProducto():
+    scripts = [
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js",
+    ]
+    app = DjangoDash('comercial_producto', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css],external_scripts=scripts)#
+    
+    df_ventas_d=changeVentasCol(df_ventas_expo)
+    df_ventas_d['Tipo de Venta']=df_ventas_d['Tipo de Venta'].str[4:]
+    df_ventas_d['FECHA']=df_ventas_d['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    fecha_minima=str(df_ventas_d['FECHA'].min())
+    fecha_maxima=str(df_ventas_d['FECHA'].max())
+    df=df_ventas_d[df_ventas_d['Año']==sorted(df_ventas_d['Año'].unique())[-1]]
+    app.layout = html.Div([
+        dbc.Modal(id="modal",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-table",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-tab",size='xl',style={'position': 'absolute'}),
+
+            dbc.Row([   
+                Column(content=[
+                  btnFilter(),
+                            
+                            offcanvas(componentes=[
+                                
+                                select(ids="tipoventa",texto="Tipo de Venta"),
+                                select(ids="grupo",texto="Grupo Producto"),
+                                select(ids="consumidor",texto="Codigo"),
+                                select(ids="pais",texto="Pais"),
+                                select(ids="subgrupo",texto="Sub Grupo Producto"),
+                                radioGroup(ids='radio-data',texto='Orden por Importe',value='positive',
+                                          children=[dmc.Radio(label='Descendente', value='positive'),
+                                                    dmc.Radio(label='Ascendente', value='negative'),
+                                                    
+                                          ]),
+                                radioGroup(ids='radio-moneda',texto='Moneda',value='Importe en Dolares',
+                                          children=[dmc.Radio(label='S/', value='Importe en Soles'),
+                                                    dmc.Radio(label='$', value='Importe en Dolares'),
+                                          ]),
+                                
+                                
+                            
+                            ]),
+                ],size=1),
+                Column(content=[
+                    html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+                ],size=5),    
+                Column(content=[
+                      datePicker(ids='date-picker-desde',
+                                 text='Desde',
+                                 value=df['FECHA'].min(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                      
+                ],size=2),
+                Column(content=[
+                    datePicker(ids='date-picker-hasta',
+                                 text='Hasta',
+                                 value=df['FECHA'].max(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                ],size=2),  
+                Column(content=[
+                  inputNumPercent(ids='input-percent',label="% ventas",value=50,minimo=0,maximo=100)
+                ],size=1),  
+                   
+                Column(content=[
+                  btnCollapse(),
+                  btnDownload()
+                ],size=1),
+                ]),
+            
+            dbc.Collapse(
+                dbc.Row([#,style={'max-height': '3490px','overflow': "auto"}
+                    Column(content=[
+                        html.Div(
+                            children=loadingOverlay(
+                                cardGraph(id_graph='graph-1',id_maximize='btn-modal'),
+                                
+                            ))
+                     ],size=6),
+                     Column(content=[
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(html.Div(id="graph2_1"))#graph2_1
+                            
+                            ],size=6),
+                            Column(content=[
+                        
+                            loadingOverlay(html.Div(id="graph2_2"))
+                            ],size=6),
+                        ]),
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(
+                                    cardTableDag(data_call=True,id_table='graph-5',id_maximize='btn-table')
+                                )
+                            
+                            ],size=12),
+                        ])
+                     ],size=6),
+
+                ]),
+            id="collapse",is_open=True),
+            dbc.Row([
+                Column(content=[html.Div(id='tabs-g')],size=12)
+            ]),
+            
+            #html.Div(id='output'),
+            #html.Div(id='test_table'),
+            #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
+            dcc.Store(id='data-values'),  
+            dcc.Download(id="download"),
+            
+
+        ])
+    offcanvasAction(app)
+    @app.callback(
+        Output("collapse", "is_open"),
+        [Input("btn-collapse", "n_clicks")],
+        [State("collapse", "is_open")],
+        )
+    def toggle_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+    
+    @app.callback(Output("data-values","data"),
+                  Output("tipoventa","data"),
+                  Output("grupo","data"),
+                  Output("consumidor","data"),
+                  Output("pais","data"),
+                  Output("subgrupo","data"),
+                  Input("date-picker-desde","value"),
+                  Input("date-picker-hasta","value"),
+                  Input("tipoventa","value"),
+                  Input("grupo","value"),
+                  Input("consumidor","value"),
+                  Input("pais","value"),
+                  Input("subgrupo","value"),
+                  )
+    def filter_ventas(desde,hasta,tipo_venta,grupo,consumidor,pais,subgrupo):
+        #df_ventas=df_ventas_d.copy()
+        fecha_inicio = datetime.strptime(desde, '%Y-%m-%d').date()
+        fecha_fin = datetime.strptime(hasta, '%Y-%m-%d').date()
+        mask = (df_ventas_d['FECHA'] > fecha_inicio ) & (df_ventas_d['FECHA'] <= fecha_fin)
+        df_ventas=df_ventas_d.loc[mask]
+        
+        #df_ventas=filtered_df.groupby(['Tipo de Venta','Formato','idconsumidor','Pais','IDMEDIDA'])[['Importe en Soles']].sum().reset_index()
+        if tipo_venta==None and grupo == None and consumidor== None and pais==None and subgrupo==None:
+            options=df_ventas.copy()
+
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['Tipo de Venta']==tipo_venta]
+        elif tipo_venta==None and grupo != None and consumidor== None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['Grupo de Venta']==grupo]
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['idconsumidor']==consumidor]
+        
+        elif tipo_venta==None and grupo == None and consumidor== None and pais!=None and subgrupo==None:    
+            options=df_ventas[df_ventas['Pais']==pais]
+        
+        elif tipo_venta==None and grupo == None and consumidor== None and pais==None and subgrupo !=None:    
+            options=df_ventas[df_ventas['SUBGRUPO']==subgrupo]
+
+
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)]
+        
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)]
+        
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+        
+        elif tipo_venta==None and grupo != None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)]
+
+        elif tipo_venta==None and grupo != None and consumidor == None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+        
+        elif tipo_venta==None and grupo == None and consumidor== None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+
+        
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)]
+
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+        
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+        
+
+
+
+
+
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)]
+        
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+        option_tipov=[{'label': i, 'value': i} for i in options['Tipo de Venta'].unique()] 
+        option_grupo=[{'label': i, 'value': i} for i in options['Grupo de Venta'].unique()] 
+        option_consumidor=[{'label': i, 'value': i} for i in options['idconsumidor'].unique()] 
+        option_pais=[{'label': i, 'value': i} for i in options['Pais'].unique()] 
+        option_subgrupo=[{'label': i, 'value': i} for i in options['SUBGRUPO'].unique()] 
+        
+        
+        return options.to_json(date_format='iso', orient='split'),option_tipov,option_grupo,option_consumidor,option_pais,option_subgrupo
+    
+    @app.callback(
+            
+            Output("download", "data"),
+            Input("data-values","data"),
+            Input("btn-download", "n_clicks"),
+            prevent_initial_call=True,
+            
+            )
+    def update_download(data,n_clicks_download):
+        options=pd.read_json(data, orient='split')
+        #options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        if n_clicks_download:
+            return dcc.send_data_frame( options.to_excel, "comercial.xlsx", sheet_name="Sheet_name_1")
+
+    @app.callback(
+            Output("title","children"),
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+        )
+    def title_ventas(data,moneda):
+            options=pd.read_json(data, orient='split')
+            
+            lista_year=sorted(options['Año'].unique())
+            filtro_mes=options.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
+            lista_mes=filtro_mes['Mes'].unique()
+            #if len(lista_year)>1:
+            rango_year=f"{lista_year[0]}-{lista_year[-1]}"if len(lista_year)>1 else f"{lista_year[0]}"
+
+            #rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            if len(lista_year)==1:
+                rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            elif len(lista_year)>1:
+                rango_mes=f"{lista_mes[-1]}"
+
+            importe=dmc.Badge(moneda,variant='outline',color='blue', size='md')if moneda =='Soles' else dmc.Badge(moneda,variant='outline',color='blue', size='md')
+           
+
+            title=dmc.Title(children=[f'Ventas Productos ',dmc.Badge(rango_year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='md'),importe], order=2,align='center')
+
+                    
+            return title#,subtitle 
+    
+    @app.callback(
+            Output("graph-1","figure"),
+            Output("graph2_1","children"),
+            Output("graph2_2","children"),
+            Output("graph-5","rowData"),
+            Output("graph-5","columnDefs"),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent):
+        options=pd.read_json(data, orient='split')
+        Total=options[importe].sum()#"{:,.0f}".format(
+        cantidad_productos=len(options['Producto'].unique())
+        sig="$"if importe =='Importe en Dolares' else "S/"
+        agg_title='en orden descendente' if tipo_value == 'positive' else 'en orden ascendente'
+        bar_data=options.groupby(['Producto'])[[importe]].sum().reset_index( )  
+        bar_data=bar_data[bar_data[importe]>0]
+        if tipo_value == 'positive':
+       
+            bar_data_order=bar_data.sort_values(importe,ascending=False)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Producto ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Producto']
+            print(bar_data_order_percent.columns)
+        elif tipo_value == 'negative':
+ 
+            bar_data_order=bar_data.sort_values(importe,ascending=True)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=False)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Producto ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Producto']
+            print(bar_data_order_percent.columns)
+        fig = go.Figure()
+        fig.add_trace(go.Bar(x=bar_data_order_percent[importe],
+                                 y=bar_data_order_percent['Producto '],
+                                 text=bar_data_order_percent[importe],
+                                 orientation='h',
+                                 textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
+                                 #customdata=[bar_data_order_percent['percent'],bar_data_order_percent['percent_cum']],
+                                 hovertemplate ='<br><b>Producto</b>:%{y}'+'<br><b>Importe</b>: %{x}<br>',
+                                 marker_color="#145f82",
+                                 hoverlabel=dict(font_size=14),
+                                 name=''
+                                ))#.2s
+
+        fig.update_layout(title={'text':f'Productos {agg_title}'},template='none')#,'font': {'size': 15, 'color': 'black', 'family': 'Arial'},
+        fig.update_layout(autosize=True,height=490,margin=dict(r=40,b=40,t=40,l=300),yaxis=dict(titlefont_size=8,tickfont_size=10))#l=400,,
+        fig.update_layout(xaxis_title=importe,yaxis_title="",legend_title="")
+        
+        sort_boolean= False if tipo_value == 'positive' else True
+        table_df=bar_data_order_percent.sort_values(importe,ascending=sort_boolean)
+        table_df['N°']=table_df['N°'].astype(int)
+        table_df['%']=(table_df['%']*100).round(3)
+        table_df['% Acumulado']=(table_df['% Acumulado']*100).round(3)
+        table_df[importe]=table_df[importe].round(0)
+        table_df[importe] = table_df.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        
+        
+        return [fig,
+                cardShowTotal(card_id='id-card',title_card='Total de Ventas',value=round(Total,0),simbolo=sig,icon="ion:cash-outline"),
+                cardShowTotal(card_id='id-card2',title_card='Total de Productos',value=cantidad_productos,simbolo='',icon="flat:customer"),
+                table_df.to_dict("records"),
+                [{"field": 'N°', "type": "leftAligned", "maxWidth": 90, "checkboxSelection": True},
+                 {"field": 'Producto', "type": "leftAligned", "minWidth": 280},
+                 {"field": importe, "type": "leftAligned", "minWidth": 100},
+                 {"field": '%', "type": "leftAligned", "minWidth": 80},
+                 {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
+
+                 ],
+                 
+            ]
+    @app.callback(
+            Output('tabs-g','children'),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            Input('graph-5','selectedRows')
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent,selected_table):
+        options=pd.read_json(data, orient='split')
+        #print(type(selected_table))
+        #print(selected_table)
+        
+        #if selected_table != None:
+        #    selected_segmented = [s['Cliente'] for s in selected_table]
+        #    print(selected_segmented)
+        #    print(type(selected_segmented))
+        #else:
+        #    selected_segmented='no hay nada v: '
+
+        
+        def tabVentaDfGraph(df,tab,importe,tipo_value):
+            
+                #df_v=df.groupby([tipo])[[varnum]].sum().reset_index()
+                #df_v=df_v[df_v[varnum]>0]  
+                
+                bar_data=df.groupby(['Producto',tab])[[importe]].sum().reset_index()  
+                bar_data=bar_data[bar_data[importe]>0]
+                if tipo_value == 'positive':
+                    bar_data_order=bar_data.sort_values(importe,ascending=False)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=False)
+                    
+                elif tipo_value == 'negative':
+                    bar_data_order=bar_data.sort_values(importe,ascending=True)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=True)
+                    
+                fig = px.bar(barstack, x= 'Producto' , y=importe, color= tab,# text_auto=True,
+                                        title=f'Ventas Producto por {tab}',template="none")
+                fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
+                fig.update_layout(legend=dict(font=dict(size= 8)))
+                return fig
+
+
+
+
+
+
+
+        tabs_producto=['Sucursal','Pais','Tipo de Venta','Cliente']
+        tabs=loadingOverlay(dmc.Tabs(
+                    [
+                        dmc.TabsList(
+                            [
+                            
+                                dmc.Tab(children=tab,value=tab)for tab in tabs_producto
+                            ]
+                        ),
+                            
+                            html.Div([dmc.TabsPanel(cardGraph(id_maximize='id-cliente',id_download='id-download-cliente',id_graph='id-graph-cliente',with_id=False,fig=tabVentaDfGraph(options,tabs_producto[i],importe,tipo_value),icon_maximize=False), value=tabs_producto[i]) for i in range(len(tabs_producto))]),
+
+                    ],
+                    value=tabs_producto[0],
+                )),
+        return tabs
+    @app.callback(
+    Output("modal", "is_open"),
+    Output("modal", "children"),#modal-table
+
+    Input("btn-modal", "n_clicks"),
+    #Input("btn-table", "n_clicks"),
+    #Input("radio-moneda","value"),
+    #Input("segmented","value"),
+    Input('graph-1','figure'),
+    #Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal1(n_clicks_bar,bar):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(bar)
+        fig.update_layout(height=1200),
+        fig.update_layout(yaxis=dict(titlefont_size=9,tickfont_size=13))
+
+        if n_clicks_bar:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+        
+
+
+
+    @app.callback(
+    Output("modal-table", "is_open"),
+    Output("modal-table", "children"),#modal-table
+    Input("btn-table", "n_clicks"),
+    Input("radio-moneda","value"),
+    
+    #Input('graph-1','figure'),
+    Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal2(n_clicks_table,moneda,data_table):#,moneda,segmented,bar,data_table
+        from dash import no_update
+    
+
+        
+        if n_clicks_table:
+
+            return True, modalMaximize(
+                dag.AgGrid(
+                                        
+                                        columnDefs=[{"field": 'N°', "type": "leftAligned"},
+                                                    {"field": 'Producto', "type": "leftAligned","minWidth":400},
+                                                    {"field": moneda, "type": "leftAligned","minWidth": 200},
+                                                    {"field": '%', "type": "leftAligned", "minWidth": 120},
+                                                    {"field": '% Acumulado', "type": "leftAligned", "minWidth": 120},
+                                                    ],
+                                        rowData=data_table,
+                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
+                                        dashGridOptions={"rowSelection": "multiple"},
+                                        style={'height': '1200px','overflow': "auto"},
+                                        className="ag-theme-balham",
+                                        #defaultColDef=
+                                    ),
+            )
+        else:
+            return False, no_update
+def dashComercialProductoCultivo():
+    scripts = [
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js",
+    ]
+    app = DjangoDash('comercial_producto_cultivo', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css],external_scripts=scripts)#
+    
+    df_ventas_d=changeVentasCol(df_ventas_expo)
+    df_ventas_d['Tipo de Venta']=df_ventas_d['Tipo de Venta'].str[4:]
+    df_ventas_d['FECHA']=df_ventas_d['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    fecha_minima=str(df_ventas_d['FECHA'].min())
+    fecha_maxima=str(df_ventas_d['FECHA'].max())
+    df=df_ventas_d[df_ventas_d['Año']==sorted(df_ventas_d['Año'].unique())[-1]]
+    app.layout = html.Div([
+        dbc.Modal(id="modal",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-table",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-tab",size='xl',style={'position': 'absolute'}),
+
+            dbc.Row([   
+                Column(content=[
+                  btnFilter(),
+                            
+                            offcanvas(componentes=[
+                                
+                                select(ids="tipoventa",texto="Tipo de Venta"),
+                                select(ids="formato",texto="Formato"),
+                                select(ids="cultivo",texto="Cultivo"),
+                                select(ids="pais",texto="Pais"),
+                                select(ids="variedad",texto="Variedad"),
+                                radioGroup(ids='radio-data',texto='Orden por Importe',value='positive',
+                                          children=[dmc.Radio(label='Descendente', value='positive'),
+                                                    dmc.Radio(label='Ascendente', value='negative'),
+                                                    
+                                          ]),
+                                radioGroup(ids='radio-moneda',texto='Moneda',value='Importe en Dolares',
+                                          children=[dmc.Radio(label='S/', value='Importe en Soles'),
+                                                    dmc.Radio(label='$', value='Importe en Dolares'),
+                                          ]),
+                                
+                                
+                            
+                            ]),
+                ],size=1),
+                Column(content=[
+                    html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+                ],size=5),    
+                Column(content=[
+                      datePicker(ids='date-picker-desde',
+                                 text='Desde',
+                                 value=df['FECHA'].min(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                      
+                ],size=2),
+                Column(content=[
+                    datePicker(ids='date-picker-hasta',
+                                 text='Hasta',
+                                 value=df['FECHA'].max(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                ],size=2),
+                Column(content=[
+                  inputNumPercent(ids='input-percent',label="% ventas",value=50,minimo=0,maximo=100)
+                ],size=1),  
+                    
+                Column(content=[
+                  btnCollapse(),
+                  btnDownload()
+                ],size=1),
+                ]),
+            
+            dbc.Collapse(
+                dbc.Row([#,style={'max-height': '3490px','overflow': "auto"}
+                    Column(content=[
+                        html.Div(
+                            children=loadingOverlay(
+                                cardGraph(id_graph='graph-1',id_maximize='btn-modal'),
+                                
+                            ))
+                     ],size=6),
+                     Column(content=[
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(html.Div(id="graph2_1"))#graph2_1
+                            
+                            ],size=6),
+                            Column(content=[
+                        
+                            loadingOverlay(html.Div(id="graph2_2"))
+                            ],size=6),
+                        ]),
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(
+                                    cardTableDag(data_call=True,id_table='graph-5',id_maximize='btn-table')
+                                )
+                            
+                            ],size=12),
+                        ])
+                     ],size=6),
+
+                ]),
+            id="collapse",is_open=True),
+            dbc.Row([
+                Column(content=[html.Div(id='tabs-g')],size=12)
+            ]),
+            
+            #html.Div(id='output'),
+            #html.Div(id='test_table'),
+            #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
+            dcc.Store(id='data-values'),  
+            dcc.Download(id="download"),
+            
+
+        ])
+    offcanvasAction(app)
+    @app.callback(
+        Output("collapse", "is_open"),
+        [Input("btn-collapse", "n_clicks")],
+        [State("collapse", "is_open")],
+        )
+    def toggle_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+    
+    @app.callback(Output("data-values","data"),
+                  Output("tipoventa","data"),
+                  Output("formato","data"),
+                  Output("cultivo","data"),
+                  Output("pais","data"),
+                  Output("variedad","data"),
+                  Input("date-picker-desde","value"),
+                  Input("date-picker-hasta","value"),
+                  Input("tipoventa","value"),
+                  Input("formato","value"),
+                  Input("cultivo","value"),
+                  Input("pais","value"),
+                  Input("variedad","value"),
+                  )
+    def filter_ventas(desde,hasta,tipo_venta,formato,cultivo,pais,variedad):
+        #df_ventas=df_ventas_d.copy()
+        fecha_inicio = datetime.strptime(desde, '%Y-%m-%d').date()
+        fecha_fin = datetime.strptime(hasta, '%Y-%m-%d').date()
+        mask = (df_ventas_d['FECHA'] > fecha_inicio ) & (df_ventas_d['FECHA'] <= fecha_fin)
+        df_ventas=df_ventas_d.loc[mask]
+        
+        #df_ventas=filtered_df.groupby(['Tipo de Venta','Formato','idconsumidor','Pais','IDMEDIDA'])[['Importe en Soles']].sum().reset_index()
+        if tipo_venta==None and formato == None and cultivo== None and pais==None and variedad==None:
+            options=df_ventas.copy()
+
+        elif tipo_venta!=None and formato == None and cultivo== None and pais==None and variedad==None:    
+            options=df_ventas[df_ventas['Tipo de Venta']==tipo_venta]
+        elif tipo_venta==None and formato != None and cultivo== None and pais==None and variedad==None:    
+            options=df_ventas[df_ventas['Formato']==formato]
+        
+        elif tipo_venta==None and formato == None and cultivo!= None and pais==None and variedad==None:    
+            options=df_ventas[df_ventas['Cultivo']==cultivo]
+        
+        elif tipo_venta==None and formato == None and cultivo== None and pais!=None and variedad==None:    
+            options=df_ventas[df_ventas['Pais']==pais]
+        
+        elif tipo_venta==None and formato == None and cultivo== None and pais==None and variedad !=None:    
+            options=df_ventas[df_ventas['Variedad']==variedad]
+
+
+        elif tipo_venta!=None and formato != None and cultivo== None and pais==None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)]
+        
+        elif tipo_venta!=None and formato == None and cultivo!= None and pais==None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cultivo']==cultivo)]
+        
+        elif tipo_venta!=None and formato == None and cultivo== None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato == None and cultivo== None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Variedad']==variedad)]
+
+
+        
+        elif tipo_venta==None and formato != None and cultivo== None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato != None and cultivo!= None and pais==None and variedad==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)]
+
+        elif tipo_venta==None and formato != None and cultivo == None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Variedad']==variedad)]
+
+
+        
+        elif tipo_venta==None and formato == None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)]
+
+        elif tipo_venta==None and formato == None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato == None and cultivo!= None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+        
+        elif tipo_venta==None and formato == None and cultivo== None and pais!=None and variedad!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['Variedad']==variedad)]
+
+
+
+        
+        elif tipo_venta!=None and formato != None and cultivo!= None and pais==None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)]
+
+        elif tipo_venta!=None and formato != None and cultivo== None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato != None and cultivo== None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['Variedad']==variedad)]
+
+
+        
+        elif tipo_venta!=None and formato == None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato == None and cultivo!= None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+
+
+
+        elif tipo_venta==None and formato != None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato != None and cultivo!= None and pais==None and variedad!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+        
+        elif tipo_venta==None and formato == None and cultivo!= None and pais!=None and variedad!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+        
+
+
+
+
+
+        elif tipo_venta!=None and formato != None and cultivo!= None and pais!=None and variedad==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)]
+        
+        elif tipo_venta!=None and formato != None and cultivo!= None and pais!=None and variedad!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Variedad']==variedad)]
+
+
+        option_tipov=[{'label': i, 'value': i} for i in options['Tipo de Venta'].unique()] 
+        option_formato=[{'label': i, 'value': i} for i in options['Formato'].unique()] 
+        option_cultivo=[{'label': i, 'value': i} for i in options['Cultivo'].unique()] 
+        option_pais=[{'label': i, 'value': i} for i in options['Pais'].unique()] 
+        option_variedad=[{'label': i, 'value': i} for i in options['Variedad'].unique()] 
+        
+        
+        return options.to_json(date_format='iso', orient='split'),option_tipov,option_formato,option_cultivo,option_pais,option_variedad
+    
+    
+    @app.callback(
+            
+            Output("download", "data"),
+            Input("data-values","data"),
+            Input("btn-download", "n_clicks"),
+            prevent_initial_call=True,
+            
+            )
+    def update_download(data,n_clicks_download):
+        options=pd.read_json(data, orient='split')
+        #options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        if n_clicks_download:
+            return dcc.send_data_frame( options.to_excel, "comercial.xlsx", sheet_name="Sheet_name_1")
+
+    @app.callback(
+            Output("title","children"),
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+        )
+    def title_ventas(data,moneda):
+            options=pd.read_json(data, orient='split')
+            
+            lista_year=sorted(options['Año'].unique())
+            filtro_mes=options.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
+            lista_mes=filtro_mes['Mes'].unique()
+            #if len(lista_year)>1:
+            rango_year=f"{lista_year[0]}-{lista_year[-1]}"if len(lista_year)>1 else f"{lista_year[0]}"
+
+            #rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            if len(lista_year)==1:
+                rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            elif len(lista_year)>1:
+                rango_mes=f"{lista_mes[-1]}"
+
+            importe=dmc.Badge(moneda,variant='outline',color='blue', size='md')if moneda =='Soles' else dmc.Badge(moneda,variant='outline',color='blue', size='md')
+           
+
+            title=dmc.Title(children=[f'Ventas Productos ',dmc.Badge(rango_year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='md'),importe], order=2,align='center')
+
+                    
+            return title#,subtitle 
+    
+    @app.callback(
+            Output("graph-1","figure"),
+            Output("graph2_1","children"),
+            Output("graph2_2","children"),
+            Output("graph-5","rowData"),
+            Output("graph-5","columnDefs"),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent):
+        options=pd.read_json(data, orient='split')
+        Total=options[importe].sum()#"{:,.0f}".format(
+        cantidad_productos=len(options['Producto'].unique())
+        sig="$"if importe =='Importe en Dolares' else "S/"
+        agg_title='en orden descendente' if tipo_value == 'positive' else 'en orden ascendente'
+        bar_data=options.groupby(['Producto'])[[importe]].sum().reset_index( )  
+        bar_data=bar_data[bar_data[importe]>0]
+        if tipo_value == 'positive':
+       
+            bar_data_order=bar_data.sort_values(importe,ascending=False)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Producto ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Producto']
+            print(bar_data_order_percent.columns)
+        elif tipo_value == 'negative':
+ 
+            bar_data_order=bar_data.sort_values(importe,ascending=True)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=False)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Producto ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Producto']
+            print(bar_data_order_percent.columns)
+        fig = go.Figure()
+        fig.add_trace(go.Bar(x=bar_data_order_percent[importe],
+                                 y=bar_data_order_percent['Producto '],
+                                 text=bar_data_order_percent[importe],
+                                 orientation='h',
+                                 textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
+                                 #customdata=[bar_data_order_percent['percent'],bar_data_order_percent['percent_cum']],
+                                 hovertemplate ='<br><b>Producto</b>:%{y}'+'<br><b>Importe</b>: %{x}<br>',
+                                 marker_color="#145f82",
+                                 hoverlabel=dict(font_size=14),
+                                 name=''
+                                ))#.2s
+
+        fig.update_layout(title={'text':f'Productos {agg_title}'},template='none')#,'font': {'size': 15, 'color': 'black', 'family': 'Arial'},
+        fig.update_layout(autosize=True,height=490,margin=dict(r=40,b=40,t=40,l=300),yaxis=dict(titlefont_size=8,tickfont_size=10))#l=400,,
+        fig.update_layout(xaxis_title=importe,yaxis_title="",legend_title="")
+        
+        sort_boolean= False if tipo_value == 'positive' else True
+        table_df=bar_data_order_percent.sort_values(importe,ascending=sort_boolean)
+        table_df['N°']=table_df['N°'].astype(int)
+        table_df['%']=(table_df['%']*100).round(3)
+        table_df['% Acumulado']=(table_df['% Acumulado']*100).round(3)
+        table_df[importe]=table_df[importe].round(0)
+        table_df[importe] = table_df.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        
+        
+        return [fig,
+                cardShowTotal(card_id='id-card',title_card='Total de Ventas',value=round(Total,0),simbolo=sig,icon="ion:cash-outline"),
+                cardShowTotal(card_id='id-card2',title_card='Total de Productos',value=cantidad_productos,simbolo='',icon="flat:customer"),
+                table_df.to_dict("records"),
+                [{"field": 'N°', "type": "leftAligned", "maxWidth": 90, "checkboxSelection": True},
+                 {"field": 'Producto', "type": "leftAligned", "minWidth": 280},
+                 {"field": importe, "type": "leftAligned", "minWidth": 100},
+                 {"field": '%', "type": "leftAligned", "minWidth": 80},
+                 {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
+
+                 ],
+                 
+            ]
+    @app.callback(
+            Output('tabs-g','children'),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            Input('graph-5','selectedRows')
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent,selected_table):
+        options=pd.read_json(data, orient='split')
+        #print(type(selected_table))
+        #print(selected_table)
+        
+        #if selected_table != None:
+        #    selected_segmented = [s['Cliente'] for s in selected_table]
+        #    print(selected_segmented)
+        #    print(type(selected_segmented))
+        #else:
+        #    selected_segmented='no hay nada v: '
+
+        
+        def tabVentaDfGraph(df,tab,importe,tipo_value):
+            
+                #df_v=df.groupby([tipo])[[varnum]].sum().reset_index()
+                #df_v=df_v[df_v[varnum]>0]  
+                
+                bar_data=df.groupby(['Producto',tab])[[importe]].sum().reset_index()  
+                bar_data=bar_data[bar_data[importe]>0]
+                if tipo_value == 'positive':
+                    bar_data_order=bar_data.sort_values(importe,ascending=False)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=False)
+                    
+                elif tipo_value == 'negative':
+                    bar_data_order=bar_data.sort_values(importe,ascending=True)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=True)
+                    
+                fig = px.bar(barstack, x= 'Producto' , y=importe, color= tab,# text_auto=True,
+                                        title=f'Ventas Producto por {tab}',template="none")
+                fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
+                fig.update_layout(legend=dict(font=dict(size= 8)))
+                return fig
+
+
+
+
+
+
+
+        tabs_producto=['Cultivo','Variedad','Sucursal','Pais','Tipo de Venta','Cliente']
+        tabs=loadingOverlay(dmc.Tabs(
+                    [
+                        dmc.TabsList(
+                            [
+                            
+                                dmc.Tab(children=tab,value=tab)for tab in tabs_producto
+                            ]
+                        ),
+                            
+                            html.Div([dmc.TabsPanel(cardGraph(id_maximize='id-cliente',id_download='id-download-cliente',id_graph='id-graph-cliente',with_id=False,fig=tabVentaDfGraph(options,tabs_producto[i],importe,tipo_value),icon_maximize=False), value=tabs_producto[i]) for i in range(len(tabs_producto))]),
+
+                    ],
+                    value=tabs_producto[0],
+                )),
+        return tabs
+    @app.callback(
+    Output("modal", "is_open"),
+    Output("modal", "children"),#modal-table
+
+    Input("btn-modal", "n_clicks"),
+    #Input("btn-table", "n_clicks"),
+    #Input("radio-moneda","value"),
+    #Input("segmented","value"),
+    Input('graph-1','figure'),
+    #Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal1(n_clicks_bar,bar):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(bar)
+        fig.update_layout(height=1200),
+        fig.update_layout(yaxis=dict(titlefont_size=9,tickfont_size=13))
+
+        if n_clicks_bar:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+        
+
+
+
+    @app.callback(
+    Output("modal-table", "is_open"),
+    Output("modal-table", "children"),#modal-table
+    Input("btn-table", "n_clicks"),
+    Input("radio-moneda","value"),
+    
+    #Input('graph-1','figure'),
+    Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal2(n_clicks_table,moneda,data_table):#,moneda,segmented,bar,data_table
+        from dash import no_update
+    
+
+        
+        if n_clicks_table:
+
+            return True, modalMaximize(
+                dag.AgGrid(
+                                        
+                                        columnDefs=[{"field": 'N°', "type": "leftAligned"},
+                                                    {"field": 'Producto', "type": "leftAligned","minWidth":400},
+                                                    {"field": moneda, "type": "leftAligned","minWidth": 200},
+                                                    {"field": '%', "type": "leftAligned", "minWidth": 120},
+                                                    {"field": '% Acumulado', "type": "leftAligned", "minWidth": 120},
+                                                    ],
+                                        rowData=data_table,
+                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
+                                        dashGridOptions={"rowSelection": "multiple"},
+                                        style={'height': '1200px','overflow': "auto"},
+                                        className="ag-theme-balham",
+                                        #defaultColDef=
+                                    ),
+            )
+        else:
+            return False, no_update
+######################################################################################################
+def dashComercialCultivo():
+    scripts = [
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js",
+    ]
+    app = DjangoDash('comercial_cultivo', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css],external_scripts=scripts)#
+    
+    df_ventas_d=changeVentasCol(df_ventas_expo)
+    df_ventas_d['Tipo de Venta']=df_ventas_d['Tipo de Venta'].str[4:]
+    df_ventas_d['FECHA']=df_ventas_d['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    fecha_minima=str(df_ventas_d['FECHA'].min())
+    fecha_maxima=str(df_ventas_d['FECHA'].max())
+    df=df_ventas_d[df_ventas_d['Año']==sorted(df_ventas_d['Año'].unique())[-1]]
+    app.layout = html.Div([
+        dbc.Modal(id="modal",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-table",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-tab",size='xl',style={'position': 'absolute'}),
+
+            dbc.Row([   
+                Column(content=[
+                  btnFilter(),
+                            
+                            offcanvas(componentes=[
+                                
+                                select(ids="tipoventa",texto="Tipo de Venta"),
+                                select(ids="formato",texto="Formato"),
+                                select(ids="consumidor",texto="Codigo"),
+                                select(ids="pais",texto="Pais"),
+                                select(ids="umedida",texto="Unidad de Medida"),
+                                radioGroup(ids='radio-data',texto='Orden por Importe',value='positive',
+                                          children=[dmc.Radio(label='Descendente', value='positive'),
+                                                    dmc.Radio(label='Ascendente', value='negative'),
+                                                    
+                                          ]),
+                                radioGroup(ids='radio-moneda',texto='Moneda',value='Importe en Dolares',
+                                          children=[dmc.Radio(label='S/', value='Importe en Soles'),
+                                                    dmc.Radio(label='$', value='Importe en Dolares'),
+                                          ]),
+                                
+                                
+                            
+                            ]),
+                ],size=1),
+                Column(content=[
+                    html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+                ],size=5),    
+                Column(content=[
+                      datePicker(ids='date-picker-desde',
+                                 text='Desde',
+                                 value=df['FECHA'].min(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                      
+                ],size=2),
+                Column(content=[
+                    datePicker(ids='date-picker-hasta',
+                                 text='Hasta',
+                                 value=df['FECHA'].max(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                ],size=2),
+                Column(content=[
+                  inputNumPercent(ids='input-percent',label="% ventas",value=100,minimo=0,maximo=100)
+                ],size=1),  
+                   
+                Column(content=[
+                  btnCollapse(),
+                  btnDownload()
+                ],size=1),
+                ]),
+            
+            dbc.Collapse(
+                dbc.Row([#,style={'max-height': '3490px','overflow': "auto"}
+                    Column(content=[
+                        html.Div(
+                            children=loadingOverlay(
+                                cardGraph(id_graph='graph-1',id_maximize='btn-modal'),
+                                
+                            ))
+                     ],size=6),
+                     Column(content=[
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(html.Div(id="graph2_1"))#graph2_1
+                            
+                            ],size=6),
+                            Column(content=[
+                        
+                            loadingOverlay(html.Div(id="graph2_2"))
+                            ],size=6),
+                        ]),
+                        dbc.Row([
+                            Column(content=[
+                                loadingOverlay(
+                                    cardTableDag(data_call=True,id_table='graph-5',id_maximize='btn-table')
+                                )
+                            
+                            ],size=12),
+                        ])
+                     ],size=6),
+
+                ]),
+            id="collapse",is_open=True),
+            dbc.Row([
+                Column(content=[html.Div(id='tabs-g')],size=12)
+            ]),
+            
+            #html.Div(id='output'),
+            #html.Div(id='test_table'),
+            #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
+            dcc.Store(id='data-values'),  
+            dcc.Download(id="download"),
+            
+
+        ])
+    offcanvasAction(app)
+    @app.callback(
+        Output("collapse", "is_open"),
+        [Input("btn-collapse", "n_clicks")],
+        [State("collapse", "is_open")],
+        )
+    def toggle_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+    
+    @app.callback(Output("data-values","data"),
+                  Output("tipoventa","data"),
+                  Output("formato","data"),
+                  Output("consumidor","data"),
+                  Output("pais","data"),
+                  Output("umedida","data"),
+                  Input("date-picker-desde","value"),
+                  Input("date-picker-hasta","value"),
+                  Input("tipoventa","value"),
+                  Input("formato","value"),
+                  Input("consumidor","value"),
+                  Input("pais","value"),
+                  Input("umedida","value"),
+                  )
+    def filter_ventas(desde,hasta,tipo_venta,formato,consumidor,pais,umedida):
+        #df_ventas=df_ventas_d.copy()
+        fecha_inicio = datetime.strptime(desde, '%Y-%m-%d').date()
+        fecha_fin = datetime.strptime(hasta, '%Y-%m-%d').date()
+        mask = (df_ventas_d['FECHA'] > fecha_inicio ) & (df_ventas_d['FECHA'] <= fecha_fin)
+        df_ventas=df_ventas_d.loc[mask]
+        
+        #df_ventas=filtered_df.groupby(['Tipo de Venta','Formato','idconsumidor','Pais','IDMEDIDA'])[['Importe en Soles']].sum().reset_index()
+        if tipo_venta==None and formato == None and consumidor== None and pais==None and umedida==None:
+            options=df_ventas.copy()
+
+        elif tipo_venta!=None and formato == None and consumidor== None and pais==None and umedida==None:    
+            options=df_ventas[df_ventas['Tipo de Venta']==tipo_venta]
+        elif tipo_venta==None and formato != None and consumidor== None and pais==None and umedida==None:    
+            options=df_ventas[df_ventas['Formato']==formato]
+        
+        elif tipo_venta==None and formato == None and consumidor!= None and pais==None and umedida==None:    
+            options=df_ventas[df_ventas['idconsumidor']==consumidor]
+        
+        elif tipo_venta==None and formato == None and consumidor== None and pais!=None and umedida==None:    
+            options=df_ventas[df_ventas['Pais']==pais]
+        
+        elif tipo_venta==None and formato == None and consumidor== None and pais==None and umedida !=None:    
+            options=df_ventas[df_ventas['IDMEDIDA']==umedida]
+
+
+        elif tipo_venta!=None and formato != None and consumidor== None and pais==None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)]
+        
+        elif tipo_venta!=None and formato == None and consumidor!= None and pais==None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)]
+        
+        elif tipo_venta!=None and formato == None and consumidor== None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato == None and consumidor== None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+        
+        elif tipo_venta==None and formato != None and consumidor== None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato != None and consumidor!= None and pais==None and umedida==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['idconsumidor']==consumidor)]
+
+        elif tipo_venta==None and formato != None and consumidor == None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+        
+        elif tipo_venta==None and formato == None and consumidor!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+
+        elif tipo_venta==None and formato == None and consumidor!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato == None and consumidor!= None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['IDMEDIDA']==umedida)]
+        
+        elif tipo_venta==None and formato == None and consumidor== None and pais!=None and umedida!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+
+        
+        elif tipo_venta!=None and formato != None and consumidor!= None and pais==None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['idconsumidor']==consumidor)]
+
+        elif tipo_venta!=None and formato != None and consumidor== None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato != None and consumidor== None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Formato']==formato)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+        
+        elif tipo_venta!=None and formato == None and consumidor!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and formato == None and consumidor!= None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+
+        elif tipo_venta==None and formato != None and consumidor!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and formato != None and consumidor!= None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['IDMEDIDA']==umedida)]
+        
+        elif tipo_venta==None and formato == None and consumidor!= None and pais!=None and umedida!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['IDMEDIDA']==umedida)]
+        
+
+
+
+
+
+        elif tipo_venta!=None and formato != None and consumidor!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)]
+        
+        elif tipo_venta!=None and formato != None and consumidor!= None and pais!=None and umedida!=None:
+            options=df_ventas[(df_ventas['Formato']==formato)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+        option_tipov=[{'label': i, 'value': i} for i in options['Tipo de Venta'].unique()] 
+        option_formato=[{'label': i, 'value': i} for i in options['Formato'].unique()] 
+        option_consumidor=[{'label': i, 'value': i} for i in options['idconsumidor'].unique()] 
+        option_pais=[{'label': i, 'value': i} for i in options['Pais'].unique()] 
+        option_umedida=[{'label': i, 'value': i} for i in options['IDMEDIDA'].unique()] 
+        
+        
+        return options.to_json(date_format='iso', orient='split'),option_tipov,option_formato,option_consumidor,option_pais,option_umedida
+    
+    @app.callback(
+            
+            Output("download", "data"),
+            Input("data-values","data"),
+            Input("btn-download", "n_clicks"),
+            prevent_initial_call=True,
+            
+            )
+    def update_download(data,n_clicks_download):
+        options=pd.read_json(data, orient='split')
+        #options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        if n_clicks_download:
+            return dcc.send_data_frame( options.to_excel, "comercial.xlsx", sheet_name="Sheet_name_1")
+
+    @app.callback(
+            Output("title","children"),
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+        )
+    def title_ventas(data,moneda):
+            options=pd.read_json(data, orient='split')
+            
+            lista_year=sorted(options['Año'].unique())
+            filtro_mes=options.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
+            lista_mes=filtro_mes['Mes'].unique()
+            #if len(lista_year)>1:
+            rango_year=f"{lista_year[0]}-{lista_year[-1]}"if len(lista_year)>1 else f"{lista_year[0]}"
+
+            #rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            if len(lista_year)==1:
+                rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            elif len(lista_year)>1:
+                rango_mes=f"{lista_mes[-1]}"
+
+            importe=dmc.Badge(moneda,variant='outline',color='blue', size='md')if moneda =='Soles' else dmc.Badge(moneda,variant='outline',color='blue', size='md')
+           
+
+            title=dmc.Title(children=[f'Ventas Cultivo',dmc.Badge(rango_year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='md'),importe], order=2,align='center')
+
+                    
+            return title#,subtitle 
+    
+    @app.callback(
+            Output("graph-1","figure"),
+            Output("graph2_1","children"),
+            Output("graph2_2","children"),
+            Output("graph-5","rowData"),
+            Output("graph-5","columnDefs"),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent):
+        options=pd.read_json(data, orient='split')
+        Total=options[importe].sum()#"{:,.0f}".format(
+        cantidad_cultivo=len(options['Cultivo'].unique())
+        sig="$"if importe =='Importe en Dolares' else "S/"
+        agg_title='en orden descendente' if tipo_value == 'positive' else 'en orden ascendente'
+        bar_data=options.groupby(['Cultivo'])[[importe]].sum().reset_index( )  
+        bar_data=bar_data[bar_data[importe]>0]
+        if tipo_value == 'positive':
+       
+            bar_data_order=bar_data.sort_values(importe,ascending=False)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Cultivo ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Cultivo']
+            print(bar_data_order_percent.columns)
+        elif tipo_value == 'negative':
+ 
+            bar_data_order=bar_data.sort_values(importe,ascending=True)
+            bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+            bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+            bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+            bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=False)
+            bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
+            bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
+            bar_data_order_percent['Cultivo ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Cultivo']
+            print(bar_data_order_percent.columns)
+        fig = go.Figure()
+        fig.add_trace(go.Bar(x=bar_data_order_percent[importe],
+                                 y=bar_data_order_percent['Cultivo '],
+                                 text=bar_data_order_percent[importe],
+                                 orientation='h',
+                                 textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
+                                 #customdata=[bar_data_order_percent['percent'],bar_data_order_percent['percent_cum']],
+                                 hovertemplate ='<br><b>Cultivo</b>:%{y}'+'<br><b>Importe</b>: %{x}<br>',
+                                 marker_color="#145f82",
+                                 hoverlabel=dict(font_size=14),
+                                 name=''
+                                ))#.2s
+
+        fig.update_layout(title={'text':f'Cultivos {agg_title}'},template='none')#,'font': {'size': 15, 'color': 'black', 'family': 'Arial'},
+        fig.update_layout(autosize=True,height=490,margin=dict(r=40,b=40,t=40,l=300),yaxis=dict(titlefont_size=8,tickfont_size=10))#l=400,,
+        fig.update_layout(xaxis_title=importe,yaxis_title="",legend_title="")
+        
+        sort_boolean= False if tipo_value == 'positive' else True
+        table_df=bar_data_order_percent.sort_values(importe,ascending=sort_boolean)
+        table_df['N°']=table_df['N°'].astype(int)
+        table_df['%']=(table_df['%']*100).round(3)
+        table_df['% Acumulado']=(table_df['% Acumulado']*100).round(3)
+        table_df[importe]=table_df[importe].round(0)
+        table_df[importe] = table_df.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        
+        
+        return [fig,
+                cardShowTotal(card_id='id-card',title_card='Total de Ventas',value=round(Total,0),simbolo=sig,icon="ion:cash-outline"),
+                cardShowTotal(card_id='id-card2',title_card='Total de Cultivos',value=cantidad_cultivo,simbolo='',icon="flat:customer"),
+                table_df.to_dict("records"),
+                [{"field": 'N°', "type": "leftAligned", "maxWidth": 90, "checkboxSelection": True},
+                 {"field": 'Cultivo', "type": "leftAligned", "minWidth": 280},
+                 {"field": importe, "type": "leftAligned", "minWidth": 100},
+                 {"field": '%', "type": "leftAligned", "minWidth": 80},
+                 {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
+
+                 ],
+                 
+            ]
+    @app.callback(
+            Output('tabs-g','children'),
+            
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("radio-data","value"),
+            Input("input-percent","value"),
+            Input('graph-5','selectedRows')
+            
+
+        )
+    def update_ventas(data,importe,tipo_value,percent,selected_table):
+        options=pd.read_json(data, orient='split')
+        #print(type(selected_table))
+        #print(selected_table)
+        
+        #if selected_table != None:
+        #    selected_segmented = [s['Cliente'] for s in selected_table]
+        #    print(selected_segmented)
+        #    print(type(selected_segmented))
+        #else:
+        #    selected_segmented='no hay nada v: '
+
+        
+        def tabVentaDfGraph(df,tab,importe,tipo_value):
+            
+                #df_v=df.groupby([tipo])[[varnum]].sum().reset_index()
+                #df_v=df_v[df_v[varnum]>0]  
+                
+                bar_data=df.groupby(['Cultivo',tab])[[importe]].sum().reset_index()  
+                bar_data=bar_data[bar_data[importe]>0]
+                if tipo_value == 'positive':
+                    bar_data_order=bar_data.sort_values(importe,ascending=False)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Cultivo'].isin(bar_data_order_percent['Cultivo'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=False)
+                    
+                elif tipo_value == 'negative':
+                    bar_data_order=bar_data.sort_values(importe,ascending=True)
+                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
+                    barstack=bar_data[bar_data['Cultivo'].isin(bar_data_order_percent['Cultivo'].unique())]
+                    barstack=barstack.sort_values(importe,ascending=True)
+                    
+                fig = px.bar(barstack, x= 'Cultivo' , y=importe, color= tab,# text_auto=True,
+                                        title=f'Ventas Cultivo por {tab}',template="none")
+                fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
+                fig.update_layout(legend=dict(font=dict(size= 8)))
+                return fig
+
+
+
+
+
+
+
+        tabs_cultivo=['Variedad','Sucursal','Pais','Tipo de Venta','Cliente','Producto']
+        tabs=loadingOverlay(dmc.Tabs(
+                    [
+                        dmc.TabsList(
+                            [
+                            
+                                dmc.Tab(children=tab,value=tab)for tab in tabs_cultivo
+                            ]
+                        ),
+                            
+                            html.Div([dmc.TabsPanel(cardGraph(id_maximize='id-cliente',id_download='id-download-cliente',id_graph='id-graph-cliente',with_id=False,fig=tabVentaDfGraph(options,tabs_cultivo[i],importe,tipo_value),icon_maximize=False), value=tabs_cultivo[i]) for i in range(len(tabs_cultivo))]),
+
+                    ],
+                    value=tabs_cultivo[0],
+                )),
+        return tabs
+    @app.callback(
+    Output("modal", "is_open"),
+    Output("modal", "children"),#modal-table
+
+    Input("btn-modal", "n_clicks"),
+    #Input("btn-table", "n_clicks"),
+    #Input("radio-moneda","value"),
+    #Input("segmented","value"),
+    Input('graph-1','figure'),
+    #Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal1(n_clicks_bar,bar):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(bar)
+        fig.update_layout(height=1200),
+        fig.update_layout(yaxis=dict(titlefont_size=9,tickfont_size=13))
+
+        if n_clicks_bar:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+        
+
+
+
+    @app.callback(
+    Output("modal-table", "is_open"),
+    Output("modal-table", "children"),#modal-table
+    Input("btn-table", "n_clicks"),
+    Input("radio-moneda","value"),
+    
+    #Input('graph-1','figure'),
+    Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal2(n_clicks_table,moneda,data_table):#,moneda,segmented,bar,data_table
+        from dash import no_update
+    
+
+        
+        if n_clicks_table:
+
+            return True, modalMaximize(
+                dag.AgGrid(
+                                        
+                                        columnDefs=[{"field": 'N°', "type": "leftAligned"},
+                                                    {"field": 'Cultivo', "type": "leftAligned","minWidth":400},
+                                                    {"field": moneda, "type": "leftAligned","minWidth": 200},
+                                                    {"field": '%', "type": "leftAligned", "minWidth": 120},
+                                                    {"field": '% Acumulado', "type": "leftAligned", "minWidth": 120},
+                                                    ],
+                                        rowData=data_table,
+                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
+                                        dashGridOptions={"rowSelection": "multiple"},
+                                        style={'height': '1200px','overflow': "auto"},
+                                        className="ag-theme-balham",
+                                        #defaultColDef=
+                                    ),
+            )
+        else:
+            return False, no_update
+#####################################FUNCTIONS FOR COMPARATIVE ITERATION
+
+
+def deleteElementList(lista,elemento_eliminar):
+            new_lista=[]
+            for element in lista:
+                if element!=elemento_eliminar:
+                       new_lista.append(element)
+            return new_lista
+
+
+
+
+######################################################################
+
+
+
+def dashComercialComparativo():
+    
+    app = DjangoDash('comercial_comparativo', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css])#
+    
+    df_ventas_d=changeVentasCol(df_ventas_expo)
+    df_ventas_d['Tipo de Venta']=df_ventas_d['Tipo de Venta'].str[4:]
+    df_ventas_d['FECHA']=df_ventas_d['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    df_ventas_d['Año']=df_ventas_d['Año'].astype("string")
+    years_list=list(sorted(df_ventas_d['Año'].unique()))
+    
+    #LSITA DE COLORES POR AÑO
+    YEARS_LIST=df_ventas_d['Año'].unique()
+    dict_year=dict(zip(YEARS_LIST,px.colors.qualitative.Antique))
+    print(years_list)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+    print(years_list[-1])
+    print(years_list[-2])
+    print(type(years_list[-2]))
+
+    app.layout = html.Div([
+        dbc.Modal(id="modal",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-table",size='xl',style={'position': 'absolute'}),
+        dbc.Modal(id="modal-tab",size='xl',style={'position': 'absolute'}),
+        dbc.Row([
+            Column(content=[
+                                btnFilter(),
+                                
+                                    offcanvas(componentes=[
+                                    
+                                    select(ids="tipoventa",texto="Tipo de Venta"),
+                                    select(ids="cliente",texto="Cliente"),
+                                    select(ids="producto",texto="Producto"),
+                                    select(ids="pais",texto="Pais"),
+                                    select(ids="umedida",texto="Unidad de Medida"),
+                                    radioGroup(ids='radio-moneda',texto='Moneda',value='Importe en Dolares',
+                                            children=[dmc.Radio(label='S/', value='Importe en Soles'),
+                                                        dmc.Radio(label='$', value='Importe en Dolares'),
+                                            ]),
+                                    
+                                    
+                                
+                                ]),
+                    ],size=1),
+            Column(content=[
+                        html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'},children=['Comparativo Entre Años']),
+                        html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+            ],size=5), 
+            Column(content=[
+                        
+                        dmc.MultiSelect(
+                            id="input-years",
+                            label="Seleccione los Años a comparar",
+                            #placeholder="Select all you like!",
+                            value=[str(years_list[-2]), str(years_list[-3])],
+                            data=years_list,
+                            #searchable=True,
+                            #style={"width": 400, "marginBottom": 10},
+                        ),
+                        
+
+            ],size=5),
+        ]),
+        dbc.Row([
+            Column(content=[
+                dag.AgGrid(
+                                id="datatable-interactivity",
+                                #columnDefs=columnDefs,
+                                #rowData=df.to_dict("records"),
+                                dashGridOptions={"rowSelection": "multiple"},
+                                #columnSize="sizeToFit",
+                                defaultColDef={"resizable": True, "sortable": True, "filter": True},
+                                style={'max-height': f'{250}px','overflow': "auto"},
+                                className="ag-theme-balham",
+
+                            ),
+                
+                dmc.List(
+                        icon=dmc.ThemeIcon(
+                            DashIconify(icon="radix-icons:check-circled", width=16),
+                            radius="xl",
+                            color="teal",
+                            size=24,
+                        ),
+                        size="xs",
+                        spacing="sm",
+                        style={'max-height': f'{230}px','overflow': "auto"},
+                        children=[
+                            dmc.ListItem(dmc.Text(id='100-%', weight=700),),
+                            dmc.ListItem(dmc.Text(id='second-text', weight=700)),
+                            
+                            
+                        ],
+                    )          
+                            ],size=4),
+            Column(content=[
+                dag.AgGrid(
+                                id="datatable-result",
+                                #columnDefs=columnDefs,
+                                #rowData=df.to_dict("records"),
+                                dashGridOptions={"rowSelection": "multiple"},
+                                #columnSize="sizeToFit",
+                                #defaultColDef={"resizable": True, "sortable": True, "filter": True},
+                                style={'max-height': f'{300}px','overflow': "auto"},
+                                className="ag-theme-balham",
+                            ),
+            ],size=8),
+        ]),
+        dbc.Row([
+            Column(content=[
+                            
+                            html.Div(
+                                children=
+                                    dmc.Card(
+                                            children=[
+                                                
+                                                
+                                            dmc.CardSection([
+                                                dmc.SegmentedControl(
+                                                    id='select-st',
+                                                    value="Semana",
+                                                    data=[{'label': 'Mensual', 'value': 'MONTH'},
+                                                        {'label': 'Trimestral', 'value': 'TRIMESTRE'},
+                                                        {'label': 'Semanal', 'value': 'Semana'},
+                                                        #{'label': 'Semanal', 'value': 'Año'},
+                                                        ],
+                                                        
+                                                    #mt=10,
+                                                    fullWidth=True,
+                                                    color='rgb(34, 184, 207)'
+                                                ),
+                                                cardGraph(id_maximize='btn-modal',id_graph='st-comparative',icon_maximize=True)         
+                                                #dcc.Graph(id='st-comercial') 
+                                                
+                                            ]),
+                                                
+                                            ],
+                                            withBorder=True,
+                                            shadow="lg",
+                                            radius="xs",
+                                        
+                                    ),
+
+                                    
+                                )
+                        ],size=12),
+        ]),
+        dcc.Store(id='data-values'),  
+        dcc.Download(id="download"),
+                
+
+    ])
+    offcanvasAction(app)
+    @app.callback(
+        Output("collapse", "is_open"),
+        [Input("btn-collapse", "n_clicks")],
+        [State("collapse", "is_open")],
+        )
+    def toggle_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+
+    @app.callback(Output("data-values","data"),
+                  Output("tipoventa","data"),
+                  Output("cliente","data"),
+                  Output("producto","data"),
+                  Output("pais","data"),
+                  Output("umedida","data"),
+                  
+                  Input("tipoventa","value"),
+                  Input("cliente","value"),
+                  Input("producto","value"),
+                  Input("pais","value"),
+                  Input("umedida","value"),
+                  )
+    def filter_ventas(tipo_venta,cliente,producto,pais,umedida):#producto
+        #df_ventas=df_ventas_d.copy()
+        
+        df_ventas=df_ventas_d.copy()
+        
+        #df_ventas=filtered_df.groupby(['Tipo de Venta','Formato','idconsumidor','Pais','IDMEDIDA'])[['Importe en Soles']].sum().reset_index()
+        if tipo_venta==None and cliente == None and producto== None and pais==None and umedida==None:
+            options=df_ventas.copy()
+
+        elif tipo_venta!=None and cliente == None and producto== None and pais==None and umedida==None:    
+            options=df_ventas[df_ventas['Tipo de Venta']==tipo_venta]
+        elif tipo_venta==None and cliente != None and producto== None and pais==None and umedida==None:    
+            options=df_ventas[df_ventas['Cliente']==cliente]
+        
+        elif tipo_venta==None and cliente == None and producto!= None and pais==None and umedida==None:    
+            options=df_ventas[df_ventas['Producto']==producto]
+        
+        elif tipo_venta==None and cliente == None and producto== None and pais!=None and umedida==None:    
+            options=df_ventas[df_ventas['Pais']==pais]
+        
+        elif tipo_venta==None and cliente == None and producto== None and pais==None and umedida !=None:    
+            options=df_ventas[df_ventas['IDMEDIDA']==umedida]
+
+
+        elif tipo_venta!=None and cliente != None and producto== None and pais==None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cliente']==cliente)]
+        
+        elif tipo_venta!=None and cliente == None and producto!= None and pais==None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Producto']==producto)]
+        
+        elif tipo_venta!=None and cliente == None and producto== None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and cliente == None and producto== None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+        
+        elif tipo_venta==None and cliente != None and producto== None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and cliente != None and producto!= None and pais==None and umedida==None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Producto']==producto)]
+
+        elif tipo_venta==None and cliente != None and producto == None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+        
+        elif tipo_venta==None and cliente == None and producto!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Producto']==producto)&(df_ventas['Pais']==pais)]
+
+        elif tipo_venta==None and cliente == None and producto!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Producto']==producto)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and cliente == None and producto!= None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Producto']==producto)&(df_ventas['IDMEDIDA']==umedida)]
+        
+        elif tipo_venta==None and cliente == None and producto== None and pais!=None and umedida!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+
+        
+        elif tipo_venta!=None and cliente != None and producto!= None and pais==None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cliente']==cliente)&(df_ventas['Producto']==producto)]
+
+        elif tipo_venta!=None and cliente != None and producto== None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cliente']==cliente)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and cliente != None and producto== None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Cliente']==cliente)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+        
+        elif tipo_venta!=None and cliente == None and producto!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Producto']==producto)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta!=None and cliente == None and producto!= None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Producto']==producto)&(df_ventas['IDMEDIDA']==umedida)]
+
+
+
+        elif tipo_venta==None and cliente != None and producto!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Producto']==producto)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and cliente != None and producto!= None and pais==None and umedida!=None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Producto']==producto)&(df_ventas['IDMEDIDA']==umedida)]
+        
+        elif tipo_venta==None and cliente == None and producto!= None and pais!=None and umedida!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['Producto']==producto)&(df_ventas['IDMEDIDA']==umedida)]
+        
+
+
+
+
+
+        elif tipo_venta!=None and cliente != None and producto!= None and pais!=None and umedida==None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Producto']==producto)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)]
+        
+        elif tipo_venta!=None and cliente != None and producto!= None and pais!=None and umedida!=None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Producto']==producto)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['IDMEDIDA']==umedida)]
+
+        
+        option_tipov=[{'label': i, 'value': i} for i in options['Tipo de Venta'].unique()] 
+        option_cliente=[{'label': i, 'value': i} for i in options['Cliente'].unique()] 
+        option_producto=[{'label': i, 'value': i} for i in options['Producto'].unique()] 
+        option_pais=[{'label': i, 'value': i} for i in options['Pais'].unique()] 
+        option_umedida=[{'label': i, 'value': i} for i in options['IDMEDIDA'].unique()] 
+        
+        
+        return options.to_json(date_format='iso', orient='split'),option_tipov,option_cliente,option_producto,option_pais,option_umedida
+    
+    @app.callback(
+            Output("title","children"),
+            Output("subtitle","children"),
+            Input('input-years',"value"),
+            Input("radio-moneda","value"),
+            Input("tipoventa","value"),
+            Input("cliente","value"),
+            Input("producto","value"),
+        )
+    def title_ventas(years,moneda,tipoventa,cliente,producto):#data,
+            #options=pd.read_json(data, orient='split')
+            
+            lista_year=sorted(years)
+            
+            
+            #if len(lista_year)>1:
+            rango_year=f"{lista_year[0]}-{lista_year[-1]}"if len(lista_year)>1 else f"{lista_year[0]}"
+
+            #rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"if len(lista_mes)>1 else f"{lista_mes[0]}"
+            
+
+            importe=dmc.Badge(moneda,variant='outline',color='blue', size='md')if moneda =='Soles' else dmc.Badge(moneda,variant='outline',color='blue', size='md')
+           
+
+            title=dmc.Title(children=[f'Comparativo entre Años ',dmc.Badge(rango_year,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+
+            badge_tipoventa=dmc.Badge(tipoventa,variant='outline',color='blue', size='md')if tipoventa!=None else None   
+            badge_cliente=dmc.Badge(cliente,variant='outline',color='blue', size='md')if cliente!=None else None 
+            badge_producto=dmc.Badge(producto,variant='outline',color='blue', size='md')if producto!=None else None    
+            subtitle=dmc.Title([badge_tipoventa,badge_cliente,badge_producto], order=3,align='center')
+            return title,subtitle
+    
+
+    @app.callback(
+            
+            Output("datatable-interactivity","rowData"),
+            Output("datatable-interactivity","columnDefs"),
+            
+            #Input("data-values","data"),
+            Input("data-values","data"),
+            Input("input-years","value"),
+            Input("select-st","value"),
+            Input("radio-moneda","value"),
+            
+            
+            
+
+        )
+    def update_ventas(data,years,ejex,importe):
+        options=pd.read_json(data, orient='split')
+        options['Año']=options['Año'].astype("string")
+        if years == None:
+            df=options[options['Año'].isin(years[-1])]
+        elif years == []:
+            df=options[options['Año'].isin(years[-1])]
+        elif years != None:
+                #df_ventas_detalle[df_ventas_detalle['YEAR'].isin([2021,2022])]
+            df=options[options['Año'].isin(years)]
+        table_df=df.groupby(['Año'])[[importe]].sum().reset_index()
+        return table_df.to_dict("records"),[{"field": 'Año',"checkboxSelection": True},{"field": importe}]
+
+    @app.callback(
+            Output("st-comparative","figure"),
+            Output("datatable-result","columnDefs"),
+            Output("datatable-result","rowData"),
+            Output("datatable-result","defaultColDef"),
+            Output("100-%","children"),
+            Output("second-text","children"),
+            
+            #Input("data-values","data"),
+            Input("data-values","data"),
+            Input("input-years","value"),
+            Input("select-st","value"),
+            Input("radio-moneda","value"),
+            Input("datatable-interactivity", "selectedRows"),
+            
+            
+            
+
+        )
+    def update_ventas(data,years,ejex,importe,selected):
+        
+                  
+        options=pd.read_json(data, orient='split')
+        options['Año']=options['Año'].astype("string")
+        if years == None:
+            df=options[options['Año'].isin(years[-1])]
+        elif years == []:
+            df=options[options['Año'].isin(years[-1])]
+        elif years != None:
+            #df_ventas_detalle[df_ventas_detalle['YEAR'].isin([2021,2022])]
+            df=options[options['Año'].isin(years)]
+        
+        graph_com_vtime=df.groupby(['Año',ejex])[[importe]].sum().reset_index()
+        lista_order_year=sorted(years)
+        #lista_order_year=sorted(graph_com_vtime['Año'].unique())
+        graph_test=pd.pivot_table(graph_com_vtime, values=importe, index=[ejex], columns=['Año']).reset_index()
+        
+
+        selected_list = [s["Año"] for s in selected] if selected!=None else []
+        print(selected_list)
+        list_years_df=list(graph_test.columns[1:len(years)+1])
+        print(f"año del dropdown {list_years_df}")
+        #esta lista servira para iterar los años seleccionados, el primer año que se seleccione no entrara a esta lista para ser dibujado con una config especial
+        list_iter=list_years_df if selected_list==[] else deleteElementList(list_years_df,selected_list[-1])
+        print(f"lista iteracion {list_iter}")
+        if selected_list ==[] or len(selected_list)<3:
+            print('primero')
+            graph_test[f'dif-{lista_order_year[0]}']=graph_test[lista_order_year[-1]]-graph_test[lista_order_year[0]]
+            graph_test[f'%-{lista_order_year[0]}']=(graph_test[f'dif-{lista_order_year[0]}']/graph_test[lista_order_year[0]])*100
+            graph_test[f'%-{lista_order_year[0]}']=graph_test[f'%-{lista_order_year[0]}'].round(1)
+        elif selected_list !=[] and len(selected_list)>2:
+            print('segundo')
+            for year_iter in list_iter:
+                graph_test[f'dif-{year_iter}']=graph_test[selected_list[-1]]-graph_test[year_iter]
+                graph_test[f'%-{year_iter}']=(graph_test[f'dif-{year_iter}']/graph_test[year_iter])*100
+                graph_test[f'%-{year_iter}']=graph_test[f'%-{year_iter}'].round(1)
+                
+        ########################################### graph
+        fig = go.Figure()
+        #df=graph_test.copy
+
+        if selected_list !=[]:
+            
+            fig.add_trace(go.Bar(x=graph_test[ejex],
+                                y=graph_test[selected_list[-1]],
+                                name=selected_list[-1],
+                                marker_color=dict_year[selected_list[-1]],
+                                #customdata=dict_year['year']==selected_list[-1],
+                                text=graph_test[selected_list[-1]],
+                                textposition="outside",
+                                texttemplate='%{text:,.0f}',
+                                hovertemplate ='<br><b>test </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                                textfont=dict(size=20)
+                                )) 
+            fig.update_traces(marker_line_width=3, marker_line_color='black')#,marker_pattern_shape="+"
+        
+            for year,i in zip(list_iter,range(len(list_iter))):
+                    
+                    
+                    #border_size=2 if year == '2022'else 1
+                    if ejex == 'MONTH':
+                        fig.add_trace(go.Bar(x=graph_test[ejex],
+                                    y=graph_test[year],
+                                    name=year,
+                                    marker_color=dict_year[year],
+                                    text=graph_test[year],
+                                    textposition="outside",
+                                    texttemplate='%{text:,.0f}',
+                                    hovertemplate ='<br><b>Mes </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                                    textfont=dict(size=20),opacity=0.8
+                                    ))
+                        #fig.update_traces(opacity=0.6)
+                        #if selected_list !=[] and selected_list[0]==year:
+                        #    print('primera condicion')
+                        #    fig.update_traces(marker_pattern_shape="+")# 
+                        #elif selected_list ==[] or selected_list[0]!=year:  
+                        #    print('segunda condicion')
+                        #    fig.update_traces(marker_pattern_shape=None)  
+                            
+                        
+                    elif ejex == 'TRIMESTRE':
+                        fig.add_trace(go.Bar(x=graph_test[ejex],
+                                    y=graph_test[year],
+                                    name=year,
+                                    marker_color=dict_year[year],
+                                    text=graph_test[year],
+                                    textposition="outside",
+                                    texttemplate='%{text:,.0f}',
+                                    hovertemplate ='<br><b>Trimestre </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                                    textfont=dict(size=20),opacity=0.8
+                                    ))
+                        #fig.update_traces(opacity=0.6)
+                        #if selected_list !=[] and selected_list[0]==year:
+                        #    print('primera condicion')
+                        #    fig.update_traces(marker_pattern_shape="+")# 
+                        #elif selected_list ==[] or selected_list[0]!=year:  
+                        #    print('segunda condicion')
+                        #    fig.update_traces(marker_pattern_shape=None)    
+                        
+                    
+                    elif ejex == 'Semana':
+                        fig.add_trace(go.Bar(x=graph_test[ejex],
+                                    y=graph_test[year],
+                                    name=year,
+                                    marker_color=dict_year[year],
+                                    text=graph_test[year],
+                                    textposition="outside",
+                                    texttemplate='%{text:,.0f}',
+                                    hovertemplate ='<br><b>Semana </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                                    textfont=dict(size=20),opacity=0.8
+                                    ))
+                        #fig.update_traces(opacity=0.6)
+                    
+                        
+        else:
+                 for year,i in zip(list_iter,range(len(list_iter))):
+                    
+                    
+                    #border_size=2 if year == '2022'else 1
+                    if ejex == 'MONTH':
+                        fig.add_trace(go.Bar(x=graph_test[ejex],
+                                    y=graph_test[year],
+                                    name=year,
+                                    marker_color=dict_year[year],
+                                    text=graph_test[year],
+                                    textposition="outside",
+                                    texttemplate='%{text:,.0f}',
+                                    hovertemplate ='<br><b>Mes </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                                    textfont=dict(size=20)
+                                    ))
+                        #if selected_list !=[] and selected_list[0]==year:
+                        #    print('primera condicion')
+                        #    fig.update_traces(marker_pattern_shape="+")# 
+                        #elif selected_list ==[] or selected_list[0]!=year:  
+                        #    print('segunda condicion')
+                        #    fig.update_traces(marker_pattern_shape=None)  
+                            
+                        
+                    elif ejex == 'TRIMESTRE':
+                        fig.add_trace(go.Bar(x=graph_test[ejex],
+                                    y=graph_test[year],
+                                    name=year,
+                                    marker_color=dict_year[year],
+                                    text=graph_test[year],
+                                    textposition="outside",
+                                    texttemplate='%{text:,.0f}',
+                                    hovertemplate ='<br><b>Trimestre </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                                    textfont=dict(size=20)
+                                    ))
+                        #if selected_list !=[] and selected_list[0]==year:
+                        #    print('primera condicion')
+                        #    fig.update_traces(marker_pattern_shape="+")# 
+                        #elif selected_list ==[] or selected_list[0]!=year:  
+                        #    print('segunda condicion')
+                        #    fig.update_traces(marker_pattern_shape=None)    
+                        
+                    
+                    elif ejex == 'Semana':
+                        fig.add_trace(go.Bar(x=graph_test[ejex],
+                                    y=graph_test[year],
+                                    name=year,
+                                    marker_color=dict_year[year],
+                                    text=graph_test[year],
+                                    textposition="outside",
+                                    texttemplate='%{text:,.0f}',
+                                    hovertemplate ='<br><b>Semana </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                                    textfont=dict(size=20),
+                                    ))
+                    
+                         
+
+        fig.update_layout(
+            title=f'Comparativo {ejex} por año',
+            xaxis_tickfont_size=14,
+            yaxis=dict(
+                title=importe,
+                titlefont_size=16,
+                tickfont_size=14,
+            ),
+            xaxis=dict(
+                title=ejex,
+                titlefont_size=16,
+                tickfont_size=14,
+            ),
+            legend=dict(orientation="h",yanchor="bottom",xanchor="right",y=1.02,x=1),
+            barmode='group',
+            bargap=0.15, # gap between bars of adjacent location coordinates.0.15
+            bargroupgap=0.1, # gap between bars of the same location coordinate.
+            template='plotly_white',
+            margin=dict(l=40,r=40,b=40,t=40),
+            height=380
+        )
+        fig.update_xaxes(type='category')
+        #################################################################################################################
+        if selected_list ==[] or len(selected_list)<3:
+            
+            if ejex == 'MONTH':
+                fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{lista_order_year[0]}'], name="Crecimiento", yaxis="y2",text=graph_test[f'%-{lista_order_year[0]}'],
+                textposition="bottom center",marker_color=px.colors.qualitative.Prism[1],
+                hovertemplate ='<br><b>Mes </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
+                mode='lines+markers'
+                ))
+                
+            elif ejex == 'TRIMESTRE':
+                        fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{lista_order_year[0]}'], name="Crecimiento", 
+                                                 yaxis="y2",text=graph_test[f'%-{lista_order_year[0]}'],
+                    textposition="bottom center",marker_color=px.colors.qualitative.Prism[1],
+                    hovertemplate ='<br><b>Trimestre </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
+                    mode='lines+markers'
+                    ))
+                        
+            elif ejex == 'Semana':
+                        fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{lista_order_year[0]}'], name="Crecimiento", yaxis="y2",text=graph_test[f'%-{lista_order_year[0]}'],
+                    textposition="bottom center",marker_color=px.colors.qualitative.Prism[1],
+                    hovertemplate ='<br><b>Semana </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
+                    mode='lines+markers',line=dict(color=px.colors.qualitative.Prism[1], width=4)
+                    ))
+        elif selected_list !=[] and len(selected_list)>2:
+             lista_rango_=deleteElementList(selected_list,selected_list[-1])
+             print("aqui empiezo")
+             print(selected_list)
+             print(lista_rango_)
+             for year_percents,i in zip(lista_rango_,range(len(lista_rango_))):
+                if ejex == 'MONTH':
+                    fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{year_percents}'], name=f"Crecimiento-{year_percents}", 
+                                             yaxis="y2",text=graph_test[f'%-{year_percents}'],
+                    textposition="bottom center",marker_color=px.colors.qualitative.Dark2[i],
+                    hovertemplate ='<br><b>Mes </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
+                    mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=4)
+                    ))
+                
+                elif ejex == 'TRIMESTRE':
+                    fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{year_percents}'], name=f"Crecimiento-{year_percents}", 
+                                             yaxis="y2",text=graph_test[f'%-{year_percents}'],
+                        textposition="bottom center",marker_color=px.colors.qualitative.Dark2[i],
+                        hovertemplate ='<br><b>Trimestre </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
+                        mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=4)
+                        ))
+                            
+                elif ejex == 'Semana':
+                    fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{year_percents}'], name=f"Crecimiento-{year_percents}",
+                                              yaxis="y2",text=graph_test[f'%-{year_percents}'],
+                        textposition="bottom center",marker_color=px.colors.qualitative.Dark2[i],
+                        hovertemplate ='<br><b>Semana </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
+                        mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=4)
+                        ))
+        ###########################################################################################################       
+        fig.update_layout(
+
+            yaxis2=dict(
+                title="%",
+                overlaying="y",
+                side="right",
+                titlefont_size=16,
+                tickfont_size=14,
+            ),
+
+        )
+        if selected_list ==[]:
+            print("condicional table color")
+            defaultColDef=dict(
+                resizable=True,
+                sortable= True, 
+                filter = True,
+                cellStyle={
+                    "styleConditions": [
+                        {
+                            "condition": f"params.colDef.field == {lista_order_year[-1]}",#{lista_order_year[-1]}
+                            "style": {"backgroundColor": f"{dict_year[lista_order_year[-1]]}", "color": "white"},
+                        },
+                    ]
+                },
+            )
+        elif selected_list !=[]:
+            print("condicional table color x 2 :v")
+            #defcols={"resizable": True, "sortable": True, "filter": True},
+            defaultColDef=dict(
+                    resizable=True,
+                    sortable= True, 
+                    filter = True,
+                    cellStyle={
+                        "styleConditions": [
+                            {
+                                "condition": f"params.colDef.field == {selected_list[-1]}",
+                                "style": {"backgroundColor": f"{dict_year[selected_list[-1]]}", "color": "white"},
+                            },
+                        ]
+                    },
+                )
+        return fig,[{"field": i} for i in graph_test.columns],graph_test.to_dict("records"),defaultColDef,f'Año 100%:{selected_list[-1]}' if selected_list!=[]else'',",".join(list_iter)if list_iter !=[]else''
+
+    
+"""
+    @app.callback(
+                Output("year","data"),
+                Output("cultivo","data"),
+                Output("variedad","data"),
+                Output("cliente","data"),
+                Output("month","data"),
+            #Output('filter-data', 'data'),
+            Input("year","value"),
+            Input("cultivo","value"),
+            Input("variedad","value"),
+            #Input("cultivo","value"),
+            Input("cliente","value"),
+            Input("month","value"),
+            
+            )
+    def filter_ventas(year,cultivo,variedad,cliente,month):
+        df_ventas=df_ventas_d.groupby(['Año','Cliente','Cultivo','Variedad','Mes'])[['Importe en Soles']].sum().reset_index()
+
+        if year==None and cultivo == None and variedad== None and cliente==None and month==None:
+            options=df_ventas
+
+        elif year!=None and cultivo == None and variedad== None and cliente==None and month==None:    
+            options=df_ventas[df_ventas['Año']==year]
+        elif year==None and cultivo != None and variedad== None and cliente==None and month==None:    
+            options=df_ventas[df_ventas['Cultivo']==cultivo]
+        
+        elif year==None and cultivo == None and variedad!= None and cliente==None and month==None:    
+            options=df_ventas[df_ventas['Variedad']==variedad]
+        
+        elif year==None and cultivo == None and variedad== None and cliente!=None and month==None:    
+            options=df_ventas[df_ventas['Cliente']==cliente]
+        
+        elif year==None and cultivo == None and variedad== None and cliente==None and month !=None:    
+            options=df_ventas[df_ventas['Mes']==cliente]
+
+
+
+
+
+        
+        elif year!=None and cultivo != None and variedad== None and cliente==None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)]
+        
+        elif year!=None and cultivo == None and variedad!= None and cliente==None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)]
+        
+        elif year!=None and cultivo == None and variedad== None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cliente']==cliente)]
+        
+        elif year!=None and cultivo == None and variedad== None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
+
+
+        
+        elif year==None and cultivo != None and variedad== None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Cliente']==cliente)]
+        
+        elif year==None and cultivo != None and variedad!= None and cliente==None and month==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+
+        elif year==None and cultivo != None and variedad == None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Mes']==month)]
+
+
+        
+        elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+
+        elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+        
+        elif year==None and cultivo == None and variedad!= None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        
+        elif year==None and cultivo == None and variedad== None and cliente!=None and month!=None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Mes']==month)]
+
+
+
+        
+        elif year!=None and cultivo != None and variedad!= None and cliente==None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+
+        elif year!=None and cultivo != None and variedad== None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Cliente']==cliente)]
+        
+        elif year!=None and cultivo != None and variedad== None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Mes']==month)]
+
+
+        
+        elif year!=None and cultivo == None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+        
+        elif year!=None and cultivo == None and variedad!= None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+
+
+
+        elif year==None and cultivo != None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+        
+        elif year==None and cultivo != None and variedad!= None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        
+        elif year==None and cultivo == None and variedad!= None and cliente!=None and month!=None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        
+
+
+
+
+
+        elif year!=None and cultivo != None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)]
+        
+        elif year!=None and cultivo != None and variedad!= None and cliente!=None and month!=None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
+
+
+        option_year=[{'label': i, 'value': i} for i in options['Año'].unique()] 
+        option_cultivo=[{'label': i, 'value': i} for i in options['Cultivo'].unique()] 
+        option_variedad=[{'label': i, 'value': i} for i in options['Variedad'].unique()] 
+        option_cliente=[{'label': i, 'value': i} for i in options['Cliente'].unique()] 
+        option_mes=[{'label': i, 'value': i} for i in options['Mes'].unique()] 
+        return option_year,option_cultivo,option_variedad,option_cliente,option_mes
+    
+    #####################################################################################################################################
+    @app.callback(
+            Output("data-values","data"),
+            
+            #Output('filter-data', 'data'),
+            Input("year","value"),
+            Input("cultivo","value"),
+            Input("variedad","value"),
+            #Input("cultivo","value"),
+            Input("cliente","value"),
+            Input("month","value"),
+            
+            
+            )
+    def filter_ventas(year,cultivo,variedad,cliente,month):
+        df_ventas=df_ventas_d.copy()
+        if year==None and cultivo == None and variedad== None and cliente==None and month==None:
+            options=df_ventas
+
+        elif year!=None and cultivo == None and variedad== None and cliente==None and month==None:    
+            options=df_ventas[df_ventas['Año']==year]
+        elif year==None and cultivo != None and variedad== None and cliente==None and month==None:    
+            options=df_ventas[df_ventas['Cultivo']==cultivo]
+        
+        elif year==None and cultivo == None and variedad!= None and cliente==None and month==None:    
+            options=df_ventas[df_ventas['Variedad']==variedad]
+        
+        elif year==None and cultivo == None and variedad== None and cliente!=None and month==None:    
+            options=df_ventas[df_ventas['Cliente']==cliente]
+        
+        elif year==None and cultivo == None and variedad== None and cliente==None and month !=None:    
+            options=df_ventas[df_ventas['Mes']==cliente]
+
+
+
+
+
+        
+        elif year!=None and cultivo != None and variedad== None and cliente==None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)]
+        
+        elif year!=None and cultivo == None and variedad!= None and cliente==None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)]
+        
+        elif year!=None and cultivo == None and variedad== None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cliente']==cliente)]
+        
+        elif year!=None and cultivo == None and variedad== None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
+
+
+        
+        elif year==None and cultivo != None and variedad== None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Cliente']==cliente)]
+        
+        elif year==None and cultivo != None and variedad!= None and cliente==None and month==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+
+        elif year==None and cultivo != None and variedad == None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Mes']==month)]
+
+
+        
+        elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+
+        elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+        
+        elif year==None and cultivo == None and variedad!= None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        
+        elif year==None and cultivo == None and variedad== None and cliente!=None and month!=None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Mes']==month)]
+
+
+
+        
+        elif year!=None and cultivo != None and variedad!= None and cliente==None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+
+        elif year!=None and cultivo != None and variedad== None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Cliente']==cliente)]
+        
+        elif year!=None and cultivo != None and variedad== None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Mes']==month)]
+
+
+        
+        elif year!=None and cultivo == None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+        
+        elif year!=None and cultivo == None and variedad!= None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+
+
+
+        elif year==None and cultivo != None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+        
+        elif year==None and cultivo != None and variedad!= None and cliente==None and month!=None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        
+        elif year==None and cultivo == None and variedad!= None and cliente!=None and month!=None:
+            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        
+
+
+
+
+
+        elif year!=None and cultivo != None and variedad!= None and cliente!=None and month==None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)]
+        
+        elif year!=None and cultivo != None and variedad!= None and cliente!=None and month!=None:
+            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
+
+
+        
+             
+            
+        
+        return options.to_json(date_format='iso', orient='split')
+    ####################################################################################################################################    
+    @app.callback(
+            
+            Output("download", "data"),
+            Input("data-values","data"),
+            Input("btn-download", "n_clicks"),
+            prevent_initial_call=True,
+            
+            )
+    def update_download(data,n_clicks_download):
+        options=pd.read_json(data, orient='split')
+        options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        if n_clicks_download:
+            return dcc.send_data_frame( options.to_excel, "comercial.xlsx", sheet_name="Sheet_name_1")
+        
+   
+
+    @app.callback(
+            
+            Output("title","children"),
+            Output("subtitle","children"),
+            Input("year","value"),
+            Input("cultivo","value"),
+            Input("cliente","value"),
+            Input("radio-moneda","value"),
+            Input("segmented","value")
+            
+            )
+    def title_ventas(year,cultivo,cliente,moneda,segmented):
+        #general='Ventas por Clientes '+' '+str(moneda)
+            df_ventas=df_ventas_d.copy()
+            df_filtro=df_ventas[df_ventas['Año']==year]
+            filtro=df_filtro.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
+            lista_mes=filtro['Mes'].unique()
+            rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"
+            if moneda =='Soles':
+                importe=dmc.Badge(moneda,variant='outline',color='blue', size='lg')
+            elif moneda == 'Dolares':
+                importe=dmc.Badge(moneda,variant='outline',color='blue', size='lg')
+
+
+
+            
+                #general=str(titulo)+' '+str(moneda)
+            if year == None:
+                    title=dmc.Title(children=[f'Venta Anual por {segmented} ',dmc.Badge('ALL',variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+            else:
+                    title=dmc.Title(children=[f'Venta Anual por {segmented} ',dmc.Badge(year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+
+
+            if cliente == None and cultivo == None:
+                    subtitle=dmc.Title(children=[], order=3,align='center')
+            elif cliente != None and cultivo == None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='outline',color='gray', size='lg')], order=3,align='center')
+                    #subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
+            elif cliente != None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='outline',color='gray', size='lg'),dmc.Badge(cultivo,variant='outline',color='indigo', size='lg')], order=3,align='center')
+            elif cliente == None and cultivo != None:
+                    subtitle=dmc.Title(children=[dmc.Badge(cultivo,variant='outline',color='indigo', size='lg')], order=3,align='center')
+                    
+            return title,subtitle
+        
+            
+        
+
+    @app.callback(
+            Output("graph-1","figure"),
+            Output("graph2_1","figure"),
+            Output("graph2_2","figure"),
+            Output("graph-5","rowData"),
+            Output("graph-5","columnDefs"),
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            Input("segmented","value"),
+            Input('radio-top-data','value')
+            #Input("check-igv","value"),
+            
+            #Input("filter-tab","value"),
+
+            )
+    def ventas(data, radio,segmented,radio_top ):#year,cultivo,variedad,cliente,
+
+        options=pd.read_json(data, orient='split')
+        
+
+        
+        #if igv == 'IGV' or igv[-1] == 'IGV' :
+        if radio=='Soles':
+                importe='Importe en Soles'
+                sig='S/'
+        else:
+                importe='Importe en Dolares'
+                sig='$'
+        
+            
+
+            #df_filter=options.groupby([ejex])[[color]].sum().reset_index()#,color
+        def barSegment(options_df,segmented,importe,radio,top_data):
+            df_v=options_df.groupby([segmented])[[importe]].sum()   
+            df_v=df_v[df_v[importe]>0]  
+            if top_data == 'Top 20':
+                
+                df=df_v.groupby([segmented])[[importe]].sum().sort_values(importe,ascending=True).reset_index().tail(20)
+                df['N°']=[i+1 for i in range(len(df))]
+                df['N°']=df['N°'].astype("string")
+                df[segmented]=df['N°']+'-'+df[segmented]
+            elif top_data == 'All':
+                df=df_v.groupby([segmented])[[importe]].sum().sort_values(importe,ascending=False).reset_index()
+                df['N°']=[i+1 for i in range(len(df))]
+                df['N°']=df['N°'].astype("string")
+                df[segmented]=df['N°']+'-'+df[segmented]
+                df=df.groupby([segmented])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
+            elif top_data == 'pareto':
+                df=df_v.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False)
+                #df['percent']=df[importe]/df[importe].sum()
+                #df['percent_accu']=df['percent'].cumsum(axis = 0, skipna = True)
+                list_20_percent=df[segmented].unique()[:(int(len(df[segmented].unique())*0.2))] 
+                df=df[df[segmented].isin(list_20_percent)].sort_values(importe)
+                #lista_enumerador=[i+1 for i in range(len(df))]
+                #lista_enumerador=lista_enumerador.reverse()
+                #df['N°']=lista_enumerador
+
+                #df['N°']=[i+1 for i in range(len(df))]
+                df['N°']=list(range(len(df),0,-1))
+                df['N°']=df['N°'].astype("string")
+                df[segmented]=df['N°']+'-'+df[segmented]
+                
+                df=df.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True)
+                
+
+            elif top_data == 'Top low 20':
+                df=df_v.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True)
+                #df['percent']=df[importe]/df[importe].sum()
+                #df['percent_accu']=df['percent'].cumsum(axis = 0, skipna = True)
+                list_20_percent=df[segmented].unique()[:(int(len(df[segmented].unique())*0.2))] 
+                df=df[df[segmented].isin(list_20_percent)].sort_values(importe)
+
+                
+                
+                df=df.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True)
+                #lista_enumerador=[i+1 for i in range(len(df))]
+                #lista_enumerador=lista_enumerador.reverse()
+                #df['N°']=lista_enumerador
+                df['N°']=list(range(len(df),0,-1))
+                df['N°']=df['N°'].astype("string")
+                df[segmented]=df['N°']+'-'+df[segmented]
+                
+
+
+            if segmented == 'Cliente':
+                fig = go.Figure()
+                fig.add_trace(go.Bar(x=df[importe],y=df[segmented],text=df[importe],orientation='h',
+                                                        textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
+                                                        hovertemplate =
+                                                            '<br><b>Cliente</b>:%{y}'+
+                                                            '<br><b>Importe($)</b>: %{x}<br>',
+                                                        marker_color="#145f82",
+                                                        hoverlabel=dict(
+                                                        font_size=14,
+                                                        ),
+                                                        name=''
+                                                    ))#.2s
+
+                fig.update_layout(title={'text':f'{segmented} con mas Ventas','font': {'size': 15, 'color': 'black', 'family': 'Arial'},},template='none')
+                fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=8,tickfont_size=10))#l=400,
+                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
+            elif segmented == 'Tipo de Venta':
+                fig = go.Figure()
+                fig.add_trace(go.Bar(x=df[importe],y=df[segmented],text=df[importe],orientation='h',
+                                                        textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
+                                                        hovertemplate =
+                                                            '<br><b>Tipo de Venta</b>:%{y}'+
+                                                            '<br><b>Importe($)</b>: %{x}<br>',
+                                                        marker_color="#145f82",
+                                                        hoverlabel=dict(
+                                                        font_size=14,
+                                                        ),
+                                                        name=''
+                                                    ))#.2s
+
+                fig.update_layout(title={'text':f'{segmented} con mas Ventas'},titlefont={'size': 15},template='none')
+                fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=10))#l=400,
+                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
+            elif segmented == 'Producto':
+                fig = go.Figure()
+                fig.add_trace(go.Bar(x=df[importe],y=df[segmented],text=df[importe],orientation='h',
+                                                        textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
+                                                        hovertemplate =
+                                                            '<br><b>Producto</b>:%{y}'+
+                                                            '<br><b>Importe($)</b>: %{x}<br>',
+                                                        marker_color="#145f82",
+                                                        hoverlabel=dict(
+                                                        font_size=14,
+                                                        ),
+                                                        name=''
+                                                    ))#.2s
+
+                fig.update_layout(title={'text':f'{segmented} con mas Ventas'},titlefont={'size': 15},template='none')
+                fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=10))#l=400,
+                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
+
+            return fig
+
+
+    
+        
+        #top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+
+        cantidad_productos=options[importe].sum()#"{:,.0f}".format(
+           
+        cantidad_clientes=len(options[segmented].unique())
+
+            #graph4=options.groupby(['Pais'])[[importe,'Peso']].sum().reset_index().sort_values(importe,ascending=True)
+            
+        if  radio_top == 'Top 20':  
+            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0).head(20)
+            df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        elif radio_top =='All':
+            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
+            df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        elif radio_top =='pareto':
+            
+            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
+            df_table=df_table[df_table[importe]>0]
+            #df_v=df_v[df_v[importe]>0]  
+            list_20_percent=df_table[segmented].unique()[:(int(len(df_table[segmented].unique())*0.2))]
+            df_table=df_table[df_table[segmented].isin(list_20_percent)]
+            df_table=df_table.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
+            df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+
+
+            
+        elif radio_top =='Top low 20':
+            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True).round(0)
+            df_table=df_table[df_table[importe]>0]
+            list_20_percent=df_table[segmented].unique()[:(int(len(df_table[segmented].unique())*0.2))]
+            df_table=df_table[df_table[segmented].isin(list_20_percent)]
+            df_table=df_table.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True).round(0)
+            df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        df_table['N°']=[i+1 for i in range(len(df_table))]
+        df_table=df_table[['N°',segmented,importe]]
+
+        return  [barSegment(options,segmented,importe,radio,radio_top),
+                 card_ventas(cantidad_productos,None,f"Total Ventas ({radio})"),
+                 card_ventas(cantidad_clientes,None,f"Total de {segmented}s"),
+                 df_table.to_dict("records"),
+                 [{"field": 'N°', "type": "leftAligned", "maxWidth": 100, "checkboxSelection": True},{"field": segmented, "type": "leftAligned", "minWidth": 350},{"field": importe, "type": "leftAligned", "minWidth": 150}]
+                 ]
+    
+    @app.callback(
+            
+            Output('tabs-g','children'),
+            #Output('test_table','children'),
+            Input("data-values","data"),
+            Input("radio-moneda","value"),
+            #Input("filter-tab","value"),
+            Input("segmented","value"),
+            Input('radio-top-data','value'),
+            #Input('graph-5','selectedRows')
+            #Input("check-igv","value"),
+
+            )
+
+    def ventas(data, radio, segmented,radio_top):#,selected
+            df_comercial=pd.read_json(data, orient='split')
+            #print(options.columns)
+            if radio=='Soles':
+                    importe='Importe en Soles'
+            else:
+                    importe='Importe en Dolares'
+            
+
+            if segmented == 'Cliente':
+
+                tabs_cliente=['Sucursal','Pais','Tipo de Venta','Cultivo','Producto']
+                tabs=loadingOverlay(dmc.Tabs(
+                    [
+                        dmc.TabsList(
+                            [
+                            
+                                dmc.Tab(children=tab,value=tab)for tab in tabs_cliente
+                            ]
+                        ),
+                            
+                            html.Div([dmc.TabsPanel(cardGraph(id_maximize='id-cliente',id_download='id-download-cliente',id_graph='id-graph-cliente',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_cliente[i],importe,radio_top),icon_maximize=False), value=tabs_cliente[i]) for i in range(len(tabs_cliente))]),
+
+                    ],
+                    value=tabs_cliente[0],
+                )),
+
+
+            elif segmented == 'Producto':
+                tabs_producto=['Sucursal','Pais','Tipo de Venta','Cultivo','Cliente']
+                tabs=dmc.Tabs(
+                    [
+                        dmc.TabsList(
+                            [
+                            
+                                dmc.Tab(children=tab,value=tab)for tab in tabs_producto
+                            ]
+                        ),
+                            
+                            html.Div([dmc.TabsPanel(loadingOverlay(cardGraph(id_maximize='id-producto',id_download='id-download-producto',id_graph='id-graph-producto',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_producto[i],importe,radio_top),icon_maximize=False)), value=tabs_producto[i]) for i in range(len(tabs_producto))]),
+
+                    ],
+                    value=tabs_producto[0],
+                ),
+            elif segmented == 'Tipo de Venta':
+                tabs_tipoventa=['Sucursal','Pais','Grupo de Venta','Cultivo','Cliente','Producto']
+                tabs=dmc.Tabs(
+                    [
+                        dmc.TabsList(
+                            [
+                            
+                                dmc.Tab(children=tab,value=tab)for tab in tabs_tipoventa
+                            ]
+                        ),
+                            
+                            html.Div([dmc.TabsPanel(loadingOverlay(cardGraph(id_maximize='id-tventa',id_download='id-download-tventa',id_graph='id-graph-tventa',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_tipoventa[i],importe,radio_top),icon_maximize=False)), value=tabs_tipoventa[i]) for i in range(len(tabs_tipoventa))]),
+
+                    ],
+                    value=tabs_tipoventa[0],
+                ),
+            
+                        
+            
+
+            return tabs
+
+
+    @app.callback(
+    Output("modal", "is_open"),
+    Output("modal", "children"),#modal-table
+
+    Input("btn-modal", "n_clicks"),
+    #Input("btn-table", "n_clicks"),
+    #Input("radio-moneda","value"),
+    #Input("segmented","value"),
+    Input('graph-1','figure'),
+    #Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal1(n_clicks_bar,bar):#,moneda,segmented,bar,data_table
+        from dash import no_update
+
+        fig=go.Figure(bar)
+        fig.update_layout(height=1500),
+        fig.update_layout(yaxis=dict(titlefont_size=9,tickfont_size=13))
+
+        if n_clicks_bar:
+            return True, modalMaximize(dcc.Graph(figure=fig))
+        
+        else:
+            return False, no_update  
+        
+
+
+
+    @app.callback(
+    Output("modal-table", "is_open"),
+    Output("modal-table", "children"),#modal-table
+    Input("btn-table", "n_clicks"),
+    Input("radio-moneda","value"),
+    Input("segmented","value"),
+    #Input('graph-1','figure'),
+    Input("graph-5","rowData"),
+    
+    #prevent_initial_call=True,
+    )
+    def update_output_modal2(n_clicks_table,moneda,segmented,data_table):#,moneda,segmented,bar,data_table
+        from dash import no_update
+    
+               
+        if moneda=='Soles':
+                importe='Importe en Soles'
+        else:
+                importe='Importe en Dolares'
+
+        
+        if n_clicks_table:
+
+            return True, modalMaximize(
+                dag.AgGrid(
+                                        
+                                        columnDefs=[{"field": 'N°', "type": "leftAligned"},{"field": segmented, "type": "leftAligned","minWidth":600},{"field": importe, "type": "leftAligned","minWidth": 200}],
+                                        rowData=data_table,
+                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
+                                        dashGridOptions={"rowSelection": "multiple"},
+                                        style={'height': '1200px','overflow': "auto"}
+                                        #defaultColDef=
+                                    ),
+            )
+        else:
+            return False, no_update  
+        
+"""
