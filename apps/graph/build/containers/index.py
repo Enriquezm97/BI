@@ -242,7 +242,7 @@ def line_agricola_card(df,x,y,color,heig,x_title,y_title,title_legend,orders={},
         
     return fig
 
-def index(empresa,tipo_empresa,username):
+def index():
     """
     if tipo_empresa == "Agricola" or tipo_empresa == "Agroindustrial":
         agro=dataAgricolaEmpresa(empresa)

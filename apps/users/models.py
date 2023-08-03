@@ -12,6 +12,17 @@ RUBRO = (
     ('Agroindustrial','Agroindustrial'),
     ('Industrial','Industrial'),
 )
+class Rol(models.Model):
+    
+    
+    name_rol= models.CharField(max_length=50, blank=True,null=True)
+    create_rol = models.DateTimeField(auto_now_add=True,null=True)
+    modified_rol = models.DateTimeField(auto_now=True,null=True)
+
+    def __str__(self):
+
+        return self.name_rol
+    
 class Rubro(models.Model):
     
     
@@ -62,6 +73,7 @@ class Usuario(models.Model):
     phone = models.CharField(max_length=20, blank=True,null=True)
     #picture = models.ImageField(upload_to='media',blank=True,null=True)
     empresa=models.ForeignKey(Empresa,on_delete=models.CASCADE)
+    rol=models.ForeignKey(Rol,on_delete=models.CASCADE,null=True)
     create = models.DateTimeField(auto_now_add=True,null=True)
     modified = models.DateTimeField(auto_now=True,null=True)
 

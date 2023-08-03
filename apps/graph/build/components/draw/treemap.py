@@ -10,9 +10,10 @@ def treemapEstadoSituacion(dataframe,list_path=['grupo1', 'grupo2', 'grupo3'],mo
     elif moneda == 'saldo_cargo_mex':
         #value_moneda='saldo_cargo_mof'
         hover='<b>%{label} </b> <br> Saldo($): %{value}<br>'
-    fig = px.treemap(dataframe, path=list_path, values=moneda,template='none',color_continuous_scale='RdBu')
+    fig = px.treemap(dataframe, path=list_path, values=moneda,template='plotly_white',color_continuous_scale='RdBu')
     fig.update_traces(root_color="white")
-    fig.update_layout( title=titulo,margin=dict(l=5, r=5, t=25, b=5))#,height=800
-    fig.update_traces(hovertemplate =hover)
+    fig.update_layout( title=titulo,margin=dict(l=5, r=5, t=25, b=5),height=400)#,height=800
+    fig.update_traces(hovertemplate =hover,
+                      hoverlabel=dict(bgcolor="white",font_size=13))
     fig.update_traces(textinfo = "label+value")
     return fig

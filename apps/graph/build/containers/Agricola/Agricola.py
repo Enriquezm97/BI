@@ -27,6 +27,7 @@ from apps.graph.build.components.mantine_react_components.actionIcon import btnF
 from apps.graph.data.transform_produccion import cleanVariablesAgricolas,variablesAgricolasPivot,costosAgricolas
 from apps.graph.build.components.draw.card import cardGF,calculateCard
 import dash_ag_grid as dag
+from apps.graph.build.components.bootstrap_components.layout import Column
 
 colors=[
         "#15CAB6",
@@ -66,12 +67,13 @@ colors=[
 
 
 
-
+"""
 df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
 df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
 df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
 df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
 df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+"""
 #df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
 #                                                  df_variedad,
 #                                                  df_cultivos,
@@ -190,27 +192,13 @@ def line_agricola_card(df,x,y,color,heig,x_title,y_title,title_legend,orders={},
                 title=title,
                 hover_name=color,
                 custom_data=['CANTXHA'],
-                
-                #text='CANTXHA'
-                #hover_data=[]
-                
-                #hover_data={x:True,y:True},
-                #hovertemplate ='<br><b>{ejex}</b>:%{x}'+
-                #               '<br><b>Cantidad</b>: %{y}<br>'+
-                #               '<br> %{color}',
-                               )
-    #fig.update_traces(hovertemplate="<br>".join([
-    #                                            "ColX: %{x}",
-    #                                            "ColY: %{y}",
-    ##                                            "Col1: %{customdata[0]}",
-    #                                            
-    #                                        ])
-    #)
+                )
+
     fig.update_layout(margin=dict(l=20,r=20,b=20,t=60,pad=0,autoexpand=True),#height=heig,
         xaxis_title=ejex,
         yaxis_title=y_title,
         legend_title_text=title_legend,
-        height=280,
+        height=360,
         
         )
     if title_legend=='Fertilizantes':
@@ -280,37 +268,32 @@ def plandeSiembra(empresa):
 
                             ),
         dbc.Row([
-            dbc.Col([
-                    html.Div(id='title'),
-            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+            Column(content=[html.Div(id='title')],size=12),
+            
         ]),
         dbc.Row([
-            dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
-            dbc.Col([select(ids="drop_anio",texto="Campaña-Cultivo",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1])],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
-            dbc.Col([select(ids="drop_variedad",texto="Variedad")],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
-            dbc.Col([select(ids="drop_lote",texto="Lote")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
-            dbc.Col([
-                html.Div(
+            Column(content=[btnFilter()],size=1),
+            Column(content=[select(ids="drop_anio",texto="Campaña-Cultivo",value=sorted(df_produccion['AÑO_CULTIVO'].unique())[-1],size='sm')],size=2),
+            Column(content=[select(ids="drop_variedad",texto="Variedad",size='sm')],size=2),
+            Column(content=[select(ids="drop_lote",texto="Lote",size='sm')],size=3),
+            Column(content=[
+                  html.Div(
                         [
                             dmc.DateRangePicker(
                                 id="date-range-picker",
                                 label="Fecha inicio y fin - Campaña",
                                 locale="es",
-                                disabled=True
-                                #minDate=date(2020, 8, 5),
-                                #value=[datetime.now().date(), datetime.now().date() + timedelta(days=5)],
-                                #style={"width": 330},
+                                disabled=True,
+                                size='sm'
+
                             ),
                             dmc.Space(h=10),
                             dmc.Text(id="selected-date-date-range-picker"),
                         ]
                     )
-            ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
-            #dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produccion['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-3 col-sm-12 col-12 mb-3"),
-            #dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+            ],size=3),
+            Column(content=[btnCollapse()],size=1),
             
-            
-            dbc.Col([btnCollapse(),],width=1,className="col-xl-1 col-md-1 col-sm-12 col-12 mb-3"),
             
             
         ]),
@@ -342,117 +325,57 @@ def plandeSiembra(empresa):
             
             #checkList(ids="check-agricola",texto="Recursos Agricolas")
         ]),
-    #dbc.Collapse(
-                #dbc.Row([
-            
-                    #dbc.Col([html.Div(children=loadingOverlay(dbc.Card(dcc.Graph(id='graph-1'),className="shadow-sm")),style={'max-height': '490px','overflow': "auto"})],width=5,className="col-xl-5 col-md-5 col-sm-12 col-12 mb-3"),
-    #                dbc.Col([
-    #                    html.Div(id='badge-lotes')
-    #                ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
-    #           ]),
-    #        id="collapse",is_open=True),
+
     dbc.Row([
-                dbc.Col([
-                    loadingOverlay(html.Div(id='tabs')),
-                ],width=8,className="col-xl-8 col-md-8 col-sm-12 col-12 mb-3"),
-                dbc.Col([
-                    loadingOverlay(html.Div(id='table-grid-lotes')),
-                ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-3"),
-                #dbc.Col([
-                #    dmc.ActionIcon(
-                #                        DashIconify(icon='feather:maximize'), 
-                #                        color="blue", 
-                #                        variant="default",
-                #                        id="btn-modal",
-                #                        n_clicks=0,
-                #                        mb=10,
-                #                    ),
-                    
-                
-                #],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
-                
-            ]),
+                Column(content=[loadingOverlay(html.Div(id='tabs'))],size=7),
+                Column(content=[loadingOverlay(html.Div(id='table-grid-lotes'))],size=5),
+    ]),
         
         dbc.Row([   
-                dbc.Col([
-                
-                     #html.Label("Cultivos",
-                     #       style={'font-size': 24,
-                     #               'text-align': 'left',
-                     #               },
-                    #),
-        accordion(children=[
-            loadingOverlay(
-                dash_table.DataTable(
-                    id='table-cultivo',
-                    #columns=[{"name": c, "id": c,
-                    #         "type": "numeric", "format": Format(group=",", precision=0,scheme="f")} for c in d.dff_t_end],
-                    #active_cell={"row": 0, "column": 0, "column_id": 0, "row_id": 0},
-                    #active_cell={},
-                    sort_action="native",
-                    page_action='none',
-                    style_table={
-                                  'minHeight': '100px',
-                                  'maxHeight': '310px',
-                                 'overflowY': 'auto'},
-                    fixed_rows={'headers': True},
-                    style_as_list_view=True,
-                    style_cell={'padding': '12px',
-                                 'font-family': 'sans-serif',
-                                  'font-size': '14px',
-                                  'text_align': 'left',
-                                },
-                    style_header={
-                        'backgroundColor': 'white',
-                        'fontWeight': 'bold',
-                        'text_align': 'left',
-                        'font-size': '14px',
-                    },
-                    style_data_conditional=[
-                        {'if': {'filter_query': '{CULTIVO} = "TOTAL"',},
-                                    'backgroundColor': '#0074D9',
-                                    'color': 'white',
-                                    'fontWeight': 'bold',
-                        },
-                    ]
-                    #page_size= 10,
-                    #style_table={'overflowY': 'auto','height': '250px',},
-                    #style_table={'overflowY': 'auto'},
-                    
-
-                ),)
-            ],texto='Tabla Cultivo',value='cultivo')
-                    
-                
-                
-            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
-            
-            
+                Column(content=[
+                      accordion(children=[
+                                    loadingOverlay(
+                                        dash_table.DataTable(
+                                            id='table-cultivo',
+                                            sort_action="native",
+                                            page_action='none',
+                                            style_table={
+                                                        'minHeight': '100px',
+                                                        'maxHeight': '310px',
+                                                        'overflowY': 'auto'},
+                                            fixed_rows={'headers': True},
+                                            style_as_list_view=True,
+                                            style_cell={'padding': '12px',
+                                                        'font-family': 'sans-serif',
+                                                        'font-size': '14px',
+                                                        'text_align': 'left',
+                                                        },
+                                            style_header={
+                                                'backgroundColor': 'white',
+                                                'fontWeight': 'bold',
+                                                'text_align': 'left',
+                                                'font-size': '14px',
+                                            },
+                                            style_data_conditional=[
+                                                {'if': {'filter_query': '{CULTIVO} = "TOTAL"',},
+                                                            'backgroundColor': '#0074D9',
+                                                            'color': 'white',
+                                                            'fontWeight': 'bold',
+                                                },
+                                            ]
+                                        ))
+                            ],texto='Tabla Cultivo',value='cultivo')
+                ],size=12),
         ]),
         
         
         dbc.Row([
-                dbc.Col([
-                    #html.Label("Lotes",style={'font-size': 24,'text-align': 'left'}),
-                accordion(children=[
+                Column(content=[
+                    accordion(children=[
                         loadingOverlay(html.Div(id='table-lote')),html.Div(id='cultivo_cell'),
-                ],texto='Tabla Lotes',value='lote'),
-                
-                ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                    ],texto='Tabla Lotes',value='lote'),
+                ],size=12),
             ]),
-        dbc.Row([
-            dbc.Col([
-                #dag.AgGrid(
-                #    id="datatable-interactivity",
-                #    columnDefs=columnDefs,
-                #    rowData=df2.to_dict("records"),
-                #    dashGridOptions={"rowSelection": "multiple"},
-                #    columnSize="sizeToFit",
-                #    defaultColDef={"resizable": True, "sortable": True, "filter": True},
-                #),
-                #html.Div(id="datatable-interactivity-container"),
-            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
-        ]),
         
         
         
@@ -841,15 +764,7 @@ def plandeSiembra(empresa):
         df_ha_st=df_ha_total.groupby([radio_st,'SEMANA','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
         df_ha_st=df_ha_st[[radio_st,'AREA_CAMPAÑA']]
         
-        
-            #if drop_anio==None:
-
-            #    x='week'
-            #    df_test2=dff.groupby(['DSCVARIABLE','week'])[['CANTIDAD']].sum().sort_values('week',ascending=True).reset_index()
-        
-            #elif drop_anio!=None:
-            #    x='SEMANA'
-            #    df_test2=dff.groupby(['DSCVARIABLE','SEMANA'])[['CANTIDAD']].sum().sort_values('SEMANA',ascending=True).reset_index()
+       
         df_graph=options.groupby(['DSCVARIABLE','TIPO',radio_st,'AÑO_FECHA','SEMANA'])[['CANTIDAD']].sum().reset_index()
         df_graph=df_graph.merge(df_ha_st, how='inner', left_on=[radio_st], right_on=[radio_st])
 
@@ -921,45 +836,17 @@ def plandeSiembra(empresa):
               ),
         ) 
         df_tablew=df_ha_total.groupby(['CONSUMIDOR',radio_st,'VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA'])[['AREA_CAMPAÑA']].sum().reset_index()
-        
-        table_Dash_plotly=dash_table.DataTable(
-                        data=df_tablew.to_dict('records'),
-                        #columns=[
-                        #    {'name': i, 'id': i}
-                        #    if i != 'Date' else
-                        #    {'name': 'Date', 'id': 'Date', 'type': 'datetime'}
-                        #    for i in df_tablew.columns
-                        #],
-                        style_table={'height': '300px', 'overflowY': 'auto'},
-                        fixed_rows={'headers': True},
-                        style_as_list_view=True,
-                        style_cell={'padding': '12px',
-                                                'font-family': 'sans-serif',
-                                                'font-size': '10px',
-                                                'text_align': 'left',
-
-                                                'overflow': 'hidden',
-                                                    'textOverflow': 'ellipsis',
-                                                    'maxWidth': 0
-                                                #'minWidth': 30, 'maxWidth': 70, #'width': 95
-                                                },
-                        
-                        style_header={
-                                        #'backgroundColor': 'white',
-                                        'fontWeight': 'bold',
-                                        'text_align': 'left',
-                                        'font-size': '11px',    
-                                        #'backgroundColor': 'rgb(30, 30, 30)',
-                                        'color': 'Black'
-                                    },
-                        tooltip_data=[
-                        {
-                            column: {'value': str(value), 'type': 'markdown'}
-                            for column, value in row.items()
-                        } for row in df_tablew.to_dict('records')
-                        ],
-                        tooltip_duration=None,
-                        )
+        table_Dash_plotly=dag.AgGrid(
+                                        
+                                        columnDefs=[{"field": i} for i in df_tablew.columns],
+                                        rowData=df_tablew.to_dict('records'),
+                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
+                                        dashGridOptions={"rowSelection": "multiple"},
+                                        style={'height': '350px','overflow': "auto"},
+                                        className="ag-theme-balham",
+                                        #defaultColDef=
+                                    ),
+       
         
         return child,table_Dash_plotly
     @app.callback(
@@ -1228,17 +1115,17 @@ def TableDtScrolling_no_format(dff):
     return fig
 def costosAgricola(empresa):
     """"""
-    df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
-    df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
-    df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
-    df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
-    df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
-    df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
-                                                  df_variedad,
-                                                  df_cultivos,
-                                                  df_fertilizacion)
-    df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
-    df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    #df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    #df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
+    #df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
+    #df_fertilizacion = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_plan_fertilizacion")
+    #df_cultivos = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_cultivos",dtype={'CODCULTIVO':str})
+    #df_var_agricolas_default=cleanVariablesAgricolas(df_consumidores,
+    #                                              df_variedad,
+    #                                              df_cultivos,
+    #                                              df_fertilizacion)
+    #df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
+    #df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
     """"""
     """
     data=dataAgricolaEmpresa(empresa)
@@ -1271,25 +1158,19 @@ def costosAgricola(empresa):
 
     app.layout = html.Div([
         dbc.Row([
-            #dbc.Col([
-            #    dmc.Text(id='if',weight=500),
-
-            #],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([
+            Column(content=[
                 dmc.Title(id='title', order=3, style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
                 dmc.Title(id='subtitle', order=4, style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
-                
-                #html.H3(id='title'),
-                #html.H5(id='subtitle', style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
-            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
+
+            ],size=12),
         ]),
         dbc.Row([
             
-            dbc.Col([btnFilter()],width=1,className="col-xl-1 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([select(ids="drop_anio",texto="Campaña",value=sorted(df_produc_costos['AÑO_CAMPAÑA'].unique())[-1])],width=2,className="col-xl-2 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([multiSelect(ids="drop_cultivo",texto="Cultivos")],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([select(ids="drop_variedad",texto="Variedad")],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3"),
+            Column(content=[btnFilter()],size=1),
+            Column(content=[select(ids="drop_anio",texto="Campaña",value=sorted(df_produc_costos['AÑO_CAMPAÑA'].unique())[-1])],size=2),
+            Column(content=[multiSelect(ids="drop_cultivo",texto="Cultivos")],size=3),
+            Column(content=[select(ids="drop_variedad",texto="Variedad")],size=3),
+            
             
             offcanvas(componentes=[
                     radioGroup(ids="radio-costos",
@@ -1992,7 +1873,7 @@ def graph_bar_agricola2(df,titulo,name_ejex,name_ejey):
     return fig
 
 def variablesAgricolas(empresa):
-    """"""
+    """
     df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
     df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
     df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
@@ -2004,6 +1885,7 @@ def variablesAgricolas(empresa):
                                                   df_fertilizacion)
     df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
     df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    """
     """"""
     #data=dataAgricolaEmpresa(empresa)
     """
@@ -2351,7 +2233,7 @@ def graph_lines_agricola1(df,titulo):
     return fig
 
 def hectareaSembrada(empresa):
-    """"""
+    """
     df_consumidores = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_consumidores",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
     df_costos_campana = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_detalle_costos_campana")
     df_variedad = pd.read_json(f"http://68.168.108.184:3000/api/consulta/nsp_datos_variedades_cultivos",dtype={'CODCULTIVO':str,'CODVARIEDAD':str})
@@ -2363,6 +2245,7 @@ def hectareaSembrada(empresa):
                                                   df_fertilizacion)
     df_var_agricolas_pivot_default=variablesAgricolasPivot(df_var_agricolas_default)
     df_costos_agricola_default=costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad)
+    """
     """"""
     """
     data=dataAgricolaEmpresa(empresa)
@@ -3292,8 +3175,7 @@ def comparativoRecursos(empresa):
         ]),
  """ 
 external_stylesheets = [dbc.themes.BOOTSTRAP]#
-def Column(content=[],size=12):
-      return dbc.Col(content,width=size,className=f"col-xl-{size} col-md-{size} col-sm-12 col-12 mb-3")
+
 
 def dashCostosProduccionAgricola():
       
@@ -3596,16 +3478,17 @@ def dashCostosProduccionAgricola():
 
         ######################
         df_loader=df_campaña_ccc.groupby(['CULTIVO'])[[radio]].sum().reset_index()
-        total_card_1=df_loader[radio].sum()
+        total_card_1="{:,.2f}".format(df_loader[radio].sum())
         lista_cultivo=df_loader['CULTIVO'].unique()
         total_costos_dict=calculateCard(df_loader,col=radio,color=px.colors.qualitative.G10[:len(lista_cultivo)],list_partidas=lista_cultivo,pivot=False,col_='CULTIVO')
         ###########################
         df_ha=dff_pivot.groupby(['CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
-        total_card_2=df_ha['AREA_CAMPAÑA'].sum()
+        total_card_2="{:,.2f}".format(df_ha['AREA_CAMPAÑA'].sum())
         lista_cultivo_ha=df_ha['CULTIVO'].unique()
         total_ha_dict=calculateCard(df_ha,col='AREA_CAMPAÑA',color=px.colors.qualitative.G10[:len(lista_cultivo_ha)],list_partidas=lista_cultivo_ha,pivot=False,col_='CULTIVO')
         #######################################################
-        costo_x_ha=total_card_1/total_card_2
+        #df_bc[df_bc['grupo1']=='ACTIVO'][value_moneda].sum())
+        costo_x_ha="{:,.2f}".format((df_loader[radio].sum())/(df_ha['AREA_CAMPAÑA'].sum()))
         ####maps
         df_map=df_campaña_ccc[df_campaña_ccc['POLYGON'].notnull()]
         df_map_polygon=df_map.groupby(['CONSUMIDOR','CULTIVO','POLYGON'])[['AREA_CAMPAÑA']].sum().reset_index()
@@ -3629,7 +3512,7 @@ def dashCostosProduccionAgricola():
                 fig.update_layout(
                     mapbox=dict(
                         center=dict(lon=-79.53234131,lat=-7.03284940),#,-79.53234131
-                        style="carto-positron",
+                        style="open-street-map",
                         zoom=12
                     ),
                     showlegend=False
@@ -3641,9 +3524,9 @@ def dashCostosProduccionAgricola():
         
          
         return [
-                cardGF(value_total=f"{simbolo} {round(total_card_1,0)}",text='Costos Totales',list_element=total_costos_dict),
-                cardGF(value_total=f"{round(total_card_2,1)} ha",text='Hectáreas Sembradas',list_element=total_ha_dict),
-                cardGF(value_total=f"{simbolo} {round(costo_x_ha,1)}",text='Costo por Hectárea',list_element=[{'value': 100, 'color': "rgb(51, 102, 204)", 'label': '100%', "tooltip": "Costo por Hectárea"}]),
+                cardGF(value_total=f"{simbolo} {total_card_1}",text='Costos Totales',list_element=total_costos_dict),
+                cardGF(value_total=f"{total_card_2} ha",text='Hectáreas Sembradas',list_element=total_ha_dict),
+                cardGF(value_total=f"{simbolo} {costo_x_ha}",text='Costo por Hectárea',list_element=[{'value': 100, 'color': "rgb(51, 102, 204)", 'label': '100%', "tooltip": "Costo por Hectárea"}]),
                 lotes,
                 variedad,
                 cultivo,

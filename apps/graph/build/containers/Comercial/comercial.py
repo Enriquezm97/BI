@@ -89,10 +89,10 @@ def tabVentaDfGraph(df,tipo,tab,varnum,top_data):
 ###test mdata
 
 
-token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
-api_nisira_ventas='http://69.64.92.160:3005/api/consulta/nsp_rpt_ventas_detallado'
+#token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
+#api_nisira_ventas='http://69.64.92.160:3005/api/consulta/nsp_rpt_ventas_detallado'
     
-ventas_lista_nisira=getApi(api_nisira_ventas,token_nisira)
+#ventas_lista_nisira=getApi(api_nisira_ventas,token_nisira)
 
 
 #df_ventas_nisira=pd.DataFrame(ventas_lista_nisira)
@@ -168,30 +168,30 @@ def informeVentas(empresa,rubro_empresa,staff_comment):
             ]),
             dbc.Row([
                             dbc.Col([
-                                select(ids="year",texto="Año",value=last_year)
+                                select(ids="year",texto="Año",value=last_year,size='sm')
                     
                             ],
                             
                             width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
                             dbc.Col([
-                                select(ids="month",texto="Mes")
+                                select(ids="month",texto="Mes",size='sm')
                     
                             ],
                             
                             width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
                             
                             dbc.Col([
-                                select("cliente","Cliente")
+                                select("cliente","Cliente",size='sm')
                                 
                             ],
                             width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"), 
                             dbc.Col([
-                                select("cultivo-tipo",ticked_1)
+                                select("cultivo-tipo",ticked_1,size='sm')
                                 
                             ],
                             width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
                             dbc.Col([
-                                select("variedad-grupo",ticked_2)
+                                select("variedad-grupo",ticked_2,size='sm')
                                 
                             ],
                             width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
@@ -257,9 +257,9 @@ def informeVentas(empresa,rubro_empresa,staff_comment):
         return trash
     ##CALLBACK FILTROS SELECTS
     #filtroInformeVentas(app,rubro_empresa,df_informe_ventas)
-    filtroInformeVentas2(app,rubro_empresa,df_informe_ventas)
-    titleInformeVentas(app,rubro_empresa,'Informe de Ventas ')
-    drawGraphInformeVentas(app,rubro_empresa,df_informe_ventas)
+    filtroInformeVentas2(app,'comercial',df_informe_ventas)
+    titleInformeVentas(app,'comercial','Informe de Ventas ')
+    drawGraphInformeVentas(app,'comercial',df_informe_ventas)
 
 def ventasExportacion(empresa,rubro_empresa,staff_comment):
     """"""
@@ -472,14 +472,14 @@ from dash_iconify import DashIconify
    #     return dcc.send_data_frame( df.to_excel, "test.xlsx", sheet_name="Sheet_name_1")
 def ventas2(empresa,staff_comment):
     """"""
-    df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
-    df_ventas_detalle=cleanVentas(df_ventas_default)
+    #df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
+    #df_ventas_detalle=cleanVentas(df_ventas_default)
     """"""
     """
     df_ventas_expo=dataVentasEmpresa(empresa)
     """
-    df_ventas_expo=df_ventas_detalle.copy()
-    df_ventas=changeVentasCol(df_ventas_expo)
+    df_ventas=df_ventas_detalle.copy()
+    #df_ventas=changeVentasCol(df_ventas_expo)
 
     df_ventas_d=df_ventas.groupby(['Año','Cliente','Cultivo','Variedad'])[['Importe en Soles']].sum().reset_index()
 
@@ -922,8 +922,8 @@ def ventas2(empresa,staff_comment):
 
 def ventasProductos(empresa,staff_comment):
     """"""
-    df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
-    df_ventas_detalle=cleanVentas(df_ventas_default)
+    #df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
+    #df_ventas_detalle=cleanVentas(df_ventas_default)
     """"""
     """
     df_ventas_expo=dataVentasEmpresa(empresa)
@@ -932,7 +932,7 @@ def ventasProductos(empresa,staff_comment):
 
     app = DjangoDash('ventasProductos', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css])#
     
-    df_ventas_d=changeVentasCol(df_ventas_expo)
+    df_ventas_d=df_ventas_expo.copy()#changeVentasCol(df_ventas_expo)
     app.layout = html.Div([
             dbc.Row([   
                         
@@ -1597,15 +1597,15 @@ def ventasProductos(empresa,staff_comment):
                         ]
                     )
             ])
-            return tab_st,tab_s,tab_p,tab_g,tab_c,tab_cli,data_filtro
+            return tab_st,tab_s,tab_p,tab_g,tab_c,tab_cli,data_filtro   
 
          
     
     
 def tipoVenta(empresa,staff_comment):
     """"""
-    df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
-    df_ventas_detalle=cleanVentas(df_ventas_default)
+    #df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
+    #df_ventas_detalle=cleanVentas(df_ventas_default)
     """"""
     """
     df_ventas_expo=dataVentasEmpresa(empresa)
@@ -1886,7 +1886,7 @@ def tipoVenta(empresa,staff_comment):
             
             )
     def filter_ventas(year,cultivo,variedad,cliente,month):
-        df_ventas=df_ventas_d
+        df_ventas=df_ventas_d.copy()
         if year==None and cultivo == None and variedad== None and cliente==None and month==None:
             options=df_ventas
 
@@ -2696,7 +2696,8 @@ def ventasComparativo(empresa,staff_comment):
             ]),
             
             
-            html.Div(id='comentario')
+            html.Div(id='comentario'),
+            
         ])
     offcanvasAction(app)
 
@@ -3378,11 +3379,11 @@ def dashVentasCore():
             
                 #general=str(titulo)+' '+str(moneda)
             if year == None and month == None:
-                    title=dmc.Title(children=['Informe de Ventas',dmc.Badge('ALL',variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+                    title=dmc.Title(children=['Seguimiento de Ventas ',dmc.Badge('ALL',variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
             elif year != None and month == None:
-                    title=dmc.Title(children=['Informe de Ventas',dmc.Badge(year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+                    title=dmc.Title(children=['Seguimiento de Ventas ',dmc.Badge(year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
             elif year != None and month != None:
-                    title=dmc.Title(children=['Informe de Ventas',dmc.Badge(year,variant='outline',color='gray', size='lg'),importe,dmc.Badge(month,variant='outline',color='blue', size='lg')], order=2,align='center')
+                    title=dmc.Title(children=['Seguimiento de Ventas ',dmc.Badge(year,variant='outline',color='gray', size='lg'),importe,dmc.Badge(month,variant='outline',color='blue', size='lg')], order=2,align='center')
 
 
             if cliente == None and cultivo == None:
@@ -3467,6 +3468,7 @@ def dashVentasCore():
         df_tablew['%']=df_tablew['%']*100
         df_tablew['% acumulado']=df_tablew['% acumulado']*100
         df_tablew=df_tablew.round(2)
+        df_tablew[importe] = df_tablew.apply(lambda x: "{:,}".format(x[importe]), axis=1)
         #.round(0)
         
         
@@ -4083,7 +4085,7 @@ def ventas1(empresa,staff_comment):
 
                 fig.update_layout(title={'text':f'{segmented} con mas Ventas','font': {'size': 15, 'color': 'black', 'family': 'Arial'},},template='none')
                 fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=8,tickfont_size=10))#l=400,
-                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
+                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="",hoverlabel=dict(bgcolor="white",font_size=15))
             elif segmented == 'Tipo de Venta':
                 fig = go.Figure()
                 fig.add_trace(go.Bar(x=df[importe],y=df[segmented],text=df[importe],orientation='h',
@@ -4100,7 +4102,7 @@ def ventas1(empresa,staff_comment):
 
                 fig.update_layout(title={'text':f'{segmented} con mas Ventas'},titlefont={'size': 15},template='none')
                 fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=10))#l=400,
-                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
+                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="",hoverlabel=dict(bgcolor="white",font_size=15))
             elif segmented == 'Producto':
                 fig = go.Figure()
                 fig.add_trace(go.Bar(x=df[importe],y=df[segmented],text=df[importe],orientation='h',
@@ -4117,7 +4119,7 @@ def ventas1(empresa,staff_comment):
 
                 fig.update_layout(title={'text':f'{segmented} con mas Ventas'},titlefont={'size': 15},template='none')
                 fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=10))#l=400,
-                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
+                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="",hoverlabel=dict(bgcolor="white",font_size=15))
 
             return fig
 
@@ -4384,7 +4386,8 @@ def dashComercialCliente():
     "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
     "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js",
     ]
-    app = DjangoDash('comercial_cliente', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css],external_scripts=scripts)#
+    external_stylesheets = [dbc.themes.BOOTSTRAP,dbc.icons.BOOTSTRAP,dbc.icons.FONT_AWESOME]
+    app = DjangoDash('comercial_cliente',external_stylesheets=external_stylesheets ,external_scripts=scripts)#external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css]
     
     df_ventas_d=changeVentasCol(df_ventas_expo)
     df_ventas_d['Tipo de Venta']=df_ventas_d['Tipo de Venta'].str[4:]
@@ -4495,6 +4498,7 @@ def dashComercialCliente():
             #html.Div(id='test_table'),
             #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
             dcc.Store(id='data-values'),  
+            html.Div(id='lista-clientes'),  
             dcc.Download(id="download"),
             
 
@@ -4688,6 +4692,7 @@ def dashComercialCliente():
             Output("graph2_2","children"),
             Output("graph-5","rowData"),
             Output("graph-5","columnDefs"),
+            Output("lista-clientes","value"),
             
             Input("data-values","data"),
             Input("radio-moneda","value"),
@@ -4715,6 +4720,8 @@ def dashComercialCliente():
             bar_data_order_percent['N°']=list(range(len(bar_data_order_percent),0,-1))
             bar_data_order_percent['N°']=bar_data_order_percent['N°'].astype("string")
             bar_data_order_percent['Cliente ']=bar_data_order_percent['N°']+'-'+bar_data_order_percent['Cliente']
+            print(bar_data_order_percent['Cliente '])
+            print(len(bar_data_order_percent['Cliente ']))
             print(bar_data_order_percent.columns)
         elif tipo_value == 'negative':
  
@@ -4764,6 +4771,7 @@ def dashComercialCliente():
                  {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
 
                  ],
+                bar_data_order_percent['Cliente'].unique()
                  
             ]
     @app.callback(
@@ -4773,12 +4781,24 @@ def dashComercialCliente():
             Input("radio-moneda","value"),
             Input("radio-data","value"),
             Input("input-percent","value"),
-            Input('graph-5','selectedRows')
+            Input('graph-5','selectedRows'),
+            Input('lista-clientes','value')
             
 
         )
-    def update_ventas(data,importe,tipo_value,percent,selected_table):
+    def update_ventas(data,importe,tipo_value,percent,selected_table,clientes):
         options=pd.read_json(data, orient='split')
+        options=options[options['Cliente'].isin(clientes)]
+        selected_segmented = [s['Cliente'] for s in selected_table] if selected_table!=None else []
+        print(selected_segmented)
+        def traspasarList(lista):
+            new_lista=[]
+            for element in lista:
+                new_lista.append(element)
+            return new_lista
+        
+        if selected_segmented !=[]:
+            options=options[options['Cliente'].isin(traspasarList(selected_segmented))]
         #print(type(selected_table))
         #print(selected_table)
         
@@ -4799,23 +4819,23 @@ def dashComercialCliente():
                 bar_data=bar_data[bar_data[importe]>0]
                 if tipo_value == 'positive':
                     bar_data_order=bar_data.sort_values(importe,ascending=False)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=False)
+                    #barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=False)
                     
                 elif tipo_value == 'negative':
                     bar_data_order=bar_data.sort_values(importe,ascending=True)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=True)
+                    #barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=True)
                     
-                fig = px.bar(barstack, x= 'Cliente' , y=importe, color= tab,# text_auto=True,
+                fig = px.bar(bar_data_order, x= 'Cliente' , y=importe, color= tab,# text_auto=True,
                                         title=f'Ventas Cliente por {tab}',template="none")
                 fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
                 fig.update_layout(legend=dict(font=dict(size= 8)))
@@ -5024,6 +5044,7 @@ def dashComercialClienteCultivo():
             #html.Div(id='test_table'),
             #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
             dcc.Store(id='data-values'),  
+            html.Div(id='lista-clientes'),  
             dcc.Download(id="download"),
             
 
@@ -5216,6 +5237,7 @@ def dashComercialClienteCultivo():
             Output("graph2_2","children"),
             Output("graph-5","rowData"),
             Output("graph-5","columnDefs"),
+            Output("lista-clientes","value"),
             
             Input("data-values","data"),
             Input("radio-moneda","value"),
@@ -5290,8 +5312,9 @@ def dashComercialClienteCultivo():
                  {"field": importe, "type": "leftAligned", "minWidth": 100},
                  {"field": '%', "type": "leftAligned", "minWidth": 80},
                  {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
-
+                 
                  ],
+                bar_data_order_percent['Cliente'].unique()
                  
             ]
     @app.callback(
@@ -5301,12 +5324,24 @@ def dashComercialClienteCultivo():
             Input("radio-moneda","value"),
             Input("radio-data","value"),
             Input("input-percent","value"),
-            Input('graph-5','selectedRows')
+            Input('graph-5','selectedRows'),
+            Input('lista-clientes','value')
             
 
         )
-    def update_ventas(data,importe,tipo_value,percent,selected_table):
+    def update_ventas(data,importe,tipo_value,percent,selected_table,clientes):
         options=pd.read_json(data, orient='split')
+        options=options[options['Cliente'].isin(clientes)]
+        selected_segmented = [s['Cliente'] for s in selected_table] if selected_table!=None else []
+        print(selected_segmented)
+        def traspasarList(lista):
+            new_lista=[]
+            for element in lista:
+                new_lista.append(element)
+            return new_lista
+        
+        if selected_segmented !=[]:
+            options=options[options['Cliente'].isin(traspasarList(selected_segmented))]
         #print(type(selected_table))
         #print(selected_table)
         
@@ -5327,23 +5362,23 @@ def dashComercialClienteCultivo():
                 bar_data=bar_data[bar_data[importe]>0]
                 if tipo_value == 'positive':
                     bar_data_order=bar_data.sort_values(importe,ascending=False)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=False)
+                    #barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=False)
                     
                 elif tipo_value == 'negative':
                     bar_data_order=bar_data.sort_values(importe,ascending=True)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=True)
+                    #barstack=bar_data[bar_data['Cliente'].isin(bar_data_order_percent['Cliente'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=True)
                     
-                fig = px.bar(barstack, x= 'Cliente' , y=importe, color= tab,# text_auto=True,
+                fig = px.bar(bar_data_order, x= 'Cliente' , y=importe, color= tab,# text_auto=True,
                                         title=f'Ventas Cliente por {tab}',template="none")
                 fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
                 fig.update_layout(legend=dict(font=dict(size= 8)))
@@ -5552,6 +5587,7 @@ def dashComercialProducto():
             #html.Div(id='test_table'),
             #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
             dcc.Store(id='data-values'),  
+            html.Div(id='lista-productos'),  
             dcc.Download(id="download"),
             
 
@@ -5744,6 +5780,7 @@ def dashComercialProducto():
             Output("graph2_2","children"),
             Output("graph-5","rowData"),
             Output("graph-5","columnDefs"),
+            Output("lista-productos","value"),
             
             Input("data-values","data"),
             Input("radio-moneda","value"),
@@ -5820,7 +5857,7 @@ def dashComercialProducto():
                  {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
 
                  ],
-                 
+                bar_data_order_percent['Producto'].unique() 
             ]
     @app.callback(
             Output('tabs-g','children'),
@@ -5829,12 +5866,24 @@ def dashComercialProducto():
             Input("radio-moneda","value"),
             Input("radio-data","value"),
             Input("input-percent","value"),
-            Input('graph-5','selectedRows')
+            Input('graph-5','selectedRows'),
+            Input('lista-productos','value')
             
 
         )
-    def update_ventas(data,importe,tipo_value,percent,selected_table):
+    def update_ventas(data,importe,tipo_value,percent,selected_table,productos):
         options=pd.read_json(data, orient='split')
+        options=options[options['Producto'].isin(productos)]
+        selected_segmented = [s['Producto'] for s in selected_table] if selected_table!=None else []
+        print(selected_segmented)
+        def traspasarList(lista):
+            new_lista=[]
+            for element in lista:
+                new_lista.append(element)
+            return new_lista
+        
+        if selected_segmented !=[]:
+            options=options[options['Producto'].isin(traspasarList(selected_segmented))]
         #print(type(selected_table))
         #print(selected_table)
         
@@ -5855,23 +5904,23 @@ def dashComercialProducto():
                 bar_data=bar_data[bar_data[importe]>0]
                 if tipo_value == 'positive':
                     bar_data_order=bar_data.sort_values(importe,ascending=False)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=False)
+                    #barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=False)
                     
                 elif tipo_value == 'negative':
                     bar_data_order=bar_data.sort_values(importe,ascending=True)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=True)
+                    #barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=True)
                     
-                fig = px.bar(barstack, x= 'Producto' , y=importe, color= tab,# text_auto=True,
+                fig = px.bar(bar_data_order, x= 'Producto' , y=importe, color= tab,# text_auto=True,
                                         title=f'Ventas Producto por {tab}',template="none")
                 fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
                 fig.update_layout(legend=dict(font=dict(size= 8)))
@@ -6079,6 +6128,7 @@ def dashComercialProductoCultivo():
             #html.Div(id='test_table'),
             #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
             dcc.Store(id='data-values'),  
+            html.Div(id='lista-productos'),  
             dcc.Download(id="download"),
             
 
@@ -6272,6 +6322,7 @@ def dashComercialProductoCultivo():
             Output("graph2_2","children"),
             Output("graph-5","rowData"),
             Output("graph-5","columnDefs"),
+            Output("lista-productos","value"),
             
             Input("data-values","data"),
             Input("radio-moneda","value"),
@@ -6346,9 +6397,9 @@ def dashComercialProductoCultivo():
                  {"field": importe, "type": "leftAligned", "minWidth": 100},
                  {"field": '%', "type": "leftAligned", "minWidth": 80},
                  {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
-
-                 ],
                  
+                 ],
+                bar_data_order_percent['Producto'].unique() 
             ]
     @app.callback(
             Output('tabs-g','children'),
@@ -6361,8 +6412,20 @@ def dashComercialProductoCultivo():
             
 
         )
-    def update_ventas(data,importe,tipo_value,percent,selected_table):
+    def update_ventas(data,importe,tipo_value,percent,selected_table,productos):
         options=pd.read_json(data, orient='split')
+        options=options[options['Producto'].isin(productos)]
+        selected_segmented = [s['Producto'] for s in selected_table] if selected_table!=None else []
+        print(selected_segmented)
+        def traspasarList(lista):
+            new_lista=[]
+            for element in lista:
+                new_lista.append(element)
+            return new_lista
+        
+        if selected_segmented !=[]:
+            options=options[options['Producto'].isin(traspasarList(selected_segmented))]
+       
         #print(type(selected_table))
         #print(selected_table)
         
@@ -6383,23 +6446,23 @@ def dashComercialProductoCultivo():
                 bar_data=bar_data[bar_data[importe]>0]
                 if tipo_value == 'positive':
                     bar_data_order=bar_data.sort_values(importe,ascending=False)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=False)
+                    #barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=False)
                     
                 elif tipo_value == 'negative':
                     bar_data_order=bar_data.sort_values(importe,ascending=True)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=True)
+                    #barstack=bar_data[bar_data['Producto'].isin(bar_data_order_percent['Producto'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=True)
                     
-                fig = px.bar(barstack, x= 'Producto' , y=importe, color= tab,# text_auto=True,
+                fig = px.bar(bar_data_order, x= 'Producto' , y=importe, color= tab,# text_auto=True,
                                         title=f'Ventas Producto por {tab}',template="none")
                 fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
                 fig.update_layout(legend=dict(font=dict(size= 8)))
@@ -6608,6 +6671,7 @@ def dashComercialCultivo():
             #html.Div(id='test_table'),
             #cardTableDag(data_call=True,id_table='table',id_maximize='btn-table'),
             dcc.Store(id='data-values'),  
+            html.Div(id='lista-cultivos'), 
             dcc.Download(id="download"),
             
 
@@ -6800,7 +6864,8 @@ def dashComercialCultivo():
             Output("graph2_2","children"),
             Output("graph-5","rowData"),
             Output("graph-5","columnDefs"),
-            
+            Output("lista-cultivos","value"),
+
             Input("data-values","data"),
             Input("radio-moneda","value"),
             Input("radio-data","value"),
@@ -6811,7 +6876,7 @@ def dashComercialCultivo():
         )
     def update_ventas(data,importe,tipo_value,percent):
         options=pd.read_json(data, orient='split')
-        Total=options[importe].sum()#"{:,.0f}".format(
+        Total=options[importe].sum()#"{:,.0f}".format(  
         cantidad_cultivo=len(options['Cultivo'].unique())
         sig="$"if importe =='Importe en Dolares' else "S/"
         agg_title='en orden descendente' if tipo_value == 'positive' else 'en orden ascendente'
@@ -6874,9 +6939,9 @@ def dashComercialCultivo():
                  {"field": importe, "type": "leftAligned", "minWidth": 100},
                  {"field": '%', "type": "leftAligned", "minWidth": 80},
                  {"field": '% Acumulado', "type": "leftAligned", "minWidth": 80},
-
+                
                  ],
-                 
+                bar_data_order_percent['Cultivo'].unique() 
             ]
     @app.callback(
             Output('tabs-g','children'),
@@ -6889,8 +6954,20 @@ def dashComercialCultivo():
             
 
         )
-    def update_ventas(data,importe,tipo_value,percent,selected_table):
+    def update_ventas(data,importe,tipo_value,percent,selected_table,cultivos):
         options=pd.read_json(data, orient='split')
+        options=options[options['Cultivo'].isin(cultivos)]
+        selected_segmented = [s['Cultivo'] for s in selected_table] if selected_table!=None else []
+        print(selected_segmented)
+        def traspasarList(lista):
+            new_lista=[]
+            for element in lista:
+                new_lista.append(element)
+            return new_lista
+        
+        if selected_segmented !=[]:
+            options=options[options['Cultivo'].isin(traspasarList(selected_segmented))]
+        #print(type(selected_table))
         #print(type(selected_table))
         #print(selected_table)
         
@@ -6911,23 +6988,23 @@ def dashComercialCultivo():
                 bar_data=bar_data[bar_data[importe]>0]
                 if tipo_value == 'positive':
                     bar_data_order=bar_data.sort_values(importe,ascending=False)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Cultivo'].isin(bar_data_order_percent['Cultivo'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=False)
+                    #barstack=bar_data[bar_data['Cultivo'].isin(bar_data_order_percent['Cultivo'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=False)
                     
                 elif tipo_value == 'negative':
                     bar_data_order=bar_data.sort_values(importe,ascending=True)
-                    bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
-                    bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
-                    bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
+                    #bar_data_order['%']=bar_data_order[importe]/bar_data_order[importe].sum()
+                    #bar_data_order['% Acumulado']= bar_data_order['%'].cumsum(axis = 0, skipna = True) 
+                    #bar_data_order_percent=bar_data_order[bar_data_order['% Acumulado']<=percent/100]
                     #bar_data_order_percent=bar_data_order_percent.sort_values(importe,ascending=True)
-                    barstack=bar_data[bar_data['Cultivo'].isin(bar_data_order_percent['Cultivo'].unique())]
-                    barstack=barstack.sort_values(importe,ascending=True)
+                    #barstack=bar_data[bar_data['Cultivo'].isin(bar_data_order_percent['Cultivo'].unique())]
+                    #barstack=barstack.sort_values(importe,ascending=True)
                     
-                fig = px.bar(barstack, x= 'Cultivo' , y=importe, color= tab,# text_auto=True,
+                fig = px.bar(bar_data_order, x= 'Cultivo' , y=importe, color= tab,# text_auto=True,
                                         title=f'Ventas Cultivo por {tab}',template="none")
                 fig.update_layout(autosize=True,margin=dict(l=60,r=40,b=120,t=50))
                 fig.update_layout(legend=dict(font=dict(size= 8)))
@@ -7030,7 +7107,250 @@ def deleteElementList(lista,elemento_eliminar):
                 if element!=elemento_eliminar:
                        new_lista.append(element)
             return new_lista
+def graphPinta2(df,element_seleccionado,lista_iteracion,lista_order_year,ejex,importe,selected_list,dict_year):
+    if ejex == 'MONTH':
+        hover_selected_bar='<br><b>Mes </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>'
+        hover_selected_linea ='<br><b>Mes </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>'
+    elif ejex == 'TRIMESTRE':
+        hover_selected_bar='<br><b>Trimestre </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>'
+        hover_selected_linea ='<br><b>Trimestre </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>'
+    elif ejex == 'Semana': 
+        hover_selected_bar='<br><b>Semana </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>'
+        hover_selected_linea ='<br><b>Semana </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>'
+    
+    num_opacidad= 0.9 if selected_list!=[] else 1
+    fig = go.Figure()
+    if selected_list !=[]:
+        fig.add_trace(go.Bar(x=df[ejex],
+                                y=df[element_seleccionado],
+                                name=element_seleccionado,
+                                marker_color=dict_year[element_seleccionado],
+                                #customdata=dict_year['year']==selected_list[-1],
+                                text=df[element_seleccionado],
+                                textposition="outside",
+                                texttemplate='%{text:,.0f}',
+                                hovertemplate =hover_selected_bar,
+                                textfont=dict(size=16)
+                                )) 
+        fig.update_traces(marker_line_width=2, marker_line_color='black')#,marker_pattern_shape="+"
+    for year in lista_iteracion:
+        fig.add_trace(
+                go.Bar(
+                        x=df[ejex],
+                        y=df[year],
+                        name=year,
+                        marker_color=dict_year[year],
+                        text=df[year],
+                        textposition="outside",
+                        texttemplate='%{text:,.0f}',
+                        hovertemplate =hover_selected_bar,#'<br><b>Mes </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                        textfont=dict(size=16),
+                        opacity=num_opacidad
+                        )
+                    )
+    fig.update_layout(
+            title=f'Comparativo {ejex} por año',
+            xaxis_tickfont_size=14,
+            yaxis=dict(
+                title=importe,
+                titlefont_size=16,
+                tickfont_size=14,
+            ),
+            xaxis=dict(
+                title=ejex,
+                titlefont_size=16,
+                tickfont_size=14,
+            ),
+            legend=dict(orientation="h",yanchor="bottom",xanchor="right",y=1.02,x=1),
+            barmode='group',
+            bargap=0.15, # gap between bars of adjacent location coordinates.0.15
+            bargroupgap=0.1, # gap between bars of the same location coordinate.
+            template='plotly_white',
+            margin=dict(l=40,r=40,b=40,t=40),
+            height=380
+        )
+    fig.update_xaxes(type='category')
+    fig.update_layout(
+                yaxis2=dict(
+                    title="%",
+                    overlaying="y",
+                    side="right",
+                    titlefont_size=16,
+                    tickfont_size=14,
+                )
+    )
+    #### trazo de linea
+    if selected_list ==[]:
+        print("condicion line 1")
+        fig.add_trace(
+            go.Scatter(
+                x=df[ejex], 
+                y=df[f'%-{lista_order_year[0]}'], 
+                name=f"Crecimiento-{lista_order_year[0]}", 
+                yaxis="y2",
+                text=df[f'%-{lista_order_year[0]}'],
+                textposition="bottom center",
+                marker_color=px.colors.qualitative.Prism[1],
+                hovertemplate =hover_selected_linea,
+                mode='lines+markers'
+                ))
+    elif len(selected_list)==1:
+        print("condicion line 2")
+        lista_rango_=deleteElementList(selected_list,element_seleccionado)
+        for year_percents,i in zip(lista_rango_,range(len(lista_rango_))):
+            fig.add_trace(
+                 go.Scatter(
+                    x=df[ejex], 
+                    y=df[f'%-{year_percents}'], 
+                    name=f"Crecimiento-{year_percents}", 
+                    yaxis="y2",
+                    text=df[f'%-{year_percents}'],
+                    textposition="bottom center",
+                    marker_color=px.colors.qualitative.Dark2[i],
+                    hovertemplate =hover_selected_linea,
+                    mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=3)
+                    ))
+    
 
+    elif selected_list !=[] and len(selected_list)>1:
+        print("condicion line 3")
+        lista_rango_=deleteElementList(selected_list,element_seleccionado)
+        for year_percents,i in zip(lista_rango_,range(len(lista_rango_))):
+            fig.add_trace(
+                 go.Scatter(
+                    x=df[ejex], 
+                    y=df[f'%-{year_percents}'], 
+                    name=f"Crecimiento-{year_percents}", 
+                    yaxis="y2",
+                    text=df[f'%-{year_percents}'],
+                    textposition="bottom center",
+                    marker_color=px.colors.qualitative.Dark2[i],
+                    hovertemplate =hover_selected_linea,
+                    mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=3)
+                    ))
+    return fig
+
+def graphPinta(df,selected_list,lista_iteracion,lista_order_year,ejex,importe,diccionario_colors):
+    if ejex == 'MONTH':
+        hover_selected_bar='<br><b>Mes </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>'
+        hover_selected_linea ='<br><b>Mes </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>'
+    elif ejex == 'TRIMESTRE':
+        hover_selected_bar='<br><b>Trimestre </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>'
+        hover_selected_linea ='<br><b>Trimestre </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>'
+    elif ejex == 'Semana': 
+        hover_selected_bar='<br><b>Semana </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>'
+        hover_selected_linea ='<br><b>Semana </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>'
+    
+    num_opacidad= 0.9 if selected_list!=[] else 1
+    fig = go.Figure()
+    if selected_list !=[]:
+        fig.add_trace(go.Bar(x=df[ejex],
+                                y=df[selected_list[0]],
+                                name=selected_list[0],
+                                marker_color=diccionario_colors[selected_list[0]],
+                                #customdata=dict_year['year']==selected_list[-1],
+                                text=df[selected_list[0]],
+                                textposition="outside",
+                                texttemplate='%{text:,.0f}',
+                                hovertemplate =hover_selected_bar,
+                                textfont=dict(size=16)
+                                )) 
+        fig.update_traces(marker_line_width=2, marker_line_color='black')#,marker_pattern_shape="+"
+    for year in lista_iteracion:
+        fig.add_trace(
+                go.Bar(
+                        x=df[ejex],
+                        y=df[year],
+                        name=year,
+                        marker_color=diccionario_colors[year],
+                        text=df[year],
+                        textposition="outside",
+                        texttemplate='%{text:,.0f}',
+                        hovertemplate =hover_selected_bar,#'<br><b>Mes </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
+                        textfont=dict(size=16),
+                        opacity=num_opacidad
+                        )
+                    )
+    fig.update_layout(
+            title=f'Comparativo {ejex} por año',
+            xaxis_tickfont_size=14,
+            yaxis=dict(
+                title=importe,
+                titlefont_size=16,
+                tickfont_size=14,
+            ),
+            xaxis=dict(
+                title=ejex,
+                titlefont_size=16,
+                tickfont_size=14,
+            ),
+            legend=dict(orientation="h",yanchor="bottom",xanchor="right",y=1.02,x=1),
+            barmode='group',
+            bargap=0.15, # gap between bars of adjacent location coordinates.0.15
+            bargroupgap=0.1, # gap between bars of the same location coordinate.
+            template='plotly_white',
+            margin=dict(l=40,r=40,b=40,t=40),
+            height=380
+        )
+    fig.update_xaxes(type='category')
+    fig.update_layout(
+                yaxis2=dict(
+                    title="%",
+                    overlaying="y",
+                    side="right",
+                    titlefont_size=16,
+                    tickfont_size=14,
+                )
+    )
+    #### trazo de linea
+    if selected_list ==[] or len(selected_list)<3:
+        print("condicion line 1")
+        fig.add_trace(
+            go.Scatter(
+                x=df[ejex], 
+                y=df[f'%-{lista_order_year[0]}'], 
+                name=f"Crecimiento-{lista_order_year[0]}", 
+                yaxis="y2",
+                text=df[f'%-{lista_order_year[0]}'],
+                textposition="bottom center",
+                marker_color=px.colors.qualitative.Prism[1],
+                hovertemplate =hover_selected_linea,
+                mode='lines+markers'
+                ))
+    elif selected_list !=[] and len(selected_list)>2:
+        print("condicion line 2")
+        lista_rango_=deleteElementList(selected_list,selected_list[0])
+        for year_percents,i in zip(lista_rango_,range(len(lista_rango_))):
+            fig.add_trace(
+                 go.Scatter(
+                    x=df[ejex], 
+                    y=df[f'%-{year_percents}'], 
+                    name=f"Crecimiento-{year_percents}", 
+                    yaxis="y2",
+                    text=df[f'%-{year_percents}'],
+                    textposition="bottom center",
+                    marker_color=px.colors.qualitative.Dark2[i],
+                    hovertemplate =hover_selected_linea,
+                    mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=3)
+                    ))
+    return fig
+
+def valueSelectElementTable(selected,list_add):
+    for elemento in selected:   
+        if (elemento in list_add) == False:
+            list_add.append(elemento)     
+    if len(selected)==1:
+        value_selected=int(selected[0])
+    elif len(selected)>1:
+        if (list_add[0] in selected)==True:
+            value_selected=int(list_add[0])
+        elif (list_add[0] in selected)==False:
+            if list_add[-1] in selected:  
+                value_selected=int(list_add[-1])
+            else: 
+                list_add.remove(list_add[-1])
+                value_selected=int(list_add[-1])
+    return value_selected
 
 
 
@@ -7039,7 +7359,9 @@ def deleteElementList(lista,elemento_eliminar):
 
 
 def dashComercialComparativo():
-    
+    lista_años=[]
+    lista_for_graph=[]
+
     app = DjangoDash('comercial_comparativo', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css])#
     
     df_ventas_d=changeVentasCol(df_ventas_expo)
@@ -7122,15 +7444,10 @@ def dashComercialComparativo():
                         ),
                         size="xs",
                         spacing="sm",
-                        style={'max-height': f'{230}px','overflow': "auto"},
-                        children=[
-                            dmc.ListItem(dmc.Text(id='100-%', weight=700),),
-                            dmc.ListItem(dmc.Text(id='second-text', weight=700)),
-                            
-                            
-                        ],
+                        style={'max-height': f'{250}px','overflow': "auto"},
+                        
                     )          
-                            ],size=4),
+                            ],size=3),
             Column(content=[
                 dag.AgGrid(
                                 id="datatable-result",
@@ -7142,7 +7459,7 @@ def dashComercialComparativo():
                                 style={'max-height': f'{300}px','overflow': "auto"},
                                 className="ag-theme-balham",
                             ),
-            ],size=8),
+            ],size=9),
         ]),
         dbc.Row([
             Column(content=[
@@ -7349,7 +7666,7 @@ def dashComercialComparativo():
             importe=dmc.Badge(moneda,variant='outline',color='blue', size='md')if moneda =='Soles' else dmc.Badge(moneda,variant='outline',color='blue', size='md')
            
 
-            title=dmc.Title(children=[f'Comparativo entre Años ',dmc.Badge(rango_year,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
+            title=dmc.Title(children=[f'Comparativo de Ventas Anuales ',dmc.Badge(rango_year,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
 
             badge_tipoventa=dmc.Badge(tipoventa,variant='outline',color='blue', size='md')if tipoventa!=None else None   
             badge_cliente=dmc.Badge(cliente,variant='outline',color='blue', size='md')if cliente!=None else None 
@@ -7368,12 +7685,12 @@ def dashComercialComparativo():
             Input("input-years","value"),
             Input("select-st","value"),
             Input("radio-moneda","value"),
-            
+            Input("datatable-interactivity", "selectedRows"),
             
             
 
         )
-    def update_ventas(data,years,ejex,importe):
+    def update_ventas(data,years,ejex,importe,selected):
         options=pd.read_json(data, orient='split')
         options['Año']=options['Año'].astype("string")
         if years == None:
@@ -7384,15 +7701,25 @@ def dashComercialComparativo():
                 #df_ventas_detalle[df_ventas_detalle['YEAR'].isin([2021,2022])]
             df=options[options['Año'].isin(years)]
         table_df=df.groupby(['Año'])[[importe]].sum().reset_index()
-        return table_df.to_dict("records"),[{"field": 'Año',"checkboxSelection": True},{"field": importe}]
+        table_df[importe]=table_df[importe].round(1)
+        table_df[importe] = table_df.apply(lambda x: "{:,}".format(x[importe]), axis=1)
+        selected_list = [s["Año"] for s in selected] if selected!=None else []
+        if selected_list == []:
+            lista_años.clear()
+            columnsdef=[{"field": 'Año',"checkboxSelection": True},{"field": importe}]
+        elif selected_list!=[]:
+            value_seleccionado=valueSelectElementTable(selected=selected_list,list_add=lista_años)
+            columnsdef=[{"field": 'Año',"checkboxSelection": True, "cellClassRules":{"bg-primary": f"params.value == '{value_seleccionado}'"} },{"field": importe}]                    
+        
+        return table_df.to_dict("records"),columnsdef
 
     @app.callback(
             Output("st-comparative","figure"),
             Output("datatable-result","columnDefs"),
             Output("datatable-result","rowData"),
             Output("datatable-result","defaultColDef"),
-            Output("100-%","children"),
-            Output("second-text","children"),
+            #Output("100-%","children"),
+            #Output("second-text","children"),
             
             #Input("data-values","data"),
             Input("data-values","data"),
@@ -7407,8 +7734,7 @@ def dashComercialComparativo():
         )
     def update_ventas(data,years,ejex,importe,selected):
         
-                  
-        options=pd.read_json(data, orient='split')
+        options=pd.read_json(data, orient='split')          
         options['Año']=options['Año'].astype("string")
         if years == None:
             df=options[options['Año'].isin(years[-1])]
@@ -7425,924 +7751,330 @@ def dashComercialComparativo():
         
 
         selected_list = [s["Año"] for s in selected] if selected!=None else []
-        print(selected_list)
+        
         list_years_df=list(graph_test.columns[1:len(years)+1])
         print(f"año del dropdown {list_years_df}")
         #esta lista servira para iterar los años seleccionados, el primer año que se seleccione no entrara a esta lista para ser dibujado con una config especial
-        list_iter=list_years_df if selected_list==[] else deleteElementList(list_years_df,selected_list[-1])
-        print(f"lista iteracion {list_iter}")
-        if selected_list ==[] or len(selected_list)<3:
-            print('primero')
+        
+        
+        if selected_list ==[]:
+            lista_for_graph.clear()
+            #lista_for_graph.clear()
+            list_iter=list_years_df
             graph_test[f'dif-{lista_order_year[0]}']=graph_test[lista_order_year[-1]]-graph_test[lista_order_year[0]]
             graph_test[f'%-{lista_order_year[0]}']=(graph_test[f'dif-{lista_order_year[0]}']/graph_test[lista_order_year[0]])*100
             graph_test[f'%-{lista_order_year[0]}']=graph_test[f'%-{lista_order_year[0]}'].round(1)
+            coldeftable=lista_order_year[-1]
+        elif len(selected_list)==1:
+            value_seleccionado=valueSelectElementTable(selected=selected_list,list_add=lista_for_graph)
+            list_iter=deleteElementList(list_years_df,str(value_seleccionado))
+            print(f"dato iteracion {list_iter}")
+            graph_test[f'dif-{lista_order_year[0]}']=graph_test[lista_order_year[-1]]-graph_test[lista_order_year[0]]
+            graph_test[f'%-{lista_order_year[0]}']=(graph_test[f'dif-{lista_order_year[0]}']/graph_test[lista_order_year[0]])*100
+            graph_test[f'%-{lista_order_year[0]}']=graph_test[f'%-{lista_order_year[0]}'].round(1)
+            coldeftable=str(value_seleccionado)
+
+        elif len(selected_list)==2 :
+            value_seleccionado=valueSelectElementTable(selected=selected_list,list_add=lista_for_graph)
+            list_iter=deleteElementList(selected_list,str(value_seleccionado))
+            print(f"dato iteracion {list_iter}")
+            graph_test[f'dif-{list_iter[0]}']=graph_test[str(value_seleccionado)]-graph_test[list_iter[0]]
+            graph_test[f'%-{list_iter[0]}']=(graph_test[f'dif-{list_iter[0]}']/graph_test[list_iter[0]])*100
+            graph_test[f'%-{list_iter[0]}']=graph_test[f'%-{list_iter[0]}'].round(1)
+            
+            coldeftable=str(value_seleccionado)
+            print(graph_test)
         elif selected_list !=[] and len(selected_list)>2:
-            print('segundo')
+            value_seleccionado=valueSelectElementTable(selected=selected_list,list_add=lista_for_graph)
+            print(f"el año seleccionado es {value_seleccionado}")
+            print(f"type {type(value_seleccionado)}")
+            list_iter=deleteElementList(selected_list,str(value_seleccionado))
+            print(f"los años que iteraran son {list_iter}")
             for year_iter in list_iter:
-                graph_test[f'dif-{year_iter}']=graph_test[selected_list[-1]]-graph_test[year_iter]
-                graph_test[f'%-{year_iter}']=(graph_test[f'dif-{year_iter}']/graph_test[year_iter])*100
-                graph_test[f'%-{year_iter}']=graph_test[f'%-{year_iter}'].round(1)
-                
+                graph_test[f'dif-{str(year_iter)}']=graph_test[str(value_seleccionado)]-graph_test[str(year_iter)]
+                print(graph_test)
+                graph_test[f'%-{str(year_iter)}']=(graph_test[f'dif-{str(year_iter)}']/graph_test[str(year_iter)])*100
+                graph_test[f'%-{str(year_iter)}']=graph_test[f'%-{str(year_iter)}'].round(1)
+            print(graph_test)
+            coldeftable=str(value_seleccionado)
         ########################################### graph
-        fig = go.Figure()
-        #df=graph_test.copy
-
-        if selected_list !=[]:
-            
-            fig.add_trace(go.Bar(x=graph_test[ejex],
-                                y=graph_test[selected_list[-1]],
-                                name=selected_list[-1],
-                                marker_color=dict_year[selected_list[-1]],
-                                #customdata=dict_year['year']==selected_list[-1],
-                                text=graph_test[selected_list[-1]],
-                                textposition="outside",
-                                texttemplate='%{text:,.0f}',
-                                hovertemplate ='<br><b>test </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
-                                textfont=dict(size=20)
-                                )) 
-            fig.update_traces(marker_line_width=3, marker_line_color='black')#,marker_pattern_shape="+"
-        
-            for year,i in zip(list_iter,range(len(list_iter))):
-                    
-                    
-                    #border_size=2 if year == '2022'else 1
-                    if ejex == 'MONTH':
-                        fig.add_trace(go.Bar(x=graph_test[ejex],
-                                    y=graph_test[year],
-                                    name=year,
-                                    marker_color=dict_year[year],
-                                    text=graph_test[year],
-                                    textposition="outside",
-                                    texttemplate='%{text:,.0f}',
-                                    hovertemplate ='<br><b>Mes </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
-                                    textfont=dict(size=20),opacity=0.8
-                                    ))
-                        #fig.update_traces(opacity=0.6)
-                        #if selected_list !=[] and selected_list[0]==year:
-                        #    print('primera condicion')
-                        #    fig.update_traces(marker_pattern_shape="+")# 
-                        #elif selected_list ==[] or selected_list[0]!=year:  
-                        #    print('segunda condicion')
-                        #    fig.update_traces(marker_pattern_shape=None)  
-                            
-                        
-                    elif ejex == 'TRIMESTRE':
-                        fig.add_trace(go.Bar(x=graph_test[ejex],
-                                    y=graph_test[year],
-                                    name=year,
-                                    marker_color=dict_year[year],
-                                    text=graph_test[year],
-                                    textposition="outside",
-                                    texttemplate='%{text:,.0f}',
-                                    hovertemplate ='<br><b>Trimestre </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
-                                    textfont=dict(size=20),opacity=0.8
-                                    ))
-                        #fig.update_traces(opacity=0.6)
-                        #if selected_list !=[] and selected_list[0]==year:
-                        #    print('primera condicion')
-                        #    fig.update_traces(marker_pattern_shape="+")# 
-                        #elif selected_list ==[] or selected_list[0]!=year:  
-                        #    print('segunda condicion')
-                        #    fig.update_traces(marker_pattern_shape=None)    
-                        
-                    
-                    elif ejex == 'Semana':
-                        fig.add_trace(go.Bar(x=graph_test[ejex],
-                                    y=graph_test[year],
-                                    name=year,
-                                    marker_color=dict_year[year],
-                                    text=graph_test[year],
-                                    textposition="outside",
-                                    texttemplate='%{text:,.0f}',
-                                    hovertemplate ='<br><b>Semana </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
-                                    textfont=dict(size=20),opacity=0.8
-                                    ))
-                        #fig.update_traces(opacity=0.6)
-                    
-                        
-        else:
-                 for year,i in zip(list_iter,range(len(list_iter))):
-                    
-                    
-                    #border_size=2 if year == '2022'else 1
-                    if ejex == 'MONTH':
-                        fig.add_trace(go.Bar(x=graph_test[ejex],
-                                    y=graph_test[year],
-                                    name=year,
-                                    marker_color=dict_year[year],
-                                    text=graph_test[year],
-                                    textposition="outside",
-                                    texttemplate='%{text:,.0f}',
-                                    hovertemplate ='<br><b>Mes </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
-                                    textfont=dict(size=20)
-                                    ))
-                        #if selected_list !=[] and selected_list[0]==year:
-                        #    print('primera condicion')
-                        #    fig.update_traces(marker_pattern_shape="+")# 
-                        #elif selected_list ==[] or selected_list[0]!=year:  
-                        #    print('segunda condicion')
-                        #    fig.update_traces(marker_pattern_shape=None)  
-                            
-                        
-                    elif ejex == 'TRIMESTRE':
-                        fig.add_trace(go.Bar(x=graph_test[ejex],
-                                    y=graph_test[year],
-                                    name=year,
-                                    marker_color=dict_year[year],
-                                    text=graph_test[year],
-                                    textposition="outside",
-                                    texttemplate='%{text:,.0f}',
-                                    hovertemplate ='<br><b>Trimestre </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
-                                    textfont=dict(size=20)
-                                    ))
-                        #if selected_list !=[] and selected_list[0]==year:
-                        #    print('primera condicion')
-                        #    fig.update_traces(marker_pattern_shape="+")# 
-                        #elif selected_list ==[] or selected_list[0]!=year:  
-                        #    print('segunda condicion')
-                        #    fig.update_traces(marker_pattern_shape=None)    
-                        
-                    
-                    elif ejex == 'Semana':
-                        fig.add_trace(go.Bar(x=graph_test[ejex],
-                                    y=graph_test[year],
-                                    name=year,
-                                    marker_color=dict_year[year],
-                                    text=graph_test[year],
-                                    textposition="outside",
-                                    texttemplate='%{text:,.0f}',
-                                    hovertemplate ='<br><b>Semana </b>:%{x}'+'<br><b>Importe</b>: %{y:$,.0f}<br>',
-                                    textfont=dict(size=20),
-                                    ))
-                    
-                         
-
-        fig.update_layout(
-            title=f'Comparativo {ejex} por año',
-            xaxis_tickfont_size=14,
-            yaxis=dict(
-                title=importe,
-                titlefont_size=16,
-                tickfont_size=14,
-            ),
-            xaxis=dict(
-                title=ejex,
-                titlefont_size=16,
-                tickfont_size=14,
-            ),
-            legend=dict(orientation="h",yanchor="bottom",xanchor="right",y=1.02,x=1),
-            barmode='group',
-            bargap=0.15, # gap between bars of adjacent location coordinates.0.15
-            bargroupgap=0.1, # gap between bars of the same location coordinate.
-            template='plotly_white',
-            margin=dict(l=40,r=40,b=40,t=40),
-            height=380
-        )
-        fig.update_xaxes(type='category')
-        #################################################################################################################
-        if selected_list ==[] or len(selected_list)<3:
-            
-            if ejex == 'MONTH':
-                fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{lista_order_year[0]}'], name="Crecimiento", yaxis="y2",text=graph_test[f'%-{lista_order_year[0]}'],
-                textposition="bottom center",marker_color=px.colors.qualitative.Prism[1],
-                hovertemplate ='<br><b>Mes </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
-                mode='lines+markers'
-                ))
-                
-            elif ejex == 'TRIMESTRE':
-                        fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{lista_order_year[0]}'], name="Crecimiento", 
-                                                 yaxis="y2",text=graph_test[f'%-{lista_order_year[0]}'],
-                    textposition="bottom center",marker_color=px.colors.qualitative.Prism[1],
-                    hovertemplate ='<br><b>Trimestre </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
-                    mode='lines+markers'
-                    ))
-                        
-            elif ejex == 'Semana':
-                        fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{lista_order_year[0]}'], name="Crecimiento", yaxis="y2",text=graph_test[f'%-{lista_order_year[0]}'],
-                    textposition="bottom center",marker_color=px.colors.qualitative.Prism[1],
-                    hovertemplate ='<br><b>Semana </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
-                    mode='lines+markers',line=dict(color=px.colors.qualitative.Prism[1], width=4)
-                    ))
-        elif selected_list !=[] and len(selected_list)>2:
-             lista_rango_=deleteElementList(selected_list,selected_list[-1])
-             print("aqui empiezo")
-             print(selected_list)
-             print(lista_rango_)
-             for year_percents,i in zip(lista_rango_,range(len(lista_rango_))):
-                if ejex == 'MONTH':
-                    fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{year_percents}'], name=f"Crecimiento-{year_percents}", 
-                                             yaxis="y2",text=graph_test[f'%-{year_percents}'],
-                    textposition="bottom center",marker_color=px.colors.qualitative.Dark2[i],
-                    hovertemplate ='<br><b>Mes </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
-                    mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=4)
-                    ))
-                
-                elif ejex == 'TRIMESTRE':
-                    fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{year_percents}'], name=f"Crecimiento-{year_percents}", 
-                                             yaxis="y2",text=graph_test[f'%-{year_percents}'],
-                        textposition="bottom center",marker_color=px.colors.qualitative.Dark2[i],
-                        hovertemplate ='<br><b>Trimestre </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
-                        mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=4)
-                        ))
-                            
-                elif ejex == 'Semana':
-                    fig.add_trace(go.Scatter(x=graph_test[ejex], y=graph_test[f'%-{year_percents}'], name=f"Crecimiento-{year_percents}",
-                                              yaxis="y2",text=graph_test[f'%-{year_percents}'],
-                        textposition="bottom center",marker_color=px.colors.qualitative.Dark2[i],
-                        hovertemplate ='<br><b>Semana </b>:%{x}'+'<br><b>Cremimiento </b>: %{y}%<br>',
-                        mode='lines+markers',line=dict(color=px.colors.qualitative.Dark2[i], width=4)
-                        ))
-        ###########################################################################################################       
-        fig.update_layout(
-
-            yaxis2=dict(
-                title="%",
-                overlaying="y",
-                side="right",
-                titlefont_size=16,
-                tickfont_size=14,
-            ),
-
-        )
-        if selected_list ==[]:
-            print("condicional table color")
-            defaultColDef=dict(
-                resizable=True,
-                sortable= True, 
-                filter = True,
+        defaultColDef=dict(
+                resizable=True,sortable= True, filter = True,
                 cellStyle={
                     "styleConditions": [
                         {
-                            "condition": f"params.colDef.field == {lista_order_year[-1]}",#{lista_order_year[-1]}
-                            "style": {"backgroundColor": f"{dict_year[lista_order_year[-1]]}", "color": "white"},
+                            "condition": f"params.colDef.field == {coldeftable}",#{lista_order_year[-1]}
+                            "style": {"backgroundColor": f"blue", "color": "white"},#{dict_year[str(coldeftable)]}
                         },
                     ]
                 },
-            )
-        elif selected_list !=[]:
-            print("condicional table color x 2 :v")
-            #defcols={"resizable": True, "sortable": True, "filter": True},
-            defaultColDef=dict(
-                    resizable=True,
-                    sortable= True, 
-                    filter = True,
-                    cellStyle={
-                        "styleConditions": [
-                            {
-                                "condition": f"params.colDef.field == {selected_list[-1]}",
-                                "style": {"backgroundColor": f"{dict_year[selected_list[-1]]}", "color": "white"},
-                            },
-                        ]
-                    },
-                )
-        return fig,[{"field": i} for i in graph_test.columns],graph_test.to_dict("records"),defaultColDef,f'Año 100%:{selected_list[-1]}' if selected_list!=[]else'',",".join(list_iter)if list_iter !=[]else''
-
+        )
+        
+        table_df=graph_test.copy()
+        
+        for columns in table_df.columns[1:]:
+            table_df[columns]=table_df[columns].round(1)
+            table_df[columns] = table_df.apply(lambda x: "{:,}".format(x[columns]), axis=1)
+        fig=graphPinta2(graph_test,coldeftable,list_iter,lista_order_year,ejex,importe,selected_list,dict_year)
+        return fig,[{"field": i,"maxWidth": 130} for i in table_df.columns],table_df.to_dict("records"),defaultColDef
     
-"""
-    @app.callback(
-                Output("year","data"),
-                Output("cultivo","data"),
-                Output("variedad","data"),
-                Output("cliente","data"),
-                Output("month","data"),
-            #Output('filter-data', 'data'),
-            Input("year","value"),
-            Input("cultivo","value"),
-            Input("variedad","value"),
-            #Input("cultivo","value"),
-            Input("cliente","value"),
-            Input("month","value"),
-            
-            )
-    def filter_ventas(year,cultivo,variedad,cliente,month):
-        df_ventas=df_ventas_d.groupby(['Año','Cliente','Cultivo','Variedad','Mes'])[['Importe en Soles']].sum().reset_index()
+def dashProductoPrecio():
+    scripts = ["https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js","https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js"]
+    app = DjangoDash('producto_precio', external_stylesheets=[url_theme1, dbc.icons.BOOTSTRAP, dbc_css],external_scripts=scripts)#
+    df_ventas_d=changeVentasCol(df_ventas_expo)
+    df_ventas_d['Grupo de Venta']=df_ventas_d['Grupo de Venta'].str[5:]
+    df_ventas_d['FECHA']=df_ventas_d['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
+    fecha_minima=str(df_ventas_d['FECHA'].min())
+    fecha_maxima=str(df_ventas_d['FECHA'].max())
+    df=df_ventas_d[df_ventas_d['Año']==sorted(df_ventas_d['Año'].unique())[-1]]
+    app.layout = html.Div([
+        dbc.Row([   
+                Column(content=[
+                  btnFilter(),
+                            
+                            offcanvas(componentes=[
+                                
+                                select(ids="tipoventa",texto="Tipo de Venta"),
+                                select(ids="grupo",texto="Grupo Producto"),
+                                select(ids="subgrupo",texto="Sub Grupo Producto"),
+                                select(ids="consumidor",texto="Codigo"),
+                                select(ids="pais",texto="Pais"),
 
-        if year==None and cultivo == None and variedad== None and cliente==None and month==None:
-            options=df_ventas
-
-        elif year!=None and cultivo == None and variedad== None and cliente==None and month==None:    
-            options=df_ventas[df_ventas['Año']==year]
-        elif year==None and cultivo != None and variedad== None and cliente==None and month==None:    
-            options=df_ventas[df_ventas['Cultivo']==cultivo]
+                                #radioGroup(ids='radio-data',texto='Orden por Importe',value='positive',
+                                #          children=[dmc.Radio(label='Descendente', value='positive'),
+                                #                    dmc.Radio(label='Ascendente', value='negative'),
+                                                    
+                                #          ]),
+                                
+                                radioGroup(ids='radio-moneda',texto='Moneda',value='Importe en Dolares',
+                                          children=[dmc.Radio(label='S/', value='Importe en Soles'),
+                                                    dmc.Radio(label='$', value='Importe en Dolares'),
+                                          ]),
+                                
+                            ]),
+                ],size=1),
+                Column(content=[
+                    html.Div(id="title", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'}),
+                            html.Div(id="subtitle", style={'margin-bottom': '0px', 'color': 'black','textAlign': 'center'})
+                ],size=6),    
+                Column(content=[
+                      datePicker(ids='date-picker-desde',
+                                 text='Desde',
+                                 value=df['FECHA'].min(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                      
+                ],size=2),
+                Column(content=[
+                    datePicker(ids='date-picker-hasta',
+                                 text='Hasta',
+                                 value=df['FECHA'].max(),
+                                 minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 ),
+                ],size=2),  
+                
+                   
+                Column(content=[
+                  btnCollapse(),
+                  btnDownload()
+                ],size=1),
+        ]),  
+        dbc.Row([
+            Column(content=[
+                        html.Div(
+                            children=loadingOverlay(
+                                cardGraph(id_graph='graph-1',id_maximize='btn-modal-1'),
+                                
+                            ))
+            ],size=5),
+            Column(content=[
+                        html.Div(
+                            children=loadingOverlay(
+                                cardGraph(id_graph='graph-2',id_maximize='btn-modal-2'),
+                                
+                            ))
+            ],size=7),
+            #Column(content=[
+            #            html.Div(
+            #                children=loadingOverlay(
+            #                    cardGraph(id_graph='graph-3',id_maximize='btn-modal-3'),
+            #                    
+            #                ))
+            #],size=4),
+        ]),
+        dcc.Store(id='data-values'),  
+        dcc.Download(id="download"),  
+    ])
+    offcanvasAction(app)
+    @app.callback(Output("data-values","data"),
+                  Output("tipoventa","data"),
+                  Output("grupo","data"),
+                  Output("consumidor","data"),
+                  Output("pais","data"),
+                  Output("subgrupo","data"),
+                  
+                  Input("date-picker-desde","value"),
+                  Input("date-picker-hasta","value"),
+                  Input("tipoventa","value"),
+                  Input("grupo","value"),
+                  Input("consumidor","value"),
+                  Input("pais","value"),
+                  Input("subgrupo","value"),
+                  )
+    def filter_ventas(desde,hasta,tipo_venta,grupo,consumidor,pais,subgrupo):
+        #df_ventas=df_ventas_d.copy()
+        fecha_inicio = datetime.strptime(desde, '%Y-%m-%d').date()
+        fecha_fin = datetime.strptime(hasta, '%Y-%m-%d').date()
+        mask = (df_ventas_d['FECHA'] > fecha_inicio ) & (df_ventas_d['FECHA'] <= fecha_fin)
+        df_ventas=df_ventas_d.loc[mask]
         
-        elif year==None and cultivo == None and variedad!= None and cliente==None and month==None:    
-            options=df_ventas[df_ventas['Variedad']==variedad]
+        #df_ventas=filtered_df.groupby(['Tipo de Venta','Formato','idconsumidor','Pais','IDMEDIDA'])[['Importe en Soles']].sum().reset_index()
+        if tipo_venta==None and grupo == None and consumidor== None and pais==None and subgrupo==None:
+            options=df_ventas.copy()
+
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['Tipo de Venta']==tipo_venta]
+        elif tipo_venta==None and grupo != None and consumidor== None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['Grupo de Venta']==grupo]
         
-        elif year==None and cultivo == None and variedad== None and cliente!=None and month==None:    
-            options=df_ventas[df_ventas['Cliente']==cliente]
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais==None and subgrupo==None:    
+            options=df_ventas[df_ventas['idconsumidor']==consumidor]
         
-        elif year==None and cultivo == None and variedad== None and cliente==None and month !=None:    
-            options=df_ventas[df_ventas['Mes']==cliente]
+        elif tipo_venta==None and grupo == None and consumidor== None and pais!=None and subgrupo==None:    
+            options=df_ventas[df_ventas['Pais']==pais]
+        
+        elif tipo_venta==None and grupo == None and consumidor== None and pais==None and subgrupo !=None:    
+            options=df_ventas[df_ventas['SUBGRUPO']==subgrupo]
 
 
-
-
-
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)]
         
-        elif year!=None and cultivo != None and variedad== None and cliente==None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)]
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)]
         
-        elif year!=None and cultivo == None and variedad!= None and cliente==None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)]
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Pais']==pais)]
         
-        elif year!=None and cultivo == None and variedad== None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cliente']==cliente)]
-        
-        elif year!=None and cultivo == None and variedad== None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
-
-
-        
-        elif year==None and cultivo != None and variedad== None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Cliente']==cliente)]
-        
-        elif year==None and cultivo != None and variedad!= None and cliente==None and month==None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
-
-        elif year==None and cultivo != None and variedad == None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Mes']==month)]
+        elif tipo_venta!=None and grupo == None and consumidor== None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['SUBGRUPO']==subgrupo)]
 
 
         
-        elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
-
-        elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+        elif tipo_venta==None and grupo != None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['Pais']==pais)]
         
-        elif year==None and cultivo == None and variedad!= None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
-        
-        elif year==None and cultivo == None and variedad== None and cliente!=None and month!=None:
-            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Mes']==month)]
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)]
 
+        elif tipo_venta==None and grupo != None and consumidor == None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['SUBGRUPO']==subgrupo)]
 
 
         
-        elif year!=None and cultivo != None and variedad!= None and cliente==None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
 
-        elif year!=None and cultivo != None and variedad== None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Cliente']==cliente)]
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
         
-        elif year!=None and cultivo != None and variedad== None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Mes']==month)]
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+        
+        elif tipo_venta==None and grupo == None and consumidor== None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['SUBGRUPO']==subgrupo)]
+
 
 
         
-        elif year!=None and cultivo == None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais==None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)]
+
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['Pais']==pais)]
         
-        elif year!=None and cultivo == None and variedad!= None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        elif tipo_venta!=None and grupo != None and consumidor== None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['Grupo de Venta']==grupo)&(df_ventas['SUBGRUPO']==subgrupo)]
 
 
-
-        elif year==None and cultivo != None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
         
-        elif year==None and cultivo != None and variedad!= None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
         
-        elif year==None and cultivo == None and variedad!= None and cliente!=None and month!=None:
-            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
+        elif tipo_venta!=None and grupo == None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+
+
+
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)]
+        
+        elif tipo_venta==None and grupo != None and consumidor!= None and pais==None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
+        
+        elif tipo_venta==None and grupo == None and consumidor!= None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Pais']==pais)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['SUBGRUPO']==subgrupo)]
         
 
 
 
 
 
-        elif year!=None and cultivo != None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)]
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais!=None and subgrupo==None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)]
         
-        elif year!=None and cultivo != None and variedad!= None and cliente!=None and month!=None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
+        elif tipo_venta!=None and grupo != None and consumidor!= None and pais!=None and subgrupo!=None:
+            options=df_ventas[(df_ventas['Grupo de Venta']==grupo)&(df_ventas['idconsumidor']==consumidor)&(df_ventas['Pais']==pais)&(df_ventas['Tipo de Venta']==tipo_venta)&(df_ventas['SUBGRUPO']==subgrupo)]
 
 
-        option_year=[{'label': i, 'value': i} for i in options['Año'].unique()] 
-        option_cultivo=[{'label': i, 'value': i} for i in options['Cultivo'].unique()] 
-        option_variedad=[{'label': i, 'value': i} for i in options['Variedad'].unique()] 
-        option_cliente=[{'label': i, 'value': i} for i in options['Cliente'].unique()] 
-        option_mes=[{'label': i, 'value': i} for i in options['Mes'].unique()] 
-        return option_year,option_cultivo,option_variedad,option_cliente,option_mes
+        option_tipov=[{'label': i, 'value': i} for i in options['Tipo de Venta'].unique()] 
+        option_grupo=[{'label': i, 'value': i} for i in options['Grupo de Venta'].unique()] 
+        option_consumidor=[{'label': i, 'value': i} for i in options['idconsumidor'].unique()] 
+        option_pais=[{'label': i, 'value': i} for i in options['Pais'].unique()] 
+        option_subgrupo=[{'label': i, 'value': i} for i in options['SUBGRUPO'].unique()] 
+        
+        
+        return options.to_json(date_format='iso', orient='split'),option_tipov,option_grupo,option_consumidor,option_pais,option_subgrupo
     
-    #####################################################################################################################################
-    @app.callback(
-            Output("data-values","data"),
-            
-            #Output('filter-data', 'data'),
-            Input("year","value"),
-            Input("cultivo","value"),
-            Input("variedad","value"),
-            #Input("cultivo","value"),
-            Input("cliente","value"),
-            Input("month","value"),
-            
-            
-            )
-    def filter_ventas(year,cultivo,variedad,cliente,month):
-        df_ventas=df_ventas_d.copy()
-        if year==None and cultivo == None and variedad== None and cliente==None and month==None:
-            options=df_ventas
-
-        elif year!=None and cultivo == None and variedad== None and cliente==None and month==None:    
-            options=df_ventas[df_ventas['Año']==year]
-        elif year==None and cultivo != None and variedad== None and cliente==None and month==None:    
-            options=df_ventas[df_ventas['Cultivo']==cultivo]
-        
-        elif year==None and cultivo == None and variedad!= None and cliente==None and month==None:    
-            options=df_ventas[df_ventas['Variedad']==variedad]
-        
-        elif year==None and cultivo == None and variedad== None and cliente!=None and month==None:    
-            options=df_ventas[df_ventas['Cliente']==cliente]
-        
-        elif year==None and cultivo == None and variedad== None and cliente==None and month !=None:    
-            options=df_ventas[df_ventas['Mes']==cliente]
-
-
-
-
-
-        
-        elif year!=None and cultivo != None and variedad== None and cliente==None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)]
-        
-        elif year!=None and cultivo == None and variedad!= None and cliente==None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)]
-        
-        elif year!=None and cultivo == None and variedad== None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cliente']==cliente)]
-        
-        elif year!=None and cultivo == None and variedad== None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
-
-
-        
-        elif year==None and cultivo != None and variedad== None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Cliente']==cliente)]
-        
-        elif year==None and cultivo != None and variedad!= None and cliente==None and month==None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
-
-        elif year==None and cultivo != None and variedad == None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Mes']==month)]
-
-
-        
-        elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
-
-        elif year==None and cultivo == None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
-        
-        elif year==None and cultivo == None and variedad!= None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
-        
-        elif year==None and cultivo == None and variedad== None and cliente!=None and month!=None:
-            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Mes']==month)]
-
-
-
-        
-        elif year!=None and cultivo != None and variedad!= None and cliente==None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)]
-
-        elif year!=None and cultivo != None and variedad== None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Cliente']==cliente)]
-        
-        elif year!=None and cultivo != None and variedad== None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Cultivo']==cultivo)&(df_ventas['Mes']==month)]
-
-
-        
-        elif year!=None and cultivo == None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
-        
-        elif year!=None and cultivo == None and variedad!= None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Año']==year)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
-
-
-
-        elif year==None and cultivo != None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)]
-        
-        elif year==None and cultivo != None and variedad!= None and cliente==None and month!=None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
-        
-        elif year==None and cultivo == None and variedad!= None and cliente!=None and month!=None:
-            options=df_ventas[(df_ventas['Cliente']==cliente)&(df_ventas['Variedad']==variedad)&(df_ventas['Mes']==month)]
-        
-
-
-
-
-
-        elif year!=None and cultivo != None and variedad!= None and cliente!=None and month==None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)]
-        
-        elif year!=None and cultivo != None and variedad!= None and cliente!=None and month!=None:
-            options=df_ventas[(df_ventas['Cultivo']==cultivo)&(df_ventas['Variedad']==variedad)&(df_ventas['Cliente']==cliente)&(df_ventas['Año']==year)&(df_ventas['Mes']==month)]
-
-
-        
-             
-            
-        
-        return options.to_json(date_format='iso', orient='split')
-    ####################################################################################################################################    
     @app.callback(
             
             Output("download", "data"),
-            Input("data-values","data"),
+            
             Input("btn-download", "n_clicks"),
+            State("data-values","data"),
             prevent_initial_call=True,
             
             )
-    def update_download(data,n_clicks_download):
+    def update_download(n_clicks_download,data):
         options=pd.read_json(data, orient='split')
-        options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
+        #options['FECHA'] = options['FECHA'].apply(lambda a: pd.to_datetime(a).date())
         if n_clicks_download:
             return dcc.send_data_frame( options.to_excel, "comercial.xlsx", sheet_name="Sheet_name_1")
-        
-   
-
-    @app.callback(
-            
-            Output("title","children"),
-            Output("subtitle","children"),
-            Input("year","value"),
-            Input("cultivo","value"),
-            Input("cliente","value"),
-            Input("radio-moneda","value"),
-            Input("segmented","value")
-            
-            )
-    def title_ventas(year,cultivo,cliente,moneda,segmented):
-        #general='Ventas por Clientes '+' '+str(moneda)
-            df_ventas=df_ventas_d.copy()
-            df_filtro=df_ventas[df_ventas['Año']==year]
-            filtro=df_filtro.groupby(['MONTH','Mes']).sum().reset_index().sort_values('MONTH',ascending=True)
-            lista_mes=filtro['Mes'].unique()
-            rango_mes=f"{lista_mes[0]}-{lista_mes[-1]}"
-            if moneda =='Soles':
-                importe=dmc.Badge(moneda,variant='outline',color='blue', size='lg')
-            elif moneda == 'Dolares':
-                importe=dmc.Badge(moneda,variant='outline',color='blue', size='lg')
-
-
-
-            
-                #general=str(titulo)+' '+str(moneda)
-            if year == None:
-                    title=dmc.Title(children=[f'Venta Anual por {segmented} ',dmc.Badge('ALL',variant='outline',color='gray', size='lg'),importe], order=2,align='center')
-            else:
-                    title=dmc.Title(children=[f'Venta Anual por {segmented} ',dmc.Badge(year,variant='outline',color='gray', size='lg'),dmc.Badge(rango_mes,variant='outline',color='gray', size='lg'),importe], order=2,align='center')
-
-
-            if cliente == None and cultivo == None:
-                    subtitle=dmc.Title(children=[], order=3,align='center')
-            elif cliente != None and cultivo == None:
-                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='outline',color='gray', size='lg')], order=3,align='center')
-                    #subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='filled',color='gray', size='lg'),dmc.Badge(variedad,variant='filled',color='indigo', size='lg'),estado], order=2,align='center')
-            elif cliente != None and cultivo != None:
-                    subtitle=dmc.Title(children=[dmc.Badge(cliente,variant='outline',color='gray', size='lg'),dmc.Badge(cultivo,variant='outline',color='indigo', size='lg')], order=3,align='center')
-            elif cliente == None and cultivo != None:
-                    subtitle=dmc.Title(children=[dmc.Badge(cultivo,variant='outline',color='indigo', size='lg')], order=3,align='center')
-                    
-            return title,subtitle
-        
-            
-        
 
     @app.callback(
             Output("graph-1","figure"),
-            Output("graph2_1","figure"),
-            Output("graph2_2","figure"),
-            Output("graph-5","rowData"),
-            Output("graph-5","columnDefs"),
+            Output("graph-2","figure"),
+            #Output("graph-3","figure"),
             Input("data-values","data"),
             Input("radio-moneda","value"),
-            Input("segmented","value"),
-            Input('radio-top-data','value')
-            #Input("check-igv","value"),
-            
-            #Input("filter-tab","value"),
-
-            )
-    def ventas(data, radio,segmented,radio_top ):#year,cultivo,variedad,cliente,
-
+            #Input("radio-data","value"),
+            #Input("input-percent","value"),
+        )
+    def update_ventas(data,importe):
         options=pd.read_json(data, orient='split')
-        
-
-        
-        #if igv == 'IGV' or igv[-1] == 'IGV' :
-        if radio=='Soles':
-                importe='Importe en Soles'
-                sig='S/'
-        else:
-                importe='Importe en Dolares'
-                sig='$'
-        
-            
-
-            #df_filter=options.groupby([ejex])[[color]].sum().reset_index()#,color
-        def barSegment(options_df,segmented,importe,radio,top_data):
-            df_v=options_df.groupby([segmented])[[importe]].sum()   
-            df_v=df_v[df_v[importe]>0]  
-            if top_data == 'Top 20':
-                
-                df=df_v.groupby([segmented])[[importe]].sum().sort_values(importe,ascending=True).reset_index().tail(20)
-                df['N°']=[i+1 for i in range(len(df))]
-                df['N°']=df['N°'].astype("string")
-                df[segmented]=df['N°']+'-'+df[segmented]
-            elif top_data == 'All':
-                df=df_v.groupby([segmented])[[importe]].sum().sort_values(importe,ascending=False).reset_index()
-                df['N°']=[i+1 for i in range(len(df))]
-                df['N°']=df['N°'].astype("string")
-                df[segmented]=df['N°']+'-'+df[segmented]
-                df=df.groupby([segmented])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
-            elif top_data == 'pareto':
-                df=df_v.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False)
-                #df['percent']=df[importe]/df[importe].sum()
-                #df['percent_accu']=df['percent'].cumsum(axis = 0, skipna = True)
-                list_20_percent=df[segmented].unique()[:(int(len(df[segmented].unique())*0.2))] 
-                df=df[df[segmented].isin(list_20_percent)].sort_values(importe)
-                #lista_enumerador=[i+1 for i in range(len(df))]
-                #lista_enumerador=lista_enumerador.reverse()
-                #df['N°']=lista_enumerador
-
-                #df['N°']=[i+1 for i in range(len(df))]
-                df['N°']=list(range(len(df),0,-1))
-                df['N°']=df['N°'].astype("string")
-                df[segmented]=df['N°']+'-'+df[segmented]
-                
-                df=df.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True)
-                
-
-            elif top_data == 'Top low 20':
-                df=df_v.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True)
-                #df['percent']=df[importe]/df[importe].sum()
-                #df['percent_accu']=df['percent'].cumsum(axis = 0, skipna = True)
-                list_20_percent=df[segmented].unique()[:(int(len(df[segmented].unique())*0.2))] 
-                df=df[df[segmented].isin(list_20_percent)].sort_values(importe)
-
-                
-                
-                df=df.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True)
-                #lista_enumerador=[i+1 for i in range(len(df))]
-                #lista_enumerador=lista_enumerador.reverse()
-                #df['N°']=lista_enumerador
-                df['N°']=list(range(len(df),0,-1))
-                df['N°']=df['N°'].astype("string")
-                df[segmented]=df['N°']+'-'+df[segmented]
-                
-
-
-            if segmented == 'Cliente':
-                fig = go.Figure()
-                fig.add_trace(go.Bar(x=df[importe],y=df[segmented],text=df[importe],orientation='h',
-                                                        textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
-                                                        hovertemplate =
-                                                            '<br><b>Cliente</b>:%{y}'+
-                                                            '<br><b>Importe($)</b>: %{x}<br>',
-                                                        marker_color="#145f82",
-                                                        hoverlabel=dict(
-                                                        font_size=14,
-                                                        ),
-                                                        name=''
-                                                    ))#.2s
-
-                fig.update_layout(title={'text':f'{segmented} con mas Ventas','font': {'size': 15, 'color': 'black', 'family': 'Arial'},},template='none')
-                fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=8,tickfont_size=10))#l=400,
-                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
-            elif segmented == 'Tipo de Venta':
-                fig = go.Figure()
-                fig.add_trace(go.Bar(x=df[importe],y=df[segmented],text=df[importe],orientation='h',
-                                                        textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
-                                                        hovertemplate =
-                                                            '<br><b>Tipo de Venta</b>:%{y}'+
-                                                            '<br><b>Importe($)</b>: %{x}<br>',
-                                                        marker_color="#145f82",
-                                                        hoverlabel=dict(
-                                                        font_size=14,
-                                                        ),
-                                                        name=''
-                                                    ))#.2s
-
-                fig.update_layout(title={'text':f'{segmented} con mas Ventas'},titlefont={'size': 15},template='none')
-                fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=10))#l=400,
-                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
-            elif segmented == 'Producto':
-                fig = go.Figure()
-                fig.add_trace(go.Bar(x=df[importe],y=df[segmented],text=df[importe],orientation='h',
-                                                        textposition='outside',texttemplate='%{text:.2s}',#,marker_color=px.colors.qualitative.Dark24,#marker_color=colors,
-                                                        hovertemplate =
-                                                            '<br><b>Producto</b>:%{y}'+
-                                                            '<br><b>Importe($)</b>: %{x}<br>',
-                                                        marker_color="#145f82",
-                                                        hoverlabel=dict(
-                                                        font_size=14,
-                                                        ),
-                                                        name=''
-                                                    ))#.2s
-
-                fig.update_layout(title={'text':f'{segmented} con mas Ventas'},titlefont={'size': 15},template='none')
-                fig.update_layout(autosize=True,height=490,margin=dict(l=300,r=40,b=40,t=40),yaxis=dict(titlefont_size=9,tickfont_size=10))#l=400,
-                fig.update_layout(xaxis_title=radio,yaxis_title="",legend_title="")
-
-            return fig
-
-
-    
-        
-        #top_productos.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
-
-        cantidad_productos=options[importe].sum()#"{:,.0f}".format(
-           
-        cantidad_clientes=len(options[segmented].unique())
-
-            #graph4=options.groupby(['Pais'])[[importe,'Peso']].sum().reset_index().sort_values(importe,ascending=True)
-            
-        if  radio_top == 'Top 20':  
-            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0).head(20)
-            df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
-        elif radio_top =='All':
-            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
-            df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
-        elif radio_top =='pareto':
-            
-            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
-            df_table=df_table[df_table[importe]>0]
-            #df_v=df_v[df_v[importe]>0]  
-            list_20_percent=df_table[segmented].unique()[:(int(len(df_table[segmented].unique())*0.2))]
-            df_table=df_table[df_table[segmented].isin(list_20_percent)]
-            df_table=df_table.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=False).round(0)
-            df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
-
-
-            
-        elif radio_top =='Top low 20':
-            df_table=options.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True).round(0)
-            df_table=df_table[df_table[importe]>0]
-            list_20_percent=df_table[segmented].unique()[:(int(len(df_table[segmented].unique())*0.2))]
-            df_table=df_table[df_table[segmented].isin(list_20_percent)]
-            df_table=df_table.groupby([segmented])[[importe]].sum().reset_index().sort_values(importe,ascending=True).round(0)
-            df_table[importe] = df_table.apply(lambda x: "{:,}".format(x[importe]), axis=1)
-        df_table['N°']=[i+1 for i in range(len(df_table))]
-        df_table=df_table[['N°',segmented,importe]]
-
-        return  [barSegment(options,segmented,importe,radio,radio_top),
-                 card_ventas(cantidad_productos,None,f"Total Ventas ({radio})"),
-                 card_ventas(cantidad_clientes,None,f"Total de {segmented}s"),
-                 df_table.to_dict("records"),
-                 [{"field": 'N°', "type": "leftAligned", "maxWidth": 100, "checkboxSelection": True},{"field": segmented, "type": "leftAligned", "minWidth": 350},{"field": importe, "type": "leftAligned", "minWidth": 150}]
-                 ]
-    
-    @app.callback(
-            
-            Output('tabs-g','children'),
-            #Output('test_table','children'),
-            Input("data-values","data"),
-            Input("radio-moneda","value"),
-            #Input("filter-tab","value"),
-            Input("segmented","value"),
-            Input('radio-top-data','value'),
-            #Input('graph-5','selectedRows')
-            #Input("check-igv","value"),
-
-            )
-
-    def ventas(data, radio, segmented,radio_top):#,selected
-            df_comercial=pd.read_json(data, orient='split')
-            #print(options.columns)
-            if radio=='Soles':
-                    importe='Importe en Soles'
-            else:
-                    importe='Importe en Dolares'
-            
-
-            if segmented == 'Cliente':
-
-                tabs_cliente=['Sucursal','Pais','Tipo de Venta','Cultivo','Producto']
-                tabs=loadingOverlay(dmc.Tabs(
-                    [
-                        dmc.TabsList(
-                            [
-                            
-                                dmc.Tab(children=tab,value=tab)for tab in tabs_cliente
-                            ]
-                        ),
-                            
-                            html.Div([dmc.TabsPanel(cardGraph(id_maximize='id-cliente',id_download='id-download-cliente',id_graph='id-graph-cliente',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_cliente[i],importe,radio_top),icon_maximize=False), value=tabs_cliente[i]) for i in range(len(tabs_cliente))]),
-
-                    ],
-                    value=tabs_cliente[0],
-                )),
-
-
-            elif segmented == 'Producto':
-                tabs_producto=['Sucursal','Pais','Tipo de Venta','Cultivo','Cliente']
-                tabs=dmc.Tabs(
-                    [
-                        dmc.TabsList(
-                            [
-                            
-                                dmc.Tab(children=tab,value=tab)for tab in tabs_producto
-                            ]
-                        ),
-                            
-                            html.Div([dmc.TabsPanel(loadingOverlay(cardGraph(id_maximize='id-producto',id_download='id-download-producto',id_graph='id-graph-producto',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_producto[i],importe,radio_top),icon_maximize=False)), value=tabs_producto[i]) for i in range(len(tabs_producto))]),
-
-                    ],
-                    value=tabs_producto[0],
-                ),
-            elif segmented == 'Tipo de Venta':
-                tabs_tipoventa=['Sucursal','Pais','Grupo de Venta','Cultivo','Cliente','Producto']
-                tabs=dmc.Tabs(
-                    [
-                        dmc.TabsList(
-                            [
-                            
-                                dmc.Tab(children=tab,value=tab)for tab in tabs_tipoventa
-                            ]
-                        ),
-                            
-                            html.Div([dmc.TabsPanel(loadingOverlay(cardGraph(id_maximize='id-tventa',id_download='id-download-tventa',id_graph='id-graph-tventa',with_id=False,fig=tabVentaDfGraph(df_comercial,segmented,tabs_tipoventa[i],importe,radio_top),icon_maximize=False)), value=tabs_tipoventa[i]) for i in range(len(tabs_tipoventa))]),
-
-                    ],
-                    value=tabs_tipoventa[0],
-                ),
-            
-                        
-            
-
-            return tabs
-
-
-    @app.callback(
-    Output("modal", "is_open"),
-    Output("modal", "children"),#modal-table
-
-    Input("btn-modal", "n_clicks"),
-    #Input("btn-table", "n_clicks"),
-    #Input("radio-moneda","value"),
-    #Input("segmented","value"),
-    Input('graph-1','figure'),
-    #Input("graph-5","rowData"),
-    
-    #prevent_initial_call=True,
-    )
-    def update_output_modal1(n_clicks_bar,bar):#,moneda,segmented,bar,data_table
-        from dash import no_update
-
-        fig=go.Figure(bar)
-        fig.update_layout(height=1500),
-        fig.update_layout(yaxis=dict(titlefont_size=9,tickfont_size=13))
-
-        if n_clicks_bar:
-            return True, modalMaximize(dcc.Graph(figure=fig))
-        
-        else:
-            return False, no_update  
-        
-
-
-
-    @app.callback(
-    Output("modal-table", "is_open"),
-    Output("modal-table", "children"),#modal-table
-    Input("btn-table", "n_clicks"),
-    Input("radio-moneda","value"),
-    Input("segmented","value"),
-    #Input('graph-1','figure'),
-    Input("graph-5","rowData"),
-    
-    #prevent_initial_call=True,
-    )
-    def update_output_modal2(n_clicks_table,moneda,segmented,data_table):#,moneda,segmented,bar,data_table
-        from dash import no_update
-    
-               
-        if moneda=='Soles':
-                importe='Importe en Soles'
-        else:
-                importe='Importe en Dolares'
-
-        
-        if n_clicks_table:
-
-            return True, modalMaximize(
-                dag.AgGrid(
-                                        
-                                        columnDefs=[{"field": 'N°', "type": "leftAligned"},{"field": segmented, "type": "leftAligned","minWidth":600},{"field": importe, "type": "leftAligned","minWidth": 200}],
-                                        rowData=data_table,
-                                        defaultColDef={"filter": True, "sortable": True, "floatingFilter": True,"resizable": True,},
-                                        dashGridOptions={"rowSelection": "multiple"},
-                                        style={'height': '1200px','overflow': "auto"}
-                                        #defaultColDef=
-                                    ),
-            )
-        else:
-            return False, no_update  
-        
-"""
+        precio_eje='PRECIOMEX'if importe=='Importe en Dolares' else 'PRECIOMOF'
+        grupo_producto=options.groupby(['Grupo de Venta'])[[importe]].sum().reset_index().round(2)
+        fig_grupo = px.bar(grupo_producto, y='Grupo de Venta', x=importe,template='none',title='Grupos de Productos',orientation='h')
+        fig_grupo.update_layout(autosize=True,#height=490,
+                        margin=dict(l=250,r=40,b=40,t=40),
+                        yaxis=dict(titlefont_size=8,tickfont_size=9))#l=400,
+        productos_f=options.groupby(['Producto'])[[precio_eje]].mean().reset_index().round(1).sort_values(precio_eje,ascending=False)
+        productos_precio=productos_f[productos_f['Producto'].isin(productos_f['Producto'].unique()[:20])]
+        productos_precio=productos_precio.sort_values(precio_eje,ascending=True)
+        fig_precio = px.bar(productos_precio, x=precio_eje, y='Producto',template='none',orientation='h',title='Los 20 Productos con mayor precio')#PRECIOMEX
+        fig_precio.update_layout(autosize=True,#height=490,
+                        margin=dict(l=350,r=40,b=40,t=40),
+                        yaxis=dict(titlefont_size=8,tickfont_size=9))#l=400,
+        return fig_grupo,fig_precio

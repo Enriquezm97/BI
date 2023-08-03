@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 # Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -30,9 +29,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 
-from apps.graph.build.containers.Finanzas.finanzas import dashEstadoSituacion,dashEstadoGananciasPerdidas,dashCostosGenerales ,dashER
+from apps.graph.build.containers.Finanzas.finanzas import dashEstadoSituacion,dashEstadoGananciasPerdidas,dashCostosGenerales ,dashER,dashEstadoSituacion2
 
 from django.core.cache import cache
+#####new structure
+from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania
+from apps.graph.test.layouts.comercial import informeComercial
+from apps.graph.mixins import AdministradoMixin,AnalistaMixin
 
 def home(request):
     #owo=request.user.id
@@ -53,13 +56,13 @@ class TestView(LoginRequiredMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         username=list(Usuario.objects.filter(user_id=id_user).values_list('username',flat=True))
-        empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
-        empresa_name=(Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True))
-        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
+        #empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
+        #empresa_name=(Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True))
+        #rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
         
         #dashboard=tailwindcss()
         
-        dashboard=index(empresa_name[0],rubro[0],username[0])
+        dashboard=index()
         #if cache.get(dashboard):
 
         
@@ -78,7 +81,7 @@ class Test2View(View):
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
-        dashboard=dashComercialComparativo()
+        dashboard=informeComercial()
         print(empresa)
         print(type(empresa))
         print(empresa[0])
@@ -90,7 +93,7 @@ class Test2View(View):
 
 
 ##AGRICOLA
-class PlanSiembraView(LoginRequiredMixin,View):
+class PlanSiembraView(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')
 
     def get(self,request,*args, **kwargs):
@@ -98,19 +101,21 @@ class PlanSiembraView(LoginRequiredMixin,View):
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         
-        dashboard=plandeSiembra(empresa[0])
+        #dashboard=plandeSiembra(empresa[0])
+        dashboard=ejecucionCampania()
         context = {'dashboard':dashboard}
         
         return render(request,'dashboards/Agricola/plansiembra.html',context)
 
-class CostosCampañaView(LoginRequiredMixin,View):
+class CostosCampañaView(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         #dashboard=costosAgricola(empresa[0])
-        dashboard=dashCostosProduccionAgricola()
+        #dashboard=dashCostosProduccionAgricola()
+        dashboard=costosCampania()
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/costos_campaña.html',context)
 
@@ -149,7 +154,7 @@ class CostosCultivoView(LoginRequiredMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/costos_cultivo.html',context)
 
-class CargasdePersonalView(LoginRequiredMixin,View):
+class CargasdePersonalView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -174,7 +179,7 @@ class EstadodeResultadosView(LoginRequiredMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Otros/estado_resultados.html',context)
 
-class EstadodeSituacionView(LoginRequiredMixin,View):
+class EstadodeSituacionView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -186,7 +191,7 @@ class EstadodeSituacionView(LoginRequiredMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Otros/estado_situacion.html',context)
 
-class GastosOperativosView(LoginRequiredMixin,View):
+class GastosOperativosView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -203,7 +208,7 @@ class GastosOperativosView(LoginRequiredMixin,View):
 
 
 
-class InformedeVentas1View(LoginRequiredMixin,View):
+class InformedeVentas1View(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     #model=Usuario
     #def get_object(self):
@@ -222,13 +227,13 @@ class InformedeVentas1View(LoginRequiredMixin,View):
         rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
         staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
         
-        dashboard=informeVentas(empresa_name[0],rubro[0],staff_filter[0])
+        dashboard=informeComercial()#informeVentas(empresa_name[0],rubro[0],staff_filter[0])
         
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/informe_ventas_1.html',context)
 
 
-class VentasExportacionView(LoginRequiredMixin,View):
+class VentasExportacionView(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -244,7 +249,7 @@ class VentasExportacionView(LoginRequiredMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventas_exportacion.html',context)
 
-class Ventas1View(LoginRequiredMixin,View):
+class Ventas1View(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -273,7 +278,7 @@ class Ventas2View(LoginRequiredMixin,View):
     
 
 
-class VentasCore(LoginRequiredMixin,View):
+class VentasCore(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -287,7 +292,7 @@ class VentasCore(LoginRequiredMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventasProductos.html',context)
 
-class VentasTipo(LoginRequiredMixin,View):
+class VentasTipo(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -301,7 +306,7 @@ class VentasTipo(LoginRequiredMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/tipoVenta.html',context)
     
-class VentasComparativo(LoginRequiredMixin,View):
+class VentasComparativo(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -321,7 +326,7 @@ class VentasComparativo(LoginRequiredMixin,View):
 
 
 
-class ContenedoresExportView1(LoginRequiredMixin,View):
+class ContenedoresExportView1(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -333,7 +338,7 @@ class ContenedoresExportView1(LoginRequiredMixin,View):
         context = {'dashboard':dashboard}
        
         return render(request,'dashboards/Comercial/contenedores_exportados_1.html',context)
-class ContenedoresExportView2(LoginRequiredMixin,View):
+class ContenedoresExportView2(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
@@ -360,7 +365,7 @@ class ContenedoresExportView2(LoginRequiredMixin,View):
        
         return render(request,'dashboards/Comercial/contenedores_exportados_2.html',context)
     
-class EstadoSituacionView(LoginRequiredMixin,View):
+class EstadoSituacionView(LoginRequiredMixin,AnalistaMixin,View):
     #login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
@@ -374,7 +379,7 @@ class EstadoSituacionView(LoginRequiredMixin,View):
         return render(request,'dashboards/Finanzas/estado_situacion.html',context)
 
 
-class EstadoGananciasPerdidasView(LoginRequiredMixin,View):
+class EstadoGananciasPerdidasView(LoginRequiredMixin,AnalistaMixin,View):
     #login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
@@ -387,7 +392,7 @@ class EstadoGananciasPerdidasView(LoginRequiredMixin,View):
        
         return render(request,'dashboards/Finanzas/estado_gp.html',context)
     
-class FinanzasCostosGenerales(LoginRequiredMixin,View):
+class FinanzasCostosGenerales(LoginRequiredMixin,AnalistaMixin,View):
     #login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
@@ -400,7 +405,7 @@ class FinanzasCostosGenerales(LoginRequiredMixin,View):
        
         return render(request,'dashboards/Finanzas/costos_generales.html',context)
 
-class FinanzasEstadoResultados(LoginRequiredMixin,View):
+class FinanzasEstadoResultados(LoginRequiredMixin,AnalistaMixin,View):
     #login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
@@ -435,7 +440,7 @@ class Error505View(TemplateView):
     
 
 #################################VISTAS
-class dashC(View):
+class dashC(LoginRequiredMixin,AdministradoMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -477,7 +482,7 @@ class dashCC(View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_cliente.html',context)
 
-class dashCCC(View):
+class dashCCC(LoginRequiredMixin,AdministradoMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -498,7 +503,7 @@ class dashCCC(View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_cliente_cultivo.html',context)
 
-class dashCP(View):
+class dashCP(LoginRequiredMixin,AdministradoMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -520,7 +525,7 @@ class dashCP(View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_producto.html',context)
 
-class dashCPC(View):
+class dashCPC(LoginRequiredMixin,AdministradoMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -542,7 +547,7 @@ class dashCPC(View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_producto_cultivo.html',context)
 
-class dashCCultivo(View):
+class dashCCultivo(LoginRequiredMixin,AdministradoMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -564,7 +569,7 @@ class dashCCultivo(View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_cultivo.html',context)
 
-class dashCComparativo(View):
+class dashCComparativo(LoginRequiredMixin,AdministradoMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -585,3 +590,16 @@ class dashCComparativo(View):
         context = {'dashboard':dashboard,'empresa':empresa[0]}
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_comparativo.html',context)
+    
+class EstadoSituacion2View(LoginRequiredMixin,AnalistaMixin,View):
+    #login_url = reverse_lazy('login')#'/user/login/'
+    
+    def get(self,request,*args, **kwargs):
+        #id_user=self.request.user.id
+        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        #dashboard=ventas2(empresa[0])
+        dashboard=dashEstadoSituacion2()#contenedoresExportados2('ARONA',True)
+        context = {'dashboard':dashboard}
+       
+        return render(request,'dashboards/Finanzas/estado_situacion2.html',context)

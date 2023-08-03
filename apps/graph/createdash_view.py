@@ -16,9 +16,9 @@ from django.contrib.auth.models import User
 from apps.users.models import Empresa,Usuario
 from apps.graph.models import Indicador
 from django.contrib.auth.mixins import LoginRequiredMixin
+from apps.graph.mixins import AdministradoMixin,AnalistaMixin
 
-
-class FormIndicadorView(LoginRequiredMixin,View):
+class FormIndicadorView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
@@ -36,7 +36,7 @@ class FormIndicadorView(LoginRequiredMixin,View):
 #    context={'indicadores':indicadores}
     
 #    return render(request,'dash_created/Indicadores/mostrar_all.html',context)
-class IndicadorAllView(LoginRequiredMixin,View):
+class IndicadorAllView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
@@ -49,7 +49,7 @@ class IndicadorAllView(LoginRequiredMixin,View):
         context={'indicadores':indicadores}
         return render(request,'dash_created/Indicadores/mostrar_all.html',context)
 
-class IndicadorShowView(LoginRequiredMixin,DetailView):
+class IndicadorShowView(LoginRequiredMixin,AnalistaMixin,DetailView):
 
     models=Indicador
     template_name= 'dash_created/Indicadores/mostrar_indicador.html'

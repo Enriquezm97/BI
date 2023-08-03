@@ -19,7 +19,7 @@ def cardGF(value_total=90000,text='owo',list_element=[{'value': 59, 'color': col
                 dmc.Group([
                     dmc.Text(value_total,style={"fontSize": 25}, weight=fontweight),
                     #dmc.Text('18%', size='xs', color='rgb(9, 146, 104)'),
-                    dmc.Text(html.I(className='fas fa-arrow-up fa-fw fa-xs'), color='rgb(9, 146, 104)')
+                    #dmc.Text(html.I(className='fas fa-arrow-up fa-fw fa-xs'), color='rgb(9, 146, 104)')
                 ], spacing='0.5rem', sx={'align-items': 'baseline'}),
                 dmc.Text(text, size='xl', color='dimmed'),
                 dmc.Progress(

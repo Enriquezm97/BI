@@ -10,7 +10,7 @@ def paisFacturado(df_pais_pie,template,importe,title):
     pais_top_facturado.add_trace(go.Pie(labels=df_pais_pie['PAIS'], values=df_pais_pie[importe]))#,rotation=100
     pais_top_facturado.update_traces(hoverinfo="label+percent+value")#, hole=.4)#label+value+percent
         #fig.update_traces(textposition='inside', textinfo='percent+label')
-    pais_top_facturado.update_traces(textposition='inside', textinfo='label+value',textfont=dict(size=13))#line=dict(color='#000000', width=1)#colors=px.colors.qualitative.D3, , marker=dict(line=dict(color='#000000', width=1)),rotation=90
+    pais_top_facturado.update_traces(textposition='inside', textinfo='label+value',textfont=dict(size=7))#line=dict(color='#000000', width=1)#colors=px.colors.qualitative.D3, , marker=dict(line=dict(color='#000000', width=1)),rotation=90
     pais_top_facturado.update_layout(
                                 title={
                                 'text': title,

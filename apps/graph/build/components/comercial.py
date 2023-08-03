@@ -71,7 +71,7 @@ def barNaviera(df_naviera_top_facturado,template,importe,x_title,y_title):
             #width=,
             #height=380,
             margin=dict(
-                l=400,
+                l=300,
                 r=50,
                 b=40,
                 t=50,

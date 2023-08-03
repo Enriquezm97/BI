@@ -10,11 +10,14 @@ import plotly.graph_objects as go
 
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
-
+from apps.graph.build.components.bootstrap_components.layout import Column
 from apps.graph.build.components.mantine_react_components.radio import radioGroup
 from apps.graph.build.components.mantine_react_components.selects import select,multiSelect
 from apps.graph.build.components.mantine_react_components.alert import alert
 from apps.graph.build.components.mantine_react_components.loaders import loadingOverlay
+from apps.graph.build.components.mantine_react_components.cards import cardGraph,cardTableDag,cardShowTotal,actionIcon,button_style
+import dash_ag_grid as dag
+
 #df_bc=df_bcomprobacion
 
 def TableDtScrolling_no_format_nototal(dff,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3):#
@@ -112,10 +115,10 @@ def figure__line(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color
     )
     
     fig.update_layout(template='none', title=name)
-    fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
-    fig.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
-    fig.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
-    fig.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
+    #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    #fig.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
+    #fig.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
+    #fig.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
     fig.add_layout_image(
         dict(
             source="https://www.nisira.com.pe/images/logo.png",
@@ -446,58 +449,48 @@ def IndicadorDash(nombres,formulas,
     app.layout = html.Div([
         
         dbc.Row([
-            
-            dbc.Col([
-                    
+            Column(
+                content=[
                     multiSelect(ids="drop-year",texto="Año",value=[sorted(df_bcomprobacion['year'].unique())[-1]]),
-                    
-            ],width=3,className="col-xl-3 col-md-4 col-sm-12 col-12 mb-3"),
-            dbc.Col([
+            ],size=4), 
+
+            Column(
+                content=[
                     select(ids="dp-ejex",texto="Eje X",place="Seleccione Tipo",
                             data=[{'label': 'Periodo', 'value': 'Periodo'},{'label': 'Trimestre', 'value': 'Trimestre'}],
                             value='Trimestre'),
-                    
-            ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
-            dbc.Col([
+            ],size=2), 
+            Column(
+                content=[
                     multiSelect(ids="drop-multi",texto="Seleccionar rangos"),
-                   
-                    
-            ],width=5,className="col-xl-5 col-md-5 col-sm-12 col-12 mb-3"),
-            dbc.Col([
-                radioGroup(ids="rbtn-moneda",
+            ],size=4), 
+            Column(
+                content=[
+                    radioGroup(ids="rbtn-moneda",
                                texto="Moneda",
                                children=[dmc.Radio(label='S/', value='soles'),dmc.Radio(label='$', value='dolares')],
                                value="soles",
                     ),
-                
-            ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+            ],size=2), 
+
         ]),
-        dbc.Row([
-            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-stack2')))],width=9,className="col-xl-9 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([loadingOverlay(html.Div(id='tablet',style={'max-height': '390px','overflow': "auto"}))],width=3,className="col-xl-3 col-md-12 col-sm-12 col-12 mb-3")
+        dbc.Row([#'graph-stack2'
+            #cardGraph(id_maximize='id-maximize-st',id_download='id-download',id_graph='st-comercial',with_id=True,fig=None,icon_maximize=True)         
+            Column(content=[loadingOverlay(cardGraph(id_graph='graph-stack2',id_maximize='btn-modal'))],size=9), 
+            Column(content=[loadingOverlay(html.Div(id='tablet'))],size=3), #,style={'max-height': '390px','overflow': "auto"}
+            
         ]),
-        
+        #graph-prueba
         dbc.Row([#graph-prueba
-            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-prueba')))],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+            Column(content=[loadingOverlay(cardGraph(id_graph='graph-prueba',id_maximize='btn-modal-2'))],size=6),
+            Column(content=[loadingOverlay(cardGraph(id_graph='graph-comparativo',id_maximize='btn-modal-3'))],size=6),
             
             
         ]),
-        dbc.Row([#graph-comparativo
-            dbc.Col([loadingOverlay(dbc.Card(dcc.Graph(id='graph-comparativo')))],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
-            dbc.Col([#dbc.Alert(comentario, color="primary")
-                    html.Div(
-                    [
-                        dmc.Alert(
-                            comentario,
-                            title="Comentario :",
-                            #id="test",
-                            color="blue",
-                            #duration=3000,
-                        ),
-                    ]
-                ),
-                    #alert(text=comentario,title="Comentario :", color="blue",ids='alerto')
-            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
+        dbc.Row([#
+            
+            Column(content=[loadingOverlay(html.Div([dmc.Alert(comentario,title="Comentario :",color="blue")]))],size=12),
+            
         ]),
     ])
 
@@ -590,6 +583,7 @@ def IndicadorDash(nombres,formulas,
         df['valor']=EvaluarFormula(formula,df_filtro)
         promedio=df['valor'].sum()/len(df['Agrupado'].unique())
         df['promedio']=promedio
+        df=df.round(3)
         #print(df)
         
         #df['year']=df_filtro['year2']
@@ -614,30 +608,68 @@ def IndicadorDash(nombres,formulas,
         #px.bar(df_stack, x=x, y='valor',text='valor', facet_row="Año",template="plotly_white",title="Comparativo",color_discrete_sequence=px.colors.qualitative.G10)
         #fig.update_yaxes(matches=None)
 
-        fig2 = px.line(df_stack, x=x, y='valor',template="none",title="Comparativo por Año (Line)",color='Año', markers=True)#, facet_row="Año",facet_row_spacing=0.1#,text='valor'
-        fig2.update_layout(autosize=True,margin=dict(l=60,r=40,b=40,t=50),height=330)
+        fig2 = px.line(df_stack, x=x, y='valor',template="none",title="Comparativo por Año (Serie de Tiempo)",color='Año', markers=True)#, facet_row="Año",facet_row_spacing=0.1#,text='valor'
+        fig2.update_layout(autosize=True,margin=dict(l=60,r=40,b=40,t=50),height=300)
         #fig2.update_traces(textposition="bottom center",texttemplate='%{text:.3f}',textfont_size=12)#,texttemplate='%{text:.2s}'
         #fig2.update_xaxes(showline=True, linewidth=1, linecolor='black', mirror=True,gridcolor='#f9f4f4')
         #fig2.update_yaxes(showline=True, linewidth=1, linecolor='black', mirror=True,gridcolor='#f9f4f4')
-        fig2.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
-        fig2.add_hrect(y0=0,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.1)
-        fig2.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.1)
-        fig2.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.1)
+        #fig2.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+        #fig2.add_hrect(y0=0,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.1)
+        #fig2.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.1)
+        #fig2.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.1)
         #fig2.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
         #fig2.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
         #fig2.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
         #fig2.update_yaxes(showticklabels=False)
         #fig2.update_traces(texttemplate='%{text:.4s}', textposition='inside')
         #fig2.update_layout(hovermode="x unified")
-        fig_comparative = px.bar(df_stack, x=x, y='valor',color="Año", barmode='group',height=400,template='none',text="valor",title="Comparativo por Año (Bar)",)
+        fig_comparative = px.bar(df_stack, x=x, y='valor',color="Año", barmode='group',height=300,template='none',text="valor",title="Comparativo por Año (Barras Agrupadas)",)
         fig_comparative.update_traces(textposition='outside',texttemplate='%{text:.3f}')
         fig_comparative.update_layout(margin=dict(l=30,r=30,b=30,t=50,pad=0,autoexpand=True),height=330)  
-        fig_comparative.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
-        fig_comparative.add_hrect(y0=0,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.1)
-        fig_comparative.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.1)
-        fig_comparative.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.1)
+        #fig_comparative.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+        #fig_comparative.add_hrect(y0=0,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.1)
+        #fig_comparative.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.1)
+        #fig_comparative.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.1)
         
-        return figure__line(df['Agrupado'],df['valor'],df['promedio'],name,'Valor','Promedio',rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3),TableDtScrolling_no_format_nototal(df,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3),out_serie,out_year,fig2,fig_comparative
+        return [figure__line(df['Agrupado'],df['valor'],df['promedio'],f"{name} (Serie de Tiempo)",'Valor','Promedio',rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3),
+                #TableDtScrolling_no_format_nototal(df,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3),
+                html.Div([
+                                        actionIcon(ids='id-maximize-table',style=button_style),
+                                        #actionIcon(ids=id_download,icono='download'),
+                                        dag.AgGrid(
+            
+                                            columnDefs=[{"field": "Agrupado", "type": "leftAligned"},{"field": "valor", "type": "leftAligned"}],
+                                            rowData=df.to_dict("records"),
+                                            defaultColDef={ "sortable": True},
+                                            dashGridOptions={"rowSelection": "multiple"},
+                                            style={'max-height': '300px','overflow': "auto"},
+                                            className="ag-theme-balham",
+                                            getRowStyle= {
+                                                "styleConditions": [
+                                                    {
+                                                        "condition": f"params.data.valor >= {rango_desde_1} && params.data.valor <= {rango_hasta_1}",
+                                                        "style": {"backgroundColor": rango_color_1},
+                                                    },
+                                                    {
+                                                        "condition": f"params.data.valor >= {rango_desde_2} && params.data.valor <= {rango_hasta_2}",
+                                                        "style": {"backgroundColor": rango_color_2},
+                                                    },
+                                                    {
+                                                        "condition": f"params.data.valor >= {rango_desde_3} && params.data.valor <= {rango_hasta_3}",
+                                                        "style": {"backgroundColor": rango_color_3},
+                                                    },
+                                                    
+                                                ]
+                                            }
+                                            #defaultColDef=
+                                        ),
+                ]),
+                
+                out_serie,
+                out_year,
+                fig2,
+                fig_comparative
+            ]
         
         
         """"

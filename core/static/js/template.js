@@ -115,46 +115,5 @@
   $('#navbar-search-icon').click(function() {
     $("#navbar-search-input").focus();
   });
-  $(".draggable").draggable({
-    revert: true,
-    helper: 'clone',
-    start: function(event, ui) {
-      $(this).fadeTo('fast', 0.5);
-    },
-    stop: function(event, ui) {
-      $(this).fadeTo(0, 1);
-    }
-  });
-  $("#droppable").droppable({
-    hoverClass: 'active',
-    drop: function(event, ui) {
-      this.value += $(ui.draggable).find('select option:selected').text();
-    }
-  });
-/*
-  function drag() {
-    $(".draggable").draggable({
-      revert: true,
-      helper: 'clone',
-      start: function(event, ui) {
-        $(this).fadeTo('fast', 0.5);
-      },
-      stop: function(event, ui) {
-        $(this).fadeTo(0, 1);
-      }
-    });
-  }
-  function drag2() {
-    $("#droppable").droppable({
-      hoverClass: 'active',
-      drop: function(event, ui) {
-        this.value += $(ui.draggable).find('select option:selected').text();
-      }
-    });
-  }
-  drag();
-  drag2();
-  */
+  
 })(jQuery);
-
-

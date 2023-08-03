@@ -9,12 +9,75 @@ from apps.graph.build.components.mantine_react_components.actionIcon import btnC
 from apps.graph.build.components.mantine_react_components.selects import select
 from apps.graph.build.components.mantine_react_components.loaders import loadingOverlay
 from apps.graph.build.components.draw.treemap import treemapEstadoSituacion
-from apps.graph.build.components.tables.table import table_dash,table_dash_gp
+from apps.graph.build.components.tables.table import table_dash,table_dash_gp,tableAgGrid
 from apps.graph.build.components.draw.bar import barCharTrace
 from apps.graph.build.components.draw.line import linesChartTrace
 from apps.graph.build.components.draw.card import cardGF
 import dash_ag_grid as dag
+from apps.graph.build.components.bootstrap_components.layout import Column
+from apps.graph.build.components.mantine_react_components.cards import cardGraph,cardTableDag,cardShowTotal,actionIcon,button_style
+def bar_gp(dataframe,x='',y='',size=300,left=40):
+     figure=px.bar(dataframe, x=x, y=y,title=f'<b>{y}</b>',color_discrete_sequence=['rgb(29, 105, 150)'],text=y)
+     figure.update_traces(hovertemplate=
+                           '<br><b>Periodo</b>:%{x}'+
+                           '<br><b>Importe</b>: %{y:$,.2f}'#+
+                           #'<br><b>Porcentaje</b>:%{customdata[0]}'
+                           )
+     figure.update_layout(margin = dict(t=50, b=40, r=10,l=left),height=size,template='none')# l=200
+     figure.update_layout(
+            title=dict(font=dict(size=11)),
+            hoverlabel=dict(
+                bgcolor="white",
+                font_size=15,
+            ),
+            yaxis_title="",
+            xaxis_title="",
+            yaxis=dict(
+            showgrid=True,
+            tickfont=dict(size=9)#family='Arial',color='black',
+            ),
+            
+        ),
+     figure.update_xaxes(type='category')
+     figure.update_traces(texttemplate='%{text:,.0f}', textposition='outside')
+     #figure.update_yaxes(showline=True, linewidth=2, linecolor='black')#, gridcolor='Red'
+     
+     
+     return figure
 
+def bar_es(dataframe,x='',y='',size=250,left=100):
+     figure=px.bar(dataframe, x=x, y=y, orientation='h',title=f'<b>{y}</b>',hover_data=["%"],color_discrete_sequence=['rgb(29, 105, 150)'])
+     figure.update_traces(hovertemplate=
+                           '<br><b>Partida</b>:%{y}'+
+                           '<br><b>Importe</b>: %{x:$,.2f}'#+
+                           #'<br><b>Porcentaje</b>:%{customdata[0]}'
+                           )
+     figure.update_layout(margin = dict(t=50, b=30, r=10,l=left),height=size,template='none')# l=200
+     figure.update_layout(
+            title=dict(font=dict(size=11)),
+            #title=dict(text="GDP-per-capita", font=dict(size=50), automargin=True, yref='paper'),
+            hoverlabel=dict(
+                bgcolor="white",
+                font_size=17,
+                #font_family="Rockwell"
+            ),
+            yaxis_title="",
+            #xaxis=dict(showticklabels=False),
+            yaxis=dict(
+            #showticklabels=True,
+            #gridcolor='#F2F2F2',
+            #showline=True,
+            showgrid=True,
+            #ticks='outside',
+            tickfont=dict(size=11)#family='Arial',color='black',
+            ),
+            
+        ),
+     figure.update_xaxes(showline=True, linewidth=2, linecolor='black')
+     #figure.update_yaxes(showline=True, linewidth=2, linecolor='black')#, gridcolor='Red'
+     
+     
+     return figure
 df_23 = pd.read_csv(
     "https://raw.githubusercontent.com/plotly/datasets/master/ag-grid/olympic-winners.csv"
 )
@@ -30,17 +93,17 @@ columnDefs = [
 
 
 
-TOKEN='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
-API='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
-finanzas=getApi(API,TOKEN)
-df=pd.DataFrame(finanzas)
-data_finanzas=DataFinanzas.createTrimestre(df)
+#TOKEN='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
+#API='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
+#finanzas=getApi(API,TOKEN)
+data_finanzas=pd.read_parquet('finanzas.parquet', engine='pyarrow')
+
 all_partidas=list(data_finanzas['grupo1'].dropna().unique())+list(data_finanzas['grupo2'].dropna().unique())+list(data_finanzas['grupo3'].dropna().unique())+list(data_finanzas['grupo_funcion'].dropna().unique())
 all_periodo=data_finanzas['al_periodo'].unique()
 all_year=data_finanzas['Año'].unique()
 data_finanzas['month']=data_finanzas['month'].astype("int")
 
-external_stylesheets=[dbc.themes.BOOTSTRAP]
+external_stylesheets=[dbc.themes.BOOTSTRAP,dbc.icons.BOOTSTRAP,dbc.icons.FONT_AWESOME]
 #data_finanzas#=df_finanzas.copy()
 
 def dashEstadoSituacion():
@@ -51,47 +114,56 @@ def dashEstadoSituacion():
     app = DjangoDash('estado_situacion', external_stylesheets=external_stylesheets)
     app.layout = html.Div([
         dbc.Row([
-            dbc.Col([
-                btnCollapse()
-            ],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
-            dbc.Col([
-                dmc.Title("Estado de Situción Financiera", align="center",order=3,color="black"),
+            Column(
+                content=[
+                 #btnCollapse() 
+            ],size=1), 
+            Column(
+                content=[
+                  dmc.Title("Estado de Situción Financiera", align="center",order=3,color="black"),
                 dmc.Title(id='subtitle-periodo', align="center",order=4,color="black"),
                 dmc.Title(id='subtitle-moneda', align="center",order=6,color="black"),
-            ],width=7,className="col-xl-7 col-md-7 col-sm-11 col-11 mb-3"),
-            dbc.Col([
-                select('periodo-input',texto='Periodos',place="",value=all_periodo[-1],data=[{'label': i, 'value': i} for i in all_periodo]),
-            ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
-            dbc.Col([
-                select('tipo-moneda',texto='Moneda',place="",data=[{"value": "soles", "label": "PEN"},{"value": "dolares", "label": "USD"},],value='dolares'),
-            ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+            ],size=7), 
+            Column(
+                content=[
+                  select('periodo-input',texto='Periodos',place="",value=all_periodo[-1],data=[{'label': i, 'value': i} for i in all_periodo]),
+            ],size=2), 
+            Column(
+                content=[
+                  select('tipo-moneda',texto='Moneda',place="",data=[{"value": "soles", "label": "PEN"},{"value": "dolares", "label": "USD"},],value='dolares'),
+            ],size=2), 
+
         ]),
-        dbc.Collapse(
-            dbc.Row([
-                dbc.Col([
-                    html.Div(id='card-estado-situacion-financiera'),
         
-                    
-                ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+            dbc.Row([
+                Column(
+                    content=[
+                        
+                    loadingOverlay(cardGraph(id_graph='figure-treemap-sf',id_maximize='btn-modal'))
+                ],size=12), 
                 
             ]),
-        id="collapse",is_open=True),
+            #dbc.Collapse(
             dbc.Row([
-                dbc.Col([
-                    loadingOverlay(dbc.Card(dcc.Graph(id='figure-treemap-sf'),className="shadow-sm"))
-                ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                Column(
+                    content=[
+                        html.Div(id='card-estado-situacion-financiera'),
+                ],size=12), 
+                
+                
             ]),
+        #id="collapse",is_open=True),
         
     ])
-    @app.callback(
-        Output("collapse", "is_open"),
-        [Input("btn-collapse", "n_clicks")],
-        [State("collapse", "is_open")],
-        )
-    def toggle_collapse(n, is_open):
-        if n:
-            return not is_open
-        return is_open
+    #@app.callback(
+    #    Output("collapse", "is_open"),
+    #    [Input("btn-collapse", "n_clicks")],
+     #   [State("collapse", "is_open")],
+     #   )
+    #def toggle_collapse(n, is_open):
+    #    if n:
+    #        return not is_open
+    #    return is_open
     
     @app.callback(
         Output("subtitle-periodo", "children"),
@@ -187,33 +259,50 @@ def dashEstadoSituacion():
         return card_estado_situacion,treemap_graph
     
 def dashEstadoGananciasPerdidas():
-    data_finanzas['month']=data_finanzas['month'].astype("int")
+    
     app = DjangoDash('estado_gp', external_stylesheets=external_stylesheets)
     
     app.layout = html.Div([
         dbc.Row([
-            dbc.Col([
-                btnCollapse()
-            ],width=1,className="col-xl-1 col-md-1 col-sm-1 col-1 mb-3"),
-            dbc.Col([
+            Column(content=[
                 dmc.Title("Estado de Ganancias y Pérdidas por Función", align="center",order=3,color="black"),
                 dmc.Title(id='subtitle-periodo', align="center",order=4,color="black"),
                 dmc.Title(id='subtitle-moneda', align="center",order=6,color="black"),
-            ],width=7,className="col-xl-7 col-md-7 col-sm-11 col-11 mb-3"),
-            dbc.Col([
-                select('periodo-input',texto='Periodos',place="",value=all_periodo[-1],data=[{'label': i, 'value': i} for i in all_periodo]),
-            ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
-            dbc.Col([
-                select('tipo-moneda',texto='Moneda',place="",data=[{"value": "soles", "label": "PEN"},{"value": "dolares", "label": "USD"},],value='dolares'),
-            ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+            ],size=7),
+            Column(content=[
+                 select('periodo-input',texto='Periodos',place="",value=all_periodo[-1],data=[{'label': i, 'value': i} for i in all_periodo]),
+            ],size=2),
+            Column(content=[
+                 select('tipo-moneda',texto='Moneda',place="",data=[{"value": "soles", "label": "PEN"},{"value": "dolares", "label": "USD"},],value='dolares'),
+            ],size=2),
+            
         ]),
-        dbc.Collapse(
-            dbc.Row([
-                dbc.Col([
-                    html.Div(id='card-estado-gp-funcion'),
-                ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+        
+        
+        dbc.Row([
+                Column(
+                    content=[
+                        
+                    loadingOverlay(cardGraph(id_graph='graph-1',id_maximize='btn-modal-1'))
+                ],size=4), 
+                Column(
+                    content=[
+                        
+                    loadingOverlay(cardGraph(id_graph='graph-2',id_maximize='btn-modal-2'))
+                ],size=4), 
+                Column(
+                    content=[
+                        
+                    loadingOverlay(cardGraph(id_graph='graph-3',id_maximize='btn-modal-3'))
+                ],size=4), 
+                
             ]),
-        id="collapse",is_open=True),
+            dbc.Row([
+                Column(content=[
+                 loadingOverlay(html.Div(id='card-estado-gp-funcion'))
+                ],size=12),
+             
+            ]),
 
     ])
     @app.callback(
@@ -250,6 +339,9 @@ def dashEstadoGananciasPerdidas():
     
     @app.callback(
         Output("card-estado-gp-funcion", "children"),
+        Output("graph-1", "figure"),
+        Output("graph-2", "figure"),
+        Output("graph-3", "figure"),
         [
          Input("periodo-input", "value"),
          Input("tipo-moneda", "value")
@@ -268,7 +360,7 @@ def dashEstadoGananciasPerdidas():
         year=periodo[:4]
         month=int(periodo[4:])
         df=data_finanzas[(data_finanzas['Año']==year)&(data_finanzas['month']>=1)&(data_finanzas['month']<=month)]
-
+        
         #la moneda sera value_moneda_funcion
         def createTableGP(df,moneda):
             UTILIDAD_BRUTA=['VENTAS DE MERCADERIAS','COSTO DE VENTAS DE MERCADERIAS','COSTO DE PRODUCTOS MANUFACTURADOS','COSTO DEL SERVICIO']
@@ -332,13 +424,37 @@ def dashEstadoGananciasPerdidas():
                 df_table_gp[periodo_col] = df_table_gp.apply(lambda x: "{:,.0f}".format(x[periodo_col]), axis=1)
             return df_table_gp
 
-        
-        card_estado_gp=html.Div([
-                                table_dash_gp(createTableGP(df,value_moneda_funcion)),
-                                    
+        df_utilidad=createTableGP(df,value_moneda_funcion)
+        card_estado_gp=dag.AgGrid(
+                                    id="datatable-result",
+        #[{"field": i} for i in table_df.columns]
+                                    columnDefs=[{"field": 'grupo_funcion','headerName': '', "maxWidth": 300,"type": "leftAligned"}]+[{"field": i,"maxWidth": 110,"type": "leftAligned"} for i in df_utilidad.columns[1:]],
+                                    rowData=df_utilidad.to_dict("records"),
+                                    #dashGridOptions={"rowSelection": "multiple"},
+                                    #columnSize="sizeToFit",
+                                    defaultColDef={"resizable": True},
+                                    #style={'overflow': "auto"},#'max-height': f'{300}px',
+                                    className="ag-theme-balham",
+                                    #"['Flavia Mccloskey', 'Lilly Boaz'].includes(params.data.employee)"
+                                    rowClassRules={"bg-primary fw-bold": "['UTILIDAD BRUTA', 'UTILIDAD OPERATIVA','UTILIDAD NETA'].includes(params.data.grupo_funcion)"},
+                                    columnSize="sizeToFit",
+                                    dashGridOptions={"domLayout": "autoHeight"},
+                                ),    
                                
-                                ])
-        return card_estado_gp
+                               
+        df_=df.copy()
+        df_[value_moneda_funcion]=df_[value_moneda_funcion]*-1
+        df_pivot_funcion=pd.pivot_table(df_,index=['Año','Mes','month','al_periodo'],columns='grupo_funcion',values=value_moneda_funcion,aggfunc='sum').reset_index().fillna(0)
+        df_pivot_funcion['UTILIDAD BRUTA']=df_pivot_funcion['VENTAS DE MERCADERIAS']+df_pivot_funcion['COSTO DEL SERVICIO']+df_pivot_funcion['COSTO DE VENTAS DE MERCADERIAS']+df_pivot_funcion['COSTO DE PRODUCTOS MANUFACTURADOS']
+        df_pivot_funcion['UTILIDAD OPERATIVA']=df_pivot_funcion['UTILIDAD BRUTA']+df_pivot_funcion['GASTOS ADMINISTRATIVOS']+df_pivot_funcion['GASTOS DE VENTAS']+df_pivot_funcion['GASTOS NO DEDUCIBLES']+df_pivot_funcion['OTROS INGRESOS']
+        df_pivot_funcion['UTILIDAD NETA']=df_pivot_funcion['UTILIDAD OPERATIVA']+df_pivot_funcion['GASTOS FINANCIEROS']+df_pivot_funcion['INGRESOS FINANCIEROS']+df_pivot_funcion['GANANCIA POR DIFERENCIA DE CAMBIO']+df_pivot_funcion['PERDIDA POR DIFERENCIA DE CAMBIO']
+        df_pivot_funcion=df_pivot_funcion.sort_values('month')
+        
+        return [card_estado_gp,
+                bar_gp(df_pivot_funcion,x='al_periodo',y='UTILIDAD BRUTA',size=250,left=40),
+                bar_gp(df_pivot_funcion,x='al_periodo',y='UTILIDAD OPERATIVA',size=250,left=40),
+                bar_gp(df_pivot_funcion,x='al_periodo',y='UTILIDAD NETA',size=250,left=40)
+                ]
 
 def dashCostosGenerales():
     app = DjangoDash('costos_generales', external_stylesheets=external_stylesheets)
@@ -674,3 +790,151 @@ def dashER():
             ), 
         ])
         return table_grid
+
+def dashEstadoSituacion2():
+    #createTrimestre(df)
+    all_partidas=list(data_finanzas['grupo1'].dropna().unique())+list(data_finanzas['grupo2'].dropna().unique())+list(data_finanzas['grupo3'].dropna().unique())+list(data_finanzas['grupo_funcion'].dropna().unique())
+    all_periodo=data_finanzas['al_periodo'].unique()
+    all_year=data_finanzas['Año'].unique()
+    app = DjangoDash('es2', external_stylesheets=external_stylesheets)
+    app.layout = html.Div([
+    dbc.Row([
+            Column(
+                content=[
+                 #btnCollapse() 
+            ],size=1), 
+            Column(
+                content=[
+                  dmc.Title("Estado de Situción Financiera", align="center",order=3,color="black"),
+                dmc.Title(id='subtitle-periodo', align="center",order=4,color="black"),
+                dmc.Title(id='subtitle-moneda', align="center",order=6,color="black"),
+            ],size=7), 
+            Column(
+                content=[
+                  select('periodo-input',texto='Periodos',place="",value=all_periodo[-1],data=[{'label': i, 'value': i} for i in all_periodo]),
+            ],size=2), 
+            Column(
+                content=[
+                  select('tipo-moneda',texto='Moneda',place="",data=[{"value": "soles", "label": "PEN"},{"value": "dolares", "label": "USD"},],value='dolares'),
+            ],size=2), 
+
+        ]),
+        
+            
+            #dbc.Collapse(
+            dbc.Row([
+                Column(
+                    content=[
+                        loadingOverlay(html.Div(id='card-estado-situacion-financiera')),
+                ],size=12), 
+                
+                
+            ]),
+            dbc.Row([
+                Column(
+                    content=[
+                        
+                    loadingOverlay(cardGraph(id_graph='figure-treemap-sf',id_maximize='btn-modal'))
+                ],size=12), 
+                
+            ]),
+    ])
+    @app.callback(
+        Output("subtitle-periodo", "children"),
+        Output("subtitle-moneda", "children"),
+        [
+         Input("periodo-input", "value"),
+         Input("tipo-moneda", "value")
+        ],
+
+        )
+    def update_subtitles(periodo, moneda):
+        df=data_finanzas[data_finanzas['al_periodo']==periodo]
+        moth_text=df['Mes'].unique()[0]
+        year=df['Año'].unique()[0]
+        text_subtitle_periodo=f'{moth_text} del {year}'
+        text_subtitle_moneda=f'Expresado en {moneda}'
+        return text_subtitle_periodo,text_subtitle_moneda
+
+
+    @app.callback(
+        Output("card-estado-situacion-financiera", "children"),
+        Output("figure-treemap-sf", "figure"),
+        [
+         Input("periodo-input", "value"),
+         Input("tipo-moneda", "value")
+        ],
+
+        )
+    def update_situacion_financiera(periodo,moneda):
+        if moneda == 'soles':
+            value_moneda='saldo_cargo_mof'
+        elif moneda == 'dolares':
+            value_moneda='saldo_cargo_mex'   
+        
+        simbolo='$' if value_moneda =='saldo_cargo_mex'else 'S/'
+        
+        df=data_finanzas[data_finanzas['al_periodo']==periodo]
+        df_bc=df.groupby(['grupo1','grupo2','grupo3'])[[value_moneda]].sum().reset_index()
+        #totales filtrados
+        total_activo="{:,.2f}".format(df_bc[df_bc['grupo1']=='ACTIVO'][value_moneda].sum())
+        total_pasivo=df_bc[df_bc['grupo1']=='PASIVO'][value_moneda].sum()
+        total_patrimonio=df_bc[df_bc['grupo1']=='PATRIMONIO'][value_moneda].sum()
+        total_pasivo_patri="{:,.2f}".format(total_pasivo+total_patrimonio)
+
+
+        df_activo_corriente=DataFinanzas.dataframeBalanceAPP(df_bc,partida_grupo_1='ACTIVO',importe=value_moneda,partida_grupo_2='ACTIVO CORRIENTE',label_total='Total Activo Corriente')
+        #bar_activo_corriente=df_activo_corriente.groupby(['ACTIVO CORRIENTE'])[[simbolo]].sum().reset_index()
+        bar_activo_corriente=df_activo_corriente.drop(['Total'],axis=0)
+        bar_activo_corriente=bar_activo_corriente[bar_activo_corriente[simbolo]!="0.00"]
+        #df_testing=df_testing.groupby(['ACTIVO CORRIENTE'])[[simbolo]].sum().reset_index()
+        #print(df_testing)
+        df_activo_no_corriente=DataFinanzas.dataframeBalanceAPP(df_bc,partida_grupo_1='ACTIVO',importe=value_moneda,partida_grupo_2='ACTIVO NO CORRIENTE',label_total='Total Activo no Corriente')
+        bar_activo_no_corriente=df_activo_no_corriente.drop(['Total'],axis=0)
+        bar_activo_no_corriente=bar_activo_no_corriente[bar_activo_no_corriente[simbolo]!="0.00"]
+        df_pasivo_corriente=DataFinanzas.dataframeBalanceAPP(df_bc,partida_grupo_1='PASIVO',importe=value_moneda,partida_grupo_2='PASIVO CORRIENTE',label_total='Total Pasivo Corriente')
+        bar_pasivo_corriente=df_pasivo_corriente.drop(['Total'],axis=0)
+        bar_pasivo_corriente=bar_pasivo_corriente[bar_pasivo_corriente[simbolo]!="0.00"]
+        df_pasivo_no_corriente=DataFinanzas.dataframeBalanceAPP(df_bc,partida_grupo_1='PASIVO',importe=value_moneda,partida_grupo_2='PASIVO NO CORRIENTE',label_total='Total Pasivo no Corriente')
+        bar_pasivo_no_corriente=df_pasivo_no_corriente.drop(['Total'],axis=0)
+        bar_pasivo_no_corriente=bar_pasivo_no_corriente[bar_pasivo_no_corriente[simbolo]!="0.00"]
+        df_patrimonio=DataFinanzas.dataframeBalanceAPP(df_bc,partida_grupo_1='PATRIMONIO',importe=value_moneda,partida_grupo_2='PATRIMONIO',label_total='Total Patrimonio')
+        bar_patrimonio=df_patrimonio.drop(['Total'],axis=0)
+        bar_patrimonio=bar_patrimonio[bar_patrimonio[simbolo]!="0.00"]
+        #print(bar_patrimonio.info())
+        #print(df_activo_corriente['ACTIVO CORRIENTE'].tail(1).unique()) 
+        card_estado_situacion=html.Div([
+                                dbc.Row([
+                                    Column(content=[    
+                                            cardGraph(fig=bar_es(bar_activo_corriente,x=simbolo,y='ACTIVO CORRIENTE',size=300,left=200),with_id=False,icon_maximize=False)
+                                                            
+                                           ],
+                                    size=6),
+                                    Column(content=[        
+                                        cardGraph(fig=bar_es(bar_activo_no_corriente,x=simbolo,y='ACTIVO NO CORRIENTE',size=300,left=200),with_id=False,icon_maximize=False)
+                                                            
+                                           ],
+                                    size=6),
+                                ]),
+                                dbc.Row([
+                                    Column(content=[
+                                        cardGraph(fig=bar_es(bar_pasivo_corriente,x=simbolo,y='PASIVO CORRIENTE',size=300,left=200),with_id=False,icon_maximize=False)
+                                                        
+                                           ],
+                                    size=4),
+                                    Column(content=[
+                                        cardGraph(fig=bar_es(bar_pasivo_no_corriente,x=simbolo,y='PASIVO NO CORRIENTE',size=300,left=100),with_id=False,icon_maximize=False)
+                                                          
+                                           ],
+                                    size=4),
+                                    Column(content=[
+                                        cardGraph(fig=bar_es(bar_patrimonio,x=simbolo,y='PATRIMONIO',size=300,left=150),with_id=False,icon_maximize=False)
+                                                      
+                                           ],
+                                    size=4),
+                                ]),
+                                
+                                ]),
+                               
+        treemap_graph=treemapEstadoSituacion(df_bc,moneda=value_moneda,titulo='',list_path=['grupo1', 'grupo2', 'grupo3'])
+        return card_estado_situacion,treemap_graph

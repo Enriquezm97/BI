@@ -14,12 +14,7 @@ button_style = {
     'right': '4px',
     'z-index': '99'
 }
-button_style_2 = {
-    'position': 'absolute',
-    'bottom': '4px',
-    'right': '4px',
-    'z-index': '99'
-}
+button_style_2 = {'position': 'absolute','bottom': '4px','right': '4px','z-index': '99'}
 def actionIcon(variant="default",color="blue",ids='btn-filter',style=button_style_2,icono='maximize'):
     return html.Div(
             dmc.ActionIcon(
@@ -87,6 +82,7 @@ def cardIndex(title,link,graph,shadou,descripcion="Descripción"):
 
 def cardGraph(id_maximize='id-maximize',id_download='id-download',id_graph='id-graph',with_id=True,fig=None,icon_maximize=True):
     if icon_maximize == True:
+        #padding
         if with_id == True:
             return html.Div([
                 dmc.Card(
@@ -99,6 +95,7 @@ def cardGraph(id_maximize='id-maximize',id_download='id-download',id_graph='id-g
                                     withBorder=True,
                                     shadow="sm",
                                     radius="md",
+                                    style={'padding': "0px"}
                                 
                                 )
             ])
@@ -114,7 +111,7 @@ def cardGraph(id_maximize='id-maximize',id_download='id-download',id_graph='id-g
                                     withBorder=True,
                                     shadow="sm",
                                     radius="md",
-                                
+                                    style={'padding': "0px"}
                                 )
             ])
     else:
@@ -130,7 +127,7 @@ def cardGraph(id_maximize='id-maximize',id_download='id-download',id_graph='id-g
                                         withBorder=True,
                                         shadow="sm",
                                         radius="md",
-                                    
+                                        style={'padding': "0px"}
                                     )
                 ])
             elif with_id == False:
@@ -145,7 +142,7 @@ def cardGraph(id_maximize='id-maximize',id_download='id-download',id_graph='id-g
                                         withBorder=True,
                                         shadow="sm",
                                         radius="md",
-                                    
+                                        style={'padding': "0px"}
                                     )
                 ])
 
@@ -173,6 +170,7 @@ def cardTableDag(df=pd.DataFrame(),id_table='id-table',id_maximize='id-maximize'
                                     withBorder=True,
                                     shadow="sm",
                                     radius="md",
+                                    style={'padding': "0px"}
 
                                 
                                 )
@@ -195,6 +193,7 @@ def cardTableDag(df=pd.DataFrame(),id_table='id-table',id_maximize='id-maximize'
                                     withBorder=True,
                                     shadow="sm",
                                     radius="md",
+                                    style={'padding': "0px"}
 
                                 
                                 )
@@ -220,6 +219,7 @@ def cardTableDag(df=pd.DataFrame(),id_table='id-table',id_maximize='id-maximize'
                                         withBorder=True,
                                         shadow="sm",
                                         radius="md",
+                                        style={'padding': "0px"}
 
                                     
                                     )
@@ -242,6 +242,7 @@ def cardTableDag(df=pd.DataFrame(),id_table='id-table',id_maximize='id-maximize'
                                         withBorder=True,
                                         shadow="sm",
                                         radius="md",
+                                        style={'padding': "0px"}
 
                                     
                                     )

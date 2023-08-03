@@ -1,11 +1,12 @@
 
 from django.contrib import admin
 #from users.models import Usuario,Empresa
-from .models import Usuario,Empresa,Rubro
+from .models import Usuario,Empresa,Rubro,Rol
 # Register your models here.
 admin.site.register(Usuario)
 admin.site.register(Empresa)
 admin.site.register(Rubro)
+admin.site.register(Rol)
 
 
 

@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from django_plotly_dash import DjangoDash
 from apps.graph.data.data import *
 from apps.graph.data.transform_finanzas import *
-
+from apps.graph.build.components.bootstrap_components.layout import Column
 from apps.graph.build.containers.Created.created import EvaluarFormula,figure__line
 from apps.graph.save import RegistrarIndicador
 
@@ -28,12 +28,60 @@ from apps.graph.build.components.mantine_react_components.loaders import loading
 
 from apps.graph.data.transform_finanzas import *
 from apps.graph.data.gets import getApi
-token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
-api_nisira_finanzas='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
-finanzas_lista_nisira=getApi(api_nisira_finanzas,token_nisira)
-df_owo=pd.DataFrame(finanzas_lista_nisira)
-df_bc_nisira=cleanBalanceComprobacion(df_owo)
 
+token_nisira='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
+#api_nisira_finanzas='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
+#finanzas_lista_nisira=getApi(api_nisira_finanzas,token_nisira)
+#df_owo=pd.DataFrame(finanzas_lista_nisira)
+df_bc_nisira=pd.read_parquet('finanzas.parquet', engine='pyarrow')
+def figure__line2(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3):#,esperado,permitido,limite
+    fig = go.Figure()
+
+    #fig.update_layout(yaxis_tickformat = '.0%')
+    fig.add_trace(go.Scatter(x=x, y=y,text=y,textposition="bottom center",
+                        mode='lines+markers',
+                        name=namex,line=dict( width=3)))
+    fig.add_trace(go.Scatter(x=x, y=y2,
+                        mode='lines',
+                        name=namey,line=dict( width=2)))
+    fig.update_layout(
+        autosize=True,
+        #width=,
+        height=390,
+        margin=dict(
+            l=60,
+            r=40,
+            b=60,
+            t=70,
+            #pad=4,
+            autoexpand=True
+
+        ),
+        legend=dict(orientation= 'h',yanchor="bottom",xanchor='center', x= 0.5, y= 1,font=dict(size=10,color="black"),),#family="Courier",
+    )
+    
+    fig.update_layout(template='none', title=name)
+    #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    fig.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
+    fig.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
+    fig.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
+    fig.add_layout_image(
+        dict(
+            source="https://www.nisira.com.pe/images/logo.png",
+            xref="x",
+            yref="y",
+            x=0,
+            y=3,
+            sizex=2,
+            sizey=2,
+            sizing="stretch",
+            opacity=0.5,
+            layer="below")
+        )
+    #fig.add_hrect(y0=limite,y1=maximo, line_width=0, fillcolor="#fc2100", opacity=0.2)
+
+    
+    return fig
 def formIndicador(empresa,usuario):#empresa,usuario
     """"""
     
@@ -50,33 +98,34 @@ def formIndicador(empresa,usuario):#empresa,usuario
     app = DjangoDash('form_indicador', external_stylesheets=[dbc.themes.BOOTSTRAP])#
     app.layout = html.Div([
     dbc.Row([
-             dbc.Col([title(text="Crear Indicador Financiero")],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+            Column(content=[title(text="Crear Indicador Financiero")],size=12),
+             
     ]),
     dbc.Row([
         dbc.Col([ 
                  
                         dbc.Row([
                             dbc.Col([
-                                select(ids="tipo-indicador",texto="Tipo de Indicador",place="Seleccione Tipo",data=list_dicts),
-                            ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
+                                select(ids="tipo-indicador",texto="Tipo de Indicador",place="Seleccione Tipo",data=list_dicts,size='sm'),
+                            ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-1"),
                             dbc.Col([
                                 textInput(label="Nombre de Indicador",ids="nombre-indicador"),
                                 
 
-                            ],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-3"),
+                            ],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-1"),
 
 
                         ]),
                         dbc.Row([
                             dbc.Col([
-                                select(ids="partidas-indicador",texto="Partidas"),
+                                select(ids="partidas-indicador",texto="Partidas",size='sm'),
                                 
-                            ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
+                            ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-1"),
                             dbc.Col([
                                 textInput(label="Ingrese Fórmula",ids="formula-indicador"),
                                 
 
-                            ],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-3"),
+                            ],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-1"),
 
 
                         ]),
@@ -131,7 +180,7 @@ def formIndicador(empresa,usuario):#empresa,usuario
                             ),
                                 
 
-                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-1"),
                         ]),
                             
                         dbc.Row([
@@ -189,7 +238,7 @@ def formIndicador(empresa,usuario):#empresa,usuario
                             ),
                                 
 
-                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-1"),
                         ]),    
                             
                         dbc.Row([
@@ -210,16 +259,16 @@ def formIndicador(empresa,usuario):#empresa,usuario
                                                                 ],
                                                             ),
                                                                                                                                 
-                                                            ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-3"),
+                                                            ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-1"),
                                                     dbc.Col([
                                                         numberInput(label="Desde",ids="desde3"),
                                                         
 
-                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-1"),
                                                     dbc.Col([
                                                         numberInput(label="Hasta",ids="hasta3"),
                                                         
-                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-1"),
                                                     dbc.Col([
                                                         dbc.Label(""),
                                                         dbc.Input(
@@ -229,7 +278,7 @@ def formIndicador(empresa,usuario):#empresa,usuario
                                                             style={"width": 45, "height": 40},
                                                         ),
 
-                                                    ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+                                                    ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-1"),
 
 
                                                 ]),
@@ -247,7 +296,7 @@ def formIndicador(empresa,usuario):#empresa,usuario
                             ),
                                 
 
-                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-1"),
                         ]),
 
                         
@@ -390,7 +439,7 @@ def formIndicador(empresa,usuario):#empresa,usuario
             promedio=df['valor'].sum()/len(df['Agrupado'].unique())
             df['promedio']=promedio
             print(color1)
-            fig=figure__line(df['Agrupado'],df['valor'],df['promedio'],name,'Valor','Promedio',desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3)
+            fig=figure__line2(df['Agrupado'],df['valor'],df['promedio'],name,'Valor','Promedio',desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3)
             #owo=dbc.Alert(children=comentario, color="primary"),  
         #RegistrarIndicador
             comentario_alert=html.Div([dmc.Alert(comentario,title="Comentario :",color="blue")]),    

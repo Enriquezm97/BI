@@ -1,5 +1,32 @@
 from dash import dash_table
+from dash import dash_table,html
+import dash_ag_grid as dag
 
+def tableAgGrid(dataframe,col='',row_blue=''):
+     name_first_col=dataframe.columns[0]
+     
+     return html.Div([
+            dag.AgGrid(
+                                    #id="datatable-result",
+        #[{"field": i} for i in table_df.columns]
+                                    columnDefs=[{"field": dataframe.columns[0],"type": "leftAligned","maxWidth": 200}]+[{"field": i,"type": "leftAligned","maxWidth": 110} for i in dataframe.columns[-2:]],
+                                    rowData=dataframe.to_dict("records"),
+                                    #dashGridOptions={"rowSelection": "multiple"},
+                                    #columnSize="sizeToFit",
+                                    defaultColDef={"resizable": True},
+                                    #style={'overflow': "auto"},#'max-height': f'{300}px',
+                                    className="ag-theme-balham headers2",
+                                    #"['Flavia Mccloskey', 'Lilly Boaz'].includes(params.data.employee)"
+                                    #'filter_query': '{ACTIVO CORRIENTE} contains "Total"'
+                                    #"params.data.sickDays > 5 && params.data.sickDays <= 7"
+                                    rowClassRules={"bg-primary fw-bold": f"params.data.ACTIVO CORRIENTE == '{row_blue}'"},#{col}
+                                    columnSize="sizeToFit",
+                                    dashGridOptions={"domLayout": "autoHeight"},
+                                    #dashGridOptions={"alignedGrids": ["bottom-grid"]},
+                                    suppressDragLeaveHidesColumns=False,
+                                    style={'height': '100%'},
+                                ),
+     ])
 
 
 def table_dash(dataframe):

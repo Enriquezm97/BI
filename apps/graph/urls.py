@@ -54,6 +54,7 @@ urlpatterns = [
     path('<str:username>/form-indicador',createdash_view.FormIndicadorView.as_view(),name='form'),
 
     path('<str:username>/estado-situacion',views.EstadoSituacionView.as_view(),name='estado_situacion2'),
+    path('<str:username>/estado-situacion2',views.EstadoSituacion2View.as_view(),name='estado_situacion3'),
     path('<str:username>/estado-gp',views.EstadoGananciasPerdidasView.as_view(),name='estado_gp'),
     path('<str:username>/costos-generales',views.FinanzasCostosGenerales.as_view(),name='costos_generales'),
     path('<str:username>/estado-resultados',views.FinanzasEstadoResultados.as_view(),name='estado_r'),
