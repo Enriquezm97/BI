@@ -1,0 +1,58 @@
+{
+    "name": "dash_mantine_components",
+    "version": "0.12.1",
+    "description": "Plotly Dash Components based on Mantine",
+    "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/snehilvj/dash-mantine-components.git"
+    },
+    "bugs": {
+        "url": "https://github.com/snehilvj/dash-mantine-components/issues"
+    },
+    "homepage": "https://github.com/snehilvj/dash-mantine-components",
+    "scripts": {
+        "build:js::dev": "webpack --mode development",
+        "build:js": "webpack",
+        "build:backends": "dash-generate-components ./src/ts/components dash_mantine_components -p package-info.json --r-prefix '' --jl-prefix '' --ignore \\.test\\.",
+        "build": "npm run build:js && npm run build:backends",
+        "watch": "npm run build:js::dev -- --watch"
+    },
+    "devDependencies": {
+        "@types/ramda": "^0.28.15",
+        "@types/react": "^17.0.39",
+        "css-loader": "^6.7.1",
+        "npm-run-all": "^4.1.5",
+        "ramda": "^0.28.0",
+        "react": "16.13.0",
+        "react-docgen": "^5.4.0",
+        "react-dom": "16.13.0",
+        "style-loader": "^3.3.1",
+        "ts-loader": "^9.3.1",
+        "typescript": "^4.8.4",
+        "webpack": "^5.73.0",
+        "webpack-cli": "^4.10.0"
+    },
+    "peerDependencies": {
+        "react": "^16.13.0",
+        "react-dom": "^16.13.0"
+    },
+    "author": "Snehil Vijay <snehilvj@outlook.com>",
+    "license": "MIT",
+    "dependencies": {
+        "@emotion/react": "^11.10.4",
+        "@mantine/core": "^5.4.0",
+        "@mantine/dates": "^5.4.0",
+        "@mantine/hooks": "^5.4.0",
+        "@mantine/notifications": "^5.4.0",
+        "@mantine/prism": "^5.4.0",
+        "dash-extensions-js": "^0.0.8",
+        "dayjs": "^1.11.5",
+        "is-absolute-url": "^4.0.1"
+    },
+    "files": [
+        "/dash_mantine_components/*{.js,.map}",
+        "/dash_mantine_components/metadata.json",
+        "LICENSE"
+    ]
+}
