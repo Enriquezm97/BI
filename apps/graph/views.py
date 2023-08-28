@@ -35,7 +35,7 @@ from django.core.cache import cache
 #####new structure
 from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,resumenCampania
 from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes
-from apps.graph.mixins import AdministradoMixin,AnalistaMixin
+from apps.graph.mixins import AdministradoMixin,AnalistaMixin,AsistenteMixin
 
 def home(request):
     #owo=request.user.id
@@ -209,7 +209,7 @@ class GastosOperativosView(LoginRequiredMixin,AnalistaMixin,View):
 
 
 
-class InformedeVentas1View(LoginRequiredMixin,AdministradoMixin,View):
+class InformedeVentas1View(LoginRequiredMixin,AsistenteMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     #model=Usuario
     #def get_object(self):
@@ -234,7 +234,7 @@ class InformedeVentas1View(LoginRequiredMixin,AdministradoMixin,View):
         return render(request,'dashboards/Comercial/informe_ventas_1.html',context)
 
 
-class VentasExportacionView(LoginRequiredMixin,AdministradoMixin,View):
+class VentasExportacionView(LoginRequiredMixin,AsistenteMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -250,7 +250,7 @@ class VentasExportacionView(LoginRequiredMixin,AdministradoMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventas_exportacion.html',context)
 
-class Ventas1View(LoginRequiredMixin,AdministradoMixin,View):
+class Ventas1View(LoginRequiredMixin,AsistenteMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -264,7 +264,7 @@ class Ventas1View(LoginRequiredMixin,AdministradoMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/ventas1.html',context)
 
-class Ventas2View(LoginRequiredMixin,View):
+class Ventas2View(LoginRequiredMixin,AsistenteMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -279,7 +279,7 @@ class Ventas2View(LoginRequiredMixin,View):
     
 
 
-class VentasCore(LoginRequiredMixin,AdministradoMixin,View):
+class VentasCore(LoginRequiredMixin,AsistenteMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -293,7 +293,7 @@ class VentasCore(LoginRequiredMixin,AdministradoMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/comercial_segmented.html',context)
 
-class VentasTipo(LoginRequiredMixin,AdministradoMixin,View):
+class VentasTipo(LoginRequiredMixin,AsistenteMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -307,7 +307,7 @@ class VentasTipo(LoginRequiredMixin,AdministradoMixin,View):
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/tipoVenta.html',context)
     
-class VentasComparativo(LoginRequiredMixin,AdministradoMixin,View):
+class VentasComparativo(LoginRequiredMixin,AsistenteMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
@@ -441,7 +441,7 @@ class Error505View(TemplateView):
     
 
 #################################VISTAS
-class dashC(LoginRequiredMixin,AdministradoMixin,View):
+class dashC(LoginRequiredMixin,AsistenteMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -462,7 +462,7 @@ class dashC(LoginRequiredMixin,AdministradoMixin,View):
         #name_empresa
         return render(request,'dashboards/Comercial/dashcultivo.html',context)
 
-class dashCC(View):
+class dashCC(LoginRequiredMixin,AsistenteMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -484,7 +484,7 @@ class dashCC(View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_cliente.html',context)
 
-class dashCCC(LoginRequiredMixin,AdministradoMixin,View):
+class dashCCC(LoginRequiredMixin,AsistenteMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -504,7 +504,7 @@ class dashCCC(LoginRequiredMixin,AdministradoMixin,View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_cliente_cultivo.html',context)
 
-class dashCP(LoginRequiredMixin,AdministradoMixin,View):
+class dashCP(LoginRequiredMixin,AsistenteMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -526,7 +526,7 @@ class dashCP(LoginRequiredMixin,AdministradoMixin,View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_producto.html',context)
 
-class dashCPC(LoginRequiredMixin,AdministradoMixin,View):
+class dashCPC(LoginRequiredMixin,AsistenteMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -548,7 +548,7 @@ class dashCPC(LoginRequiredMixin,AdministradoMixin,View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_producto_cultivo.html',context)
 
-class dashCCultivo(LoginRequiredMixin,AdministradoMixin,View):
+class dashCCultivo(LoginRequiredMixin,AsistenteMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
@@ -570,7 +570,7 @@ class dashCCultivo(LoginRequiredMixin,AdministradoMixin,View):
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_cultivo.html',context)
 
-class dashCComparativo(LoginRequiredMixin,AdministradoMixin,View):
+class dashCComparativo(LoginRequiredMixin,AsistenteMixin,View):
     
     def get(self,request,*args, **kwargs):
         #dashboard=tailwindcss()
