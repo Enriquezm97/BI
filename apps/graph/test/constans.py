@@ -1,5 +1,6 @@
 import dash_bootstrap_components as dbc
 import plotly.express as px
+
 # MODIFICA EL IDIOMA POR DEFECTO DE UN DATAPICKER dmc
 EXTERNAL_SCRIPTS = [
     "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
@@ -77,6 +78,10 @@ COMERCIAL_SELECTS_COLUMNS ={
     'select-variedad' : 'Variedad',
     'select-moneda' : ['Importe Soles','Importe dolares'],
     'select-tipo-venta' : 'Tipo de Venta',
-    'select-grupo-producto' : 'Grupo Producto'
-    
+    'select-grupo-producto' : 'Grupo Producto',
+    'select-grupo-cliente' : 'Grupo Cliente',
+    'select-producto':'Producto',
 }
+
+MESES_ORDER = ['Enero','Febrero','Marzo', 'Abril', 'Mayo','Junio', 'Julio', 'Agosto','Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+LISTA_COLORES_BAR = px.colors.diverging.Portland+px.colors.diverging.Earth+px.colors.diverging.balance+px.colors.diverging.Tealrose

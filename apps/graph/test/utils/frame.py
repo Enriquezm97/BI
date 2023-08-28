@@ -18,14 +18,17 @@ def Store(id='data-values'):
 def Download():
     return dcc.Download(id="download")
 
-def Modal(id = 'modal', size='xl', style = {"max-width": "none", "width": "90%", "max-height":"none", "height":"90%"}, is_open=False):
-    return html.Div([dbc.Modal(id = id,size = size,style = style, is_open= is_open)])
+#def Modal(id = 'modal', size='xl', style = {"max-width": "none", "width": "90%", "max-height":"none", "height":"90%"}, is_open=False):
+#    return html.Div([dbc.Modal(id = id,size = size,style = style, is_open= is_open)])
 
 def Graph(id = '', figure = {}):
     return dcc.Graph(id = id , figure = figure)
 
 def Divider():
     return html.Div(dmc.Divider(variant="solid"))
+
+def Modal(titulo = '',id = '', fullScreen = False, size = "75%"):
+    return html.Div([dmc.Modal(title = titulo, id = id, fullScreen=fullScreen, zIndex=10000, size= size )])
 
 
 

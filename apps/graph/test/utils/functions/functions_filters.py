@@ -9,10 +9,11 @@ def dataframe_filtro(values=[],columns_df=[]):
    for value, col in zip(values,columns_df):
         if value != None:
             if type(value) == int:
-                text=f"{col} == {value}"
+                text=f"`{col}` == {value}"
             elif type(value) == str:
-                text=f"{col} == '{value}'"
-
+                text=f"`{col}` == '{value}'"
+            elif type(value) == list:
+                text=f"`{col}` in {value}"
             query += text + " and "
             
    return query[:-5]

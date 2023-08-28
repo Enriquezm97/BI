@@ -138,9 +138,9 @@ def figure__line(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color
     return fig
 
 def EvaluarFormula(formula,df_ratios):#rbtnmoneda,ejex
-    ACTIVO=df_ratios['ACTIVO    ']
+    ACTIVO=df_ratios['ACTIVO']
                      
-    PASIVO=df_ratios['PASIVO    ']
+    PASIVO=df_ratios['PASIVO']
     PATRIMONIO=df_ratios['PATRIMONIO_x']
     ACTIVONOCORRIENTE=df_ratios['ACTIVO NO CORRIENTE']
     PASIVOCORRIENTE=df_ratios['PASIVO CORRIENTE']
@@ -442,7 +442,8 @@ def IndicadorDash(nombres,formulas,
     df_bcomprobacion=df_bc_nisira.copy()
 
     external_stylesheets = [dbc.themes.BOOTSTRAP,dbc.icons.BOOTSTRAP,dbc.icons.FONT_AWESOME]
-  
+    print(":v")
+    print(df_bc_nisira)
 
 
     app = DjangoDash('TESTVIEW',external_stylesheets=external_stylesheets)
@@ -451,7 +452,7 @@ def IndicadorDash(nombres,formulas,
         dbc.Row([
             Column(
                 content=[
-                    multiSelect(ids="drop-year",texto="Año",value=[sorted(df_bcomprobacion['year'].unique())[-1]]),
+                    multiSelect(ids="drop-year",texto="Año",value=[sorted(df_bcomprobacion['Año'].unique())[-1]]),
             ],size=4), 
 
             Column(
@@ -510,7 +511,7 @@ def IndicadorDash(nombres,formulas,
     Input("drop-multi", "value"),
     )
     def owo(rbtnmoneda,filt_year,ejex,filtro):
-        out_year=[{'label': i, 'value': i} for i in df_bcomprobacion['year'].unique()] 
+        out_year=[{'label': i, 'value': i} for i in df_bcomprobacion['Año'].unique()] 
         name=nombres.upper()
         formula=formulas.upper()
         print(filt_year)
@@ -525,7 +526,7 @@ def IndicadorDash(nombres,formulas,
                     #df_ratios=rat.df_ratios_trim_dolar.copy()
                 df_ratios=balancePivot('Trimestre','dolares',df_bcomprobacion)
             column='TRIM'
-            group=['year','trimestre']
+            group=['Año','trimestre']
             x='trimestre'
             #out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()]   
             
@@ -541,18 +542,18 @@ def IndicadorDash(nombres,formulas,
                 df_ratios=balancePivot('Periodo','dolares',df_bcomprobacion)
                 #df_ratios=df_ratios.sort_values('month',ascending=True)
             column='al_periodo'
-            group=['year','Mes','month']
+            group=['Año','Mes','month']
             x='Mes'
             #out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()] 
 
         if filt_year !=None :
-            df_ratios=df_ratios[df_ratios['year'].isin(filt_year)]
+            df_ratios=df_ratios[df_ratios['Año'].isin(filt_year)]
             print("hay valor")
         elif filt_year ==None:
-            df_ratios=df_ratios[df_ratios['year'].isin(df_ratios['year'].unique())]
+            df_ratios=df_ratios[df_ratios['Año'].isin(df_ratios['Año'].unique())]
             print("es none")
         elif len(filt_year) == 0:
-            df_ratios=df_ratios[df_ratios['year'].isin(df_ratios['year'].unique())]
+            df_ratios=df_ratios[df_ratios['Año'].isin(df_ratios['Año'].unique())]
             print("lista vacia")
 
         out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()]
@@ -573,7 +574,7 @@ def IndicadorDash(nombres,formulas,
         #df2=df_filtro[df_filtro['year']==last_year]
         #print(df2)
         if ejex == 'Periodo':
-            df_filtro=df_filtro.sort_values(['year','month'],ascending=True)
+            df_filtro=df_filtro.sort_values(['Año','month'],ascending=True)
         else:
             df_filtro=df_filtro
         
@@ -593,7 +594,8 @@ def IndicadorDash(nombres,formulas,
         #df_stack=df_ratios[group]
         df_stack=df_filtro[group]
         df_stack['valor']=EvaluarFormula(formula,df_filtro)#df_ratios
-        df_stack['Año']=df_stack['year']
+        #PROBAR
+        #df_stack['Año']=df_stack['Año']
         if x == 'Mes':
             df_stack=df_stack.sort_values(['month','Año'],ascending=True)
         else:

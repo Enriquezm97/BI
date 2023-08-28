@@ -920,7 +920,7 @@ def ventas2(empresa,staff_comment):
     
 
 
-def ventasProductos(empresa,staff_comment):
+def ventasProductos():
     """"""
     #df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
     #df_ventas_detalle=cleanVentas(df_ventas_default)
@@ -1312,21 +1312,7 @@ def ventasProductos(empresa,staff_comment):
         return options.to_json(date_format='iso', orient='split')
     ####################################################################################################################################    
     
-    
-    @app.callback(
-        Output("comentario","children"),
-        Input("year","value"),)
-    def staff(year):
-        if staff_comment == 1 or staff_comment == True:
-            trash=dbc.Row([
-                dbc.Col([
-                    html.Hr(),
-                    html.Div('Esto es una prueba')
-                ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
-            ])
-        else :
-            trash=html.Div('-')
-        return trash
+   
 
     @app.callback(
             

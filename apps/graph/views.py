@@ -33,8 +33,8 @@ from apps.graph.build.containers.Finanzas.finanzas import dashEstadoSituacion,da
 
 from django.core.cache import cache
 #####new structure
-from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania
-from apps.graph.test.layouts.comercial import informeComercial
+from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,resumenCampania
+from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin
 
 def home(request):
@@ -81,7 +81,8 @@ class Test2View(View):
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
-        dashboard=informeComercial()
+        #dashboard=informeComercial()
+        dashboard = resumenCampania()
         print(empresa)
         print(type(empresa))
         print(empresa[0])
@@ -286,11 +287,11 @@ class VentasCore(LoginRequiredMixin,AdministradoMixin,View):
         #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         #staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
-        dashboard=dashVentasCore()#ventasProductos(empresa[0],staff_filter[0])
-        
+        dashboard=ventaSegmented()
+        #
 
         context = {'dashboard':dashboard}
-        return render(request,'dashboards/Comercial/ventasProductos.html',context)
+        return render(request,'dashboards/Comercial/comercial_segmented.html',context)
 
 class VentasTipo(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
@@ -469,7 +470,8 @@ class dashCC(View):
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
          
-        dashboard=dashComercialCliente()
+        #dashboard=dashComercialCliente()
+        dashboard=ventasClientes()
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
@@ -492,8 +494,7 @@ class dashCCC(LoginRequiredMixin,AdministradoMixin,View):
          
         #dashboard=dashComercialCliente()
         dashboard=dashComercialClienteCultivo()
-        #dashboard=dashComercialProductoCultivo()
-        #dashboard=dashComercialCultivo()
+        
         print(empresa)
         print(type(empresa))
         print(empresa[0])

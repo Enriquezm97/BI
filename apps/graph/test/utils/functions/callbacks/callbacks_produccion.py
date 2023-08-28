@@ -2,7 +2,7 @@ from dash import Input, Output,State,no_update,dcc,html
 from apps.graph.test.constans import DIC_RECURSOS_AGRICOLA,COLORS_G10,DICT_TIPO_COSTO,DICT_CULTIVOS_COLOR
 from apps.graph.test.utils.functions.functions_filters import *
 from apps.graph.test.utils.functions.functions_data import *
-from apps.graph.test.utils.components import DataDisplay,Button
+from apps.graph.test.utils.components.components_main import DataDisplay,Button
 from apps.graph.test.utils.figures import *
 from apps.graph.test.utils.frame import Graph
 from apps.graph.test.utils.tables import tableDag
@@ -52,12 +52,15 @@ def create_callback_change_theme(app):
     
 def create_callback_filter_agricola_recurso(app,dataframe=pd.DataFrame()):
     @app.callback(
+                  #Output('select-campania','data'),
                   Output('select-variedad','data'),
                   Output('select-lote','data'),
                   Output('checklist-recurso-agricola','options'),
                   Output('checklist-recurso-agricola','value'),  
                   Output('label-range-inicio-campania','children'), 
                   Output('label-range-fin-campania','children'), 
+                  #Output('checklist-comercial-tipoventa','options'),
+                  #Output('checklist-comercial-tipoventa','value'),  
                   Output("data-values","data"),
                   Output("segmented-recurso",'data'),
                   Output("segmented-recurso",'value'),
@@ -66,11 +69,16 @@ def create_callback_filter_agricola_recurso(app,dataframe=pd.DataFrame()):
                   Input('select-variedad','value'),
                   Input('select-lote','value'),
                  )
-    def update_filter_agricola_recurso(select_campania,select_variedad,select_lote):
-    
-        list_variables=create_list_var(select_campania,select_variedad,select_lote)
-        df=dataframe.query(dataframe_filtro(values=list_variables,columns_df=['AÑO_CULTIVO','VARIEDAD','CONSUMIDOR']))
+    def update_filter_agricola_recurso(*args):#select_campania,select_variedad,select_lote
+        print(dataframe)
+        if validar_all_none(variables = args) == True:
+            df=dataframe.copy()
+        else:
+        #list_variables=create_list_var(select_campania,select_variedad,select_lote)
+            df=dataframe.query(dataframe_filtro(values=args,columns_df=['AÑO_CULTIVO','VARIEDAD','CONSUMIDOR']))
         """convirtiendo el dataframe a json"""
+        
+        #select_out_anio = [{'label': i, 'value': i} for i in sorted(df['AÑO_CULTIVO'].unique())]
         select_out_variedad = [{'label': i, 'value': i} for i in sorted(df['VARIEDAD'].unique())]
         select_out_lote = [{'label': i, 'value': i} for i in df['CONSUMIDOR'].unique()]
         out_check_recurso = [{'label': i, 'value': i} for i in sorted(df['DSCVARIABLE'].unique())]
@@ -81,6 +89,7 @@ def create_callback_filter_agricola_recurso(app,dataframe=pd.DataFrame()):
         
         parametros_datepicker = get_parameters_datepicker(df=df,col_inicio='FECHAINICIO_CAMPAÑA',col_fin='FECHAFIN_CAMPAÑA')
         return [
+                #select_out_anio,
                 select_out_variedad, select_out_lote, 
                 out_check_recurso,values_out_check_recurso,
                 dmc.Badge(f"Inicio de Campaña: {parametros_datepicker[0]}",variant='dot',color='gray', size='lg',radius="lg"),
@@ -94,6 +103,7 @@ def create_callback_filter_agricola_recurso(app,dataframe=pd.DataFrame()):
 
 def create_callback_filter_agricola_costos(app,dataframe=pd.DataFrame()):
     @app.callback(
+                  Output('select-anio','data'),
                   Output('select-cultivo','data'),
                   Output('select-variedad','data'),
                   Output('checklist-tipo-costos','options'),
@@ -104,13 +114,17 @@ def create_callback_filter_agricola_costos(app,dataframe=pd.DataFrame()):
                   Input('select-anio','value'),
                   Input('select-cultivo','value'),
                   Input('select-variedad','value'),
+                  
                  )
     
-    def update_filter_agricola_recurso(select_anio,select_cultivo,select_variedad):
-        list_variables=create_list_var(select_anio,select_cultivo,select_variedad)
-        df=dataframe.query(dataframe_filtro(values=list_variables,columns_df=['AÑO_CAMPAÑA','CULTIVO','VARIEDAD']))
+    def update_filter_agricola_recurso(*args):#select_anio,select_cultivo,select_variedad
+        if validar_all_none(variables = args) == True:
+            df=dataframe.copy()
+        else:
+        #list_variables=create_list_var(select_anio,select_cultivo,select_variedad)
+            df=dataframe.query(dataframe_filtro(values=args,columns_df=['AÑO_CAMPAÑA','CULTIVO','VARIEDAD']))
         #select_out_variedad
-
+        select_out_anio=[{'label': i, 'value': i} for i in df['AÑO_CAMPAÑA'].unique()]
         select_out_cultivo=[{'label': i, 'value': i} for i in df['CULTIVO'].unique()]
         select_out_variedad=[{'label': i, 'value': i} for i in df['VARIEDAD'].unique()]
         out_check=[{'label': i, 'value': i} for i in df['TIPO'].unique()]
@@ -118,7 +132,7 @@ def create_callback_filter_agricola_costos(app,dataframe=pd.DataFrame()):
 
         
         return [
-            select_out_cultivo,select_out_variedad,out_check,value_out_check,
+            select_out_anio,select_out_cultivo,select_out_variedad,out_check,value_out_check,
             df.to_dict('series'),
             DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update'),
         ]
@@ -138,6 +152,7 @@ def create_callback_recurso_agricola(app):
     )
     def update_graph_recurso_agricola(data,radio_ejex,radio_ejey,checklist_recursos,segmented_recurso):
         df = pd.DataFrame(data)
+        print(df )
         df_ha_sembrado=df.groupby(['CONSUMIDOR',radio_ejex,'SEMANA','CULTIVO','VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA','AREA_CAMPAÑA','AÑO_CULTIVO'])[['CANTIDAD']].sum().reset_index()
         df_ha_total=df_ha_sembrado.groupby(['CONSUMIDOR',radio_ejex,'SEMANA','VARIEDAD','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
         df_ha_st=df_ha_total.groupby([radio_ejex,'SEMANA','AÑO_FECHA','AÑO_CAMPAÑA','AÑO_CULTIVO'])[['AREA_CAMPAÑA']].sum().reset_index()
@@ -302,8 +317,8 @@ def create_callback_costos_agricola(app):
             cardDivider(value = f"{simbolo} {total_card_1}",text='Costos Totales',list_element=total_costos_dict),
             cardDivider(value = f"{total_card_2} ha",text='Hectáreas Sembradas',list_element=total_dict_ha),
             cardDivider(value = f"{simbolo} {cotos_por_ha}",text='Costo por Hectárea',list_element=[{'value': 100, 'color': "rgb(51, 102, 204)", 'label': '100%', "tooltip": "Costo por Hectárea"}]),
-            GraphBargo.bar_(df = cultivo_df, x = radio_moneda , y = 'CULTIVO', text= radio_moneda, orientation = 'h', height = 485, title = 'Costos por Cultivo', space_ticked = 100,xaxis_title = simbolo,yaxis_title = 'CULTIVO',color_dataframe='CULTIVO',customdata=['AREA_CAMPAÑA']),
-            GraphBargo.bar_(df = variedad_df, x = radio_moneda, y = 'VARIEDAD', text= radio_moneda, orientation = 'h', height = 485, title = 'Costos por Variedad', space_ticked = 100,xaxis_title = simbolo,yaxis_title = 'VARIEDAD',color_dataframe='CULTIVO',customdata=['AREA_CAMPAÑA']),
+            GraphBargo.bar_(df = cultivo_df, x = radio_moneda , y = 'CULTIVO', text= radio_moneda, orientation = 'h', height = 485, title = 'Costos por Cultivo', space_ticked = 100,xaxis_title = simbolo,yaxis_title = 'CULTIVO',list_or_color=DICT_CULTIVOS_COLOR,customdata=['AREA_CAMPAÑA']),#
+            GraphBargo.bar_(df = variedad_df, x = radio_moneda, y = 'VARIEDAD', text= radio_moneda, orientation = 'h', height = 485, title = 'Costos por Variedad', space_ticked = 100,xaxis_title = simbolo,yaxis_title = 'VARIEDAD',color_dataframe='CULTIVO',customdata=['AREA_CAMPAÑA']),#
             GraphPiego.pie_(df = pie_tipo_gasto, title = 'Tipo de Costo',label_col = 'TIPO', value_col = radio_moneda, height = 280, dict_color = DICT_TIPO_COSTO),
             GraphMapgo.map_agricola_scatter(df = df_map_polygon, height = 300, importe = radio_moneda),
             GraphBargo.bar_(df = lote_df, x = 'CONSUMIDOR', y = radio_moneda, text= radio_moneda, orientation = 'v', height = 300, title = 'Costos por Lote', space_ticked = 30,xaxis_title = 'Lotes',yaxis_title = simbolo, showticklabel_x=False,color_dataframe='CULTIVO',customdata=['AREA_CAMPAÑA']),

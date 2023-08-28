@@ -84,18 +84,18 @@ def createRatios(df_ratios):
 ####CREAR COLUMNAS TRIMESTRE MES ETC
 def cleanBalanceComprobacion(df_bcomprobacion):
     df_bcomprobacion['al_periodo']=df_bcomprobacion['al_periodo'].astype("str")
-    df_bcomprobacion['year']=df_bcomprobacion['al_periodo'].str[:4]
+    df_bcomprobacion['Año']=df_bcomprobacion['al_periodo'].str[:4]
     df_bcomprobacion['month']=df_bcomprobacion['al_periodo'].str[4:]
-    df_bcomprobacion['year2']=df_bcomprobacion['year']+'-'
-    df_bcomprobacion['year']=df_bcomprobacion['year'].astype("str")#.astype(object)
+    df_bcomprobacion['year2']=df_bcomprobacion['Año']+'-'
+    df_bcomprobacion['Año']=df_bcomprobacion['Año'].astype("str")#.astype(object)
     df_bcomprobacion['TRIM']=df_bcomprobacion['trimestre']
     df_bcomprobacion['al_periodo']=df_bcomprobacion['al_periodo']+'-'
-    for anio in df_bcomprobacion['year'].unique():
-                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.year==anio]=df_bcomprobacion['trimestre']
-                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.year==anio]=df_bcomprobacion['TRIM'].replace(1,str(anio)+' '+'Trim 1')
-                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.year==anio]=df_bcomprobacion['TRIM'].replace(2,str(anio)+' '+'Trim 2')
-                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.year==anio]=df_bcomprobacion['TRIM'].replace(3,str(anio)+' '+'Trim 3')
-                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.year==anio]=df_bcomprobacion['TRIM'].replace(4,str(anio)+' '+'Trim 4')
+    for anio in df_bcomprobacion['Año'].unique():
+                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.Año==anio]=df_bcomprobacion['trimestre']
+                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.Año==anio]=df_bcomprobacion['TRIM'].replace(1,str(anio)+' '+'Trim 1')
+                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.Año==anio]=df_bcomprobacion['TRIM'].replace(2,str(anio)+' '+'Trim 2')
+                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.Año==anio]=df_bcomprobacion['TRIM'].replace(3,str(anio)+' '+'Trim 3')
+                df_bcomprobacion['TRIM'].loc[df_bcomprobacion.Año==anio]=df_bcomprobacion['TRIM'].replace(4,str(anio)+' '+'Trim 4')
     df_bcomprobacion['Mes']=df_bcomprobacion['month']
     df_bcomprobacion['Mes']=df_bcomprobacion['Mes'].replace('01','Enero')
     df_bcomprobacion['Mes']=df_bcomprobacion['Mes'].replace('02','Febrero')
@@ -118,10 +118,10 @@ def cleanBalanceComprobacion(df_bcomprobacion):
 def balancePivot(ejex,moneda,df_bcomprobacion):
 
         if ejex =='Trimestre':
-            group=['year','trimestre','TRIM']
+            group=['Año','trimestre','TRIM']
             eje='TRIM'
         elif ejex =='Periodo':
-            group=['year','Mes','month','al_periodo']
+            group=['Año','Mes','month','al_periodo']
             eje='al_periodo'
 
         df_niv1_trim=df_bcomprobacion.groupby(group+['grupo1'])[['saldo_cargo_mof','saldo_cargo_mex']].sum().reset_index()
@@ -160,15 +160,15 @@ def balancePivotRename(moneda,df):
         elif moneda=='saldo_cargo_mex':
             df_bcomprobacion_123=balancePivot('Periodo','dolares',df)
         
-        df_bcomprobacion_123=df_bcomprobacion_123[['al_periodo','year','ACTIVO    ','PASIVO    ', 'PATRIMONIO_x','ACTIVO NO CORRIENTE', 'PASIVO CORRIENTE']]
+        df_bcomprobacion_123=df_bcomprobacion_123[['al_periodo','Año','ACTIVO    ','PASIVO    ', 'PATRIMONIO_x','ACTIVO NO CORRIENTE', 'PASIVO CORRIENTE']]
         df_bcomprobacion_123=df_bcomprobacion_123.rename(columns={'ACTIVO    ':'ACTIVO','PASIVO    ':'PASIVO','PATRIMONIO_x':'PATRIMONIO'})
         return df_bcomprobacion_123
 #bc_uti
 def createBc_uti(moneda,df_bcomprobacion):
         df_bcomprobacion_123=df_bcomprobacion#dfCompuesto(moneda)
         
-        df_bc_uti=df_bcomprobacion_123.groupby(['grupo_funcion','year','month','al_periodo'])[[moneda]].sum().reset_index()
-        df_bc_uti_pivot=df_bc_uti.pivot_table(index=('year','month','al_periodo'),values=moneda,columns='grupo_funcion').reset_index()
+        df_bc_uti=df_bcomprobacion_123.groupby(['grupo_funcion','Año','month','al_periodo'])[[moneda]].sum().reset_index()
+        df_bc_uti_pivot=df_bc_uti.pivot_table(index=('Año','month','al_periodo'),values=moneda,columns='grupo_funcion').reset_index()
         df_bc_uti_pivot=df_bc_uti_pivot.fillna(0)
         df_bc_uti_pivot['UTILIDAD BRUTA']=df_bc_uti_pivot['VENTAS']-df_bc_uti_pivot['COSTO DE VENTAS']
         df_bc_uti_pivot['GASTOS DE OPERACION']=df_bc_uti_pivot['GASTOS DE ADMINISTRACION']+df_bc_uti_pivot['GASTOS DE VENTA']

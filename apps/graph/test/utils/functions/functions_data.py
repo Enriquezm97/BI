@@ -55,9 +55,16 @@ def create_list_dict_outputs(id_components = [],dict_cols_dataframe = {}, datafr
             
             outputs_list.append([{'label': i, 'value': i} for i in sorted(dataframe[dict_cols_dataframe[element][0]].unique()) ])
         else:
-            
+           
             outputs_list.append([{'label': i, 'value': i} for i in sorted(dataframe[dict_cols_dataframe[element]].unique())])
     return outputs_list
+
+def create_list_components(list_elements = [], list_tipo_componente = [], dict_components = {}):
+     lista_comp=[]
+     for component,tipo_component in zip(list_elements,list_tipo_componente):
+          lista_comp.append(dict_components[component][tipo_component])
+     return lista_comp
+
 
 def validar_all_none(variables=()):
     contador = 0
@@ -69,7 +76,7 @@ def validar_all_none(variables=()):
 def hoversize_recurso_agricola(recurso = ''):
    if recurso=='Insumos':
         hover='<br><b>Cantidad</b>: %{y:.1f} Kg<br> <b>Unidad/Ha</b>: %{customdata[0]:.1f}<br>'
-        size_text=13
+        size_text=10
    elif recurso=='Maquinaria':
         hover='<br><b>Cantidad</b>: %{y:.1f} h<br> <b>Hm/Ha</b>: %{customdata[0]:.1f} <br>'
         size_text=13

@@ -52,7 +52,7 @@ class DataDisplay():
                         ),
                     )
     def offcanvas(
-        componentes=[], label='', size_width=250
+        componentes=[], label='', size_width=250, placement = "start"
     ):
         return html.Div(
             dbc.Offcanvas(
@@ -62,7 +62,8 @@ class DataDisplay():
                         is_open=False,
                         backdrop=False,
                         style={"width": size_width},
-                        children =componentes
+                        children =componentes,
+                        placement = placement
                         )
         )
         
@@ -180,7 +181,20 @@ class Button():
                                 mb=10,
                             ),
             )
-    
+    def btnConfig(
+        variant="default",color="blue",style={}
+    ):
+        return html.Div(
+                dmc.ActionIcon(
+                                DashIconify(icon="feather:settings"), 
+                                color=color, 
+                                variant=variant,
+                                id="btn-config",
+                                n_clicks=0,
+                                mb=10,
+                                style = style
+                            ),
+            )
     def button(
         text="",variant="filled",color="indigo",ids=None
     ):
@@ -299,17 +313,18 @@ class Entry():
         ])
         
     def datePicker(
-        ids="date-range-picker",text='Desde',value=None,minimo=None,maximo=None
+        id="",text='',value=None,minimo=None,maximo=None
     ):
         return html.Div([
             dmc.DatePicker(
-                id=ids,
-                label=text,
+                id = id,
+                label = text,
                 #description="You can also provide a description",
-                minDate=minimo,
-                maxDate=maximo,
-                value=value,
-                locale="es",
+                minDate = minimo,
+                maxDate = maximo,
+                value = value,
+                locale = "es",
+                clearable = False
                 
             ),
         ])
@@ -380,7 +395,7 @@ class Entry():
         ])
     
     def select(
-        id='',texto='',place="Todos",value=None,data=[],clearable=True,size='md'
+        id='',texto='',place="Todos",value=None,data=[],clearable=True, searchable = False, size='md'
     ):
         return  html.Div(
             dmc.Select(
@@ -392,7 +407,8 @@ class Entry():
                 placeholder=place,
                 style={'font-size': "90%"},
                 value=value,
-                size=size
+                size=size,
+                searchable = searchable
                 #searchable=True,
                 #style={"width": 200},
                 #icon=DashIconify(icon="radix-icons:magnifying-glass"),
@@ -401,11 +417,11 @@ class Entry():
     )
         
     def multiSelect(
-        ids='w',texto='',place="",value=None,data=[],size='md'):
+        id='w',texto='',place="",value=None,data=[],size='md'):
         return html.Div(
             dmc.MultiSelect(
                         #data=["React", "Angular", "Svelte", "Vue"],
-                        id=ids,
+                        id=id,
                         label=texto,
                         placeholder=place,
                         searchable=True,
@@ -418,12 +434,12 @@ class Entry():
         )    
     
     def textInput(
-        label="",ids=None,required=False,size="sm",error=False
+        label="",id='',required=False,size="sm",error=False,value = None
     ):
-        return html.Div([dmc.TextInput(label=label,id=ids,required=required,size=size,error=error),]) 
+        return html.Div([dmc.TextInput(label=label,id=id,required=required,size=size,error=error,value=value)]) 
     
     def numberInput(
-        label="",ids=None,value=0,precision=2,minimo=-10,step=0.01
+        label="",id=None,value=0,precision=2,minimo=-10,step=0.01
     ):
         return  html.Div(
             [dmc.NumberInput(
@@ -432,7 +448,7 @@ class Entry():
                             precision=precision,
                             min=minimo,
                             step=step,
-                            id=ids)
+                            id=id)
             ]
         )
     
@@ -465,6 +481,24 @@ class Entry():
                 ]
             )
 
+    def slider(id = '', value = 11 , marks = [], label_tick = True, minimo = 0, maximo = 40, step = 0.5):
+        return html.Div(
+                [
+                    dmc.Slider(
+                        id = id,
+                        value = value,
+                        updatemode="drag",
+                        marks = marks,
+                        labelAlwaysOn= label_tick,
+                        min= minimo, 
+                        max= maximo,
+                        step= step
+                    ),
+                    
+
+                ]
+            )
+    
 class Title():
     
     def title(text="",order=1,ids='id'):

@@ -49,5 +49,6 @@ def datePicker(ids="date-range-picker",text='Desde',value=None,minimo=None,maxim
             value=value,
             locale="es",
             
+            
         ),
     ])
