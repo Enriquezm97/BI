@@ -75,7 +75,27 @@ def etl_comercial(dataframe = pd.DataFrame()):
     dataframe['Pais'] = dataframe['Pais'].str.rstrip()
     dataframe['Dia'] = dataframe['Fecha'].dt.day
     dataframe['Mes Num'] = dataframe['Fecha'].dt.month
-    dataframe['Mes'] = pd.to_datetime(dataframe['Fecha'], format='%Y.%m.%d', errors="coerce").dt.month_name(locale='es_ES.utf8')
+    
+    
+    dataframe['Mes']=dataframe['Mes Num']
+
+    dataframe['Mes']=dataframe['Mes'].replace(1,'Enero')
+    dataframe['Mes']=dataframe['Mes'].replace(2,'Febrero')
+    dataframe['Mes']=dataframe['Mes'].replace(3,'Marzo')
+    dataframe['Mes']=dataframe['Mes'].replace(4,'Abril')
+    dataframe['Mes']=dataframe['Mes'].replace(5,'Mayo')
+    dataframe['Mes']=dataframe['Mes'].replace(6,'Junio')
+    dataframe['Mes']=dataframe['Mes'].replace(7,'Julio')
+    dataframe['Mes']=dataframe['Mes'].replace(8,'Agosto')
+    dataframe['Mes']=dataframe['Mes'].replace(9,'Setiembre')
+    dataframe['Mes']=dataframe['Mes'].replace(10,'Octubre')
+    dataframe['Mes']=dataframe['Mes'].replace(11,'Noviembre')
+    dataframe['Mes']=dataframe['Mes'].replace(12,'Diciembre')
+    
+    
+    
+    
+    #dataframe['Mes'] = pd.to_datetime(dataframe['Fecha'], format='%Y.%m.%d', errors="coerce").dt.month_name(locale='es_ES.utf8')
     dataframe['Año'] =dataframe['Fecha'].dt.year
     dataframe['Año'] =dataframe['Fecha'].dt.year
     dataframe['Semana_'] = dataframe['Fecha'].dt.isocalendar().week.astype(int)

@@ -18,6 +18,7 @@ from apps.graph.build.components.draw.line import *
 from apps.graph.build.utils.dict_colors import *
 #from apps.graph.data.transform_finanzas import balancePivot
 
+from apps.graph.test.utils.crum import get_empresa,get_nombre_user
 
 def costos_agricolas(dff,cols,radio_costos,ejey,simbolo):
             dff_lote=dff.groupby(cols).sum().reset_index()
@@ -263,17 +264,28 @@ def index():
 
         fig_recursos=go.Figure([go.Bar(x=animals, y=[20, 14, 23])])
     """ 
-
     
     app = DjangoDash('index', external_stylesheets=[dbc.themes.BOOTSTRAP])
 
     app.layout = html.Div(
         [
-            #container_index(tipo_empresa,fig_recursos)
-            #container_index(empresa,tipo_empresa,username)
-            
-        ]
+            dmc.Title(
+            f"Bienvenido {get_nombre_user()}", align="center"),
+            dmc.Space(h=20),
+            dmc.Stack(
+                spacing="xs",
+                children=[
+                    
+                    dmc.Skeleton(height=8),
+                    dmc.Skeleton(height=8),
+                    dmc.Skeleton(height=8),
+                ],
+            )
+        ],
+        
     )
+
+
 
                 
             
