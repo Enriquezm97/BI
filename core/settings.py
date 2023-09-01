@@ -21,7 +21,7 @@ SECRET_KEY=os.environ.get('SECRET_KEY')
 #DEBUG = False
 DEBUG = False#'RENDER' not in os.environ
 
-ALLOWED_HOSTS = ['dashboard.nisira.cloud']
+ALLOWED_HOSTS = ['129.213.156.117','127.0.0.1']
 
 #RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 #if RENDER_EXTERNAL_HOSTNAME:
