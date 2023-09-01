@@ -19,51 +19,20 @@
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="{% url "informe_ventas" user.usuario.username %}">Informe de Ventas</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "ventas_exportacion" user.usuario.username %}">Ventas Exportación</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas por CPT</a></li>
+                <!--<li class="nav-item"> <a class="nav-link" href="{% url "ventas_exportacion" user.usuario.username %}">Ventas Exportación</a></li>-->
+                <!--<li class="nav-item"> <a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas por CPT</a></li>-->
                 <li class="nav-item"> <a class="nav-link" href="{% url "vencore" user.usuario.username %}">Seguimiento de Ventas</a></li>
                 <!--<li class="nav-item"> <a class="nav-link" href="{% url "vencomparativo" user.usuario.username %}">Ventas Comparativo</a></li>-->
-                <li class="nav-item"> <a class="nav-link" href="{% url "com-cliente"%}">Ventas Clientes</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "com-producto"%}">Ventas Productos</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo"%}">Ventas Anuales</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url "com-cliente" user.usuario.username%}">Ventas Clientes</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url "com-producto" user.usuario.username%}">Ventas Productos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url "com-cultivo" user.usuario.username%}">Ventas Cultivo</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo" user.usuario.username%}">Ventas Anuales</a></li>
 
               </ul>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-              <i class="icon-columns menu-icon"></i>
-              <span class="menu-title">Comercial Agrícola</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="form-elements">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="{% url "com-cliente-cultivo"%}">Ventas Cliente</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url "com-producto-cultivo"%}">Ventas Productos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url "com-cultivo"%}">Ventas Cultivo</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-              <i class="icon-bar-graph menu-icon"></i>
-              <span class="menu-title">Finanzas</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="charts">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% url "indicador_all" user.usuario.username%}">Todos los Indicadores</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "create_indicador" user.usuario.username%}">Crear Indicador</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "estado_situacion3" user.usuario.username%}">Estado de Situación</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "estado_r" user.usuario.username%}">Estado de Resultados</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "estado_gp" user.usuario.username%}">Estado de Ganancias y Pérdidas</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "costos_generales" user.usuario.username%}">Revisión de GF</a></li>
-                
-              
-              
-              </ul>
-            </div>
-          </li>
+  
+          
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
               <i class="icon-grid-2 menu-icon"></i>
@@ -87,12 +56,7 @@
           </a>
           <div class="collapse" id="charts">
             <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="{% url "indicador_all" user.usuario.username%}">Todos los Indicadores</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "create_indicador" user.usuario.username%}">Crear Indicador</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "estado_situacion3" user.usuario.username%}">Estado de Situación</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "estado_r" user.usuario.username%}">Estado de Resultados</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "estado_gp" user.usuario.username%}">Estado de Ganancias y Pérdidas</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "costos_generales" user.usuario.username%}">Revisión de GF</a></li>
+              
               
             
             
@@ -109,12 +73,13 @@
           <div class="collapse" id="ui-basic">
             <ul class="nav flex-column sub-menu">
               <li class="nav-item"> <a class="nav-link" href="{% url "informe_ventas" user.usuario.username %}">Informe de Ventas</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "ventas_exportacion" user.usuario.username %}">Ventas Exportación</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "ventas_1" user.usuario.username %}">Ventas por CPT</a></li>
+              
+              
               <li class="nav-item"> <a class="nav-link" href="{% url "vencore" user.usuario.username %}">Seguimiento de Ventas</a></li>
               <!--<li class="nav-item"> <a class="nav-link" href="{% url "vencomparativo" user.usuario.username %}">Ventas Comparativo</a></li>-->
-              <li class="nav-item"> <a class="nav-link" href="{% url "com-cliente"%}">Ventas Clientes</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "com-producto"%}">Ventas Productos</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url "com-cliente" user.usuario.username%}">Ventas Clientes</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url "com-producto" user.usuario.username%}">Ventas Productos</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url "com-cultivo" user.usuario.username%}">Ventas Cultivo</a></li>
               <li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo"%}">Ventas Anuales</a></li>
 
             </ul>

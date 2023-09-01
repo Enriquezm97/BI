@@ -23,17 +23,13 @@ DICT_CULTIVOS_COLOR={'Arandano':'#7A325A',
                'Quinua':"#E3C08C",
                 'Granada':"#D77477",
                 'Ensayos':"#000000",
-
-               #'Citrico':
                'Naranja':"#ffbf75",
                'Palto':"#527E03",
                'Zarzamora':"#ff35c2",
                'Duraznos':"#e4c5c4",                
                'Maiz':"#f4ff91",
                'Ninguno':"#1d3d33",
-
                'Ciruelo':"#ff5f7c",
-
                'Manzano':"#9dc09d",
                'Kaki':"#e6a15c",
                'Arandanos':"#b93af8",
@@ -43,7 +39,9 @@ DICT_CULTIVOS_COLOR={'Arandano':'#7A325A',
                'Granada':"#d35d1d",
                'Palto p roduccion':"#527E03",
                'Zapallo':"#cbe03d",
-               'Limon':"#93EE59"
+               'Limon':"#93EE59",
+               'Pecana':"#b16d57",
+               'Mango': "#bb2328"
 
               }
 DIC_RECURSOS_AGRICOLA = {

@@ -19,7 +19,7 @@ SECRET_KEY=os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = False
-DEBUG = False#'RENDER' not in os.environ
+DEBUG = True#'RENDER' not in os.environ
 
 ALLOWED_HOSTS = ['*'
     #"127.0.0.1",
@@ -52,6 +52,7 @@ THIRD_PARTY_APPS = [
     'dpd_static_support',
     'channels',
     'channels_redis',
+    'crum',
     #'dash_ag_grid'
     
 
@@ -74,7 +75,7 @@ MIDDLEWARE= [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django_plotly_dash.middleware.BaseMiddleware',
     #'crum.CurrentRequestUserMiddleware'
-
+    'crum.CurrentRequestUserMiddleware',
 
 
 ]

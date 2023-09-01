@@ -9,6 +9,9 @@ from apps.graph.test.utils.functions.callbacks.callbacks_produccion import *
 from apps.graph.test.utils.functions.callbacks.callbacks_ import create_callback_opened_modal
 from apps.graph.test.utils.blocks.block_card import cardGraph,card,cardSection
 
+from apps.graph.test.utils.crum import get_empresa
+from apps.graph.test.data import data_agricola
+
 
 
 """LA DATA DE PRUEBA"""
@@ -23,8 +26,7 @@ import dash
 #plan de siembra
 def ejecucionCampania():
 
-    df_var_agricolas_default=pd.read_parquet('agricola.parquet', engine='pyarrow')
-    print(df_var_agricolas_default.columns)
+    df_var_agricolas_default= data_agricola(empresa=get_empresa())[0]
     campaña_list=sorted(df_var_agricolas_default['AÑO_CULTIVO'].unique())
     app = DjangoDash('vagricola',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
@@ -116,7 +118,7 @@ def ejecucionCampania():
     create_callback_opened_modal(app, modal_id="modal-line-recurso-agricola",children_out_id="line-recurso-agricola", id_button="maximize-line-recurso-agricola",height_modal=700)
     
 def costosCampania():
-    df_costos_agricola_default=pd.read_parquet('costos.parquet', engine='pyarrow')
+    df_costos_agricola_default=data_agricola(empresa=get_empresa())[1]
     anio_campania = sorted(df_costos_agricola_default['AÑO_CAMPAÑA'].unique())
     app = DjangoDash('vcostos',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([

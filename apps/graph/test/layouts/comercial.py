@@ -13,27 +13,12 @@ from apps.graph.test.utils.functions.functions_dict import extraer_list_value_di
 
 from apps.graph.test.constans import MESES_ORDER
 from crum import get_current_user
+from apps.graph.test.utils.crum import get_empresa
+from apps.graph.test.data import data_comercial
 """""""""""" #MODIFICAR EN EL ETL COMERCIAL
-df_ventas_detalle=pd.read_parquet('comercial_new_etl.parquet', engine='pyarrow')
-df_ventas_detalle['Tipo de Movimiento'] = df_ventas_detalle['Tipo de Movimiento'].astype(object)
-df_ventas_detalle['Tipo de Venta'] = df_ventas_detalle['Tipo de Venta'].astype(object)
-df_ventas_detalle['Tipo de Condicion'] = df_ventas_detalle['Tipo de Condicion'].astype(object)
-df_ventas_detalle['Grupo Producto'] = df_ventas_detalle['Grupo Producto'].astype(object)
-df_ventas_detalle['Subgrupo Producto'] = df_ventas_detalle['Subgrupo Producto'].astype(object)
-df_ventas_detalle['Vendedor'] = df_ventas_detalle['Vendedor'].astype(object)
 
-df_ventas_detalle['Tipo de Movimiento'] = df_ventas_detalle['Tipo de Movimiento'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Tipo de Venta'] = df_ventas_detalle['Tipo de Venta'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Tipo de Condicion'] = df_ventas_detalle['Tipo de Condicion'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Grupo Producto'] = df_ventas_detalle['Grupo Producto'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Subgrupo Producto'] = df_ventas_detalle['Subgrupo Producto'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Vendedor'] = df_ventas_detalle['Vendedor'].fillna('NO ESPECIFICADO')
 
-df_ventas_detalle['Cliente']=df_ventas_detalle['Cliente'].str[:30]
-df_ventas_detalle['Producto']=df_ventas_detalle['Producto'].str[:30]
-#.str[:30]
 
-df_ventas_detalle['Fecha']=df_ventas_detalle['Fecha'].apply(lambda a: pd.to_datetime(a).date())
 
 input_dict_general={
     'Año':{'tipo_componente':'select'},
@@ -49,11 +34,15 @@ input_ventas_x={
     
     'Cliente':{'tipo_componente':'select'},
     'Grupo Producto':{'tipo_componente':'select'},
-    'Moneda':{'tipo_componente':'select'}
+    'Moneda':{'tipo_componente':'select'},
+    'Cultivo':{'tipo_componente':'select'},
+    'Variedad':{'tipo_componente':'select'},
+    
 }
 #anio_campania = sorted(df_ventas_detalle['YEAR'].unique())
 
 def informeComercial(rubro_empresa = 'Agricola'):
+    df_ventas_detalle = data_comercial(empresa=get_empresa())
     
     app = DjangoDash('informe-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
@@ -167,6 +156,7 @@ def informeComercial(rubro_empresa = 'Agricola'):
     create_callback_opened_modal(app, modal_id="modal-funnel-comercial-selector_second",children_out_id="funnel-comercial-selector_second", id_button="maximize-funnel-comercial-selector_second",height_modal=700)
 
 def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
+    df_ventas_detalle = data_comercial(empresa=get_empresa())
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash('segmented-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -265,6 +255,8 @@ def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
 
 
 def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
+    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    print(df_ventas_detalle['Fecha'].unique())
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash('clientes-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -307,20 +299,20 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
             Column([
                 Row([
                     Column([
-                    cardSection(text='Total de Ventas',radius='xs',icon="ion:cash-outline",id_value='card-total')
+                    cardSection(text='Total de Ventas',radius='xs',icon="ion:cash-outline",id_value='card-1')
                     
                     ],size=3),
                     
                     Column([
-                    cardSection(text='Total de Clientes',radius='xs',icon="ion:person",id_value='card-clientes')
+                    cardSection(text='Total de Clientes',radius='xs',icon="ion:person",id_value='card-2')
                     
                     ],size=3),
                     Column([
-                    cardSection(text='N° de Paises',radius='xs',icon="ion:earth-outline",id_value='card-pais')
+                    cardSection(text='N° de Paises',radius='xs',icon="ion:earth-outline",id_value='card-3')
                     
                     ],size=3),
                     Column([
-                    cardSection(text='N° de Vendedores',radius='xs',icon="ion:people-circle-outline",id_value='card-vendedor')
+                    cardSection(text='N° de Vendedores',radius='xs',icon="ion:people-circle-outline",id_value='card-4')
                     
                     ],size=3)
                      
@@ -359,3 +351,267 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     create_callback_opened_modal(app, modal_id="modal-bar-comercial",children_out_id="bar-comercial", id_button="maximize-bar-comercial",height_modal=900)
     create_callback_opened_modal(app, modal_id="modal-bar-secundario-comercial",children_out_id="bar-secundario-comercial", id_button="maximize-bar-secundario-comercial",height_modal=700)
     create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st",height_modal=700)
+    
+def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
+    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    
+    id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
+    id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
+    app = DjangoDash('productos-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+
+    app.layout = Container([
+        Modal(id="modal-bar-comercial", size= "85%"),
+        Modal(id="modal-bar-secundario-comercial", size= "85%"),
+        Modal(id="modal-line-comercial-st", size= "85%"),
+        block_offcanvas_comercial_filter(dict_filtros = filtros, diccionario_componentes= dict_components_comercial(),
+                                        add_filter =[
+                                            dmc.Divider(variant="solid"),
+                                            dmc.Text("% de Productos Mostrados", size="14",weight=500),
+                                            Entry.slider(id = 'slider-percent', value = 20 , 
+                                                        marks = [{"value": 20, "label": "20%"},
+                                                                {"value": 50, "label": "50%"},
+                                                                {"value": 80, "label": "80%"}], 
+                                                        label_tick = False,  step = 10,
+                                                        minimo = 10, maximo = 100),
+                                        ]
+        ),
+        Row([
+            Column([
+                    Button.btnFilter(style={'position': 'absolute','z-index': '99'}),                    
+                    Div(id='title')
+            ],size=8),
+            Column([
+                datepicker_(dataframe=df_ventas_detalle, name_fecha = 'Fecha', name_anio = 'Año', tipo = 'Inicio')
+            ],size=2),
+            Column([
+                datepicker_(dataframe=df_ventas_detalle, name_fecha = 'Fecha', name_anio = 'Año', tipo = 'Fin')
+            ],size=2),
+        ]),
+        Row([
+            Column([
+                
+                DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-comercial', id_maximize = 'maximize-bar-comercial'))
+                #DataDisplay.loadingOverlay(cardGraphwithfilter(id_maximize='maximize-bar-comercial',id_graph='bar-comercial',slider_id ='id-slider'))
+                
+            ],size=5),
+            Column([
+                Row([
+                    Column([
+                    cardSection(text='Total de Ventas',radius='xs',icon="ion:cash-outline",id_value='card-1')
+                    
+                    ],size=3),
+                    
+                    Column([
+                    cardSection(text='Total de Productos',radius='xs',icon="",id_value='card-2')
+                    
+                    ],size=3),
+                    Column([
+                    cardSection(text='N° de Paises',radius='xs',icon="ion:earth-outline",id_value='card-3')
+                    
+                    ],size=3),
+                    Column([
+                    cardSection(text='N° de Vendedores',radius='xs',icon="ion:people-circle-outline",id_value='card-4')
+                    
+                    ],size=3)
+                     
+                ]), 
+               Row([
+                    Column([
+                        Picking.segmented(id='segmented-bar-categoria',value='Cliente',data=[  {'label': 'Cliente', 'value': 'Cliente'},
+                                                                            {'label': 'Tipo de Venta', 'value': 'Tipo de Venta'},   
+                                                                            {'label': 'Pais', 'value': 'Pais'},
+                                                                            {'label': 'Vendedor', 'value': 'Vendedor'}]),
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-secundario-comercial', id_maximize = 'maximize-bar-secundario-comercial'))
+                    ])
+                
+                ]), 
+               Row([
+                    Column([
+                        Picking.segmented(id='segmented-st',value='Mes',data=[  {'label': 'Mensual', 'value': 'Mes'},
+                                                                            {'label': 'Trimestral', 'value': 'Trimestre'},
+                                                                            {'label': 'Semanal', 'value': 'Semana'},
+                                                                            {'label': 'Fecha', 'value': 'Fecha'}]),
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-comercial-st', id_maximize = 'maximize-line-comercial-st'))
+                    ])
+                
+                ]), 
+            ],size=7),
+        ]),
+        Div(id='notifications-update-data'),
+        Store(id='data-values'),
+        Download(),
+    ])
+    create_callback_offcanvas_filters(app)
+    create_callback_filter_comercial_ventas(app, dataframe=df_ventas_detalle,id_inputs= id_list, id_outputs= id_list)
+    create_title_comercial_informe(app=app,title='Ventas Productos ', id_inputs=id_list_title)
+    create_graph_comercial_bar(app,columns_top='Producto')
+    create_graph_comercial_crossfiltering(app=app,column = 'Producto')
+    create_callback_opened_modal(app, modal_id="modal-bar-comercial",children_out_id="bar-comercial", id_button="maximize-bar-comercial",height_modal=900)
+    create_callback_opened_modal(app, modal_id="modal-bar-secundario-comercial",children_out_id="bar-secundario-comercial", id_button="maximize-bar-secundario-comercial",height_modal=700)
+    create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st",height_modal=700)
+    
+    
+def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
+    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    
+    id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
+    id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
+    app = DjangoDash('cultivos-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+
+    app.layout = Container([
+        Modal(id="modal-bar-comercial", size= "85%"),
+        Modal(id="modal-bar-secundario-comercial", size= "85%"),
+        Modal(id="modal-line-comercial-st", size= "85%"),
+        block_offcanvas_comercial_filter(dict_filtros = filtros, diccionario_componentes= dict_components_comercial(),
+                                        add_filter =[
+                                            dmc.Divider(variant="solid"),
+                                            dmc.Text("% de Cultivos Mostrados", size="14",weight=500),
+                                            Entry.slider(id = 'slider-percent', value =100 , 
+                                                        marks = [{"value": 20, "label": "20%"},
+                                                                {"value": 50, "label": "50%"},
+                                                                {"value": 80, "label": "80%"}], 
+                                                        label_tick = False,  step = 10,
+                                                        minimo = 10, maximo = 100),
+                                        ]
+        ),
+        Row([
+            Column([
+                    Button.btnFilter(style={'position': 'absolute','z-index': '99'}),                    
+                    Div(id='title')
+            ],size=8),
+            Column([
+                datepicker_(dataframe=df_ventas_detalle, name_fecha = 'Fecha', name_anio = 'Año', tipo = 'Inicio')
+            ],size=2),
+            Column([
+                datepicker_(dataframe=df_ventas_detalle, name_fecha = 'Fecha', name_anio = 'Año', tipo = 'Fin')
+            ],size=2),
+        ]),
+        Row([
+            Column([
+                
+                DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-comercial', id_maximize = 'maximize-bar-comercial'))
+                #DataDisplay.loadingOverlay(cardGraphwithfilter(id_maximize='maximize-bar-comercial',id_graph='bar-comercial',slider_id ='id-slider'))
+                
+            ],size=5),
+            Column([
+                Row([
+                    Column([
+                    cardSection(text='Total de Ventas',radius='xs',icon="ion:cash-outline",id_value='card-1')
+                    
+                    ],size=3),
+                    
+                    Column([
+                    cardSection(text='Total de Cultivos',radius='xs',icon="ion:leaf-outline",id_value='card-2')
+                    
+                    ],size=3),
+                    Column([
+                    cardSection(text='N° de Paises',radius='xs',icon="ion:earth-outline",id_value='card-3')
+                    
+                    ],size=3),
+                    Column([
+                    cardSection(text='N° de Vendedores',radius='xs',icon="ion:people-circle-outline",id_value='card-4')
+                    
+                    ],size=3)
+                     
+                ]), 
+               Row([
+                    Column([
+                        Picking.segmented(id='segmented-bar-categoria',value='Cliente',data=[  
+                                                                            {'label': 'Cliente', 'value': 'Cliente'},
+                                                                            {'label': 'Producto', 'value': 'Producto'},
+                                                                            {'label': 'Grupo Producto', 'value': 'Grupo Producto'},
+                                                                            {'label': 'Tipo de Venta', 'value': 'Tipo de Venta'},   
+                                                                            {'label': 'Pais', 'value': 'Pais'},
+                                                                            {'label': 'Vendedor', 'value': 'Vendedor'}]),
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-secundario-comercial', id_maximize = 'maximize-bar-secundario-comercial'))
+                    ])
+                
+                ]), 
+               Row([
+                    Column([
+                        Picking.segmented(id='segmented-st',value='Mes',data=[  {'label': 'Mensual', 'value': 'Mes'},
+                                                                            {'label': 'Trimestral', 'value': 'Trimestre'},
+                                                                            {'label': 'Semanal', 'value': 'Semana'},
+                                                                            {'label': 'Fecha', 'value': 'Fecha'}]),
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-comercial-st', id_maximize = 'maximize-line-comercial-st'))
+                    ])
+                
+                ]), 
+            ],size=7),
+        ]),
+        Div(id='notifications-update-data'),
+        Store(id='data-values'),
+        Download(),
+    ])
+    create_callback_offcanvas_filters(app)
+    create_callback_filter_comercial_ventas(app, dataframe=df_ventas_detalle,id_inputs= id_list, id_outputs= id_list)
+    create_title_comercial_informe(app=app,title='Ventas Cultivos ', id_inputs=id_list_title)
+    create_graph_comercial_bar(app,columns_top='Cultivo')
+    create_graph_comercial_crossfiltering(app=app,column = 'Cultivo')
+    create_callback_opened_modal(app, modal_id="modal-bar-comercial",children_out_id="bar-comercial", id_button="maximize-bar-comercial",height_modal=900)
+    create_callback_opened_modal(app, modal_id="modal-bar-secundario-comercial",children_out_id="bar-secundario-comercial", id_button="maximize-bar-secundario-comercial",height_modal=700)
+    create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st",height_modal=700)
+    
+def ventasComparativo(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
+    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    df_ventas_detalle['Año']=df_ventas_detalle['Año'].astype("string")
+    year_list=sorted(df_ventas_detalle['Año'].unique())
+    dict_year=dict(zip(year_list,px.colors.qualitative.Antique))
+    
+    id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
+    id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
+    app = DjangoDash('comercial_comparativo',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+
+    
+    
+    app.layout = Container([
+        Modal(id="modal-pie-year-comparativo", size= "75%"),
+        Modal(id="modal-bar-st-comparativo", size= "90%"),
+        block_offcanvas_comercial_filter(dict_filtros = filtros, diccionario_componentes= dict_components_comercial()),
+        Row([
+            Column([
+                Button.btnFilter(style={'position': 'absolute','z-index': '99'}),  
+                dmc.Title(children=['Comparativo de Ventas Anuales'],order=2,align='center'),                  
+                Div(id='title')
+            ],size=8),
+            Column([
+                 dmc.MultiSelect(id="multiselect-year",label="Seleccione Años",value=[str(year_list[-2]), str(year_list[-3])],data=year_list,size='lg'),
+                #Div(content=[Entry.multiSelect(id = 'multiselect-year',texto = 'Seleccione Años', data = year_list, value = [str(year_list[-2]), str(year_list[-3])])])
+            ],size=4)
+        ]),
+        Row([
+            Column([
+                DataDisplay.loadingOverlay(
+                    tableDag(id ='tabla-interactiva',dashGridOptions={"rowSelection": "multiple"}, style={'font-size':14, 'height': 350, "width": "100%"},column_size=None )
+                )
+            ],size = 3),
+            Column([ 
+                    DataDisplay.loadingOverlay(
+                        tableDag(id ='tabla-resultado',dashGridOptions={"rowSelection": "multiple"}, style={'font-size':14, 'height': 350},column_size=None )
+                        
+                    )
+            ],size = 6),
+            Column([
+                 DataDisplay.loadingOverlay(cardGraph(id_graph = 'pie-year-comparativo', id_maximize = 'maximize-pie-year-comparativo'))
+            ],size = 3),
+        ]),
+        Row([
+            Column([
+             Picking.segmented(id='segmented-st',value='Mes Num',data=[  {'label': 'Mensual', 'value': 'Mes Num'},
+                                                                        {'label': 'Trimestral', 'value': 'Trimestre_'},
+                                                                        {'label': 'Semanal', 'value': 'Semana_'},]),
+             DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-st-comparativo', id_maximize = 'maximize-bar-st-comparativo'))
+            ],size = 12)
+        ]),
+        Div(id='notifications-update-data'),
+        Store(id='data-values'),
+        Download(),
+    ])
+    create_callback_offcanvas_filters(app)
+    create_callback_filter_comercial_simple(app, dataframe=df_ventas_detalle,id_inputs= id_list, id_outputs= id_list)
+    create_title_comercial_informe(app=app,title='', id_inputs=id_list_title)
+    callback_table_interactive(app,list_empty = [],dict_year = dict_year)
+    callback_table_resultado(app, list_for_graph = [],dict_colors= dict_year)
+    create_callback_opened_modal(app, modal_id="modal-pie-year-comparativo",children_out_id="pie-year-comparativo", id_button="maximize-pie-year-comparativo",height_modal=600)
+    create_callback_opened_modal(app, modal_id="modal-bar-st-comparativo",children_out_id="pie-bar-st-comparativo", id_button="maximize-bar-st-comparativo",height_modal=700)
+    

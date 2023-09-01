@@ -34,7 +34,7 @@ from apps.graph.build.containers.Finanzas.finanzas import dashEstadoSituacion,da
 from django.core.cache import cache
 #####new structure
 from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,resumenCampania
-from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes
+from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes,ventasProductos,ventasCultivos,ventasComparativo
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin,AsistenteMixin
 
 def home(request):
@@ -514,12 +514,10 @@ class dashCP(LoginRequiredMixin,AsistenteMixin,View):
          
         #dashboard=dashComercialCliente()
         #dashboard=dashComercialClienteCultivo()
-        dashboard=dashComercialProducto()
+        dashboard=ventasProductos()
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
-        print(empresa)
-        print(type(empresa))
-        print(empresa[0])
+        
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
         context = {'dashboard':dashboard,'empresa':empresa[0]}
@@ -560,10 +558,8 @@ class dashCCultivo(LoginRequiredMixin,AsistenteMixin,View):
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProducto()
         #dashboard=dashComercialProductoCultivo()
-        dashboard=dashComercialCultivo()
-        print(empresa)
-        print(type(empresa))
-        print(empresa[0])
+        dashboard=ventasCultivos()
+        
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
         context = {'dashboard':dashboard,'empresa':empresa[0]}
@@ -582,7 +578,7 @@ class dashCComparativo(LoginRequiredMixin,AsistenteMixin,View):
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
-        dashboard=dashComercialComparativo()
+        dashboard=ventasComparativo()
         print(empresa)
         print(type(empresa))
         print(empresa[0])

@@ -63,6 +63,7 @@ def dict_components_comercial():
                     
             }
 def datepicker_(dataframe = pd.DataFrame(),name_fecha = '', name_anio ='', tipo = 'Inicio'):
+    dataframe['Fecha']=dataframe['Fecha'].apply(lambda a: pd.to_datetime(a).date())
     fecha_minima=str(dataframe[name_fecha].min())
     fecha_maxima=str(dataframe[name_fecha].max())
     print(fecha_minima,fecha_maxima)

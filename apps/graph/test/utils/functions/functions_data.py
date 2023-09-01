@@ -32,7 +32,10 @@ def create_stack_np(dataframe = pd.DataFrame(), lista = []):
 def create_hover_custom(lista = []):
     string_hover = ''
     for i,element in zip(range(len(lista)),lista):
-        string_hover = string_hover+'<br><b>'+element+': %{customdata['+str(i)+']}</b>'
+         if element == 'AREA_CAMPAÑA' or element == 'AREA' or element == 'Area':
+               string_hover = string_hover+'<br>'+element+': <b>%{customdata['+str(i)+']:,.2f}</b>'
+         else:
+               string_hover = string_hover+'<br>'+element+': <b>%{customdata['+str(i)+']}</b>'   
     return string_hover
 
 def create_col_for_dataframe(id_components = [],dict_cols_dataframe = {}):
@@ -80,7 +83,7 @@ def hoversize_recurso_agricola(recurso = ''):
    elif recurso=='Maquinaria':
         hover='<br><b>Cantidad</b>: %{y:.1f} h<br> <b>Hm/Ha</b>: %{customdata[0]:.1f} <br>'
         size_text=13
-   elif recurso=='Mano de Obra':
+   elif recurso=='Mano de obra':
         hover='<br><b>Cantidad</b>: %{y:.1f} jr<br> <b>Jr/Ha</b>: %{customdata[0]:.1f}<br>'
         size_text=13
    elif recurso=='Riego':
@@ -202,4 +205,27 @@ def create_dataframe_costos_tipo(
      else: 
           return df.groupby(category_col)[numeric_col].sum().reset_index().sort_values(numeric_col[0],ascending=True) 
           
-     
+
+def valueSelectElementTable(selected,list_add):
+    for elemento in selected:   
+        if (elemento in list_add) == False:
+            list_add.append(elemento)     
+    if len(selected)==1:
+        value_selected=int(selected[0])
+    elif len(selected)>1:
+        if (list_add[0] in selected)==True:
+            value_selected=int(list_add[0])
+        elif (list_add[0] in selected)==False:
+            if list_add[-1] in selected:  
+                value_selected=int(list_add[-1])
+            else: 
+                list_add.remove(list_add[-1])
+                value_selected=int(list_add[-1])
+    return str(value_selected)
+
+def deleteElementList(lista,elemento_eliminar):
+            new_lista=[]
+            for element in lista:
+                if element!=elemento_eliminar:
+                       new_lista.append(element)
+            return new_lista

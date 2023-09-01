@@ -39,7 +39,8 @@ class GraphLinepx():
         df = pd.DataFrame(), x = '', y = '', color = None, height = 360,x_title = '',
         y_title = '', title_legend = '', order = {}, title ='',
         template = 'plotly_white', discrete_color = {}, custom_data=[],
-        hover_template = '', size_text = 11, legend_orizontal = True, markers = False,legend_font_size = 12
+        hover_template = '', size_text = 11, legend_orizontal = True, markers = False,legend_font_size = 12,
+        tickfont_x = 11, tickfont_y = 11
     ):
         ejex = 'Semana' if x == 'week' else 'Fecha'
         figure = px.line(
@@ -64,8 +65,8 @@ class GraphLinepx():
             legend=dict(font=dict(size=legend_font_size,color="black"))
         )
         figure.update_traces(hovertemplate =hover_template,cliponaxis=False)
-        figure.update_xaxes(tickfont=dict(size=11),color='rgba(0, 0, 0, 0.8)',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True) 
-        figure.update_yaxes(tickfont=dict(size=11),color='rgba(0, 0, 0, 0.8)',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)
+        figure.update_xaxes(tickfont=dict(size=tickfont_x),color='rgba(0, 0, 0, 0.8)',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True) 
+        figure.update_yaxes(tickfont=dict(size=tickfont_y),color='rgba(0, 0, 0, 0.8)',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)
         figure.update_layout(hovermode="x unified",hoverlabel=dict(font_size=size_text,font_family="sans-serif",bgcolor='rgba(255,255,255,0.75)'))
         if legend_orizontal == True:
             figure.update_layout(legend=dict(orientation="h",yanchor="bottom",xanchor="right",y=1.02,x=1))
@@ -90,11 +91,11 @@ class GraphBargo():
         if orientation == 'h':
             value_left = space_ticked
             value_bottom = 40
-            hover = '<br><b>'+y+': %{y}</b><br><b>'+x+': %{x:,.2f}</b>'+hover_aditional_datacustom
+            hover = '<br>'+y+': <b>%{y}</b><br>'+x+': <b>%{x:,.2f}</b>'+hover_aditional_datacustom
         elif orientation == 'v': 
             value_left = 60
             value_bottom = space_ticked
-            hover = '<br><b>'+x+': %{x}</b><br><b>'+y+': %{y:,.2f}</b>'+hover_aditional_datacustom
+            hover = '<br>'+x+': <b>%{x}</b><br>'+y+': <b>%{y:,.2f}</b>'+hover_aditional_datacustom
             
         if  type(list_or_color) == list:
                 value_colors =  list_or_color  
