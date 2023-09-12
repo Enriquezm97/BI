@@ -113,7 +113,8 @@ def informeComercial(rubro_empresa = 'Agricola'):
                                     DataDisplay.loadingOverlay(
                                             cardGraph(
                                                 id_graph = 'pie-comercial-vendedor', 
-                                                id_maximize = 'maximize-pie-comercial-vendedor'
+                                                id_maximize = 'maximize-pie-comercial-vendedor',
+                                                
                                             )
                                     )
                                 ],size=6) 
@@ -188,7 +189,8 @@ def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
                 DataDisplay.loadingOverlay(
                                             cardGraph(
                                                 id_graph = 'line-comercial-st', 
-                                                id_maximize = 'maximize-line-comercial-st'
+                                                id_maximize = 'maximize-line-comercial-st',
+                                                height=300
                                             )
                                     )
             ],size=7),
@@ -200,7 +202,8 @@ def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
                 DataDisplay.loadingOverlay(
                                             cardGraph(
                                                 id_graph = 'pie-comercial', 
-                                                id_maximize = 'maximize-pie-comercial'
+                                                id_maximize = 'maximize-pie-comercial',
+                                                height=300
                                             )
                                     )
             
@@ -292,7 +295,7 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
         Row([
             Column([
                 
-                DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-comercial', id_maximize = 'maximize-bar-comercial'))
+                DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-comercial', id_maximize = 'maximize-bar-comercial',height=800))
                 #DataDisplay.loadingOverlay(cardGraphwithfilter(id_maximize='maximize-bar-comercial',id_graph='bar-comercial',slider_id ='id-slider'))
                 
             ],size=5),
@@ -323,7 +326,7 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
                                                                             {'label': 'Tipo de Venta', 'value': 'Tipo de Venta'},   
                                                                             {'label': 'Pais', 'value': 'Pais'},
                                                                             {'label': 'Vendedor', 'value': 'Vendedor'}]),
-                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-secundario-comercial', id_maximize = 'maximize-bar-secundario-comercial'))
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-secundario-comercial', id_maximize = 'maximize-bar-secundario-comercial',height=300))
                     ])
                 
                 ]), 
@@ -333,7 +336,7 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
                                                                             {'label': 'Trimestral', 'value': 'Trimestre'},
                                                                             {'label': 'Semanal', 'value': 'Semana'},
                                                                             {'label': 'Fecha', 'value': 'Fecha'}]),
-                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-comercial-st', id_maximize = 'maximize-line-comercial-st'))
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-comercial-st', id_maximize = 'maximize-line-comercial-st',height=300))
                     ])
                 
                 ]), 
@@ -390,7 +393,7 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
         Row([
             Column([
                 
-                DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-comercial', id_maximize = 'maximize-bar-comercial'))
+                DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-comercial', id_maximize = 'maximize-bar-comercial',height=800))
                 #DataDisplay.loadingOverlay(cardGraphwithfilter(id_maximize='maximize-bar-comercial',id_graph='bar-comercial',slider_id ='id-slider'))
                 
             ],size=5),
@@ -421,7 +424,7 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
                                                                             {'label': 'Tipo de Venta', 'value': 'Tipo de Venta'},   
                                                                             {'label': 'Pais', 'value': 'Pais'},
                                                                             {'label': 'Vendedor', 'value': 'Vendedor'}]),
-                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-secundario-comercial', id_maximize = 'maximize-bar-secundario-comercial'))
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-secundario-comercial', id_maximize = 'maximize-bar-secundario-comercial',height=300))
                     ])
                 
                 ]), 
@@ -431,7 +434,7 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
                                                                             {'label': 'Trimestral', 'value': 'Trimestre'},
                                                                             {'label': 'Semanal', 'value': 'Semana'},
                                                                             {'label': 'Fecha', 'value': 'Fecha'}]),
-                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-comercial-st', id_maximize = 'maximize-line-comercial-st'))
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-comercial-st', id_maximize = 'maximize-line-comercial-st',height=300))
                     ])
                 
                 ]), 
@@ -488,7 +491,7 @@ def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
         Row([
             Column([
                 
-                DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-comercial', id_maximize = 'maximize-bar-comercial'))
+                DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-comercial', id_maximize = 'maximize-bar-comercial',height=800))
                 #DataDisplay.loadingOverlay(cardGraphwithfilter(id_maximize='maximize-bar-comercial',id_graph='bar-comercial',slider_id ='id-slider'))
                 
             ],size=5),
@@ -522,7 +525,7 @@ def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
                                                                             {'label': 'Tipo de Venta', 'value': 'Tipo de Venta'},   
                                                                             {'label': 'Pais', 'value': 'Pais'},
                                                                             {'label': 'Vendedor', 'value': 'Vendedor'}]),
-                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-secundario-comercial', id_maximize = 'maximize-bar-secundario-comercial'))
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'bar-secundario-comercial', id_maximize = 'maximize-bar-secundario-comercial',height=300))
                     ])
                 
                 ]), 
@@ -532,7 +535,7 @@ def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
                                                                             {'label': 'Trimestral', 'value': 'Trimestre'},
                                                                             {'label': 'Semanal', 'value': 'Semana'},
                                                                             {'label': 'Fecha', 'value': 'Fecha'}]),
-                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-comercial-st', id_maximize = 'maximize-line-comercial-st'))
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-comercial-st', id_maximize = 'maximize-line-comercial-st',height=300))
                     ])
                 
                 ]), 

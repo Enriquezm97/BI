@@ -139,14 +139,14 @@ def create_graph_informe_comercial(app):
                showticklabel_y=True, 
                xaxis_title = importe, template= 'none', list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Alphabet
             ),
-            GraphBargo.bar_(df=meses_df_12, x= 'Mes', y= importe,orientation= 'v', height = 320, 
+            GraphBargo.bar_(df=meses_df_12, x= 'Mes', y= importe,orientation= 'v', height = 400, 
                 title= 'Ventas por Mes', customdata=['Porcentaje'],space_ticked= 50, text= importe, yaxis_title= importe,xaxis_title= 'Mes',
                 template='none',list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Set3
             ),
             GraphFunnelgo.funnel_(df = grupo_producto_df, x = importe, y = 'Grupo Producto', height = 400,xaxis_title = importe, yaxis_title = 'Grupo Producto', title = 'Grupo Producto mas vendido',list_or_color=lista_colores,size_tickfont=size_ticked),
-            GraphPiego.pie_(df = pais_df, title = 'Ventas - País',label_col = 'Pais', value_col = importe, height = 310, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
+            GraphPiego.pie_(df = pais_df, title = 'Ventas - País',label_col = 'Pais', value_col = importe, height = 400, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
                             textfont_size = 10),
-            GraphPiego.pie_(df = vendedor_df, title = 'Ventas - Vendedor',label_col = 'Vendedor', value_col = importe, height = 310, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
+            GraphPiego.pie_(df = vendedor_df, title = 'Ventas - Vendedor',label_col = 'Vendedor', value_col = importe, height = 400, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
                             textfont_size = 10),
         ]
            

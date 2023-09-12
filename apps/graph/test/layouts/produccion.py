@@ -165,14 +165,16 @@ def costosCampania():
             DataDisplay.loadingOverlay(
                         cardGraph(
                             id_graph='bar-costos-cultivo', 
-                            id_maximize = 'maximize-bar-costos-cultivo')
+                            id_maximize = 'maximize-bar-costos-cultivo',
+                            height=485)
             )
         ],size=4),
         Column([
             DataDisplay.loadingOverlay(
                         cardGraph(
                             id_graph='bar-costos-variedad', 
-                            id_maximize = 'maximize-bar-costos-variedad')
+                            id_maximize = 'maximize-bar-costos-variedad',
+                            height=485)
                     )
         ],size=4),
         Column([
@@ -189,7 +191,8 @@ def costosCampania():
                     DataDisplay.loadingOverlay(
                         cardGraph(
                             id_graph='pie-costos-tipo', 
-                            id_maximize = 'maximize-pie-costos-tipo')
+                            id_maximize = 'maximize-pie-costos-tipo',
+                            height=280)
                     )
                 ])
             ]),
@@ -203,14 +206,14 @@ def costosCampania():
                  DataDisplay.loadingOverlay(
                         cardGraph(
                             id_graph='map-costos-lt', 
-                            id_maximize = 'maximize-map-costos-lt')
+                            id_maximize = 'maximize-map-costos-lt',height=300)
                 )   
             ],size=5), 
            Column([
                     DataDisplay.loadingOverlay(
                         cardGraph(
                             id_graph='bar-costos-lote', 
-                            id_maximize = 'maximize-bar-costos-lote')
+                            id_maximize = 'maximize-bar-costos-lote',height=300)
                     )
             ],size=7), 
         ]),
