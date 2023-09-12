@@ -526,7 +526,7 @@ def estadoGP():
     )
     def update_title(year,moneda):
             moneda_text = 'Dolares' if moneda == 'importe_mex' else 'Soles'
-            return dmc.Title(children=[f'Estado de Ganancias y Pérdidas'],order=2,align='center')
+            return dmc.Title(children=[f'Estado de Ganancias y Pérdidas '],order=2,align='center')
     
     @app.callback(
         
