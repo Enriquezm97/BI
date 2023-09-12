@@ -35,6 +35,7 @@ from django.core.cache import cache
 #####new structure
 from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,resumenCampania
 from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes,ventasProductos,ventasCultivos,ventasComparativo
+from apps.graph.test.layouts.finanzas import estadoResultados,estadoGP,crear_ratio_finanzas
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin,AsistenteMixin
 
 def home(request):
@@ -82,7 +83,7 @@ class Test2View(View):
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
         #dashboard=informeComercial()
-        dashboard = resumenCampania()
+        dashboard = crear_ratio_finanzas()
         print(empresa)
         print(type(empresa))
         print(empresa[0])
@@ -176,7 +177,7 @@ class EstadodeResultadosView(LoginRequiredMixin,View):
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         #dashboard=hectareaSembrada('68.168.108.184')
-        dashboard=estadodeResultadosFinanzas(empresa[0])
+        dashboard=estadoResultados()#estadodeResultadosFinanzas(empresa[0])
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Otros/estado_resultados.html',context)
 
@@ -388,7 +389,7 @@ class EstadoGananciasPerdidasView(LoginRequiredMixin,AnalistaMixin,View):
         #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         #dashboard=ventas2(empresa[0])
-        dashboard=dashEstadoGananciasPerdidas()#contenedoresExportados2('ARONA',True)
+        dashboard=estadoGP()#dashEstadoGananciasPerdidas()#contenedoresExportados2('ARONA',True)
         context = {'dashboard':dashboard}
        
         return render(request,'dashboards/Finanzas/estado_gp.html',context)
@@ -414,10 +415,10 @@ class FinanzasEstadoResultados(LoginRequiredMixin,AnalistaMixin,View):
         #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         #dashboard=ventas2(empresa[0])
-        dashboard=dashER()#contenedoresExportados2('ARONA',True)
+        dashboard=estadoResultados()#contenedoresExportados2('ARONA',True)
         context = {'dashboard':dashboard}
        
-        return render(request,'dashboards/Finanzas/estado_resultados.html',context)
+        return render(request,'dashboards/Finanzas/finanzas_estado_resultados.html',context)
 
 
 

@@ -60,6 +60,11 @@ df_ventas_detalle['Cliente']=df_ventas_detalle['Cliente'].str[:30]
 df_ventas_detalle['Producto']=df_ventas_detalle['Producto'].str[:30]
 df_ventas_detalle['Fecha']=df_ventas_detalle['Fecha'].apply(lambda a: pd.to_datetime(a).date())
 
+
+bc_df = pd.read_parquet('bc_paraiso.parquet', engine='pyarrow')
+finanzas_df = etl_bc(bc_df)
+
+
 def data_agricola(empresa = ''):
     if empresa == 'FUNDO ELPARAISO':
         return agricola_df,costos_agricola_df
@@ -73,3 +78,6 @@ def data_comercial(empresa = ''):
     else:
         print("data nisira")
         return df_ventas_detalle
+
+
+        

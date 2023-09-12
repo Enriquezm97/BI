@@ -32,7 +32,26 @@
             </div>
           </li>
   
-          
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+              <i class="icon-bar-graph menu-icon"></i>
+              <span class="menu-title">Finanzas</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="charts">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{% url "indicador_all" user.usuario.username%}">Todos los Indicadores</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url "create_indicador" user.usuario.username%}">Crear Indicador</a></li>
+              <!--  <li class="nav-item"> <a class="nav-link" href="{% url "estado_situacion3" user.usuario.username%}">Estado de Situación</a></li>-->
+                <li class="nav-item"> <a class="nav-link" href="{% url "estado_r" user.usuario.username%}">Estado de Resultados</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url "estado_gp" user.usuario.username%}">Estado de Ganancias</a></li>
+              <!--  <li class="nav-item"> <a class="nav-link" href="{% url "costos_generales" user.usuario.username%}">Revisión de GF</a></li>-->
+                
+              
+              
+              </ul>
+            </div>
+          </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
               <i class="icon-grid-2 menu-icon"></i>
@@ -56,7 +75,12 @@
           </a>
           <div class="collapse" id="charts">
             <ul class="nav flex-column sub-menu">
-              
+              <li class="nav-item"> <a class="nav-link" href="{% url "indicador_all" user.usuario.username%}">Todos los Indicadores</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url "create_indicador" user.usuario.username%}">Crear Indicador</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url "estado_situacion3" user.usuario.username%}">Estado de Situación</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url "estado_r" user.usuario.username%}">Estado de Resultados</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url "estado_gp" user.usuario.username%}">Estado de Ganancias y Pérdidas</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url "costos_generales" user.usuario.username%}">Revisión de GF</a></li>
               
             
             

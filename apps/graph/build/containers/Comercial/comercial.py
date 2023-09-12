@@ -7171,10 +7171,10 @@ def graphPinta2(df,element_seleccionado,lista_iteracion,lista_order_year,ejex,im
         fig.add_trace(
             go.Scatter(
                 x=df[ejex], 
-                y=df[f'%-{lista_order_year[0]}'], 
+                y=df[f'% - {lista_order_year[0]}'], 
                 name=f"Crecimiento-{lista_order_year[0]}", 
                 yaxis="y2",
-                text=df[f'%-{lista_order_year[0]}'],
+                text=df[f'% - {lista_order_year[0]}'],
                 textposition="bottom center",
                 marker_color=px.colors.qualitative.Prism[1],
                 hovertemplate =hover_selected_linea,
@@ -7187,10 +7187,10 @@ def graphPinta2(df,element_seleccionado,lista_iteracion,lista_order_year,ejex,im
             fig.add_trace(
                  go.Scatter(
                     x=df[ejex], 
-                    y=df[f'%-{year_percents}'], 
+                    y=df[f'% - {year_percents}'], 
                     name=f"Crecimiento-{year_percents}", 
                     yaxis="y2",
-                    text=df[f'%-{year_percents}'],
+                    text=df[f'% - {year_percents}'],
                     textposition="bottom center",
                     marker_color=px.colors.qualitative.Dark2[i],
                     hovertemplate =hover_selected_linea,
@@ -7205,7 +7205,7 @@ def graphPinta2(df,element_seleccionado,lista_iteracion,lista_order_year,ejex,im
             fig.add_trace(
                  go.Scatter(
                     x=df[ejex], 
-                    y=df[f'%-{year_percents}'], 
+                    y=df[f'% - {year_percents}'], 
                     name=f"Crecimiento-{year_percents}", 
                     yaxis="y2",
                     text=df[f'%-{year_percents}'],

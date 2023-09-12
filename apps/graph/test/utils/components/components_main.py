@@ -134,7 +134,7 @@ class DataDisplay():
     def tabss( content=[], value = ''):
         return dmc.Tabs(children=content,value= value)
     def text(id = '', text = '',weight = 800, align = "center"):
-        return dmc.Text(text, weight=weight,align=align),
+        return dmc.Text(text, weight=weight,align=align)
             
                                     
 
@@ -196,11 +196,11 @@ class Button():
                             ),
             )
     def button(
-        text="",variant="filled",color="indigo",ids=None
+        text="",variant="filled",color="indigo",id=None, full_width = False
     ):
         return html.Div(
                 [
-                    dmc.Button(text,variant=variant,color=color,id=ids),
+                    dmc.Button(text,variant=variant,color=color,id=id, fullWidth= full_width),
                 ]
             )
     
@@ -434,9 +434,9 @@ class Entry():
         )    
     
     def textInput(
-        label="",id='',required=False,size="sm",error=False,value = None
+        label="",id='',required=False,size="sm",error=False,value = None,place = ''
     ):
-        return html.Div([dmc.TextInput(label=label,id=id,required=required,size=size,error=error,value=value)]) 
+        return html.Div([dmc.TextInput(label=label,id=id,required=required,size=size,error=error,value=value,placeholder=place)]) 
     
     def numberInput(
         label="",id=None,value=0,precision=2,minimo=-10,step=0.01
@@ -453,11 +453,11 @@ class Entry():
         )
     
     def textAreaInput(
-        label="",place="",autosize=True,minimorow=2,ids=None
+        label="",place="",autosize=True,minimorow=2,id=None
     ):
         return html.Div(
             [dmc.Textarea(
-                id=ids,
+                id=id,
                 label=label,
                 placeholder=place,
                 autosize=autosize,

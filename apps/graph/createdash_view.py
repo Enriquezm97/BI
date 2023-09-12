@@ -17,6 +17,7 @@ from apps.users.models import Empresa,Usuario
 from apps.graph.models import Indicador
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin
+from apps.graph.test.layouts.finanzas import crear_ratio_finanzas
 
 class FormIndicadorView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
@@ -25,7 +26,7 @@ class FormIndicadorView(LoginRequiredMixin,AnalistaMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        dashboard=formIndicador(empresa[0],id_user)
+        dashboard=crear_ratio_finanzas(empresa[0],id_user)
         context = {'dashboard':dashboard}
         return render(request,'dash_created/Indicadores/form_indicador.html',context)
 

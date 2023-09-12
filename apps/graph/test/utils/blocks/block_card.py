@@ -14,7 +14,8 @@ def cardGraph(
     id_graph='id-graph',
     with_id=True,
     fig=None,
-    icon_maximize=True
+    icon_maximize=True,
+    height = 400
 ):
     if icon_maximize == True:
         #padding
@@ -30,7 +31,7 @@ def cardGraph(
                                     withBorder=True,
                                     shadow="sm",
                                     radius="md",
-                                    style={'padding': "0px"}
+                                    style={'padding': "0px", 'height':height}
                                 
                                 )
             ])
@@ -46,7 +47,7 @@ def cardGraph(
                                     withBorder=True,
                                     shadow="sm",
                                     radius="md",
-                                    style={'padding': "0px"}
+                                    style={'padding': "0px", 'height':height}
                                 )
             ])
     else:
@@ -62,7 +63,7 @@ def cardGraph(
                                         withBorder=True,
                                         shadow="sm",
                                         radius="md",
-                                        style={'padding': "0px"}
+                                        style={'padding': "0px", 'height':height}
                                     )
                 ])
             elif with_id == False:
@@ -77,7 +78,7 @@ def cardGraph(
                                         withBorder=True,
                                         shadow="sm",
                                         radius="md",
-                                        style={'padding': "0px"}
+                                        style={'padding': "0px", 'height':height}
                                     )
                 ])
                 
@@ -172,3 +173,33 @@ def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '
             radius = radius,
 
         )
+    
+    
+    
+color1 = 'rgb(71, 214, 171)'
+color2 = 'rgb(3, 20, 26)'
+color3 = 'rgb(79, 205, 247)'
+fontweight = 700
+def cardGF(id = 'card-value',value_total=90000,text='owo',list_element=[{'value': 59, 'color': color1, 'label': '59%', "tooltip": "Docs - 14GB"},{'value': 35, 'color': color2, 'label': '35%'},{'value': 25, 'color': color3},]):
+    return dmc.Card(
+                
+                children=[
+                dmc.Group([
+                    dmc.Text(id = id ,children=value_total,style={"fontSize": 25}, weight=fontweight),
+                    #dmc.Text('18%', size='xs', color='rgb(9, 146, 104)'),
+                    #dmc.Text(html.I(className='fas fa-arrow-up fa-fw fa-xs'), color='rgb(9, 146, 104)')
+                ], spacing='0.5rem', sx={'align-items': 'baseline'}),
+                dmc.Text(text, size='xl', color='dimmed'),
+                dmc.Progress(
+                    size='lg',
+                    sections=list_element, 
+                    #mt='2.125rem'
+                ),
+                
+
+                ],
+                withBorder=True,
+                shadow='xl',
+                radius='md',
+                #style={'width': 440}
+            )

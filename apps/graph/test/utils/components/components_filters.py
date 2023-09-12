@@ -25,7 +25,7 @@ def dict_components_comercial():
     select_moneda = Entry.select(
                                 id = 'select-moneda', texto = "Moneda", size = 'sm',
                                 data=[
-                                     {"value": "Importe Soles", "label": "PEN"},
+                                     
                                     {"value": "Importe Dolares", "label": "USD"}
                                     ],
                                 value='Importe Dolares',
@@ -59,7 +59,7 @@ def dict_components_comercial():
                     'Variedad' : {'select':{'id':'select-variedad','componente':select_variedad},'multiselect':{}},
                     'Formato' : {'select':{'id':'select-formato','componente':select_formato},'multiselect':{}},
                     'Moneda' : {'select':{'id':'select-moneda','componente': select_moneda},'multiselect':{}},
-                    #'Fecha':{'datepicker-inicio':{'id':'datepicker-inicio','componente':'owo'},'datepicker-fin':{'id':'datepicker-fin','componente':'uwu'}}
+                    
                     
             }
 def datepicker_(dataframe = pd.DataFrame(),name_fecha = '', name_anio ='', tipo = 'Inicio'):

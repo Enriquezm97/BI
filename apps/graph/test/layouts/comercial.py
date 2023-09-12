@@ -453,7 +453,6 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
 def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     df_ventas_detalle = data_comercial(empresa=get_empresa())
-    
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash('cultivos-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)

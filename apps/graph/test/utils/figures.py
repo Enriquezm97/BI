@@ -169,6 +169,88 @@ class GraphBargo():
 
         return figure
 
+class GraphBarpx():
+    def bar_(df = pd.DataFrame(), x = '', y = '', text = '', orientation = 'v', height = 400 ,
+        title = '', xaxis_title = '',yaxis_title = '', showticklabel_x = True, 
+        showticklabel_y = True , customdata = [],left_space = 40,bottom_space = 40,
+        template = 'plotly_white', size_tickfont = 11, title_font_size = 20, clickmode = False
+    ):      
+            if len(customdata)>0:
+                custom = create_stack_np(dataframe = df, lista = customdata)
+                hover_aditional_datacustom = create_hover_custom(lista = customdata)
+            else:
+                custom = []
+                hover_aditional_datacustom = ""
+            figure=px.bar(df, x=x, y=y,text=y,custom_data=custom)
+            figure.update_traces(hovertemplate='<br>'+x+': <b>%{x}</b><br>'+y+': <b>%{y:,.2f}</b>'+hover_aditional_datacustom)
+            
+            figure.update_xaxes(type='category')
+            figure.update_traces(texttemplate='%{text:,.0f}', textposition='outside',cliponaxis=False,hoverlabel=dict(font_size=13,bgcolor='rgba(255,255,255,0.75)',font_family="sans-serif",font_color = 'black'))
+            
+            figure.update_layout(
+                template = template,
+                title={'text': f"<b>{title}</b>",'y':0.97,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+                #title_font_color="#145f82",
+                xaxis_title='<b>'+xaxis_title+'</b>',
+                yaxis_title='<b>'+yaxis_title+'</b>',
+                legend_title="",
+                #font=dict(size=15,color="black"),
+                title_font_family="sans-serif", 
+                title_font_size = title_font_size,
+                title_font_color = "rgba(0, 0, 0, 0.7)",
+                height = height, 
+                
+            )
+            if clickmode == True:
+                figure.update_layout(clickmode='event+select')
+            #size_list = len(df[x].unique()) if orientation == 'v' else len(df[y].unique())
+            figure.update_xaxes(tickfont=dict(size=size_tickfont),color='rgba(0, 0, 0, 0.7)',showticklabels = showticklabel_x,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+            figure.update_yaxes(tickfont=dict(size=size_tickfont),color='rgba(0, 0, 0, 0.7)',showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
+            figure.update_layout(margin=dict(l = left_space, r = 40, b= bottom_space, t = 40, pad = 1))
+            #figure.update_yaxes(showline=True, linewidth=2, linecolor='black')#, gridcolor='Red'
+            
+            
+            return figure
+class GraphAreapx():
+    def area_(
+        df = pd.DataFrame(), x = '', y = '', color = None, height = 360,x_title = '',
+        y_title = '', title_legend = '', order = {}, title ='',
+        template = 'plotly_white', discrete_color = {}, custom_data=[],
+         size_text = 11, legend_orizontal = True, markers = False,legend_font_size = 12,
+        tickfont_x = 11, tickfont_y = 11
+    ):
+        figure = px.area(
+            df, x = x, y = y, color = color , template = template,
+            color_discrete_map = discrete_color, 
+             hover_name = color,
+            custom_data = custom_data,
+            markers = markers,
+            category_orders=order,
+            #color_discrete_sequence  = '#0d6efd'
+        )
+        figure.update_layout(
+            title = f"<b>{title}</b>",
+            title_font_family="sans-serif", 
+            title_font_size = 18,
+            title_font_color = "rgba(0, 0, 0, 0.7)",
+            margin = dict( l = 20, r = 20, b = 10, t = 40, pad = 0, autoexpand = True),
+            height = height,
+            xaxis_title = '<b>'+x_title+'</b>',
+            yaxis_title = '<b>'+y_title+'</b>',
+            legend_title_text = title_legend,
+            legend=dict(font=dict(size=legend_font_size,color="black"))
+        )
+        figure.update_traces(hovertemplate ='<br>'+y+': <b>%{y:,.2f}</b>',
+                             cliponaxis=False)
+        figure.update_xaxes(tickfont=dict(size=tickfont_x),color='rgba(0, 0, 0, 0.8)',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True) 
+        figure.update_yaxes(tickfont=dict(size=tickfont_y),color='rgba(0, 0, 0, 0.8)',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)
+        figure.update_layout(hovermode="x unified",hoverlabel=dict(font_size=size_text,font_family="sans-serif",bgcolor='rgba(255,255,255,0.75)'))#
+        if legend_orizontal == True:
+            figure.update_layout(legend=dict(orientation="h",yanchor="bottom",xanchor="right",y=1.02,x=1))
+        return figure
+        
+        
+
 class GraphPiego():
     def pie_(df = pd.DataFrame(),label_col = '', 
              value_col = '',list_or_color = None, dict_color = None,
@@ -289,3 +371,4 @@ class GraphFunnelgo():
         figure.update_yaxes(tickfont=dict(size=size_tickfont),color='rgba(0, 0, 0, 0.7)',showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)
         figure.update_layout(margin=dict(l = 50, r = 40, b= 30, t = 40, pad = 1))
         return figure
+

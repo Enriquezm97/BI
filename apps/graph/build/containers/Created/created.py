@@ -18,6 +18,8 @@ from apps.graph.build.components.mantine_react_components.loaders import loading
 from apps.graph.build.components.mantine_react_components.cards import cardGraph,cardTableDag,cardShowTotal,actionIcon,button_style
 import dash_ag_grid as dag
 
+from apps.graph.test.utils.functions.functions_transform import etl_bc,pivot_data_finanzas
+from apps.graph.test.layouts.finanzas import formula_paraiso
 #df_bc=df_bcomprobacion
 
 def TableDtScrolling_no_format_nototal(dff,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3):#
@@ -439,11 +441,12 @@ def IndicadorDash(nombres,formulas,
     
     
     #df_bcomprobacion=dataBcEmpresa(empresa)
-    df_bcomprobacion=df_bc_nisira.copy()
-
+    df = pd.read_parquet('bc_paraiso.parquet', engine='pyarrow')
+    df_bcomprobacion=etl_bc(df)
+    print(df_bcomprobacion)
     external_stylesheets = [dbc.themes.BOOTSTRAP,dbc.icons.BOOTSTRAP,dbc.icons.FONT_AWESOME]
     print(":v")
-    print(df_bc_nisira)
+    
 
 
     app = DjangoDash('TESTVIEW',external_stylesheets=external_stylesheets)
@@ -520,14 +523,18 @@ def IndicadorDash(nombres,formulas,
         if ejex=='Trimestre':
             if rbtnmoneda=='sol' or rbtnmoneda=='soles':
                 #df_ratios=rat.df_ratios_trim.copy()
-                df_ratios=balancePivot('Trimestre','soles',df_bcomprobacion)
+                df_ratios=pivot_data_finanzas(etapa ='Trimestre',moneda = 'soles',df = df_bcomprobacion)
+                df_ratios = df_ratios.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
+                df_ratios = df_ratios.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
                 
             elif rbtnmoneda=='dolar' or rbtnmoneda=='dolares':
                     #df_ratios=rat.df_ratios_trim_dolar.copy()
-                df_ratios=balancePivot('Trimestre','dolares',df_bcomprobacion)
-            column='TRIM'
-            group=['Año','trimestre']
-            x='trimestre'
+                df_ratios=pivot_data_finanzas(etapa ='Trimestre',moneda ='dolares',df =df_bcomprobacion)
+                df_ratios = df_ratios.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
+                df_ratios = df_ratios.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
+            column='Trimestre'
+            group=['Año','Trimestre']
+            x='Trimestre'
             #out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()]   
             
         elif ejex=='Periodo':
@@ -535,14 +542,18 @@ def IndicadorDash(nombres,formulas,
                 #df_ratios=rat.df_ratios_trim.copy()
                 #'Periodo','soles'
                 #df_ratios=df_ratios_periodo_soles
-                df_ratios=balancePivot('Periodo','soles',df_bcomprobacion)
+                df_ratios=pivot_data_finanzas(etapa ='Periodo',moneda='soles',df=df_bcomprobacion)
+                df_ratios = df_ratios.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
+                df_ratios = df_ratios.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
                 #df_ratios=df_ratios.sort_values('month',ascending=True)
             elif rbtnmoneda=='dolar' or rbtnmoneda=='dolares':
                     #df_ratios=rat.df_ratios_trim_dolar.copy()
-                df_ratios=balancePivot('Periodo','dolares',df_bcomprobacion)
+                df_ratios=pivot_data_finanzas(etapa ='Periodo',moneda='dolares',df = df_bcomprobacion)
+                df_ratios = df_ratios.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
+                df_ratios = df_ratios.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
                 #df_ratios=df_ratios.sort_values('month',ascending=True)
-            column='al_periodo'
-            group=['Año','Mes','month']
+            column='Periodo'
+            group=['Año','Mes','Mes Num']
             x='Mes'
             #out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()] 
 
@@ -574,14 +585,14 @@ def IndicadorDash(nombres,formulas,
         #df2=df_filtro[df_filtro['year']==last_year]
         #print(df2)
         if ejex == 'Periodo':
-            df_filtro=df_filtro.sort_values(['Año','month'],ascending=True)
+            df_filtro=df_filtro.sort_values(['Año','Mes Num'],ascending=True)
         else:
             df_filtro=df_filtro
         
         #df2=df2.sort_values('al_periodo',ascending=True)
         df = pd.DataFrame()
         df['Agrupado']=df_filtro[column]
-        df['valor']=EvaluarFormula(formula,df_filtro)
+        df['valor']=formula_paraiso(formula,df_filtro)
         promedio=df['valor'].sum()/len(df['Agrupado'].unique())
         df['promedio']=promedio
         df=df.round(3)
@@ -593,11 +604,11 @@ def IndicadorDash(nombres,formulas,
         #df_stack=df_filtro
         #df_stack=df_ratios[group]
         df_stack=df_filtro[group]
-        df_stack['valor']=EvaluarFormula(formula,df_filtro)#df_ratios
+        df_stack['valor']=formula_paraiso(formula,df_filtro)#df_ratios
         #PROBAR
         #df_stack['Año']=df_stack['Año']
         if x == 'Mes':
-            df_stack=df_stack.sort_values(['month','Año'],ascending=True)
+            df_stack=df_stack.sort_values(['Mes Num','Año'],ascending=True)
         else:
             df_stack=df_stack
         #fig = px.bar(df_stack, x=x, y='valor',text='valor', facet_row="Año",template="plotly_white",title="Comparativo",color_discrete_sequence=px.colors.qualitative.G10)#, facet_col="sex"#, color="smoker"

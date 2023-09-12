@@ -11,5 +11,10 @@ def themeProvider(content = []):
 
 def Container(content=[]):
     return dmc.NotificationsProvider(content)#,fluid=True,id='container'
+
+
+def Contenedor(content = []):
+    return dmc.Container(children= content)
+
     
     
