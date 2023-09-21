@@ -18,7 +18,7 @@
                   <table class="table" id="data" class="display responsive nowrap" style="width:100%"><!--table-bordered-->
                     <thead class="table-dark">
                       <tr>
-                        
+                        <th scope="col">Tipo Indicador</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Formula</th>
                         <th scope="col">Tipo de Indicador</th>
@@ -30,14 +30,15 @@
                     <tbody>
                         {% for indicador in indicadores %}
                         <tr>
-                            
+                            <td>{{indicador.indicador_tipo}}</td>
                             <td>{{indicador.name}}</td>
                             <td>{{indicador.formula}}</td>
                             <td>{{indicador.indicador_tipo}}</td>
                             
                             <td>
                                 <button type="button" class="btn btn-success btn-xs" onclick="location.href='{% url 'indicador' pk=indicador.id  username=user.usuario.username%}'"><i class="ti-bar-chart"></i></button>
-                              
+                                <button type="button" class="btn btn-info btn-xs" onclick="location.href=''"><i class="ti-pencil-alt"></i></button>
+                                <button type="button" class="btn btn-danger btn-xs" onclick="location.href=''"><i class="ti-trash"></i></button>
                             </td>
                         </tr>
                         {% endfor%}

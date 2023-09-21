@@ -170,7 +170,7 @@ class GraphBargo():
         return figure
 
 class GraphBarpx():
-    def bar_(df = pd.DataFrame(), x = '', y = '', text = '', orientation = 'v', height = 400 ,
+    def bar_(df = pd.DataFrame(), x = '', y = '', orientation = 'v', height = 400 ,
         title = '', xaxis_title = '',yaxis_title = '', showticklabel_x = True, 
         showticklabel_y = True , customdata = [],left_space = 40,bottom_space = 40,
         template = 'plotly_white', size_tickfont = 11, title_font_size = 20, clickmode = False

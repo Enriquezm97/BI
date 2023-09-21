@@ -13,6 +13,8 @@ from apps.graph.test.utils.functions.functions_dict import extraer_list_value_di
 from apps.graph.test.data import finanzas_df,pivot_data_finanzas
 from apps.graph.models import TipoIndicador
 #
+from apps.graph.test.utils.crum import get_indicadores_name,get_nombre_user
+import dash_bootstrap_components as dbc
 from apps.graph.save import RegistrarIndicador
 from apps.graph.test.utils.figures import *
 import dash_ag_grid as dag
@@ -645,6 +647,7 @@ def estadoGP():
     create_callback_opened_modal(app, modal_id="modal-bar-finanzas-uneta",children_out_id="bar-finanzas-uneta", id_button="maximize-bar-finanzas-uneta",height_modal=700)
 
 def crear_ratio_finanzas(empresa,usuario):
+    
     df_bcomprobacion=finanzas_df.copy()
     partidas_df = pivot_data_finanzas(finanzas_df)
     partidas_df = partidas_df.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
@@ -652,6 +655,7 @@ def crear_ratio_finanzas(empresa,usuario):
     #test_df.columns[3:]
     idind_list=list(TipoIndicador.objects.all().values_list('id',flat=True))
     tipoind_list=list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True))
+    
     list_dicts=[]
     for (i,j) in zip(tipoind_list,idind_list):
         list_dicts.append({'label': i, 'value': j})
@@ -666,7 +670,7 @@ def crear_ratio_finanzas(empresa,usuario):
                 
                 Row([
                     Column([
-                        Entry.select(id='select-tipo-indicador',texto='Tipo de Indicador', place= 'Seleccione el Tipo de Indicador', data=list_dicts,size='sm',clearable=False, value=list_dicts[-1])
+                        Entry.select(id='select-tipo-indicador',texto='Tipo de Indicador', place= 'Seleccione el Tipo de Indicador', data=list_dicts,size='sm',clearable=False, value=idind_list[-1])
                     ],size=6),
                     Column([
                         Entry.textInput(id='input-nombre-indicador', label= 'Nombre del Indicador',place='Ingrese el nombre de su indicador',size='sm',required=True)
@@ -683,46 +687,51 @@ def crear_ratio_finanzas(empresa,usuario):
                 
                 Row([
                     Column([
-                    dmc.Center(dmc.Text("Rango Negativo", weight=700,style={'margin-top':30}))
+                        dmc.Center(dmc.Text("Rango Negativo", weight=700,style={'margin-top':30}))
                     ],size=3),
                     Column([
-                    Entry.numberInput(id = 'input-negativo-desde',label='Desde')
+                        Entry.numberInput(id = 'input-negativo-desde',label='Desde')
                     ],size=3),
                     Column([
-                    Entry.numberInput(id = 'input-negativo-hasta',label='Hasta')
+                        Entry.numberInput(id = 'input-negativo-hasta',label='Hasta')
                     ],size=3),
                     Column([
-                    dmc.Center(dmc.ColorPicker(id='colorpicker-negativo',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30}))
-                    ],size=3),
-                    
-                ]),
-                Row([
-                    Column([
-                    dmc.Center(dmc.Text("Rango Medio", weight=700,style={'margin-top':30}))
-                    ],size=3),
-                    Column([
-                    Entry.numberInput(id = 'input-medio-desde',label='Desde')
-                    ],size=3),
-                    Column([
-                    Entry.numberInput(id = 'input-medio-hasta',label='Hasta')
-                    ],size=3),
-                    Column([
-                    dmc.Center(dmc.ColorPicker(id='colorpicker-medio',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30}))
+                        dmc.Center(dbc.Input(type="color",id="colorpicker-negativo",value="#F70808",style={"width": 70, "height": 40,'margin-top':30})),
+                        #dmc.Center(dmc.ColorPicker(id='colorpicker-negativo',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30}))
                     ],size=3),
                     
                 ]),
                 Row([
                     Column([
-                    dmc.Center(dmc.Text("Rango Positivo", weight=700,style={'margin-top':30}))
+                        dmc.Center(dmc.Text("Rango Medio", weight=700,style={'margin-top':30}))
                     ],size=3),
                     Column([
-                    Entry.numberInput(id = 'input-positivo-desde',label='Desde')
+                        Entry.numberInput(id = 'input-medio-desde',label='Desde')
                     ],size=3),
                     Column([
-                    Entry.numberInput(id = 'input-positivo-hasta',label='Hasta')
+                        Entry.numberInput(id = 'input-medio-hasta',label='Hasta')
                     ],size=3),
                     Column([
-                    dmc.Center(dmc.ColorPicker(id='colorpicker-positivo',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30}))
+                        dmc.Center(dbc.Input(type="color",id="colorpicker-medio",value="#FFF817",style={"width": 70, "height": 40,'margin-top':30})),
+                        #dmc.Center(dmc.ColorPicker(id='colorpicker-medio',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30}))
+                    ],size=3),
+                    
+                ]),
+                Row([
+                    Column([
+                        dmc.Center(dmc.Text("Rango Positivo", weight=700,style={'margin-top':30}))
+                    ],size=3),
+                    Column([
+                        Entry.numberInput(id = 'input-positivo-desde',label='Desde')
+                    ],size=3),
+                    Column([
+                        Entry.numberInput(id = 'input-positivo-hasta',label='Hasta')
+                    ],size=3),
+                    Column([
+                        dmc.Center(
+                            dbc.Input(type="color",id="colorpicker-positivo",value="#66FF2E",style={"width": 70, "height": 40,'margin-top':30}),#"width": 45, "height": 40,
+                        #dmc.ColorPicker(id='colorpicker-positivo',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30})
+                        )
                     ],size=3),
                     
                 ]),
@@ -733,7 +742,8 @@ def crear_ratio_finanzas(empresa,usuario):
                 ]),
                 Row([
                     Column([
-                        Button.button(id = 'btn-guardar', text= 'Guardar',full_width = True, color = 'rgb(81, 207, 102)')
+                        #dcc.Link(refresh=True,href=f"/{get_nombre_user()}/indicadores/")
+                        dcc.Link(Button.button(id = 'btn-guardar', text= 'Guardar',full_width = True, color = 'rgb(81, 207, 102)'),href=f"/{get_nombre_user()}/indicadores/",id='link')
                     ],size=6),
                     Column([
                         Button.button(id = 'btn-mostrar', text= 'Mostrar',full_width = True,color='rgb(32, 201, 151)')
@@ -756,13 +766,12 @@ def crear_ratio_finanzas(empresa,usuario):
             ]),
             
         ]),
-        Row([
-            Column([],size=6)
-        ]),
+        Div(id='update')
         
     ])
     @app.callback(
     Output("line-finanzas-mostrar", "figure"),
+   
     
     #Output("alert-respuesta", "children"),
     Input("btn-mostrar","n_clicks"),
@@ -817,6 +826,7 @@ def crear_ratio_finanzas(empresa,usuario):
  
     
     Output("alert-respuesta", "children"),
+    Output("link", "refresh"),
     Input("btn-guardar","n_clicks"),
     State("select-tipo-indicador","value"),
     State("input-nombre-indicador","value"),
@@ -850,11 +860,16 @@ def crear_ratio_finanzas(empresa,usuario):
         color_positivo_indicador = args[12]
         comentario_indicador = args[13]
         if n_clicks_guardar:
-            try :
-                RegistrarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,False,empresa,usuario)
-            except:
-                return  html.Div([dmc.Alert("Error al intentar guardar",title="Error :",color="red",duration=5000)])
-            return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)])
-        else:
-            return  html.Div([dmc.Alert("Error al intentar guardar",title="Error :",color="red",duration=5000)])
+            if (tipo_indicador == None or tipo_indicador == '') or (nombre_indicador == None or nombre_indicador == '')or (formula_indicador == None or formula_indicador == ''):
+                return html.Div([dmc.Alert("No olvide ingresar datos",title="Error :",color="red",duration=5000)]),False
+            elif (tipo_indicador != None or tipo_indicador != '') and (nombre_indicador != None or nombre_indicador != '') and (formula_indicador != None or formula_indicador != ''):
+                if nombre_indicador not in get_indicadores_name():
+                    RegistrarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,False,empresa,usuario)
+                    return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)]),True
+                elif nombre_indicador in get_indicadores_name():
+                    return html.Div([dmc.Alert("El nombre del indicador ya existe",title="Error :",color="red",duration=5000)]),False
+            
+                    
+        
+        #    return  html.Div([dmc.Alert("Error al intentar guardar",title="Error :",color="red",duration=5000)])
     create_callback_opened_modal(app, modal_id="modal-line-finanzas-mostrar",children_out_id="line-finanzas-mostrar", id_button="maximize-line-finanzas-mostrar",height_modal=700)

@@ -1,6 +1,7 @@
 from crum import get_current_user
 from apps.users.models import Empresa,Usuario
 from django.contrib.auth.models import User
+from apps.graph.models import Indicador
 
 def get_empresa():
     print(get_current_user())
@@ -15,4 +16,12 @@ def get_nombre_user():
     id_user= User.objects.filter(username=get_current_user()).values_list('id',flat=True)[0]
     
     return Usuario.objects.filter(user=id_user).values_list('username',flat=True)[0]
-#Producto.objects.filter(disponible=True) 
+
+
+
+def get_indicadores_name():
+    id_user= User.objects.filter(username=get_current_user()).values_list('id',flat=True)[0]
+    id_empresa = Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True)[0]
+    usuarios_list = list(Usuario.objects.filter(empresa_id=id_empresa).values_list('id',flat=True))
+    #names_indicador_empresa = 
+    return list(Indicador.objects.filter(usuario_id__in=usuarios_list).values_list('name',flat=True))
