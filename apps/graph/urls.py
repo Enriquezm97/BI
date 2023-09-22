@@ -51,6 +51,7 @@ urlpatterns = [
     path('<str:username>/indicadores/',createdash_view.IndicadorAllView.as_view(),name='indicador_all'),
     path('<str:username>/indicadores/<int:pk>/',createdash_view.IndicadorShowView.as_view(),name='indicador'),#createdash_view.IndicadorShowView
     path('<str:username>/create-indicador/',createdash_view.FormIndicadorView.as_view(),name='create_indicador'),
+    path('<str:username>/modificar-indicador/<int:pk>/',createdash_view.IndicadorEditarView.as_view(),name='modificar_indicador'),
     path('<str:username>/form-indicador',createdash_view.FormIndicadorView.as_view(),name='form'),
 
     path('<str:username>/estado-situacion',views.EstadoSituacionView.as_view(),name='estado_situacion2'),

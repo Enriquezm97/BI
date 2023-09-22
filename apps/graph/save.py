@@ -31,3 +31,28 @@ def RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,co
     Indicador.usuario=um.Usuario.objects.get(id=id_usuario)
 
     return Indicador.save()
+
+
+def ActualizarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario, pk_indicador):
+    Indicador=gm.Indicador()
+    actualizar_indicador = Indicador.objects.filter(id = pk_indicador)
+    #.update(edad=30)
+    actualizar_indicador.update(indicador_tipo=tipo)#=tipo#indicador_tipo
+    actualizar_indicador.update(name=nombre)
+    actualizar_indicador.update(formula=formula)
+
+    
+    actualizar_indicador.update(rango_desde_1=desde1)
+    actualizar_indicador.update(rango_hasta_1=hasta1)
+    actualizar_indicador.update(rango_color_1=color1)
+
+    actualizar_indicador.update(rango_desde_2=desde2)
+    actualizar_indicador.update(rango_hasta_2=hasta2)
+    actualizar_indicador.update(rango_color_2=color2)
+
+    actualizar_indicador.update(rango_desde_3=desde3)
+    actualizar_indicador.update(rango_hasta_3=hasta3)
+    actualizar_indicador.update(rango_color_3=color3)
+
+    actualizar_indicador.update(indicador_comentario=comentario)
+    return print("ACTUALIZADO")

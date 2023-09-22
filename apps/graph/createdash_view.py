@@ -17,7 +17,7 @@ from apps.users.models import Empresa,Usuario
 from apps.graph.models import Indicador
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin
-from apps.graph.test.layouts.finanzas import crear_ratio_finanzas
+from apps.graph.test.layouts.finanzas import crear_ratio_finanzas,editar_ratio_finanzas
 
 class FormIndicadorView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
@@ -86,6 +86,43 @@ class IndicadorShowView(LoginRequiredMixin,AnalistaMixin,DetailView):
         
         context={'name':parametros[0],'dashboard':dashboard}#,''graph':graph,
         return render(request,'dash_created/Indicadores/mostrar_indicador.html',context)
+    
+
+class IndicadorEditarView(LoginRequiredMixin,AnalistaMixin,DetailView):
+
+    models=Indicador
+    template_name= 'dash_created/Indicadores/editar_indicador.html'
+    pk_url_kwarg='pk'
+    login_url = reverse_lazy('login')#'/user/login/'
+
+    def get(self,request, *args, **kwargs):
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        pk=kwargs['pk']
+        tipo=list(Indicador.objects.filter(id=pk).values_list('indicador_tipo',flat=True))
+        name=list(Indicador.objects.filter(id=pk).values_list('name',flat=True))
+        formula=list(Indicador.objects.filter(id=pk).values_list('formula',flat=True))
+        rango_desde_1=list(Indicador.objects.filter(id=pk).values_list('rango_desde_1',flat=True))
+        rango_hasta_1=list(Indicador.objects.filter(id=pk).values_list('rango_hasta_1',flat=True))
+        rango_color_1=list(Indicador.objects.filter(id=pk).values_list('rango_color_1',flat=True))
+        rango_desde_2=list(Indicador.objects.filter(id=pk).values_list('rango_desde_2',flat=True))
+        rango_hasta_2=list(Indicador.objects.filter(id=pk).values_list('rango_hasta_2',flat=True))
+        rango_color_2=list(Indicador.objects.filter(id=pk).values_list('rango_color_2',flat=True))
+        rango_desde_3=list(Indicador.objects.filter(id=pk).values_list('rango_desde_3',flat=True))
+        rango_hasta_3=list(Indicador.objects.filter(id=pk).values_list('rango_hasta_3',flat=True))
+        rango_color_3=list(Indicador.objects.filter(id=pk).values_list('rango_color_3',flat=True))
+        comentario=list(Indicador.objects.filter(id=pk).values_list('indicador_comentario',flat=True))
+       
+        parametros=tipo + name+formula+rango_desde_1+rango_hasta_1+rango_color_1+rango_desde_2+rango_hasta_2+rango_color_2+rango_desde_3+rango_hasta_3+rango_color_3+comentario
+        #graph=Draw_Ind(parametros[1],parametros[0],parametros[2],parametros[3],parametros[4],parametros[5]) 
+        dashboard=editar_ratio_finanzas(parametros[0],parametros[1],parametros[2],parametros[3],parametros[4],parametros[5],parametros[6],parametros[7],parametros[8],parametros[9],parametros[10],parametros[11],parametros[12],pk)
+        
+        context={'dashboard':dashboard}#,''graph':graph,
+        return render(request,'dash_created/Indicadores/editar_indicador.html',context) 
+    
+    
+    
 
 @login_required
 def IndicadorShowView2(request,pk):

@@ -15,7 +15,7 @@ from apps.graph.models import TipoIndicador
 #
 from apps.graph.test.utils.crum import get_indicadores_name,get_nombre_user
 import dash_bootstrap_components as dbc
-from apps.graph.save import RegistrarIndicador
+from apps.graph.save import RegistrarIndicador,ActualizarIndicador
 from apps.graph.test.utils.figures import *
 import dash_ag_grid as dag
 def formula_paraiso(formula = '',df = pd.DataFrame()):
@@ -873,3 +873,250 @@ def crear_ratio_finanzas(empresa,usuario):
         
         #    return  html.Div([dmc.Alert("Error al intentar guardar",title="Error :",color="red",duration=5000)])
     create_callback_opened_modal(app, modal_id="modal-line-finanzas-mostrar",children_out_id="line-finanzas-mostrar", id_button="maximize-line-finanzas-mostrar",height_modal=700)
+
+def editar_ratio_finanzas(*args):
+    tipo_indicador = args[0]
+    nombre_indicador = args[1].upper()
+    formula_indicador = args[2].upper()
+    desde_negativo_indicador = args[3]
+    hasta_negativo_indicador = args[4]
+    color_negativo_indicador = args[5]
+    desde_medio_indicador = args[6]
+    hasta_medio_indicador = args[7]
+    color_medio_indicador = args[8]
+    desde_positivo_indicador = args[9]
+    hasta_positivo_indicador = args[10]
+    color_positivo_indicador = args[11]
+    comentario_indicador = args[12]
+    indicador_pk = args[13]
+    print(indicador_pk)
+    partidas_df = pivot_data_finanzas(finanzas_df)
+    partidas_df = partidas_df.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
+    partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
+    #test_df.columns[3:]
+    idind_list=list(TipoIndicador.objects.all().values_list('id',flat=True))
+    tipoind_list=list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True))
+    
+    list_dicts=[]
+    for (i,j) in zip(tipoind_list,idind_list):
+        list_dicts.append({'label': i, 'value': j})
+    app = DjangoDash('editar-indicador',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.layout = Contenedor([
+        Modal(id="modal-line-finanzas-mostrar", size= "85%"),
+        Row([
+            Column([dmc.Title(children=[f'Modificar Indicador Financiero'],order=2,align='center')])
+        ]),
+        Row([
+            Column([
+                
+                Row([
+                    Column([
+                        Entry.select(id='select-tipo-indicador',texto='Tipo de Indicador', place= 'Seleccione el Tipo de Indicador', data=list_dicts,size='sm',clearable=False, value=tipo_indicador)
+                    ],size=6),
+                    Column([
+                        Entry.textInput(id='input-nombre-indicador', label= 'Nombre del Indicador',place='Ingrese el nombre de su indicador',size='sm',required=True, value=nombre_indicador)
+                    ],size=6)
+                ]),
+                Row([
+                    Column([
+                        Entry.select(id='select-partidas',texto='Partidas',size='sm', data=partidas_df.columns[3:])
+                    ],size=6),
+                    Column([
+                        Entry.textInput(id='input-formula-indicador', label= 'Ingrese Fórmula',place='',size='sm',required=True, value=formula_indicador)
+                    ],size=6)
+                ]),
+                
+                Row([
+                    Column([
+                        dmc.Center(dmc.Text("Rango Negativo", weight=700,style={'margin-top':30}))
+                    ],size=3),
+                    Column([
+                        Entry.numberInput(id = 'input-negativo-desde',label='Desde', value=desde_negativo_indicador)
+                    ],size=3),
+                    Column([
+                        Entry.numberInput(id = 'input-negativo-hasta',label='Hasta', value=hasta_negativo_indicador)
+                    ],size=3),
+                    Column([
+                        dmc.Center(dbc.Input(type="color",id="colorpicker-negativo",value=color_negativo_indicador,style={"width": 70, "height": 40,'margin-top':30})),
+                        #dmc.Center(dmc.ColorPicker(id='colorpicker-negativo',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30}))
+                    ],size=3),
+                    
+                ]),
+                Row([
+                    Column([
+                        dmc.Center(dmc.Text("Rango Medio", weight=700,style={'margin-top':30}))
+                    ],size=3),
+                    Column([
+                        Entry.numberInput(id = 'input-medio-desde',label='Desde',value=desde_medio_indicador)
+                    ],size=3),
+                    Column([
+                        Entry.numberInput(id = 'input-medio-hasta',label='Hasta', value=hasta_medio_indicador)
+                    ],size=3),
+                    Column([
+                        dmc.Center(dbc.Input(type="color",id="colorpicker-medio",value=color_medio_indicador,style={"width": 70, "height": 40,'margin-top':30})),
+                        #dmc.Center(dmc.ColorPicker(id='colorpicker-medio',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30}))
+                    ],size=3),
+                    
+                ]),
+                Row([
+                    Column([
+                        dmc.Center(dmc.Text("Rango Positivo", weight=700,style={'margin-top':30}))
+                    ],size=3),
+                    Column([
+                        Entry.numberInput(id = 'input-positivo-desde',label='Desde', value=desde_positivo_indicador)
+                    ],size=3),
+                    Column([
+                        Entry.numberInput(id = 'input-positivo-hasta',label='Hasta', value=hasta_positivo_indicador)
+                    ],size=3),
+                    Column([
+                        dmc.Center(
+                            dbc.Input(type="color",id="colorpicker-positivo",value=color_positivo_indicador,style={"width": 70, "height": 40,'margin-top':30}),#"width": 45, "height": 40,
+                        #dmc.ColorPicker(id='colorpicker-positivo',swatches=["#ff0000","#ffed4a", "#69ff2e"], swatchesPerRow=7, withPicker=False,style={'margin-top':30})
+                        )
+                    ],size=3),
+                    
+                ]),
+                Row([
+                    Column([
+                    Entry.textAreaInput(id = 'textarea-comentario',label='Comentarios', value=comentario_indicador)
+                    ],size=12),
+                ]),
+                Row([
+                    Column([
+                        #dcc.Link(refresh=True,href=f"/{get_nombre_user()}/indicadores/")
+                        dcc.Link(Button.button(id = 'btn-modificar', text= 'Modificar',full_width = True, color = 'rgb(81, 207, 102)'),href=f"/{get_nombre_user()}/indicadores/",id='link')
+                    ],size=6),
+                    Column([
+                        Button.button(id = 'btn-mostrar', text= 'Mostrar',full_width = True,color='rgb(32, 201, 151)')
+                    ],size=6)
+                ]),
+                Row([
+                    Column([
+                        Div(id='alert-respuesta')
+                    ],size=12),
+                    
+                ]), 
+                Row([
+                    Column([
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-finanzas-mostrar', id_maximize = 'maximize-line-finanzas-mostrar',height=300))
+                    ],size=12),
+                    
+                ]), 
+            
+            
+            ]),
+            
+        ]),
+        Div(id='update')
+        
+    ])
+    @app.callback(
+    Output("line-finanzas-mostrar", "figure"),
+    Input("btn-mostrar","n_clicks"),
+    State("select-tipo-indicador","value"),
+    State("input-nombre-indicador","value"),
+    State("input-formula-indicador","value"),
+    State("input-negativo-desde", "value"),
+    State("input-negativo-hasta", "value"),
+    State("colorpicker-negativo", "value"),
+    State("input-medio-desde", "value"),
+    State("input-medio-hasta", "value"),
+    State("colorpicker-medio", "value"),
+    State("input-positivo-desde", "value"),
+    State("input-positivo-hasta", "value"),
+    State("colorpicker-positivo", "value"),
+    
+    State("textarea-comentario", "value"),
+    #Input("btn-guardar","n_clicks"),
+    #State("favorito","value"),
+
+    )
+    def update_graph(*args):
+        n_clicks_mostrar = args[0]
+        tipo_indicador = args[1]
+        nombre_indicador = args[2].upper()
+        formula_indicador = args[3].upper()
+        desde_negativo_indicador = args[4]
+        hasta_negativo_indicador = args[5]
+        color_negativo_indicador = args[6]
+        desde_medio_indicador = args[7]
+        hasta_medio_indicador = args[8]
+        color_medio_indicador = args[9]
+        desde_positivo_indicador = args[10]
+        hasta_positivo_indicador = args[11]
+        color_positivo_indicador = args[12]
+        comentario_indicador = args[13]
+        
+        if n_clicks_mostrar:
+
+            df = pd.DataFrame()
+            df['Agrupado']=partidas_df['Trimestre']
+            
+            df['valor']=formula_paraiso(formula = formula_indicador,df = partidas_df)
+            
+            df['promedio'] = df['valor'].sum()/len(df['Agrupado'].unique())
+            print(df.info())
+            print(df)
+            #fig =  figure__line2(df['Agrupado'],df['valor'],df['promedio'],nombre_indicador,'Valor','Promedio',desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador)
+            fig = go.Figure()
+
+            #fig.update_layout(yaxis_tickformat = '.0%')
+            fig.add_trace(go.Scatter(x=df['Agrupado'], y=df['valor'],text=df['valor'],textposition="bottom center",
+                                mode='lines+markers',
+                                name='w',line=dict( width=3)))
+            #fig.add_trace(go.Scatter(x=df['Agrupado'], y=df['promedio'],
+            #                    mode='lines',
+            #                    name='y',line=dict( width=2)))
+            #fig.update_layout(autosize=True,height=300,margin=dict(l=60,r=40,b=60,t=70,autoexpand=True),
+            #    legend=dict(orientation= 'h',yanchor="bottom",xanchor='center', x= 0.5, y= 1,font=dict(size=10,color="black"),),#family="Courier",
+            #)
+            
+            fig.update_layout(template='none', title='wwwww')
+            #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+            #fig.add_hrect(y0=desde_negativo_indicador,y1=hasta_negativo_indicador, line_width=0, fillcolor=color_negativo_indicador, opacity=0.2)
+            #fig.add_hrect(y0=desde_medio_indicador,y1=hasta_medio_indicador, line_width=0, fillcolor=color_medio_indicador, opacity=0.2)
+            #fig.add_hrect(y0=desde_positivo_indicador,y1=hasta_positivo_indicador, line_width=0, fillcolor=color_positivo_indicador, opacity=0.2)
+           
+            return fig
+        
+    @app.callback(
+    Output("update", "children"),
+    Input("btn-modificar","n_clicks"),
+    State("select-tipo-indicador","value"),
+    State("input-nombre-indicador","value"),
+    State("input-formula-indicador","value"),
+    State("input-negativo-desde", "value"),
+    State("input-negativo-hasta", "value"),
+    State("colorpicker-negativo", "value"),
+    State("input-medio-desde", "value"),
+    State("input-medio-hasta", "value"),
+    State("colorpicker-medio", "value"),
+    State("input-positivo-desde", "value"),
+    State("input-positivo-hasta", "value"),
+    State("colorpicker-positivo", "value"),
+    State("textarea-comentario", "value"),
+    )
+    def update_data_indicador(*args):
+        n_clicks_modificar= args[0]
+        tipo_indicador = args[1]
+        nombre_indicador = args[2].upper()
+        formula_indicador = args[3].upper()
+        desde_negativo_indicador = args[4]
+        hasta_negativo_indicador = args[5]
+        color_negativo_indicador = args[6]
+        desde_medio_indicador = args[7]
+        hasta_medio_indicador = args[8]
+        color_medio_indicador = args[9]
+        desde_positivo_indicador = args[10]
+        hasta_positivo_indicador = args[11]
+        color_positivo_indicador = args[12]
+        comentario_indicador = args[13]
+        if n_clicks_modificar:
+            if (tipo_indicador == None or tipo_indicador == '') or (nombre_indicador == None or nombre_indicador == '')or (formula_indicador == None or formula_indicador == ''):
+                return html.Div([dmc.Alert("No olvide ingresar datos",title="Error :",color="red",duration=5000)]),False
+            elif (tipo_indicador != None or tipo_indicador != '') and (nombre_indicador != None or nombre_indicador != '') and (formula_indicador != None or formula_indicador != ''):
+                if nombre_indicador not in get_indicadores_name():
+                    ActualizarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,indicador_pk)
+                    return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)]),True
+                elif nombre_indicador in get_indicadores_name():
+                    return html.Div([dmc.Alert("El nombre del indicador ya existe",title="Error :",color="red",duration=5000)]),False

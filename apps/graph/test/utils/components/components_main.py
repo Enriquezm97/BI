@@ -453,7 +453,7 @@ class Entry():
         )
     
     def textAreaInput(
-        label="",place="",autosize=True,minimorow=2,id=None
+        label="",place="",autosize=True,minimorow=2,id=None, value = ''
     ):
         return html.Div(
             [dmc.Textarea(
@@ -462,6 +462,7 @@ class Entry():
                 placeholder=place,
                 autosize=autosize,
                 minRows=minimorow,
+                value= value
                 ),
             ]
         )

@@ -20,6 +20,25 @@ import dash_ag_grid as dag
 
 from apps.graph.test.utils.functions.functions_transform import etl_bc,pivot_data_finanzas
 from apps.graph.test.layouts.finanzas import formula_paraiso
+
+from apps.graph.build.components.mantine_react_components.title import *
+from apps.graph.models import Indicador,TipoIndicador
+
+from apps.graph.build.components.mantine_react_components.selects import *
+from apps.graph.build.components.mantine_react_components.textbox import *
+from apps.graph.build.components.mantine_react_components.checkbox import *
+from apps.graph.build.components.mantine_react_components.button import *
+from apps.graph.build.components.mantine_react_components.alert import *
+from apps.graph.build.components.mantine_react_components.spoiler import *
+from apps.graph.build.components.mantine_react_components.loaders import loadingOverlay
+
+
+from apps.graph.data.transform_finanzas import *
+
+from apps.graph.test.utils.functions.functions_transform import etl_bc,pivot_data_finanzas
+from apps.graph.test.layouts.finanzas import formula_paraiso
+from apps.graph.test.utils.frame import Modal
+from apps.graph.test.utils.functions.callbacks.callbacks_ import create_callback_opened_modal
 #df_bc=df_bcomprobacion
 
 def TableDtScrolling_no_format_nototal(dff,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3):#
@@ -117,10 +136,10 @@ def figure__line(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color
     )
     
     fig.update_layout(template='none', title=name)
-    #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
-    #fig.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
-    #fig.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
-    #fig.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
+    fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    fig.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
+    fig.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
+    fig.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
     fig.add_layout_image(
         dict(
             source="https://www.nisira.com.pe/images/logo.png",
@@ -451,8 +470,11 @@ def IndicadorDash(nombres,formulas,
 
     app = DjangoDash('TESTVIEW',external_stylesheets=external_stylesheets)
     app.layout = html.Div([
-        
+        Modal(id="btn-modal", size= "85%"),
+        Modal(id="btn-modal-2", size= "85%"),
+        Modal(id="btn-modal-3", size= "85%"),   
         dbc.Row([
+            
             Column(
                 content=[
                     multiSelect(ids="drop-year",texto="Año",value=[sorted(df_bcomprobacion['Año'].unique())[-1]]),
@@ -480,14 +502,14 @@ def IndicadorDash(nombres,formulas,
         ]),
         dbc.Row([#'graph-stack2'
             #cardGraph(id_maximize='id-maximize-st',id_download='id-download',id_graph='st-comercial',with_id=True,fig=None,icon_maximize=True)         
-            Column(content=[loadingOverlay(cardGraph(id_graph='graph-stack2',id_maximize='btn-modal'))],size=9), 
+            Column(content=[loadingOverlay(cardGraph(id_graph='graph-stack2',id_maximize='maximize-graph-stack2'))],size=9), 
             Column(content=[loadingOverlay(html.Div(id='tablet'))],size=3), #,style={'max-height': '390px','overflow': "auto"}
             
         ]),
         #graph-prueba
         dbc.Row([#graph-prueba
-            Column(content=[loadingOverlay(cardGraph(id_graph='graph-prueba',id_maximize='btn-modal-2'))],size=6),
-            Column(content=[loadingOverlay(cardGraph(id_graph='graph-comparativo',id_maximize='btn-modal-3'))],size=6),
+            Column(content=[loadingOverlay(cardGraph(id_graph='graph-prueba',id_maximize='maximize-graph-prueba'))],size=6),
+            Column(content=[loadingOverlay(cardGraph(id_graph='graph-comparativo',id_maximize='maximize-graph-comparativo'))],size=6),
             
             
         ]),
@@ -623,6 +645,9 @@ def IndicadorDash(nombres,formulas,
 
         fig2 = px.line(df_stack, x=x, y='valor',template="none",title="Comparativo por Año (Serie de Tiempo)",color='Año', markers=True)#, facet_row="Año",facet_row_spacing=0.1#,text='valor'
         fig2.update_layout(autosize=True,margin=dict(l=60,r=40,b=40,t=50),height=300)
+        fig2.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
+        fig2.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
+        fig2.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
         #fig2.update_traces(textposition="bottom center",texttemplate='%{text:.3f}',textfont_size=12)#,texttemplate='%{text:.2s}'
         #fig2.update_xaxes(showline=True, linewidth=1, linecolor='black', mirror=True,gridcolor='#f9f4f4')
         #fig2.update_yaxes(showline=True, linewidth=1, linecolor='black', mirror=True,gridcolor='#f9f4f4')
@@ -637,8 +662,11 @@ def IndicadorDash(nombres,formulas,
         #fig2.update_traces(texttemplate='%{text:.4s}', textposition='inside')
         #fig2.update_layout(hovermode="x unified")
         fig_comparative = px.bar(df_stack, x=x, y='valor',color="Año", barmode='group',height=300,template='none',text="valor",title="Comparativo por Año (Barras Agrupadas)",)
-        fig_comparative.update_traces(textposition='outside',texttemplate='%{text:.3f}')
+        fig_comparative.update_traces(textposition='outside',texttemplate='%{text:.3f}',cliponaxis=False,)
         fig_comparative.update_layout(margin=dict(l=30,r=30,b=30,t=50,pad=0,autoexpand=True),height=330)  
+        fig_comparative.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
+        fig_comparative.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
+        fig_comparative.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
         #fig_comparative.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
         #fig_comparative.add_hrect(y0=0,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.1)
         #fig_comparative.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.1)
@@ -683,94 +711,292 @@ def IndicadorDash(nombres,formulas,
                 fig2,
                 fig_comparative
             ]
-        
-        
-        """"
-        colors = {
-                'background': '#ffffff',
-                'text': '#7FDBFF'
-            }
-        
-        #print(dataBalanceComprobacion.definir_st_bc('68.168.108.184','Trimestre','soles'))
-        out_year=[{'label': i, 'value': i} for i in df_bcomprobacion['year'].unique()] 
-        name=nombres.upper()
-        formula=formulas.upper()
-        df_ratios=dataBalanceComprobacion.definir_st_bc(ip,ejex,rbtnmoneda)
+    create_callback_opened_modal(app, modal_id="btn-modal",children_out_id="graph-stack2", id_button="maximize-graph-stack2",height_modal=600)   
+    create_callback_opened_modal(app, modal_id="btn-modal-2",children_out_id="graph-prueba", id_button="maximize-graph-prueba",height_modal=600)  
+    create_callback_opened_modal(app, modal_id="btn-modal-3",children_out_id="graph-comparativo", id_button="maximize-graph-comparativo",height_modal=600)   
+def formIndicador(empresa,usuario):#empresa,usuario
+    """"""
+    
+    """"""
+    #df_bcomprobacion=dataBcEmpresa(empresa)
+    df_bcomprobacion=df_bc_nisira.copy()
 
-        if ejex=='trimestre' and filt_year !=None: 
-            column='TRIM'
-            group=['year','trimestre']
-            x='trimestre'
-            out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()]
-            df_ratios=df_ratios[df_ratios['year'].isin(filt_year)]
+    idind_list=list(TipoIndicador.objects.all().values_list('id',flat=True))
+    tipoind_list=list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True))
+    list_dicts=[]
+    for (i,j) in zip(tipoind_list,idind_list):
+        list_dicts.append({'label': i, 'value': j})
 
-        elif ejex=='trimestre' and filt_year ==None:      
-            column='TRIM'
-            group=['year','trimestre']
-            x='trimestre'
-            out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()]
-            df_ratios=df_ratios[df_ratios['year'].isin(df_ratios['year'].unique())]
+    app = DjangoDash('form_indicador', external_stylesheets=[dbc.themes.BOOTSTRAP])#
+    app.layout = html.Div([
+    
+    dbc.Row([
+            Column(content=[title(text="Crear Indicador Financiero")],size=12),
+             
+    ]),
+    dbc.Row([
+        dbc.Col([ 
+                 
+                        dbc.Row([
+                            dbc.Col([
+                                select(ids="tipo-indicador",texto="Tipo de Indicador",place="Seleccione Tipo",data=list_dicts,size='sm'),
+                            ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-1"),
+                            dbc.Col([
+                                textInput(label="Nombre de Indicador",ids="nombre-indicador"),
+                                
 
-        elif ejex=='periodo' and filt_year !=None:
-            column='al_periodo'
-            group=['year','Mes','month']
-            x='Mes'
-            out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()]
-            df_ratios=df_ratios[df_ratios['year'].isin(filt_year)] 
-        elif ejex=='periodo' and filt_year ==None:
-            column='al_periodo'
-            group=['year','Mes','month']
-            x='Mes'
-            out_serie=[{'label': i, 'value': i} for i in df_ratios[column].unique()]
-            df_ratios=df_ratios[df_ratios['year'].isin(df_ratios['year'].unique())] 
-        
-        #if filt_year !=None :
-        #    df_ratios=df_ratios[df_ratios['year'].isin(filt_year)]
-        #elif filt_year ==None:
-        #    df_ratios=df_ratios[df_ratios['year'].isin(df_ratios['year'].unique())]
-
-        #print(df_ratios)
-
-        if filtro == None and ejex == 'periodo':
-            df_filtro=df_ratios.sort_values(['year_x','month_x'],ascending=True)
-
-           
-                
-        elif filtro != None and ejex == 'trimestre':
-            df_filtro=df_ratios[df_ratios[column].isin(filtro)]
-        
-        else:
-            df_filtro=df_ratios
-        df = pd.DataFrame()
-        df['Agrupado']=df_filtro[column]
-        df['valor']=EvaluarFormula(formula,df_filtro)
-        promedio=df['valor'].sum()/len(df['Agrupado'].unique())
-        df['promedio']=promedio
-        df_stack=df_filtro[group]
-        df_stack['valor']=EvaluarFormula(formula,df_filtro)
-        df_stack['Año']=df_stack['year']
-        fig2 = px.line(df_stack, x=x, y='valor',text='valor', facet_row="Año",facet_row_spacing=0.1,template="seaborn",title="Comparativo",color='Año')
-        fig2.update_layout(autosize=True,margin=dict(l=60,r=40,b=40,t=50))
-        fig2.update_traces(textposition="bottom center",texttemplate='%{text:.3f}',textfont_size=12)#,texttemplate='%{text:.2s}'
-        fig2.update_xaxes(showline=True, linewidth=1, linecolor='black', mirror=True,gridcolor='#f9f4f4')
-        fig2.update_yaxes(showline=True, linewidth=1, linecolor='black', mirror=True,gridcolor='#f9f4f4')
-        fig2.update_layout(
-                        plot_bgcolor=colors['background'],
-                        #paper_bgcolor='blue',
-                        #font_color=colors['text']
-                    )
-        fig2.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
-        fig2.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
-        fig2.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
-
-        figure1=figure__line(df['Agrupado'],df['valor'],df['promedio'],name,'Valor','Promedio',rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3)
-        table=TableDtScrolling_no_format_nototal(df,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3)
-        figure_compuesto=fig2
-        #print(df_filtro)    
-
-        #x='trimestre'
-
-        return figure1,table,out_serie,out_year,figure_compuesto
-        """
+                            ],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-1"),
 
 
+                        ]),
+                        dbc.Row([
+                            dbc.Col([
+                                select(ids="partidas-indicador",texto="Partidas",size='sm'),
+                                
+                            ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-1"),
+                            dbc.Col([
+                                textInput(label="Ingrese Fórmula",ids="formula-indicador"),
+                                
+
+                            ],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-1"),
+
+
+                        ]),
+                        dbc.Row([
+                            dbc.Col([
+                                dmc.Card(
+                                children=[
+                                    
+                                    dmc.CardSection(
+                                        dmc.Center(
+                                            style={"width": "100%"},
+                                            children=[
+                                                #
+                                                dbc.Row([
+                                                    dbc.Col([
+                                                        dmc.Center(
+                                                                style={"height":"100%", "width": "100%"},#
+                                                                children=[
+                                                                    dmc.Text("Rango Negativo :", weight=450),
+                                                                ],
+                                                            ),
+                                                                                                                                
+                                                            ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                                    numberInput(label="Desde",ids="desde1"),
+                                                                ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                                    numberInput(label="Hasta",ids="hasta1"),
+                                                                ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                                    dbc.Label(""),
+                                                                    dbc.Input(
+                                                                        type="color",
+                                                                        id="color1",
+                                                                        value="#F70808",
+                                                                        style={"width": 45, "height": 40},
+                                                                    ),
+
+                                                                ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+                                                ]),
+                                            ],
+                                        ),
+                                        
+                                    ),
+                                    
+                                ],
+                                withBorder=True,
+                                shadow="sm",
+                                radius="md",
+                                py="xs"
+                                #style={"width": 350},
+                            ),
+                                
+
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-1"),
+                        ]),
+                            
+                        dbc.Row([
+                            dbc.Col([
+                                dmc.Card(
+                                children=[
+                                    
+                                    dmc.CardSection(
+                                        dmc.Center(
+                                            style={"width": "100%"},
+                                            children=[
+                                                dbc.Row([
+                            
+                                                    dbc.Col([
+                                                        dmc.Center(
+                                                            style={"height":"100%", "width": "100%"},#
+                                                            children=[dmc.Text("Rango Medio :", weight=450),],
+                                                        ),
+                                                        
+                                                        
+
+                                                    ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        numberInput(label="Desde",ids="desde2"),
+
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        numberInput(label="Hasta",ids="hasta2"),
+
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-3"),
+                                                    dbc.Col([
+                                                        dbc.Label(""),
+                                                        dbc.Input(
+                                                            type="color",
+                                                            id="color2",
+                                                            value="#FFF817",
+                                                            style={"width": 45, "height": 40},
+                                                        ),
+
+                                                    ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-3"),
+
+
+                                                ]),
+                                            ]),
+                                        
+
+                                    ),
+                                    
+                                ],
+                                withBorder=True,
+                                shadow="sm",
+                                radius="md",
+                                py="xs"
+                                #style={"width": 350},
+                            ),
+                                
+
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-1"),
+                        ]),    
+                            
+                        dbc.Row([
+                            dbc.Col([
+                                dmc.Card(
+                                children=[
+                                    
+                                    dmc.CardSection(
+                                        dmc.Center(
+                                            style={"width": "100%"},
+                                            children=[
+                                                dbc.Row([
+                                                    dbc.Col([
+                                                        dmc.Center(
+                                                                style={"height":"100%", "width": "100%"},#
+                                                                children=[
+                                                                    dmc.Text("Rango Positivo :", weight=450),
+                                                                ],
+                                                            ),
+                                                                                                                                
+                                                            ],width=4,className="col-xl-4 col-md-4 col-sm-12 col-12 mb-1"),
+                                                    dbc.Col([
+                                                        numberInput(label="Desde",ids="desde3"),
+                                                        
+
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-1"),
+                                                    dbc.Col([
+                                                        numberInput(label="Hasta",ids="hasta3"),
+                                                        
+                                                    ],width=3,className="col-xl-3 col-md-3 col-sm-12 col-12 mb-1"),
+                                                    dbc.Col([
+                                                        dbc.Label(""),
+                                                        dbc.Input(
+                                                            type="color",
+                                                            id="color3",
+                                                            value="#66FF2E",
+                                                            style={"width": 45, "height": 40},
+                                                        ),
+
+                                                    ],width=2,className="col-xl-2 col-md-2 col-sm-12 col-12 mb-1"),
+
+
+                                                ]),
+                                            ]),
+                                        
+
+                                    ),
+                                    
+                                ],
+                                withBorder=True,
+                                shadow="sm",
+                                radius="md",
+                                py="xs"
+                                #style={"width": 350},
+                            ),
+                                
+
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-1"),
+                        ]),
+
+                        
+                        
+                        
+                        dbc.Row([
+                            
+                            dbc.Col([
+                                #dbc.Label("Desde"),
+                                #dbc.Input(type="number", min=0.0, max=10000.0, step=0.1),
+                                dcc.Checklist(
+                                                id='favorito',
+                                                options=[
+                                                    {'label': 'Indicador Favorito', 'value': True},
+                                                    
+                                                ],
+                                                value=False,
+
+                                            ),
+                                
+                                #html.P(),
+                                textAreaInput(ids="comentario",label="Comentarios")
+                               
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                            
+
+
+                        ]),
+                        dbc.Row([
+                            
+                            dbc.Col([
+                                button(text="Guardar",ids="guardar"),
+                                #dbc.Button("Guardar", color="dark", className="me-1",id="guardar", n_clicks=0),
+                            ],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-3"),
+                            dbc.Col([
+                                button(text="Mostrar",ids="mostrar"),
+                                #dbc.Button("Mostrar", color="dark", className="me-1",id="mostrar", n_clicks=0),
+                            ],width=6,className="col-xl-6 col-md-12 col-sm-12 col-12 mb-3"),
+
+
+                        ]),
+                        dbc.Row([
+                            dbc.Col([
+                                html.Div(id="respuesta") 
+                            ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3"),
+                        ])
+
+                                    
+         ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
+         dbc.Col([
+            loadingOverlay(dbc.Card(dcc.Graph(id='graph1'),className="shadow-sm")),
+                #html.P(),
+                #dbc.Alert(children='owo', color="light"), 
+            html.Div(id="alert-comentario") 
+                 #html.H2(["Example heading", dbc.Badge("New", className="ms-1")]),
+                # html.Hr(),
+         ],width=6,className="col-xl-6 col-md-6 col-sm-12 col-12 mb-3"),
+    ]),
+
+    dbc.Row([
+        dbc.Col([
+            #dmc.Anchor(z
+            #    "Todos los Indicadores",
+            #    href="/indicadores/",
+            #)
+            html.A("Todos los Indicadores Financieros", href="../indicadores", className="alert-link"),
+           # html.A("Todos los Indicadores", href="/indicadores", className="alert-link"),
+        ],width=12,className="col-xl-12 col-md-12 col-sm-12 col-12 mb-3")
+    ])
+    ])
