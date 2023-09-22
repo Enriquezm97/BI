@@ -34,8 +34,8 @@ def RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,co
 
 
 def ActualizarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario, pk_indicador):
-    Indicador=gm.Indicador()
-    actualizar_indicador = Indicador.objects.filter(id = pk_indicador)
+    #Indicador=gm.Indicador()
+    actualizar_indicador = gm.Indicador.objects.filter(id = pk_indicador)
     #.update(edad=30)
     actualizar_indicador.update(indicador_tipo=tipo)#=tipo#indicador_tipo
     actualizar_indicador.update(name=nombre)
@@ -56,3 +56,9 @@ def ActualizarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,c
 
     actualizar_indicador.update(indicador_comentario=comentario)
     return print("ACTUALIZADO")
+
+def EliminarIndicador(pk_indicador):
+    #Indicador=gm.Indicador()
+    eliminar_indicador = gm.Indicador.objects.filter(id = pk_indicador)
+    eliminar_indicador.delete()
+    return print("ELIMINADO")

@@ -15,7 +15,7 @@ from apps.graph.models import TipoIndicador
 #
 from apps.graph.test.utils.crum import get_indicadores_name,get_nombre_user
 import dash_bootstrap_components as dbc
-from apps.graph.save import RegistrarIndicador,ActualizarIndicador
+from apps.graph.save import RegistrarIndicador,ActualizarIndicador,EliminarIndicador
 from apps.graph.test.utils.figures import *
 import dash_ag_grid as dag
 def formula_paraiso(formula = '',df = pd.DataFrame()):
@@ -874,9 +874,43 @@ def crear_ratio_finanzas(empresa,usuario):
         #    return  html.Div([dmc.Alert("Error al intentar guardar",title="Error :",color="red",duration=5000)])
     create_callback_opened_modal(app, modal_id="modal-line-finanzas-mostrar",children_out_id="line-finanzas-mostrar", id_button="maximize-line-finanzas-mostrar",height_modal=700)
 
+def line_fig(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3):#,esperado,permitido,limite
+    fig = go.Figure()
+
+    #fig.update_layout(yaxis_tickformat = '.0%')
+    fig.add_trace(go.Scatter(x=x, y=y,text=y,textposition="bottom center",
+                        mode='lines+markers',
+                        name=namex,line=dict( width=3)))
+    fig.add_trace(go.Scatter(x=x, y=y2,
+                        mode='lines',
+                        name=namey,line=dict( width=2)))
+    fig.update_layout(
+        autosize=True,
+        #width=,
+        height=330,
+        margin=dict(
+            l=60,
+            r=40,
+            b=60,
+            t=70,
+            #pad=4,
+            autoexpand=True
+
+        ),
+        legend=dict(orientation= 'h',yanchor="bottom",xanchor='center', x= 0.5, y= 1,font=dict(size=10,color="black"),),#family="Courier",
+    )
+    
+    fig.update_layout(template='none', title=name)
+    fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    fig.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
+    fig.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
+    fig.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
+    
+    return fig
+
 def editar_ratio_finanzas(*args):
     tipo_indicador = args[0]
-    nombre_indicador = args[1].upper()
+    nombre_indicador_ = args[1].upper()
     formula_indicador = args[2].upper()
     desde_negativo_indicador = args[3]
     hasta_negativo_indicador = args[4]
@@ -914,7 +948,7 @@ def editar_ratio_finanzas(*args):
                         Entry.select(id='select-tipo-indicador',texto='Tipo de Indicador', place= 'Seleccione el Tipo de Indicador', data=list_dicts,size='sm',clearable=False, value=tipo_indicador)
                     ],size=6),
                     Column([
-                        Entry.textInput(id='input-nombre-indicador', label= 'Nombre del Indicador',place='Ingrese el nombre de su indicador',size='sm',required=True, value=nombre_indicador)
+                        Entry.textInput(id='input-nombre-indicador', label= 'Nombre del Indicador',place='Ingrese el nombre de su indicador',size='sm',required=True, value=nombre_indicador_)
                     ],size=6)
                 ]),
                 Row([
@@ -996,12 +1030,12 @@ def editar_ratio_finanzas(*args):
                     ],size=12),
                     
                 ]), 
-                Row([
-                    Column([
-                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-finanzas-mostrar', id_maximize = 'maximize-line-finanzas-mostrar',height=300))
-                    ],size=12),
+                #Row([
+                #    Column([
+                #        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-finanzas-mostrar', id_maximize = 'maximize-line-finanzas-mostrar',height=300))
+                #    ],size=12),
                     
-                ]), 
+                #]), 
             
             
             ]),
@@ -1010,6 +1044,7 @@ def editar_ratio_finanzas(*args):
         Div(id='update')
         
     ])
+    """
     @app.callback(
     Output("line-finanzas-mostrar", "figure"),
     Input("btn-mostrar","n_clicks"),
@@ -1078,7 +1113,7 @@ def editar_ratio_finanzas(*args):
             #fig.add_hrect(y0=desde_positivo_indicador,y1=hasta_positivo_indicador, line_width=0, fillcolor=color_positivo_indicador, opacity=0.2)
            
             return fig
-        
+     """   
     @app.callback(
     Output("update", "children"),
     Input("btn-modificar","n_clicks"),
@@ -1115,8 +1150,87 @@ def editar_ratio_finanzas(*args):
             if (tipo_indicador == None or tipo_indicador == '') or (nombre_indicador == None or nombre_indicador == '')or (formula_indicador == None or formula_indicador == ''):
                 return html.Div([dmc.Alert("No olvide ingresar datos",title="Error :",color="red",duration=5000)]),False
             elif (tipo_indicador != None or tipo_indicador != '') and (nombre_indicador != None or nombre_indicador != '') and (formula_indicador != None or formula_indicador != ''):
-                if nombre_indicador not in get_indicadores_name():
+                if nombre_indicador not in get_indicadores_name() :
                     ActualizarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,indicador_pk)
-                    return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)]),True
+                    return  html.Div([dmc.Alert("Se actualizó correctamente",title="Exitoso :",color="green",duration=5000)]),True
+                elif nombre_indicador == nombre_indicador_:
+                    ActualizarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,indicador_pk)
+                    return  html.Div([dmc.Alert("Se actualizó correctamente",title="Exitoso :",color="green",duration=5000)]),True
+                
                 elif nombre_indicador in get_indicadores_name():
                     return html.Div([dmc.Alert("El nombre del indicador ya existe",title="Error :",color="red",duration=5000)]),False
+
+
+def eliminar_ratio_finanzas(*args):
+    tipo_indicador = args[0]
+    nombre_indicador_ = args[1].upper()
+    formula_indicador = args[2].upper()
+    indicador_pk = args[3]
+    print(indicador_pk)
+    
+    indicador_tipo_text = TipoIndicador.objects.filter(id = indicador_pk).values_list('name_tipo_indicador',flat=True)
+    print(indicador_tipo_text)
+    app = DjangoDash('eliminar-indicador',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.layout = Contenedor([
+        Modal(id="modal-line-finanzas-mostrar", size= "85%"),
+        Row([
+            Column([dmc.Title(children=['Eliminar Indicador Financiero'],order=2,align='center')])
+        ]),
+        Row([
+            Column([
+                
+                Row([
+                    Column([
+                        dmc.TextInput(label="Id Indicador", disabled=True, value= indicador_pk,size = 'sm')
+                        #Entry.select(id='select-tipo-indicador',texto='Tipo de Indicador', place= 'Seleccione el Tipo de Indicador', data=list_dicts,size='sm',clearable=False, value=tipo_indicador)
+                    ],size=6),
+                    Column([
+                        dmc.TextInput(label="Tipo de Indicador", disabled=True, value= tipo_indicador,size = 'sm')
+                        
+                        #Entry.select(id='select-tipo-indicador',texto='Tipo de Indicador', place= 'Sele
+                        
+                    ],size=6)
+                ]),
+                Row([
+                    Column([
+                        dmc.TextInput(label="Nombre del Indicador", disabled=True, value= nombre_indicador_,size = 'sm')
+                    ],size=6),
+                    Column([
+                        dmc.TextInput(label="Fórmula", disabled=True, value= formula_indicador,size = 'sm')
+                        
+                    ],size=6)
+                ]),
+                
+                Row([
+                    Column([
+                        #dcc.Link(refresh=True,href=f"/{get_nombre_user()}/indicadores/")
+                        dcc.Link(Button.button(id = 'btn-eliminar', text= 'Eliminar',full_width = True, color = "red"),href=f"/{get_nombre_user()}/indicadores/",id='link')
+                    ],size=12),
+                    
+                ]),
+                Row([
+                    Column([
+                        Div(id='alert-respuesta')
+                    ],size=12),
+                    
+                ]), 
+                
+            
+            
+            ]),
+            
+        ]),
+        Div(id='update')
+        
+    ])
+    @app.callback(
+    Output("update", "children"),
+    Input("btn-eliminar","n_clicks"),
+    )
+    def delete_data_indicador(btn_clicks_eliminar):
+        try:
+            if btn_clicks_eliminar:
+                EliminarIndicador(pk_indicador=indicador_pk)
+                return  html.Div([dmc.Alert("Se elimino correctamente",title="Exitoso :",color="green",duration=5000)]),True
+        except:
+            return  html.Div([dmc.Alert("No se pudo eliminar",title="Error :",color="red",duration=5000)]),True

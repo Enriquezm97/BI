@@ -38,7 +38,7 @@
                             <td>
                                 <button type="button" class="btn btn-success btn-xs" onclick="location.href='{% url 'indicador' pk=indicador.id  username=user.usuario.username%}'"><i class="ti-bar-chart"></i></button>
                                 <button type="button" class="btn btn-info btn-xs" onclick="location.href='{% url 'modificar_indicador' pk=indicador.id  username=user.usuario.username%}'"><i class="ti-pencil-alt"></i></button>
-                                <button type="button" class="btn btn-danger btn-xs" onclick="location.href=''"><i class="ti-trash"></i></button>
+                                <button type="button" class="btn btn-danger btn-xs" onclick="location.href='{% url 'eliminar_indicador' pk=indicador.id  username=user.usuario.username%}'"><i class="ti-trash"></i></button>
                             </td>
                         </tr>
                         {% endfor%}

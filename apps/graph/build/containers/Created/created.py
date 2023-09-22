@@ -539,7 +539,7 @@ def IndicadorDash(nombres,formulas,
         out_year=[{'label': i, 'value': i} for i in df_bcomprobacion['Año'].unique()] 
         name=nombres.upper()
         formula=formulas.upper()
-        print(filt_year)
+        
         
             #df_ratios_trim_dolar
         if ejex=='Trimestre':

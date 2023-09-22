@@ -17,7 +17,7 @@ from apps.users.models import Empresa,Usuario
 from apps.graph.models import Indicador
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin
-from apps.graph.test.layouts.finanzas import crear_ratio_finanzas,editar_ratio_finanzas
+from apps.graph.test.layouts.finanzas import crear_ratio_finanzas,editar_ratio_finanzas,eliminar_ratio_finanzas
 
 class FormIndicadorView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
@@ -120,6 +120,27 @@ class IndicadorEditarView(LoginRequiredMixin,AnalistaMixin,DetailView):
         
         context={'dashboard':dashboard}#,''graph':graph,
         return render(request,'dash_created/Indicadores/editar_indicador.html',context) 
+    
+class IndicadorEliminarView(LoginRequiredMixin,AnalistaMixin,DetailView):
+
+    models=Indicador
+    template_name= 'dash_created/Indicadores/eliminar_indicador.html'
+    pk_url_kwarg='pk'
+    login_url = reverse_lazy('login')#'/user/login/'
+
+    def get(self,request, *args, **kwargs):
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        pk=kwargs['pk']
+        tipo=list(Indicador.objects.filter(id=pk).values_list('indicador_tipo',flat=True))[0]
+        name=list(Indicador.objects.filter(id=pk).values_list('name',flat=True))[0]
+        formula=list(Indicador.objects.filter(id=pk).values_list('formula',flat=True))[0]
+    
+        dashboard=eliminar_ratio_finanzas(tipo,name,formula,pk)
+        
+        context={'dashboard':dashboard}#,''graph':graph,
+        return render(request,'dash_created/Indicadores/eliminar_indicador.html',context) 
     
     
     

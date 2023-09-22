@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="row">   
+       
+</div>
+        {{graph|safe}}
+        
+
+        {%load plotly_dash%}
+        {% plotly_header %}
+        {% plotly_direct name='eliminar-indicador'%}
+        {% plotly_footer %}
+        
+    
+    
+{%endblock%}
