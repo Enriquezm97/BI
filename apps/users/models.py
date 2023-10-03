@@ -34,14 +34,16 @@ class Rubro(models.Model):
 
         return self.name_rubro
 
+
+
 class Empresa(models.Model):
     
     #user_empresa =  models.OneToOneField(User,on_delete=models.CASCADE)
-    name_empresa = models.CharField(max_length=15, blank=True,null=True)
+    name_empresa = models.CharField(max_length=100, blank=True,null=True)
     phone_number_empresa = models.CharField(max_length=20, blank=True,null=True)
     picture_empresa = models.ImageField(upload_to='media',blank=True,null=True)
     codigo_empresa= models.CharField(max_length=15, blank=True,null=True)
-
+    ruc_empresa = models.CharField(max_length=12, blank=True,null=True)
     rubro_empresa=models.ForeignKey(Rubro,on_delete=models.CASCADE)
 
     create_empresa = models.DateTimeField(auto_now_add=True,null=True)
@@ -82,4 +84,21 @@ class Usuario(models.Model):
 
         return self.username
 
+class Mantenedor(models.Model):
+    
+    empresa=models.ForeignKey(Empresa,on_delete=models.CASCADE)
+    api_publica = models.CharField(max_length=255,null=True)
+    api_local = models.CharField(max_length=255,null=True)
+    servidor_bd = models.CharField(max_length=255,null=True)
+    puerto_bd = models.CharField(max_length=255,default='1433',null=True)
+    usuario_bd = models.CharField(max_length=255,null=True)
+    password_bd = models.CharField(max_length=100,null=True)
+    name_bd = models.CharField(max_length=255,null=True,unique=True)
+    token = models.CharField(max_length=255,null=True)
+    create_mantenedor = models.DateTimeField(auto_now_add=True,null=True)
+    modified_mantenedor = models.DateTimeField(auto_now=True,null=True)
+
+    def __str__(self):
+
+        return self.name_bd
 

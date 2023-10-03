@@ -618,8 +618,11 @@ def estadoGP():
             df_utilidad_neta_proc=df_utilidad_neta_proc.drop([0],axis=0)
             #######################DATAFRAME CORE
             df_table_gp=pd.concat([df_utilidad_bruta, df_utilidad_operativa_proc,df_utilidad_neta_proc])
-            for periodo_col in df_table_gp.columns[1:]:
-                df_table_gp[periodo_col] = df_table_gp.apply(lambda x: "{:,.0f}".format(x[periodo_col]), axis=1)
+            print(df_table_gp.columns)
+            print(df_table_gp)
+            #for periodo_col in df_table_gp.columns[1:]:
+            #    print(periodo_col)
+            #    df_table_gp[periodo_col] = df_table_gp.apply(lambda x: "{:,.0f}".format(x[periodo_col]), axis=1)
             return df_table_gp    
         
         utilidad_df=createTableGP(dff,moneda)
@@ -1021,7 +1024,7 @@ def editar_ratio_finanzas(*args):
                         dcc.Link(Button.button(id = 'btn-modificar', text= 'Modificar',full_width = True, color = 'rgb(81, 207, 102)'),href=f"/{get_nombre_user()}/indicadores/",id='link')
                     ],size=6),
                     Column([
-                        Button.button(id = 'btn-mostrar', text= 'Mostrar',full_width = True,color='rgb(32, 201, 151)')
+                        Button.button(id = 'btn-mostrar', text= 'Mostrar',full_width = True,color='gray')
                     ],size=6)
                 ]),
                 Row([
@@ -1044,76 +1047,7 @@ def editar_ratio_finanzas(*args):
         Div(id='update')
         
     ])
-    """
-    @app.callback(
-    Output("line-finanzas-mostrar", "figure"),
-    Input("btn-mostrar","n_clicks"),
-    State("select-tipo-indicador","value"),
-    State("input-nombre-indicador","value"),
-    State("input-formula-indicador","value"),
-    State("input-negativo-desde", "value"),
-    State("input-negativo-hasta", "value"),
-    State("colorpicker-negativo", "value"),
-    State("input-medio-desde", "value"),
-    State("input-medio-hasta", "value"),
-    State("colorpicker-medio", "value"),
-    State("input-positivo-desde", "value"),
-    State("input-positivo-hasta", "value"),
-    State("colorpicker-positivo", "value"),
     
-    State("textarea-comentario", "value"),
-    #Input("btn-guardar","n_clicks"),
-    #State("favorito","value"),
-
-    )
-    def update_graph(*args):
-        n_clicks_mostrar = args[0]
-        tipo_indicador = args[1]
-        nombre_indicador = args[2].upper()
-        formula_indicador = args[3].upper()
-        desde_negativo_indicador = args[4]
-        hasta_negativo_indicador = args[5]
-        color_negativo_indicador = args[6]
-        desde_medio_indicador = args[7]
-        hasta_medio_indicador = args[8]
-        color_medio_indicador = args[9]
-        desde_positivo_indicador = args[10]
-        hasta_positivo_indicador = args[11]
-        color_positivo_indicador = args[12]
-        comentario_indicador = args[13]
-        
-        if n_clicks_mostrar:
-
-            df = pd.DataFrame()
-            df['Agrupado']=partidas_df['Trimestre']
-            
-            df['valor']=formula_paraiso(formula = formula_indicador,df = partidas_df)
-            
-            df['promedio'] = df['valor'].sum()/len(df['Agrupado'].unique())
-            print(df.info())
-            print(df)
-            #fig =  figure__line2(df['Agrupado'],df['valor'],df['promedio'],nombre_indicador,'Valor','Promedio',desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador)
-            fig = go.Figure()
-
-            #fig.update_layout(yaxis_tickformat = '.0%')
-            fig.add_trace(go.Scatter(x=df['Agrupado'], y=df['valor'],text=df['valor'],textposition="bottom center",
-                                mode='lines+markers',
-                                name='w',line=dict( width=3)))
-            #fig.add_trace(go.Scatter(x=df['Agrupado'], y=df['promedio'],
-            #                    mode='lines',
-            #                    name='y',line=dict( width=2)))
-            #fig.update_layout(autosize=True,height=300,margin=dict(l=60,r=40,b=60,t=70,autoexpand=True),
-            #    legend=dict(orientation= 'h',yanchor="bottom",xanchor='center', x= 0.5, y= 1,font=dict(size=10,color="black"),),#family="Courier",
-            #)
-            
-            fig.update_layout(template='none', title='wwwww')
-            #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
-            #fig.add_hrect(y0=desde_negativo_indicador,y1=hasta_negativo_indicador, line_width=0, fillcolor=color_negativo_indicador, opacity=0.2)
-            #fig.add_hrect(y0=desde_medio_indicador,y1=hasta_medio_indicador, line_width=0, fillcolor=color_medio_indicador, opacity=0.2)
-            #fig.add_hrect(y0=desde_positivo_indicador,y1=hasta_positivo_indicador, line_width=0, fillcolor=color_positivo_indicador, opacity=0.2)
-           
-            return fig
-     """   
     @app.callback(
     Output("update", "children"),
     Input("btn-modificar","n_clicks"),
@@ -1204,7 +1138,7 @@ def eliminar_ratio_finanzas(*args):
                 Row([
                     Column([
                         #dcc.Link(refresh=True,href=f"/{get_nombre_user()}/indicadores/")
-                        dcc.Link(Button.button(id = 'btn-eliminar', text= 'Eliminar',full_width = True, color = "red"),href=f"/{get_nombre_user()}/indicadores/",id='link')
+                        html.A(Button.button(id = 'btn-eliminar', text= 'Eliminar',full_width = True, color = "red"),href=f"/{get_nombre_user()}/indicadores/",id='link')
                     ],size=12),
                     
                 ]),

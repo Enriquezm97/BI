@@ -13,8 +13,9 @@ from apps.graph.test.utils.functions.functions_dict import extraer_list_value_di
 
 from apps.graph.test.constans import MESES_ORDER
 from crum import get_current_user
-from apps.graph.test.utils.crum import get_empresa
+from apps.graph.test.utils.crum import get_empresa,get_data_conection
 from apps.graph.test.data import data_comercial
+from apps.graph.test.utils.functions.functions_transform import *
 """""""""""" #MODIFICAR EN EL ETL COMERCIAL
 
 
@@ -40,9 +41,18 @@ input_ventas_x={
     
 }
 #anio_campania = sorted(df_ventas_detalle['YEAR'].unique())
-
+import requests
 def informeComercial(rubro_empresa = 'Agricola'):
-    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    ip, token_ =get_data_conection()
+    def getApi(api,token):
+        response = requests.get(api, headers={'Authorization': "Bearer {}".format(token)})
+        objeto=response.json()
+        list_objetos=objeto['objeto']
+        return list_objetos
+    dffff = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_rpt_ventas_detallado',token = token_))
+    df_ventas_detalle = etl_comercial(dffff)
+    print(dffff)
+    #df_ventas_detalle = data_comercial(empresa=get_empresa())
     
     app = DjangoDash('informe-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
