@@ -256,6 +256,6 @@ def pivot_data_finanzas(df = pd.DataFrame() ,etapa = 'Trimestre', moneda = 'sole
     merge_1 = grupo1_df_pivot.merge(grupo2_df_pivot,how ='inner',on = group)
     merge_2 = merge_1.merge(grupo3_df_pivot,how ='inner',on = group)
     merge_3 = merge_2.merge(grupo_funcion_df_pivot,how ='inner',on = group)
-    merge_4 = merge_3.merge(grupo_naturaleza_df_pivot,how ='inner',on = group)
+    merge_4 = merge_3.merge(grupo_naturaleza_df_pivot,how ='left',on = group)
     #return pd.merge(right = [grupo1_df_pivot, grupo2_df_pivot, grupo3_df_pivot,grupo_funcion_df_pivot,grupo_naturaleza_df_pivot],how='inner',left_on = eje,right_on = eje )
     return merge_4.fillna(0)#.reset_index()

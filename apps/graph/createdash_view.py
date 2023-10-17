@@ -26,6 +26,7 @@ class FormIndicadorView(LoginRequiredMixin,AnalistaMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        print(empresa[0],id_user)
         dashboard=crear_ratio_finanzas(empresa[0],id_user)
         context = {'dashboard':dashboard}
         return render(request,'dash_created/Indicadores/form_indicador.html',context)

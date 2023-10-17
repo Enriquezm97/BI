@@ -13,9 +13,10 @@ from apps.graph.test.utils.functions.functions_dict import extraer_list_value_di
 
 from apps.graph.test.constans import MESES_ORDER
 from crum import get_current_user
-from apps.graph.test.utils.crum import get_empresa,get_data_conection
+from apps.graph.test.utils.crum import get_empresa,get_data_connection
 from apps.graph.test.data import data_comercial
 from apps.graph.test.utils.functions.functions_transform import *
+from apps.graph.test.Connection.apis import connection_api
 """""""""""" #MODIFICAR EN EL ETL COMERCIAL
 
 
@@ -41,17 +42,13 @@ input_ventas_x={
     
 }
 #anio_campania = sorted(df_ventas_detalle['YEAR'].unique())
-import requests
+
 def informeComercial(rubro_empresa = 'Agricola'):
-    ip, token_ =get_data_conection()
-    def getApi(api,token):
-        response = requests.get(api, headers={'Authorization': "Bearer {}".format(token)})
-        objeto=response.json()
-        list_objetos=objeto['objeto']
-        return list_objetos
-    dffff = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_rpt_ventas_detallado',token = token_))
+    
+    dffff = connection_api()
+    
     df_ventas_detalle = etl_comercial(dffff)
-    print(dffff)
+    
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     
     app = DjangoDash('informe-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -167,7 +164,10 @@ def informeComercial(rubro_empresa = 'Agricola'):
     create_callback_opened_modal(app, modal_id="modal-funnel-comercial-selector_second",children_out_id="funnel-comercial-selector_second", id_button="maximize-funnel-comercial-selector_second",height_modal=700)
 
 def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
-    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    #df_ventas_detalle = data_comercial(empresa=get_empresa())
+    dff = connection_api()
+    df_ventas_detalle=etl_comercial(dff)
+    print(df_ventas_detalle.columns)
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash('segmented-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -268,8 +268,10 @@ def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
 
 
 def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
-    df_ventas_detalle = data_comercial(empresa=get_empresa())
-    print(df_ventas_detalle['Fecha'].unique())
+    #df_ventas_detalle = data_comercial(empresa=get_empresa())
+    dff = connection_api()
+    df_ventas_detalle=etl_comercial(dff)
+    
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash('clientes-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -366,7 +368,9 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st",height_modal=700)
     
 def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
-    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    #df_ventas_detalle = data_comercial(empresa=get_empresa())
+    dff = connection_api()
+    df_ventas_detalle=etl_comercial(dff)
     
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
@@ -465,7 +469,10 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
     
 def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
-    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    #df_ventas_detalle = data_comercial(empresa=get_empresa())
+    dff = connection_api()
+    df_ventas_detalle=etl_comercial(dff)
+    
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash('cultivos-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -565,7 +572,10 @@ def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st",height_modal=700)
     
 def ventasComparativo(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
-    df_ventas_detalle = data_comercial(empresa=get_empresa())
+    #df_ventas_detalle = data_comercial(empresa=get_empresa())
+    dff = connection_api()
+    df_ventas_detalle=etl_comercial(dff)
+    
     df_ventas_detalle['Año']=df_ventas_detalle['Año'].astype("string")
     year_list=sorted(df_ventas_detalle['Año'].unique())
     dict_year=dict(zip(year_list,px.colors.qualitative.Antique))

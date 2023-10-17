@@ -10,14 +10,68 @@ from apps.graph.test.utils.blocks.block_card import cardGraph,cardSection,cardGr
 from apps.graph.test.utils.functions.callbacks.callbacks_ import *
 from apps.graph.test.utils.components.components_filters import dict_components_comercial, datepicker_
 from apps.graph.test.utils.functions.functions_dict import extraer_list_value_dict
-from apps.graph.test.data import finanzas_df,pivot_data_finanzas
+from apps.graph.test.data import finanzas_dff,pivot_data_finanzas,data_finanzas
 from apps.graph.models import TipoIndicador
 #
-from apps.graph.test.utils.crum import get_indicadores_name,get_nombre_user
+from apps.graph.test.utils.crum import get_indicadores_name,get_nombre_user, get_empresa,get_id_user
 import dash_bootstrap_components as dbc
 from apps.graph.save import RegistrarIndicador,ActualizarIndicador,EliminarIndicador
 from apps.graph.test.utils.figures import *
 import dash_ag_grid as dag
+from apps.graph.test.Connection.apis import connection_api
+from apps.graph.test.utils.functions.functions_transform import *
+from crum import get_current_user
+
+def formula_samplast(formula = '',df = pd.DataFrame()):
+    ACTIVO = df['ACTIVO']
+    PASIVO = df['PASIVO']
+    PATRIMONIO = df['PATRIMONIO']
+    ACTIVONOCORRIENTE = df['Activo no corriente']
+    PASIVOCORRIENTE = df['Pasivo corriente']
+    PASIVONOCORRIENTE = df['Pasivo no corriente']
+    CAPITALSOCIAL=df['Capital social']
+    CUENTASPORCOBRARCOMERCIALESRELACIONADAS=df['Cuentas por cobrar comerciales - relacionadas, neto']
+    CUENTASPORCOBRARDIVERSASRELACIONADAS=df['Cuentas por cobrar comerciales - terceros, neto']
+    CUENTASPORCOBRARDIVERSASTERCEROS=df['Cuentas por cobrar diversas - relacionadas, neto']
+    CUENTASPORCOBRARDIVERSASTERCEROS=df['Cuentas por cobrar diversas - terceros, neto']
+    CUENTASPORPAGARALDIRECTORIO=df['Cuentas por pagar al directorio, corto plazo']
+    CUENTASPORPAGARCOMERCIALESRELACIONADAS=df['Cuentas por pagar comerciales - relacionadas, neto']
+    CUENTASPORPAGARCOMERCIALESTERCEROS=df['Cuentas por pagar comerciales-terceros, neto']
+    CUENTASPORPAGARDIVERSASRELACIONADAS=df['Cuentas por pagar diversas - relacionadas, neto']
+    CUENTASPORPAGARDIVERSASTERCEROS=df['Cuentas por pagar diversas - terceros, neto']
+    EFECTIVOYEQUIVALENTEDEEFECTIVO=df['Efectivo y equivalentes de efectivo']
+    EXISTENCIAS=df['Existencias, neto']
+    INTANGIBLES=df['Intangibles, neto']
+    OBLIGACIONESFINANCIERAS=df['Obligaciones financieras']
+    OTROSACTIVOSCORRIENTES=df['Otros activos corrientes']
+    OTROSACTIVOSNOCORRIENTES=df['Otros activos no corrientes']
+    OTROSGASTOSPAGADOSPORANTICIPADO=df['Otros gastos pagados por anticipado']
+    PROPIEDADPLANTAYEQUIPO=df['Propiedad, planta y equipo, neto']
+    PROVISIONES=df['Provisiones']
+    PRESTAMOSALPERSONALYACCIONISTAS=df['Préstamos al personal y accionistas']
+    REMUNERACIONESPORPAGAR=df['Remuneraciones por pagar']
+    RESERVALEGAL=df['Reserva Legal']
+    RESULTADOSACUMULADOS=df['Resultados acumulados']
+    SOBREGIROSBANCARIOS=df['Sobregiros bancarios']
+    TRIBUTOSCONTRAPRESENTACIONESYAPORTES=df['Tributos, contraprestaciones y aportes']
+    COSTODEVENTASLINEAFILMAUTOMATICO=df['Costo de ventas línea film Automático']
+    COSTODEVENTASLINEAFILMCOLORES=df['Costo de ventas línea film Colores']
+    COSTODEVENTASLINEAFILMMANUAL=df['Costo de ventas línea film Manual']
+    COSTODEVENTASLINEAFILMPREESTIRADO=df['Costo de ventas línea film Pre-Estirado']
+    DIFERENCIADECAMBIONETO=df['Diferencia de cambio, neto']
+    GASTOSDEADMINISTRACION=df['Gastos de administración']
+    GASTOSDEDISTRIBUCIONYVENTAS=df['Gastos de distribución y ventas']
+    GASTOSFINANCIEROS=df['Gastos financieros']
+    INGRESOSFINANCIEROS=df['Ingresos financieros']
+    OTROSCOSTOSOPERACIONALES=df['Otros Costos Operacionales']
+    OTROSINGRESOSOPERACIONALES=df['Otros Ingresos Operacionales']
+    OTROSINGRESOS=df['Otros ingresos']
+    VENTASLINEAFILMAUTOMATICO=df['Ventas línea film - Automático']
+    VENTASLINEAFILMCOLORES=df['Ventas línea film - Colores']
+    VENTASLINEAFILMMANUAL=df['Ventas línea film - Manual']
+    VENTASLINEAFILMPREESTIRADO=df['Ventas línea film - Pre-Estirado']
+    formula=formula.replace(" ", "")
+    return eval(formula)
 def formula_paraiso(formula = '',df = pd.DataFrame()):
     ACTIVO = df['ACTIVO']
     PASIVO = df['PASIVO']
@@ -281,12 +335,31 @@ def figure__line2(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_colo
     
     return fig
 
+
+
+
 def estadoResultados():
+    if get_empresa() == 'SAMPLAST':
+        dfff = connection_api(sp_name='nsp_eeff_json')
+        finanzas_df = etl_bc(dfff)
+        ingresos = ['Ingresos financieros','Otros Ingresos Operacionales','Otros ingresos','Ventas línea film - Automático','Ventas línea film - Colores', 'Ventas línea film - Manual','Ventas línea film - Pre-Estirado']
+        gastos = ['Gastos de administración', 'Gastos de distribución y ventas','Gastos financieros']
+        costos = ['Costo de ventas línea film Automático','Costo de ventas línea film Colores','Costo de ventas línea film Manual','Costo de ventas línea film Pre-Estirado','Otros Costos Operacionales']
+        g_funcion_dict ={'Ingresos': ingresos,
+                     'Gastos': gastos,
+                     'Costos': costos
+        }
+    else:
+        finanzas_df = finanzas_dff.copy()
+        ingresos = ['Ingresos Financieros','Ventas Netas (ingresos operacionales)','Otros Ingresos']#Ventas Netas (ingresos operacionales)
+        gastos = ['Gastos Financieros', 'Gastos de Administración', 'Gastos de Venta','Otros Gastos']
+        costos = ['Costo de ventas']
+        g_funcion_dict ={'Ingresos': ingresos,
+                     'Gastos': gastos,
+                     'Costos': costos
+        }
     year_list = sorted(finanzas_df['Año'].unique())
-    g_funcion_dict ={'Ingresos':['Ingresos Financieros','Ventas Netas (ingresos operacionales)','Otros Ingresos'],
-                     'Gastos':['Gastos Financieros', 'Gastos de Administración', 'Gastos de Venta','Otros Gastos'],
-                     'Costos':['Costo de ventas']
-    }
+    
 
     app = DjangoDash('estado_resultados_finanzas',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
@@ -392,9 +465,7 @@ def estadoResultados():
         
         bc_df = pd.pivot_table(dff,index=['Año','Mes','Mes Num','Periodo'],columns='grupo_funcion',values = moneda).fillna(0).reset_index()
         
-        ingresos = ['Ingresos Financieros','Ventas Netas (ingresos operacionales)','Otros Ingresos']#Ventas Netas (ingresos operacionales)
-        gastos = ['Gastos Financieros', 'Gastos de Administración', 'Gastos de Venta','Otros Gastos']
-        costos = ['Costo de ventas']
+        print(bc_df.columns)
         for col_ingresos in ingresos:
             bc_df[col_ingresos] = bc_df[col_ingresos]*-1
         
@@ -449,12 +520,24 @@ def estadoResultados():
     create_callback_opened_modal(app, modal_id="modal-area-finanzas-costos",children_out_id="area-finanzas-costos", id_button="maximize-area-finanzas-costos",height_modal=700)
 
 def estadoGP():
+    if get_empresa() == 'SAMPLAST':
+        dfff = connection_api(sp_name='nsp_eeff_json')
+        finanzas_df = etl_bc(dfff)
+        utilidad_bruta = ['Ventas línea film - Colores', 'Ventas línea film - Manual','Ventas línea film - Pre-Estirado',
+                        'Ventas línea film - Automático','Costo de ventas línea film Automático','Costo de ventas línea film Colores',
+                        'Costo de ventas línea film Manual','Costo de ventas línea film Pre-Estirado'   ,'Otros Costos Operacionales',
+                        ]
+        utilidad_operativa = ['Gastos de administración','Otros ingresos','Gastos de distribución y ventas', 'Otros Ingresos Operacionales',]
+        utilidad_neta = ['Gastos financieros','Ingresos financieros','Diferencia de cambio, neto']
+    else:
+        finanzas_df = finanzas_dff.copy()
+        utilidad_bruta = ['Ventas Netas (ingresos operacionales)','Costo de ventas']
+        utilidad_operativa = ['Gastos de Administración','Gastos de Venta','Otros Ingresos','Otros Gastos']
+        utilidad_neta = ['Gastos Financieros','Ingresos Financieros']
     year_list = sorted(finanzas_df['Año'].unique())
     
     
-    utilidad_bruta = ['Ventas Netas (ingresos operacionales)','Costo de ventas']
-    utilidad_operativa = ['Gastos de Administración','Gastos de Venta','Otros Ingresos','Otros Gastos']
-    utilidad_neta = ['Gastos Financieros','Ingresos Financieros']
+    
 
     app = DjangoDash('estado_perdidas_ganancias',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
@@ -623,7 +706,7 @@ def estadoGP():
             #for periodo_col in df_table_gp.columns[1:]:
             #    print(periodo_col)
             #    df_table_gp[periodo_col] = df_table_gp.apply(lambda x: "{:,.0f}".format(x[periodo_col]), axis=1)
-            return df_table_gp    
+            return df_table_gp.round(1)
         
         utilidad_df=createTableGP(dff,moneda)
         return [
@@ -650,11 +733,23 @@ def estadoGP():
     create_callback_opened_modal(app, modal_id="modal-bar-finanzas-uneta",children_out_id="bar-finanzas-uneta", id_button="maximize-bar-finanzas-uneta",height_modal=700)
 
 def crear_ratio_finanzas(empresa,usuario):
-    
+    print('for here')
+    print(get_current_user())
+    empresa_login = get_empresa()
+    if  empresa_login == 'SAMPLAST':
+        dfff = connection_api(sp_name='nsp_eeff_json')
+        finanzas_df = etl_bc(dfff)
+        partidas_df = pivot_data_finanzas(finanzas_df)
+        partidas_df = partidas_df.drop(['PATRIMONIO_y'],axis=1)
+        partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO'})
+        print(partidas_df.columns)
+    else:
+        finanzas_df = finanzas_dff.copy()
+        partidas_df = pivot_data_finanzas(finanzas_df)
+        partidas_df = partidas_df.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
+        partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
     df_bcomprobacion=finanzas_df.copy()
-    partidas_df = pivot_data_finanzas(finanzas_df)
-    partidas_df = partidas_df.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
-    partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
+    
     #test_df.columns[3:]
     idind_list=list(TipoIndicador.objects.all().values_list('id',flat=True))
     tipoind_list=list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True))
@@ -818,8 +913,11 @@ def crear_ratio_finanzas(empresa,usuario):
             #print(partidas_df.columns)
             df = pd.DataFrame()
             df['Agrupado']=partidas_df['Trimestre']
-            
-            df['valor']=formula_paraiso(formula = formula_indicador,df = partidas_df)
+            if empresa_login == 'SAMPLAST': 
+                df['valor']=formula_samplast(formula = formula_indicador,df = partidas_df)
+            else:
+                
+                df['valor']=formula_paraiso(formula = formula_indicador,df = partidas_df)
             print(df)
             df['promedio'] = df['valor'].sum()/len(df['Agrupado'].unique())
             
@@ -867,7 +965,7 @@ def crear_ratio_finanzas(empresa,usuario):
                 return html.Div([dmc.Alert("No olvide ingresar datos",title="Error :",color="red",duration=5000)]),False
             elif (tipo_indicador != None or tipo_indicador != '') and (nombre_indicador != None or nombre_indicador != '') and (formula_indicador != None or formula_indicador != ''):
                 if nombre_indicador not in get_indicadores_name():
-                    RegistrarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,False,empresa,usuario)
+                    RegistrarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,False,empresa,get_id_user())
                     return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)]),True
                 elif nombre_indicador in get_indicadores_name():
                     return html.Div([dmc.Alert("El nombre del indicador ya existe",title="Error :",color="red",duration=5000)]),False
@@ -912,6 +1010,17 @@ def line_fig(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color_1,r
     return fig
 
 def editar_ratio_finanzas(*args):
+    if get_empresa() == 'SAMPLAST':
+        dfff = connection_api(sp_name='nsp_eeff_json')
+        finanzas_df = etl_bc(dfff)
+        partidas_df = pivot_data_finanzas(finanzas_df)
+        partidas_df = partidas_df.drop(['PATRIMONIO_y'],axis=1)
+        partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO'})
+    else:
+        finanzas_df = finanzas_dff.copy()
+        partidas_df = pivot_data_finanzas(finanzas_df)
+        partidas_df = partidas_df.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
+        partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
     tipo_indicador = args[0]
     nombre_indicador_ = args[1].upper()
     formula_indicador = args[2].upper()
@@ -927,9 +1036,7 @@ def editar_ratio_finanzas(*args):
     comentario_indicador = args[12]
     indicador_pk = args[13]
     print(indicador_pk)
-    partidas_df = pivot_data_finanzas(finanzas_df)
-    partidas_df = partidas_df.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
-    partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
+    
     #test_df.columns[3:]
     idind_list=list(TipoIndicador.objects.all().values_list('id',flat=True))
     tipoind_list=list(TipoIndicador.objects.all().values_list('name_tipo_indicador',flat=True))

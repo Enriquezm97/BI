@@ -8,7 +8,7 @@
               <span class="menu-title">Inicio</span>
             </a>
           </li>
-
+    
         {% if user.usuario.rol.name_rol == 'Administrador' %}  
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
@@ -25,8 +25,10 @@
                 <!--<li class="nav-item"> <a class="nav-link" href="{% url "vencomparativo" user.usuario.username %}">Ventas Comparativo</a></li>-->
                 <li class="nav-item"> <a class="nav-link" href="{% url "com-cliente" user.usuario.username%}">Ventas Clientes</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{% url "com-producto" user.usuario.username%}">Ventas Productos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url "com-cultivo" user.usuario.username%}">Ventas Cultivo</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo" user.usuario.username%}">Ventas Anuales</a></li>
+                {% if user.usuario.empresa.rubro_empresa_id == 2 or user.usuario.empresa.rubro_empresa_id == 3 %}
+                  <li class="nav-item"><a class="nav-link" href="{% url "com-cultivo" user.usuario.username%}">Ventas Cultivo</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo" user.usuario.username%}">Ventas Anuales</a></li>
+                {% endif %} 
 
               </ul>
             </div>
@@ -52,20 +54,28 @@
               </ul>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-              <i class="icon-grid-2 menu-icon"></i>
-              <span class="menu-title">Producción Agrícola</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="tables">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% url "plan_siembra"  user.usuario.username %}">Ejecución de Campaña</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url "costos_campaña" user.usuario.username %}">Detalle de Costos</a></li>
-              </ul>
-            </div>
-          </li>
-        
+          {% if user.usuario.empresa.rubro_empresa_id == 2 or user.usuario.empresa.rubro_empresa_id == 3 %}
+                <li class="nav-item">
+
+                  <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+                    <i class="icon-grid-2 menu-icon"></i>
+                    <span class="menu-title">Producción Agrícola</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+                  <div class="collapse" id="tables">
+                    <ul class="nav flex-column sub-menu">
+                      
+                        
+                        <li class="nav-item"> <a class="nav-link" href="{% url "plan_siembra"  user.usuario.username %}">Ejecución de Campaña</a></li>
+                        <li class="nav-item"> <a class="nav-link" href="{% url "costos_campaña" user.usuario.username %}">Detalle de Costos</a></li>
+                        
+                    </ul>
+                    
+                  </div>
+                </li>
+          {% endif %}
+                
+              
         {% elif user.usuario.rol.name_rol == 'Analista' %}  
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">

@@ -143,7 +143,7 @@ def card(content = [],shadow='xl', radius='md', border =  True):
             )
     
 
-def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '', num = 0, color_text ='white',color_section_title = '#0d6efd',contenido ='numero', content = [], padding_section=5,color_section_content = 'white', icon =''):
+def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '', num = 0, color_text ='white',color_section_title = '#5468b7',contenido ='numero', content = [], padding_section=5,color_section_content = 'white', icon =''):
     if contenido == 'numero':
             section =  dmc.Text(children=[dmc.Center(children=num,id=id_value)], weight=500, style={"fontSize": 30})
                             

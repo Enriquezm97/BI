@@ -1,6 +1,7 @@
 
 import apps.graph.models as gm
 import apps.users.models as um
+from ..graph.test.utils.crum import *
 
 def RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,color2,desde3,hasta3,color3,comentario,favorito,empresa,id_usuario):
     #from home.models import Ratios
@@ -28,8 +29,10 @@ def RegistrarIndicador(tipo,nombre,formula,desde1,hasta1,color1,desde2,hasta2,co
     Indicador.indicador_comentario=comentario
     Indicador.indicador_favorito= favorito
     Indicador.dataframe=empresa
-    Indicador.usuario=um.Usuario.objects.get(id=id_usuario)
-
+    print('aki abajo')
+    print(um.Usuario.objects.get(id=get_id_user()))
+    Indicador.usuario=um.Usuario.objects.get(id=get_id_user())
+    
     return Indicador.save()
 
 

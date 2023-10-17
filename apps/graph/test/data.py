@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import requests
 from apps.graph.test.utils.functions.functions_transform import *
+from ..test.Connection.apis import connection_api
 
 df_var_agricolas_default=pd.read_parquet('agricola.parquet', engine='pyarrow')
 df_costos_agricola_default=pd.read_parquet('costos.parquet', engine='pyarrow')
@@ -62,7 +63,7 @@ df_ventas_detalle['Fecha']=df_ventas_detalle['Fecha'].apply(lambda a: pd.to_date
 
 
 bc_df = pd.read_parquet('bc_paraiso.parquet', engine='pyarrow')
-finanzas_df = etl_bc(bc_df)
+finanzas_dff = etl_bc(bc_df)
 
 
 def data_agricola(empresa = ''):
@@ -78,6 +79,17 @@ def data_comercial(empresa = ''):
     else:
         print("data nisira")
         return df_ventas_detalle
+    
+
+def data_finanzas(empresa = ''):
+    if empresa == 'FUNDO EL PARAISO':
+        print("data el paraiso")
+        return finanzas_dff
+    elif empresa == 'SAMPLAST':
+        return None
+    else:
+        
+        return finanzas_dff
 
 
         
