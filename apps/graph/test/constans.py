@@ -82,4 +82,4 @@ COMERCIAL_SELECTS_COLUMNS ={
 }
 
 MESES_ORDER = ['Enero','Febrero','Marzo', 'Abril', 'Mayo','Junio', 'Julio', 'Agosto','Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-LISTA_COLORES_BAR = px.colors.diverging.Portland+px.colors.diverging.Earth+px.colors.diverging.balance+px.colors.diverging.Tealrose
+LISTA_COLORES_BAR = px.colors.diverging.Portland+px.colors.diverging.Earth+px.colors.diverging.balance+px.colors.diverging.Tealrose+px.colors.qualitative.Plotly+px.colors.qualitative.Dark24+px.colors.qualitative.Light24+px.colors.qualitative.Alphabet

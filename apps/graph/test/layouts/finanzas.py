@@ -965,7 +965,7 @@ def crear_ratio_finanzas(empresa,usuario):
                 return html.Div([dmc.Alert("No olvide ingresar datos",title="Error :",color="red",duration=5000)]),False
             elif (tipo_indicador != None or tipo_indicador != '') and (nombre_indicador != None or nombre_indicador != '') and (formula_indicador != None or formula_indicador != ''):
                 if nombre_indicador not in get_indicadores_name():
-                    RegistrarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,False,empresa,get_id_user())
+                    RegistrarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,False,empresa,usuario)
                     return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)]),True
                 elif nombre_indicador in get_indicadores_name():
                     return html.Div([dmc.Alert("El nombre del indicador ya existe",title="Error :",color="red",duration=5000)]),False

@@ -37,7 +37,7 @@ from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,
 from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes,ventasProductos,ventasCultivos,ventasComparativo
 from apps.graph.test.layouts.finanzas import estadoResultados,estadoGP,crear_ratio_finanzas
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin,AsistenteMixin
-
+from ..graph.test.layouts.comercial import input_dict_general,input_ventas_x,input_ventas_samplast
 def home(request):
     #owo=request.user.id
     dashboard=HomeScraper()
@@ -284,11 +284,16 @@ class VentasCore(LoginRequiredMixin,AsistenteMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
 
     def get(self,request,*args, **kwargs):
-        #id_user=self.request.user.id
-        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)[0]
         #staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
-        dashboard=ventaSegmented()
+        #input_dict_general,input_ventas_x,input_ventas_samplast
+        if empresa =='SAMPLAST':
+            entrada_filt = input_ventas_samplast
+        else:
+            entrada_filt = input_dict_general
+        dashboard=ventaSegmented(filtros=entrada_filt)
         #
 
         context = {'dashboard':dashboard}

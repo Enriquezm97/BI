@@ -17,6 +17,7 @@ from apps.graph.test.utils.crum import get_empresa,get_data_connection
 from apps.graph.test.data import data_comercial
 from apps.graph.test.utils.functions.functions_transform import *
 from apps.graph.test.Connection.apis import connection_api
+from crum import get_current_user
 """""""""""" #MODIFICAR EN EL ETL COMERCIAL
 
 
@@ -39,6 +40,15 @@ input_ventas_x={
     'Moneda':{'tipo_componente':'select'},
     'Cultivo':{'tipo_componente':'select'},
     'Variedad':{'tipo_componente':'select'},
+    
+}
+
+input_ventas_samplast={
+    'Año':{'tipo_componente':'select'},
+    'Cliente':{'tipo_componente':'select'},
+    'Grupo Producto':{'tipo_componente':'select'},
+    'Moneda':{'tipo_componente':'select'},
+    
     
 }
 #anio_campania = sorted(df_ventas_detalle['YEAR'].unique())
@@ -284,7 +294,7 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
                                         add_filter =[
                                             dmc.Divider(variant="solid"),
                                             dmc.Text("% de Clientes Mostrados", size="14",weight=500),
-                                            Entry.slider(id = 'slider-percent', value = 20 , 
+                                            Entry.slider(id = 'slider-percent', value = 10 , 
                                                         marks = [{"value": 20, "label": "20%"},
                                                                 {"value": 50, "label": "50%"},
                                                                 {"value": 80, "label": "80%"}], 
@@ -384,7 +394,7 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
                                         add_filter =[
                                             dmc.Divider(variant="solid"),
                                             dmc.Text("% de Productos Mostrados", size="14",weight=500),
-                                            Entry.slider(id = 'slider-percent', value = 20 , 
+                                            Entry.slider(id = 'slider-percent', value = 10 , 
                                                         marks = [{"value": 20, "label": "20%"},
                                                                 {"value": 50, "label": "50%"},
                                                                 {"value": 80, "label": "80%"}], 
