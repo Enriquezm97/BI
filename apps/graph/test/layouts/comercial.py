@@ -18,6 +18,7 @@ from apps.graph.test.data import data_comercial
 from apps.graph.test.utils.functions.functions_transform import *
 from apps.graph.test.Connection.apis import connection_api
 from crum import get_current_user
+from apps.graph.test.utils.crum import get_empresa
 """""""""""" #MODIFICAR EN EL ETL COMERCIAL
 
 
@@ -55,9 +56,11 @@ input_ventas_samplast={
 
 def informeComercial(rubro_empresa = 'Agricola'):
     
-    dffff = connection_api()
-    
-    df_ventas_detalle = etl_comercial(dffff)
+    dffff = connection_api(test='si')
+    if get_empresa() != 'FUNDO EL PARAISO':
+        df_ventas_detalle = etl_comercial(dffff)
+    else:
+        df_ventas_detalle = dffff.copy()
     
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     
@@ -175,8 +178,12 @@ def informeComercial(rubro_empresa = 'Agricola'):
 
 def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api()
-    df_ventas_detalle=etl_comercial(dff)
+    dff = connection_api(test='si')
+    if get_empresa() != 'FUNDO EL PARAISO':
+        df_ventas_detalle = etl_comercial(dff)
+    else:
+        df_ventas_detalle = dff.copy()
+    #df_ventas_detalle=etl_comercial(dff)
     print(df_ventas_detalle.columns)
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
@@ -279,8 +286,12 @@ def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
 
 def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api()
-    df_ventas_detalle=etl_comercial(dff)
+    dff = connection_api(test='si')
+    if get_empresa() != 'FUNDO EL PARAISO':
+        df_ventas_detalle = etl_comercial(dff)
+    else:
+        df_ventas_detalle = dff.copy()
+    #df_ventas_detalle=etl_comercial(dff)
     
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
@@ -379,8 +390,12 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
 def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api()
-    df_ventas_detalle=etl_comercial(dff)
+    dff = connection_api(test='si')
+    if get_empresa() != 'FUNDO EL PARAISO':
+        df_ventas_detalle = etl_comercial(dff)
+    else:
+        df_ventas_detalle = dff.copy()
+    #df_ventas_detalle=etl_comercial(dff)
     
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
@@ -480,8 +495,12 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
 def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api()
-    df_ventas_detalle=etl_comercial(dff)
+    dff = connection_api(test='si')
+    if get_empresa() != 'FUNDO EL PARAISO':
+        df_ventas_detalle = etl_comercial(dff)
+    else:
+        df_ventas_detalle = dff.copy()
+    #df_ventas_detalle=etl_comercial(dff)
     
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
@@ -583,8 +602,12 @@ def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
 def ventasComparativo(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api()
-    df_ventas_detalle=etl_comercial(dff)
+    dff = connection_api(test='si')
+    if get_empresa() != 'FUNDO EL PARAISO':
+        df_ventas_detalle = etl_comercial(dff)
+    else:
+        df_ventas_detalle = dff.copy()
+    #df_ventas_detalle=etl_comercial(dff)
     
     df_ventas_detalle['Año']=df_ventas_detalle['Año'].astype("string")
     year_list=sorted(df_ventas_detalle['Año'].unique())
