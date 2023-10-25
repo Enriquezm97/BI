@@ -42,7 +42,6 @@ api_paraiso = 'http://190.117.112.27:3005/api/consulta/nsp_rpt_ventas_detallado'
 #costos_agricola_df = costosAgricolas(df_costos_campana = costos,df_consumidores = consumidores,df_cultivos = cultivos,df_variedad = variedades)
 
 df_ventas_detalle=pd.read_parquet('comercial_new_etl.parquet', engine='pyarrow')
-
 df_ventas_detalle['Tipo de Movimiento'] = df_ventas_detalle['Tipo de Movimiento'].astype(object)
 df_ventas_detalle['Tipo de Venta'] = df_ventas_detalle['Tipo de Venta'].astype(object)
 df_ventas_detalle['Tipo de Condicion'] = df_ventas_detalle['Tipo de Condicion'].astype(object)

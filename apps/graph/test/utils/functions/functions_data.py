@@ -229,3 +229,5 @@ def deleteElementList(lista,elemento_eliminar):
                 if element!=elemento_eliminar:
                        new_lista.append(element)
             return new_lista
+       
+       

@@ -37,7 +37,7 @@ from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,
 from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes,ventasProductos,ventasCultivos,ventasComparativo
 from apps.graph.test.layouts.finanzas import estadoResultados,estadoGP,crear_ratio_finanzas
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin,AsistenteMixin
-from ..graph.test.layouts.comercial import input_dict_general,input_ventas_x,input_ventas_samplast
+from apps.graph.test.layouts.comercial import input_dict_general,input_ventas_x,input_ventas_samplast
 def home(request):
     #owo=request.user.id
     dashboard=HomeScraper()

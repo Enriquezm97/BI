@@ -56,10 +56,12 @@ input_ventas_samplast={
 
 def informeComercial(rubro_empresa = 'Agricola'):
     
-    dffff = connection_api(test='si')
+    
     if get_empresa() != 'FUNDO EL PARAISO':
+        dffff = connection_api(test='no')
         df_ventas_detalle = etl_comercial(dffff)
     else:
+        dffff = connection_api(test='si')
         df_ventas_detalle = dffff.copy()
     
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
@@ -178,10 +180,12 @@ def informeComercial(rubro_empresa = 'Agricola'):
 
 def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api(test='si')
+    #dff = connection_api(test='si')
     if get_empresa() != 'FUNDO EL PARAISO':
+        dff = connection_api(test='no')
         df_ventas_detalle = etl_comercial(dff)
     else:
+        dff = connection_api(test='si')
         df_ventas_detalle = dff.copy()
     #df_ventas_detalle=etl_comercial(dff)
     print(df_ventas_detalle.columns)
@@ -286,10 +290,12 @@ def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
 
 def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api(test='si')
+    #dff = connection_api(test='si')
     if get_empresa() != 'FUNDO EL PARAISO':
+        dff = connection_api(test='no')
         df_ventas_detalle = etl_comercial(dff)
     else:
+        dff = connection_api(test='si')
         df_ventas_detalle = dff.copy()
     #df_ventas_detalle=etl_comercial(dff)
     
@@ -390,10 +396,12 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
 def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api(test='si')
+    #dff = connection_api(test='si')
     if get_empresa() != 'FUNDO EL PARAISO':
+        dff = connection_api(test='no')
         df_ventas_detalle = etl_comercial(dff)
     else:
+        dff = connection_api(test='si')
         df_ventas_detalle = dff.copy()
     #df_ventas_detalle=etl_comercial(dff)
     
@@ -495,10 +503,12 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
 def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api(test='si')
+    #dff = connection_api(test='si')
     if get_empresa() != 'FUNDO EL PARAISO':
+        dff = connection_api(test='no')
         df_ventas_detalle = etl_comercial(dff)
     else:
+        dff = connection_api(test='si')
         df_ventas_detalle = dff.copy()
     #df_ventas_detalle=etl_comercial(dff)
     
@@ -602,10 +612,12 @@ def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
 def ventasComparativo(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    dff = connection_api(test='si')
+    #dff = connection_api(test='si')
     if get_empresa() != 'FUNDO EL PARAISO':
+        dff = connection_api(test='no')
         df_ventas_detalle = etl_comercial(dff)
     else:
+        dff = connection_api(test='si')
         df_ventas_detalle = dff.copy()
     #df_ventas_detalle=etl_comercial(dff)
     
