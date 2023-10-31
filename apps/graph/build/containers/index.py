@@ -21,12 +21,12 @@ def card_index( img = '', title_card = '', description = '', url = ''):
             dmc.CardSection(
                 dmc.Image(
                     src = Image.open(f"apps/graph/build/containers/assets/{img}"),
-                    height=360,
+                    height=300,
                 )
             ),
             dmc.Group(
                 [
-                    dmc.Text(title_card, weight=500,size="lg"),
+                    dmc.Text(title_card, weight=400,size="lg"),
                     dmc.Badge("habilitado", color="green", variant="light"),
                 ],
                 position="apart",
@@ -73,13 +73,16 @@ def index():
         Row([
             Column([
                 card_index(img = "agricola.png",title_card= "Costos Agrícola", url='costos-campaña')
-            ], size=4),#apps/graph/build/containers/assets/agricola.png
+            ], size=3),#apps/graph/build/containers/assets/agricola.png
             Column([
                 card_index(img = "finanzas.png",title_card= "Estado de Resultados",url='estado-resultados')
-            ], size=4),
+            ], size=3),
             Column([
                 card_index(img = "ventas.png",title_card= "Ventas Clientes", url= 'comercial-cliente')
-            ], size=4),
+            ], size=3),
+            Column([
+                card_index(img = "inventario.png",title_card= "Inventarios", url= 'inventario')
+            ], size=3),
         ]),
     
     ])
