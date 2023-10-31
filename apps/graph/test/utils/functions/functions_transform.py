@@ -259,3 +259,73 @@ def pivot_data_finanzas(df = pd.DataFrame() ,etapa = 'Trimestre', moneda = 'sole
     merge_4 = merge_3.merge(grupo_naturaleza_df_pivot,how ='left',on = group)
     #return pd.merge(right = [grupo1_df_pivot, grupo2_df_pivot, grupo3_df_pivot,grupo_funcion_df_pivot,grupo_naturaleza_df_pivot],how='inner',left_on = eje,right_on = eje )
     return merge_4.fillna(0)#.reset_index()
+
+def mes_short(x):
+    if x == 1:
+        return 'Ene'
+    elif x == 2:
+        return 'Feb'
+    elif x == 3:
+        return 'Mar'
+    elif x == 4:
+        return 'Abr'
+    elif x == 5:
+        return 'May'
+    elif x == 6:
+        return 'Jun'
+    elif x == 7:
+        return 'Jul'
+    elif x == 8:
+        return 'Ago'
+    elif x == 9:
+        return 'Set'
+    elif x == 10:
+        return 'Oct'
+    elif x == 11:
+        return 'Nov'
+    elif x == 12:
+        return 'Dic'
+    
+def clean_inventarios(df = None):
+    
+    df['mes'] = df['mes'].astype('int')
+    df['Mes'] = df.apply(lambda x: mes_short(x['mes']),axis=1)
+    df['Mes_text']=df['mes']
+    df['Mes_text']=df['Mes_text'].replace(1,'Enero')
+    df['Mes_text']=df['Mes_text'].replace(2,'Febrero')
+    df['Mes_text']=df['Mes_text'].replace(3,'Marzo')
+    df['Mes_text']=df['Mes_text'].replace(4,'Abril')
+    df['Mes_text']=df['Mes_text'].replace(5,'Mayo')
+    df['Mes_text']=df['Mes_text'].replace(6,'Junio')
+    df['Mes_text']=df['Mes_text'].replace(7,'Julio')
+    df['Mes_text']=df['Mes_text'].replace(8,'Agosto')
+    df['Mes_text']=df['Mes_text'].replace(9,'Setiembre')
+    df['Mes_text']=df['Mes_text'].replace(10,'Octubre')
+    df['Mes_text']=df['Mes_text'].replace(11,'Noviembre')
+    df['Mes_text']=df['Mes_text'].replace(12,'Diciembre')
+    df = df.rename(columns = {
+                     'dsc_producto':'Producto',
+                     'dsc_grupo': 'Grupo Producto',
+                     'dsc_subgrupo': 'Sub Grupo Producto',
+                     'unid_medida': 'Unidad de medida',
+                     'stock_unidades':'Stock en unidades',
+                     'costo_unitario_mof':'Costo Unitario Soles',
+                     'costo_unitario_mex':'Costo Unitario Dolares',
+                     'stock_valorizado_mof':'Stock Valorizado Soles',
+                     'stock_valorizado_mex':'Stock Valorizado Dolares',
+                     'año':'Año',
+                     'mes':'Mes_',
+                     'venta_prom_unidades':'Venta prom 12 meses en UN',
+                     'venta_prom_mof':'Venta prom 12 meses en monto Soles',
+                     'venta_prom_mex':'Venta prom 12 meses en monto Dolares',
+                     'costo_venta_prom_mof':'Costo de Venta prom 12 meses en monto Soles',
+                     'costo_venta_prom_mex':'Costo de Venta prom 12 meses en monto Dolares',
+                     'ABC_ventas':'ABC Ventas',
+                     'ABC_stock':'ABC Stock',
+                     'rango_antiguedad_stock':'Rango antigüedad del stock',
+                     'rotacion':'Rotación',
+                     'meses_stock': 'Meses de stock',
+                     
+          }
+    )
+    return df

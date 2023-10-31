@@ -86,6 +86,6 @@ LISTA_COLORES_BAR = px.colors.diverging.Portland+px.colors.diverging.Earth+px.co
 
 COMERCIAL_LOGISTICA ={
     'select-anio' : 'Año',
-    'select-familia' : 'Familia',
+    'select-grupo' : 'Grupo Producto',
     'select-rango' : 'Rango antigüedad del stock',
 }

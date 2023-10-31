@@ -6,23 +6,32 @@ from ..utils.frame import *
 from ..utils.components.components_main import *
 from ..utils.blocks.block_card import *
 from ..utils.functions.callbacks.callbacks_logistica import *
+from ..utils.functions.functions_transform import clean_inventarios
+from ..Connection.apis import connection_api
+from ..utils.functions.callbacks.callbacks_ import *
+#logistica_df = pd.read_parquet('logistica.parquet', engine='pyarrow')
 
-logistica_df = pd.read_parquet('logistica.parquet', engine='pyarrow')
+#print(logistica_df)
 
-print(logistica_df)
 
-def logistica_dash(filtros = ['select-anio','select-familia','select-rango']):
+    
+def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
+    dff  = connection_api(sp_name = 'nsp_stocks_bi_samplast')
+    logistica_df = clean_inventarios(df = dff)
+
     app = DjangoDash('logistica_',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
-        #Row([
-        #        Column([
-        #            Div(id='title')
-        #        ],size=12), 
-        #]),
+        Modal(id="modal-bar-stock-items", size= "85%"),
+        Modal(id="modal-bar-stock-familia", size= "85%"),
+        Modal(id="modal-bar-top-producto", size= "85%"),
+        Modal(id="modal-bar-stock-abc-ventas", size= "85%"),
+        Modal(id="modal-bar-stock-abc-valorizado", size= "85%"),
+        Modal(id="modal-pie-items-antiguedad", size= "85%"),
+        Modal(id="modal-pie-stock-antiguedad", size= "85%"),
         Row([
             Column([
-                 Title.title(text = 'Stocks')  
-            ],size=6), 
+                 Title.title(text = 'Inventarios')  
+            ],size=4), 
             Column(
             [
                 Entry.select(
@@ -35,8 +44,8 @@ def logistica_dash(filtros = ['select-anio','select-familia','select-rango']):
             Column(
             [
                 Entry.select(
-                    id = 'select-familia',
-                    texto = 'Familia',
+                    id = 'select-grupo',
+                    texto = 'Grupo',
                     size = 'sm',
                     clearable = True
                 )
@@ -50,6 +59,20 @@ def logistica_dash(filtros = ['select-anio','select-familia','select-rango']):
                     clearable = True
                 )
             ],size = 2),
+            Column(
+            [
+                Entry.select(
+                                id = 'select-moneda', texto = "Moneda", size = 'sm',
+                                data=[
+                                     
+                                    {"value": "Dolares", "label": "USD"},
+                                    {"value": "Soles", "label": "PEN"}
+                                    ],
+                                value='Dolares',
+                                clearable=False
+                            )
+            ],size = 2),
+                
         ]),
         Row([
             Column([
@@ -130,3 +153,11 @@ def logistica_dash(filtros = ['select-anio','select-familia','select-rango']):
     ])
     filter_callback(app, filt = filtros, dataframe = logistica_df)
     graph_log(app)
+    opened_modal(app, modal_id="modal-bar-stock-items",children_out_id="bar-stock-items", id_button="maximize-bar-stock-items",height_modal=900)
+    
+    opened_modal(app, modal_id="modal-bar-stock-familia",children_out_id="bar-stock-familia", id_button="maximize-bar-stock-familia",height_modal=900)
+    opened_modal(app, modal_id="modal-bar-top-producto",children_out_id="bar-top-producto", id_button="maximize-bar-top-producto",height_modal=900)
+    opened_modal(app, modal_id="modal-bar-stock-abc-ventas",children_out_id="bar-stock-abc-ventas", id_button="maximize-bar-stock-abc-ventas",height_modal=900)
+    opened_modal(app, modal_id="modal-bar-stock-abc-valorizado",children_out_id="bar-stock-abc-valorizado", id_button="maximize-bar-stock-abc-valorizado",height_modal=900)
+    opened_modal(app, modal_id="modal-pie-stock-antiguedad",children_out_id="pie-stock-antiguedad", id_button="maximize-pie-stock-antiguedad",height_modal=900)
+    opened_modal(app, modal_id="modal-pie-items-antiguedad",children_out_id="pie-items-antiguedad", id_button="maximize-pie-items-antiguedad",height_modal=900)

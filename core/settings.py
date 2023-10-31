@@ -103,6 +103,7 @@ ASGI_APPLICATION='core.routing.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME':  'config_dashboard',
@@ -111,11 +112,8 @@ DATABASES = {
         'HOST': 'db-mysql-prod-nisira-001-do-user-8636826-0.b.db.ondigitalocean.com',
         'PORT':'25060'
     }
-    #'default': dj_database_url.config(
-    #    # Feel free to alter this value to suit your needs.
-    #    default='postgresql://postgres:postgres@localhost:5432/mysite',
-    #    conn_max_age=600
-    #)
+    
+    
 }
 
 DATABASES["default"]["ATOMIC_REQUESTS"] = True

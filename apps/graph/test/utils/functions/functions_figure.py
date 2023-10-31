@@ -39,7 +39,7 @@ def pie_(df = pd.DataFrame(),label_col = '',
         )
         figure.update_traces(textposition = textposition, textinfo = textinfo)
         figure.update_traces(hoverinfo='label+percent+value', textfont_size = textfont_size,marker=dict(line=dict(color='#000000', width=1)))
-        figure.update_layout(height = height,margin = dict(t=40, b=30, l=10, r=10),showlegend = showlegend)
+        figure.update_layout(height = height,margin = dict(t=60, b=30, l=10, r=10),showlegend = showlegend)
         
         return figure
 
@@ -62,7 +62,7 @@ def bar_figure_d(dataframe = None, x = '', y = '', text = '', orientation = 'h',
         title_font_family="sans-serif", 
         title_font_size = 18,
         template= 'none',
-        margin = dict( l = 20, r = 40, b = 40, t = 40, pad = 5, autoexpand = True),
+        margin = dict( l = 20, r = 40, b = 40, t = 70, pad = 5, autoexpand = True),
         height = height
         #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
     )
@@ -71,19 +71,20 @@ def bar_figure_d(dataframe = None, x = '', y = '', text = '', orientation = 'h',
     fig.update_layout(xaxis_tickformat = ',')
     return fig
 
-def figure_stock_var_y2(df = None, height = 450):
-    stock_var_df = df.groupby(['Año', 'Mes','Mes_'])[['Stock valorizado']].sum().sort_values(['Año','Mes_']).reset_index()
-    stock_items_df = df.groupby(['Año', 'Mes','Mes_'])[['Stock valorizado']].count().sort_values(['Año','Mes_']).reset_index()
-    stock_items_df = stock_items_df.rename(columns = {'Stock valorizado':'Nro Items'})
+def figure_stock_var_y2(df = None, height = 450 , moneda = 'Soles'):
+    var_numerica = f'Stock Valorizado {moneda}'
+    stock_var_df = df.groupby(['Año', 'Mes','Mes_'])[[var_numerica]].sum().sort_values(['Año','Mes_']).reset_index()
+    stock_items_df = df.groupby(['Año', 'Mes','Mes_'])[[var_numerica]].count().sort_values(['Año','Mes_']).reset_index()
+    stock_items_df = stock_items_df.rename(columns = {var_numerica:'Nro Items'})
     stock_var_items_df = stock_var_df.merge(stock_items_df,how = 'inner',on=["Año","Mes","Mes_"])
     fig = go.Figure()
 
     fig.add_trace(go.Bar(
     x = [stock_var_items_df['Año'],stock_var_items_df['Mes']],
-    y = stock_var_items_df['Stock valorizado'],
+    y = stock_var_items_df[var_numerica],
     name = "Stock Valorizado",
     cliponaxis=False,
-    hovertemplate ='<br>'+'Periodo'+': <b>%{x}</b><br>'+'Stock Valorizado'+': <b>%{y}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
+    hovertemplate ='<br>'+'Periodo'+': <b>%{x}</b><br>'+var_numerica+': <b>%{y}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
     ))
     fig.add_trace(
         go.Scatter(
@@ -101,7 +102,7 @@ def figure_stock_var_y2(df = None, height = 450):
         yaxis=dict(
             title=dict(text="Stock"),
             side="left",
-            range=[0, stock_var_items_df['Stock valorizado'].max()]
+            range=[0, stock_var_items_df[var_numerica].max()]
         ),
         yaxis2=dict(
             title=dict(text="Nro Items"),
@@ -120,7 +121,7 @@ def figure_stock_var_y2(df = None, height = 450):
         x=1
     ))
     fig.update_layout(
-        title = f"<b>{'STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO'}</b>",
+        title = f"<b>STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO</b>",
         title_font_family="sans-serif", 
         title_font_size = 18,
         height = height
@@ -131,27 +132,28 @@ def figure_stock_var_y2(df = None, height = 450):
     fig.update_layout(yaxis_tickformat = ',')
     return fig
 
-def figure_bar_familia(df = None, height = 450):
-    stock_familias_df = df.groupby(['Familia'])[['Stock valorizado']].sum().sort_values('Stock valorizado',ascending=True).reset_index()
+def figure_bar_familia(df = None, height = 450, moneda = 'Soles'):
+    var_numerico = f'Stock Valorizado {moneda}'
+    stock_familias_df = df.groupby(['Grupo Producto'])[[var_numerico]].sum().sort_values(var_numerico,ascending=True).reset_index()
     fig2 = go.Figure()
     fig2.add_trace(go.Bar(
-    x = stock_familias_df['Stock valorizado'],
-    y = stock_familias_df['Familia'],
-    text = stock_familias_df['Stock valorizado'],
+    x = stock_familias_df[var_numerico],
+    y = stock_familias_df['Grupo Producto'],
+    text = stock_familias_df[var_numerico],
     name = "",
     textposition = 'outside',
     texttemplate="%{x}",
     orientation='h',
     cliponaxis=False,
     
-    hovertemplate ='<br>'+'Familia'+': <b>%{y}</b><br>'+'Stock Valorizado'+': <b>%{x}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
+    hovertemplate ='<br>'+'Grupo Producto'+': <b>%{y}</b><br>'+var_numerico+': <b>%{x}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
     ))
     fig2.update_layout(
-        title = f"<b>{'STOCK POR FAMILIAS'}</b>",
+        title = f"<b>STOCK POR GRUPO DE PRODUCTO</b>",
         title_font_family="sans-serif", 
         title_font_size = 18,
         template= 'none',
-        margin = dict( l = 20, r = 40, b = 40, t = 40, pad = 5, autoexpand = True),
+        margin = dict( l = 20, r = 40, b = 40, t = 60, pad = 5, autoexpand = True),
         height = height
         #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
     )
@@ -160,14 +162,16 @@ def figure_bar_familia(df = None, height = 450):
     fig2.update_layout(xaxis_tickformat = ',')
     return fig2
 
-def figure_bar_top_producto(df = None, height = 450):
-    top_10_df= df.groupby(['Descripción'])[['Stock valorizado']].sum().sort_values(['Stock valorizado'],ascending = True).tail(10).reset_index()
-    return bar_figure_d(dataframe = top_10_df, x = 'Stock valorizado', y = 'Descripción', text = 'Stock valorizado', orientation = 'h', title = 'Top 10 Productos', height = height)
+def figure_bar_top_producto(df = None, height = 450, moneda = 'Soles'):
+    var_numerico = f'Stock Valorizado {moneda}'
+    top_10_df= df.groupby(['Producto'])[[var_numerico]].sum().sort_values([var_numerico],ascending = True).tail(10).reset_index()
+    return bar_figure_d(dataframe = top_10_df, x = var_numerico, y = 'Producto', text = var_numerico, orientation = 'h', title = 'Top 10 Productos', height = height)
 
-def figure_bar_relative(df = None, height = 300, eje_color = 'ABC Ventas', title = ''):
-    stock_abc_dff=df.groupby(['Año', 'Mes','Mes_',eje_color])[['Stock valorizado']].sum().sort_values(['Año','Mes_']).reset_index()
+def figure_bar_relative(df = None, height = 300, eje_color = 'ABC Ventas', title = '',moneda = 'Soles'):
+    var_numerico = f'Stock Valorizado {moneda}'
+    stock_abc_dff=df.groupby(['Año', 'Mes','Mes_',eje_color])[[var_numerico]].sum().sort_values(['Año','Mes_']).reset_index()
     lista_letras = sorted(stock_abc_dff[eje_color].unique())
-    pivot_stick_adc_dff=stock_abc_dff.pivot_table(index=['Año', 'Mes','Mes_'],values=('Stock valorizado'),columns=(eje_color)).sort_values(['Año','Mes_']).reset_index()
+    pivot_stick_adc_dff=stock_abc_dff.pivot_table(index=['Año', 'Mes','Mes_'],values=(var_numerico),columns=(eje_color)).sort_values(['Año','Mes_']).reset_index()
     for letra in lista_letras:
         pivot_stick_adc_dff[f'{letra} %'] = pivot_stick_adc_dff[letra]/(pivot_stick_adc_dff[lista_letras].sum(axis=1))
     #pivot_stick_adc_dff['B %'] = pivot_stick_adc_dff['B']/(pivot_stick_adc_dff[['A','B','C']].sum(axis=1))
@@ -179,7 +183,7 @@ def figure_bar_relative(df = None, height = 300, eje_color = 'ABC Ventas', title
                     y = pivot_stick_adc_dff[f'{letra} %'],
                     name = letra,
                     customdata=create_stack_np(pivot_stick_adc_dff,letra),
-                    hovertemplate ='<br>'+'Periodo'+': <b>%{x}</b><br>'+''+': <b>%{y}</b>'+'<br>'+letra+': <b>%{customdata[0]:,.0f}</b><br>',
+                    hovertemplate ='<br>'+'Periodo'+': <b>%{x}</b><br>'+''+' <b>%{y}</b>'+'<br>'+letra+': <b>%{customdata[0]:,.0f}</b><br>',
                                     
                     #hoverlabel=dict(font_size=15,bgcolor="white")
                     )
@@ -216,18 +220,18 @@ def figure_bar_relative(df = None, height = 300, eje_color = 'ABC Ventas', title
     fig_e.update_layout(yaxis_tickformat = '.0%', template='none')
     return fig_e
 
-def figure_pie_rango_stock(df = None, height = 350):
-    
-    rango_stock_df = df.groupby(['Rango antigüedad del stock'])[['Stock valorizado']].sum().sort_values(['Rango antigüedad del stock']).reset_index()
-    return pie_(df = rango_stock_df, label_col = 'Rango antigüedad del stock', value_col = 'Stock valorizado',
+def figure_pie_rango_stock(df = None, height = 350, moneda = 'Soles'):
+    var_numerico = f'Stock Valorizado {moneda}'
+    rango_stock_df = df.groupby(['Rango antigüedad del stock'])[[var_numerico]].sum().sort_values(['Rango antigüedad del stock']).reset_index()
+    return pie_(df = rango_stock_df, label_col = 'Rango antigüedad del stock', value_col = var_numerico,
              title = '% Stock Segun Antigüedad', textinfo = 'percent+label' , textposition = 'outside',
              height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,
     )
     
-def figure_pie_rango_stock_count(df = None, height = 350):
-    
-    rango_stock_count_df = df.groupby(['Rango antigüedad del stock'])[['Stock valorizado']].count().sort_values(['Rango antigüedad del stock']).reset_index()
-    return pie_(df = rango_stock_count_df, label_col = 'Rango antigüedad del stock', value_col = 'Stock valorizado',
+def figure_pie_rango_stock_count(df = None, height = 350, moneda = 'Soles'):
+    var_numerico = f'Stock Valorizado {moneda}'
+    rango_stock_count_df = df.groupby(['Rango antigüedad del stock'])[[var_numerico]].count().sort_values(['Rango antigüedad del stock']).reset_index()
+    return pie_(df = rango_stock_count_df, label_col = 'Rango antigüedad del stock', value_col = var_numerico,
              title = '% Stock Segun Antigüedad', textinfo = 'percent+label' , textposition = 'outside',
              height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,
              hole = .6     

@@ -58,5 +58,5 @@ urlpatterns = [
     path('<str:username>/estado-resultados',FinanzasEstadoResultados.as_view(),name='estado_r'),
     
     #logistica
-    path('<str:username>/stocks',Logistica_View.as_view(),name='logistica_'),
+    path('<str:username>/inventario',Logistica_View.as_view(),name='inventario_1'),
 ]
