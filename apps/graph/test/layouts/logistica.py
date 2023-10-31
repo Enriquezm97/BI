@@ -30,7 +30,7 @@ def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
         Modal(id="modal-pie-stock-antiguedad", size= "85%"),
         Row([
             Column([
-                 Title.title(text = 'Inventarios')  
+                 Title.title(text = 'Stocks')  
             ],size=4), 
             Column(
             [
