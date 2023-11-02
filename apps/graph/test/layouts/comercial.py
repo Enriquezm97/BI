@@ -54,12 +54,11 @@ input_ventas_samplast={
 }
 #anio_campania = sorted(df_ventas_detalle['YEAR'].unique())
 
-def informeComercial(rubro_empresa = 'Agricola'):
+def informeComercial(rubro_empresa = 'Agricola',df_ventas_detalle = None):
     
     
     
-    dffff = connection_api(test='no')
-    df_ventas_detalle = etl_comercial(dffff)
+    
     
     
     #df_ventas_detalle = data_comercial(empresa=get_empresa())

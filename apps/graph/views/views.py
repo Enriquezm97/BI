@@ -38,6 +38,10 @@ from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ve
 from apps.graph.test.layouts.finanzas import estadoResultados,estadoGP,crear_ratio_finanzas
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin,AsistenteMixin
 from apps.graph.test.layouts.comercial import input_dict_general,input_ventas_x,input_ventas_samplast
+
+from apps.graph.test.Connection.apis import connection_api
+from apps.graph.test.utils.functions.functions_transform import *
+
 def home(request):
     #owo=request.user.id
     dashboard=HomeScraper()
@@ -56,14 +60,14 @@ class TestView(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        username=list(Usuario.objects.filter(user_id=id_user).values_list('username',flat=True))
-        #empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
+        #username=list(Usuario.objects.filter(user_id=id_user).values_list('username',flat=True))
+        empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
         #empresa_name=(Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True))
-        #rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
-        
+        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
+       
         #dashboard=tailwindcss()
         
-        dashboard=index()
+        dashboard=index(rubro=rubro[0])
         #if cache.get(dashboard):
 
         
@@ -228,8 +232,11 @@ class InformedeVentas1View(LoginRequiredMixin,AsistenteMixin,View):
         
         rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
         staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
-        
-        dashboard=informeComercial()#informeVentas(empresa_name[0],rubro[0],staff_filter[0])
+        dffff = connection_api(test='no')
+        dataframe = etl_comercial(dffff)
+        dataframe['empresa'] = empresa_name[0]
+        dataframe = dataframe[dataframe['empresa']==empresa_name[0]]
+        dashboard=informeComercial(df_ventas_detalle = dataframe)#informeVentas(empresa_name[0],rubro[0],staff_filter[0])
         
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/informe_ventas_1.html',context)

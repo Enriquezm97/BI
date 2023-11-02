@@ -9,6 +9,7 @@ from ..utils.functions.callbacks.callbacks_logistica import *
 from ..utils.functions.functions_transform import clean_inventarios
 from ..Connection.apis import connection_api
 from ..utils.functions.callbacks.callbacks_ import *
+from ..utils.crum import get_empresa
 #logistica_df = pd.read_parquet('logistica.parquet', engine='pyarrow')
 
 #print(logistica_df)
@@ -16,7 +17,10 @@ from ..utils.functions.callbacks.callbacks_ import *
 
     
 def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
-    dff  = connection_api(sp_name = 'nsp_stocks_bi_samplast')
+    if get_empresa()== 'SAMPLAST':
+        dff  = connection_api(sp_name = 'nsp_stocks_bi_samplast')
+    else:
+        dff  = connection_api(sp_name = 'nsp_stocks')
     logistica_df = clean_inventarios(df = dff)
 
     app = DjangoDash('logistica_',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -161,3 +165,4 @@ def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
     opened_modal(app, modal_id="modal-bar-stock-abc-valorizado",children_out_id="bar-stock-abc-valorizado", id_button="maximize-bar-stock-abc-valorizado",height_modal=900)
     opened_modal(app, modal_id="modal-pie-stock-antiguedad",children_out_id="pie-stock-antiguedad", id_button="maximize-pie-stock-antiguedad",height_modal=900)
     opened_modal(app, modal_id="modal-pie-items-antiguedad",children_out_id="pie-items-antiguedad", id_button="maximize-pie-items-antiguedad",height_modal=900)
+    return app

@@ -57,35 +57,50 @@ def card_index( img = '', title_card = '', description = '', url = ''):
     )])
 
 
-def index():
-    
+def index(rubro = ''):
+    if rubro == 'Comercial':
+        row = Row([
+                
+                Column([
+                    card_index(img = "finanzas.jpeg",title_card= "Estado de Resultados",url='estado-resultados')
+                ], size=3),
+                Column([
+                    card_index(img = "ventas.png",title_card= "Ventas Clientes", url= 'comercial-cliente')
+                ], size=3),
+                Column([
+                    card_index(img = "inventario.jpeg",title_card= "Inventarios", url= 'inventario')
+                ], size=3),
+            ])
+    else :
+        row = Row([
+                Column([
+                    card_index(img = "agricola.jpg",title_card= "Costos Agrícola", url='costos-campaña')
+                ], size=3),#apps/graph/build/containers/assets/agricola.png
+                Column([
+                    card_index(img = "finanzas.jpeg",title_card= "Estado de Resultados",url='estado-resultados')
+                ], size=3),
+                Column([
+                    card_index(img = "ventas.png",title_card= "Ventas Clientes", url= 'comercial-cliente')
+                ], size=3),
+                Column([
+                    card_index(img = "inventario.jpeg",title_card= "Inventarios", url= 'inventario')
+                ], size=3),
+            ])
     app = DjangoDash('index', external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
 
     app.layout = Container([
-        Row([
-            Column([dmc.Title(f"Bienvenido {get_nombre_user()}", align="center"),])
+        #Row([
+        #    Column([dmc.Title(f"Bienvenido {get_nombre_user()}", align="center"),])
             
-        ]),
+        #]),
         Row([
             Column([html.P()])
             
         ]),
-        Row([
-            Column([
-                card_index(img = "agricola.png",title_card= "Costos Agrícola", url='costos-campaña')
-            ], size=3),#apps/graph/build/containers/assets/agricola.png
-            Column([
-                card_index(img = "finanzas.png",title_card= "Estado de Resultados",url='estado-resultados')
-            ], size=3),
-            Column([
-                card_index(img = "ventas.png",title_card= "Ventas Clientes", url= 'comercial-cliente')
-            ], size=3),
-            Column([
-                card_index(img = "inventario.png",title_card= "Inventarios", url= 'inventario')
-            ], size=3),
-        ]),
+        row
     
     ])
+    return app
         
     
 
