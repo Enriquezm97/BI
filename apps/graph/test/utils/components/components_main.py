@@ -324,7 +324,8 @@ class Entry():
                 maxDate = maximo,
                 value = value,
                 locale = "es",
-                clearable = False
+                clearable = False,
+                #style={'z-index': '9999999'},
                 
             ),
         ])

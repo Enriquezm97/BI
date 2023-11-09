@@ -1,7 +1,7 @@
 import dash_mantine_components as dmc  
 from dash import Input, Output,State,no_update,dcc,html
 from datetime import datetime, date, timedelta
-from ....constans import COMERCIAL_LOGISTICA
+from ....constans import COMERCIAL_LOGISTICA,ALM_LOGISTICA
 from ...components.components_main import *
 from ...functions.functions_filters import *
 from ...functions.functions_data import *
@@ -62,3 +62,29 @@ def graph_log(app):
             figure_pie_rango_stock(df = dff, height = 350, moneda = moneda),
             figure_pie_rango_stock_count(df = dff, height = 350, moneda = moneda)
         ]
+        
+def filter_callback_alm(app, filt =[], dataframe = None):
+    @app.callback(
+        [Output(output_,'data')for output_ in filt]+
+        [
+         Output("data-values","data"),
+         Output("notifications-update-data","children")
+        ],
+       
+        [Input(input_,"value")for input_ in filt]+
+         [Input("datepicker-inicio","value"),Input("datepicker-fin","value")]
+    )
+    def update_filter(*args):
+        datepicker_inicio = datetime.strptime(args[-2], '%Y-%m-%d').date()
+        datepicker_fin = datetime.strptime(args[-1], '%Y-%m-%d').date()
+        inputs = args[:-2]
+        filter_datepicker_df = dataframe[(dataframe['Última Fecha Ingreso']>=datepicker_inicio)&(dataframe['Última Fecha Ingreso']<=datepicker_fin)]
+        if validar_all_none(variables = inputs) == True:
+            df = filter_datepicker_df.copy()
+        else:
+            df = dataframe.query(dataframe_filtro(values=list(inputs),columns_df=create_col_for_dataframe(id_components = filt, dict_cols_dataframe=ALM_LOGISTICA)))
+
+        return create_list_dict_outputs(dataframe = df,id_components = filt, dict_cols_dataframe=ALM_LOGISTICA)+[
+               df.to_dict('series'),
+               DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update'),  
+        ]  

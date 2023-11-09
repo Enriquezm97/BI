@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 from apps.graph.test.utils.crum import get_data_connection
 from apps.graph.test.Connection.read_api import getApi
 
@@ -27,4 +28,12 @@ def connection_api(sp_name = 'nsp_rpt_ventas_detallado', test = 'no'):
         df_ventas_detalle['Producto']=df_ventas_detalle['Producto'].str[:30]
         df_ventas_detalle['Fecha']=df_ventas_detalle['Fecha'].apply(lambda a: pd.to_datetime(a).date())
         dataframe = df_ventas_detalle.copy()
+    return dataframe
+
+def connection_api_almstock():
+    
+    ip, token_ =get_data_connection()
+    fecha_now = (str(datetime.now())[:10].replace('-', ""))
+    dataframe = pd.DataFrame(getApi(api=f"http://{ip}:3005/api/consulta/STOCKALMVAL?EMPRESA=001&SUCURSAL=&ALMACEN&FECHA={fecha_now}&IDGRUPO&SUBGRUPO&DESCRIPCION&IDPRODUCTO",token = token_))
+    
     return dataframe

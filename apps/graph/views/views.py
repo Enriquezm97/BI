@@ -41,6 +41,8 @@ from apps.graph.test.layouts.comercial import input_dict_general,input_ventas_x,
 
 from apps.graph.test.Connection.apis import connection_api
 from apps.graph.test.utils.functions.functions_transform import *
+import asyncio 
+from django.http.response import HttpResponse
 
 def home(request):
     #owo=request.user.id
@@ -52,7 +54,7 @@ def liveUpdate(request):
     dashboard=HomeScraper()
     context={'dashboard':dashboard}
     return render(request, 'live_update.html',context)
-
+"""
 class TestView(LoginRequiredMixin,View):
     models=Usuario
     template_name='test.html'
@@ -66,13 +68,81 @@ class TestView(LoginRequiredMixin,View):
         rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
        
         #dashboard=tailwindcss()
-        
+        print(rubro[0])
         dashboard=index(rubro=rubro[0])
         #if cache.get(dashboard):
-
+        
         
         context = {'dashboard':dashboard}
+       
         return render(request,'test.html',context)
+"""
+class TestView(LoginRequiredMixin,View):
+    models=Usuario
+    template_name='test.html'
+    login_url = reverse_lazy('login')
+    def get(self,request,*args, **kwargs):
+        from apps.graph.test.constans import EXTERNAL_SCRIPTS, EXTERNAL_STYLESHEETS
+        from apps.graph.test.utils.frame import Column, Row, Div, Store, Download, Modal,Modal
+        from apps.graph.test.utils.crum import get_empresa,get_nombre_user
+        from apps.graph.test.utils.theme import themeProvider, Container,Contenedor
+        from ..build.containers.index import card_index
+        import dpd_components as dpd
+
+        id_user=self.request.user.id
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #username=list(Usuario.objects.filter(user_id=id_user).values_list('username',flat=True))
+        empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
+        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
+        print(empresa[0],rubro[0])
+        if rubro[0] == 'Comercial':
+            row = Row([
+                    
+                    Column([
+                        card_index(img = "finanzas.jpeg",title_card= "Estado de Resultados",url='estado-resultados')
+                    ], size=3),
+                    Column([
+                        card_index(img = "ventas.png",title_card= "Ventas Clientes", url= 'comercial-cliente')
+                    ], size=3),
+                    Column([
+                        card_index(img = "inventario.jpeg",title_card= "Inventarios", url= 'inventario')
+                    ], size=3),
+                ])
+        else :
+            row = Row([
+                    Column([
+                        card_index(img = "agricola.jpg",title_card= "Costos Agrícola", url='costos-campaña')
+                    ], size=3),#apps/graph/build/containers/assets/agricola.png
+                    Column([
+                        card_index(img = "finanzas.jpeg",title_card= "Estado de Resultados",url='estado-resultados')
+                    ], size=3),
+                    Column([
+                        card_index(img = "ventas.png",title_card= "Ventas Clientes", url= 'comercial-cliente')
+                    ], size=3),
+                    Column([
+                        card_index(img = "inventario.jpeg",title_card= "Inventarios", url= 'inventario')
+                    ], size=3),
+                ])
+        app = DjangoDash('index', external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+
+        app.layout = Container([
+            dpd.Pipe(id="named_count_pipe",               # ID in callback
+             value=None,                          # Initial value prior to any message
+             label="named_counts",                # Label used to identify relevant messages
+             channel_name="live_button_counter"),
+            #Row([
+            #    Column([dmc.Title(f"Bienvenido {get_nombre_user()}", align="center"),])
+                
+            #]),
+            Row([
+                Column([html.P()])
+                
+            ]),
+                row
+        
+            ])
+        return render(request,'test.html',{'dashboard':app})
+        
 
 class Test2View(View):
     
@@ -87,7 +157,7 @@ class Test2View(View):
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
         #dashboard=informeComercial()
-        dashboard = crear_ratio_finanzas()
+        dashboard = resumenCampania()
         print(empresa)
         print(type(empresa))
         print(empresa[0])

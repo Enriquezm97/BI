@@ -89,3 +89,18 @@ COMERCIAL_LOGISTICA ={
     'select-grupo' : 'Grupo Producto',
     'select-rango' : 'Rango antigüedad del stock',
 }
+
+ALM_LOGISTICA ={
+        'select-sucursal'   : 'Sucursal',
+        'select-almacen'    : 'Almacén',
+        'select-tipo'       : 'Tipo',
+        'select-grupo'      : 'Grupo',
+        'select-subgrupo'   : 'Sub Grupo',
+        'select-producto'   : 'Producto',
+        'select-grupo2'     : 'Grupo 2',
+        'select-respon-en'  : 'Responsable Ingreso',
+        'select-respon-sal' : 'Responsable Salida',
+        'select-um'         : 'Unidad de Medida',
+        'select-estado'     : 'Estado',
+        
+}

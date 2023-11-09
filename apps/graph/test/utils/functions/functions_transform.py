@@ -329,3 +329,51 @@ def clean_inventarios(df = None):
           }
     )
     return df
+
+def clean_stock_alm(df = None):
+    df['ALMACEN'] = df['ALMACEN'].apply(lambda x: x.strip())
+    df['tipo'] = df['tipo'].fillna('No Especificado')
+    df['tipo'] = df['tipo'].apply(lambda x: x.strip())
+    df['SUCURSAL'] = df['SUCURSAL'].apply(lambda x: x.strip())
+    df['GRUPO'] = df['GRUPO'].apply(lambda x: x.strip())
+    df['SUBGRUPO'] = df['SUBGRUPO'].apply(lambda x: x.strip())
+    df['PRODUCTO'] = df['PRODUCTO'].apply(lambda x: x.strip())
+    df['GRUPO2'] = df['GRUPO2'].fillna('')
+    df['GRUPO2'] = df['GRUPO2'].apply(lambda x: x.strip())
+    df['RESPONSABLEINGRESO'] = df['RESPONSABLEINGRESO'].fillna('No Especificado')
+    df['RESPONSABLEINGRESO'] = df['RESPONSABLEINGRESO'].apply(lambda x: x.strip())
+    df['RESPONSABLESALIDA'] = df['RESPONSABLESALIDA'].fillna('No Especificado')
+    df['RESPONSABLESALIDA'] = df['RESPONSABLESALIDA'].apply(lambda x: x.strip())
+    df['ULTFECHAINGRESO'] = pd.to_datetime(df['ULTFECHAINGRESO'].str[:-14], format="%Y-%m-%d")
+    df['ULTFECHASALIDA'] = pd.to_datetime(df['ULTFECHASALIDA'].str[:-14], format="%Y-%m-%d")
+    df = df.drop(['codmodelo','modelo'], axis=1)
+    dff = df.rename(columns = {
+        'CODSUCURSAL': 'Código Sucursal', 
+        'SUCURSAL'   : 'Sucursal',
+        'CODALMACEN' : 'Código Almacén',
+        'ALMACEN'    : 'Almacén',
+        'codtipo'    : 'Código Tipo',
+        'tipo'       : 'Tipo',
+        'CODGRUPO'   : 'Código Grupo',
+        'GRUPO'      : 'Grupo',
+        'CODSUBGRUPO': 'Código Sub Grupo',
+        'SUBGRUPO'   : 'Sub Grupo',
+        'CODPRODUCTO': 'Código Producto',
+        'PRODUCTO'   : 'Producto',
+        'GRUPO2'     : 'Grupo 2',
+        'RESPONSABLEINGRESO' : 'Responsable Ingreso',
+        'RESPONSABLESALIDA'  : 'Responsable Salida',
+        'MEDIDA'     : 'Unidad de Medida',
+        'ESTADO'     : 'Estado',
+        'STOCK'      : 'Stock',
+        'IMPORTETOTALMOF' : 'Importe Soles',
+        'IMPORTETOTALMEX' : 'Importe Dolares',
+        'UBICACION'  : 'Ubicación',
+        'ULTFECHAINGRESO' : 'Última Fecha Ingreso',
+        'ULTFECHASALIDA'  : 'Última Fecha Salida',
+        'MARCA'      : 'Marca',
+        'TIPOMATERIAL': 'Tipo de Material',
+        'desde'      : 'Desde',
+        'hasta'      : 'Hasta'
+    })
+    return dff

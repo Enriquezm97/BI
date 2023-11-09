@@ -83,3 +83,22 @@ def datepicker_(dataframe = pd.DataFrame(),name_fecha = '', name_anio ='', tipo 
                                  minimo=date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
                                  maximo=date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
                                  )
+        
+
+def datepicker_alm(dataframe = pd.DataFrame(), value_col = 'Última Fecha Ingreso', text = '', tipo = 'inicio'):
+    
+    dataframe[value_col]=dataframe[value_col].apply(lambda a: pd.to_datetime(a).date())
+    
+    fecha_minima=str(dataframe[value_col].min())
+    fecha_maxima=str(dataframe[value_col].max())
+    print(fecha_minima,fecha_maxima)
+    
+    text_value = dataframe[value_col].min() if tipo == 'inicio' else dataframe[value_col].max()
+    text_id = 'inicio' if tipo == 'inicio' else 'fin'
+    return  Entry.datePicker(id=f'datepicker-{text_id}',
+                                 text = text,
+                                 value = text_value,
+                                 minimo = date(int(fecha_minima[:4]),int(fecha_minima[-5:-3]),int(fecha_minima[-2:])),
+                                 maximo = date(int(fecha_maxima[:4]),int(fecha_maxima[-5:-3]),int(fecha_maxima[-2:])),
+                                 )
+    

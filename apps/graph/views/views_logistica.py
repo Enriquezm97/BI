@@ -11,3 +11,11 @@ class Logistica_View(LoginRequiredMixin,View):
         
         context = {'dashboard':logistica_dash()}
         return render(request,'logistica/logistica_dash.html',context)
+
+class Alm_View(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')#'/user/login/'
+    def get(self,request,*args, **kwargs):
+        #id_user=self.request.user.id
+        
+        context = {'dashboard':alm_stock_dash()}
+        return render(request,'logistica/logistica_alm.html',context)

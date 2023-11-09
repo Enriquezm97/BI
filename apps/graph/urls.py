@@ -59,4 +59,5 @@ urlpatterns = [
     
     #logistica
     path('<str:username>/inventario',Logistica_View.as_view(),name='inventario_1'),
+    path('<str:username>/alm',Alm_View.as_view(),name='alm'),
 ]

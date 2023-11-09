@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-{% load plotly_dash %}
-    {% plotly_header %}
-    {% plotly_direct name='resumen_campania'%}
-    {% plotly_footer %}
+    {% load plotly_dash %}
     
+    {% plotly_header %}
+    {% plotly_direct name='alm_stock'%}
+    {% plotly_footer %}
 {%endblock%}
