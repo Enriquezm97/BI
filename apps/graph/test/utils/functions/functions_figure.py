@@ -9,7 +9,8 @@ def create_stack_np(dataframe = pd.DataFrame(), lista = []):
 def pie_(df = pd.DataFrame(),label_col = '', 
              value_col = '',list_or_color = None, dict_color = None,
              title = '', textinfo = 'percent+label+value' , textposition = 'inside',
-             height = 300, showlegend = True, color_list = [], textfont_size = 12,hole=0
+             height = 300, showlegend = True, color_list = [], textfont_size = 12,hole=0, 
+             ticked_hover = 'Importe'
              
     ):
         if dict_color != None:
@@ -24,7 +25,7 @@ def pie_(df = pd.DataFrame(),label_col = '',
                 marker_colors = marker_colors,
                 #hovertemplate='<br><b>'+label_col+': %{labels}</b><br><b>'+value_col+': %{value:,.2f}</b>'
                 hoverlabel=dict(font_size=15,bgcolor="white"),
-                hovertemplate = "<b>%{label}</b> <br>Porcentaje:<b> %{percent} </b></br>Importe: <b>%{value}</b>",
+                hovertemplate = '<b>%{label}</b><br>Porcentaje:<b> %{percent} </b></br>'+ticked_hover+': <b>%{value}</b>',
                 name='',
                 hole=hole
                 )
@@ -236,3 +237,114 @@ def figure_pie_rango_stock_count(df = None, height = 350, moneda = 'Soles'):
              height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,
              hole = .6     
     )
+##############################ALM
+
+def figure_stock_alm_y2(df = None, height = 450 , moneda = 'Importe Dolares', tipo = 'Grupo'):
+    tipo_alm_dff = df.groupby([tipo])[['Stock', moneda]].sum().sort_values(moneda,ascending = False).reset_index()
+    #tipo_alm_dff = tipo_alm_dff[tipo_alm_dff['Stock']>0]
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+    x = tipo_alm_dff[tipo],
+    y = tipo_alm_dff[moneda],
+    name = moneda,
+    cliponaxis=False,
+    hovertemplate ='<br>'+tipo+': <b>%{x}</b><br>'+moneda+': <b>%{y}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
+    ))
+    fig.add_trace(
+        go.Scatter(
+            x=tipo_alm_dff[tipo],
+            y=tipo_alm_dff['Stock'],
+            yaxis="y2",
+            name='Stock',
+            marker=dict(color="crimson"),
+            cliponaxis=False,
+            hovertemplate ='<br>'+tipo+': <b>%{x}</b><br>'+'Stock'+': <b>%{y}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
+        )
+    )
+    fig.update_layout(
+        #legend=dict(orientation="v"),
+        yaxis=dict(
+            title=dict(text=moneda),
+            side="left",
+            range=[0, tipo_alm_dff[moneda].max()]
+        ),
+        yaxis2=dict(
+            title=dict(text='Stock'),
+            side="right",
+            range=[0, tipo_alm_dff['Stock'].max()],
+            overlaying="y",
+            tickmode="auto",
+        ),
+        template= 'none'
+    )
+    fig.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    fig.update_layout(
+        title = f"<b>{tipo} por {moneda} y Stock </b>",
+        title_font_family="sans-serif", 
+        title_font_size = 18,
+        height = height
+        #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
+    )
+    fig.update_xaxes(tickfont=dict(size=11),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+    fig.update_yaxes(tickfont=dict(size=12),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
+    fig.update_layout(yaxis_tickformat = ',')
+    fig.update_layout(yaxis2_tickformat = ',')
+    size_list = len(tipo_alm_dff[tipo].unique())
+    if  size_list== 1:
+            fig.update_layout(bargap=0.7)
+    elif size_list== 2:
+            fig.update_layout(bargap=0.4)
+    elif size_list== 3:
+            fig.update_layout(bargap=0.3)
+    return fig
+    
+
+def figure_pie_estado_inv(df = None, height = 330):
+    print(df.columns)
+    pie_estado_inv_dff = df.groupby(['Estado Inventario'])[['Tipo']].count().reset_index()
+    pie_estado_inv_dff = pie_estado_inv_dff.rename(columns = {'Tipo':'Número de Registros'})
+    
+    return pie_(df = pie_estado_inv_dff, label_col = 'Estado Inventario', value_col = 'Número de Registros',
+             title = 'Estado de Inventario', textinfo = 'percent+label' , textposition = 'outside',
+             height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,
+             hole = .6     
+    )
+
+
+def figure_bar_responsable(df = None, height = 450):
+    
+    responsable_df = df.groupby(['Responsable Ingreso'])[['Tipo']].count().sort_values('Tipo',ascending=True).reset_index()
+    responsable_df = responsable_df.rename(columns = {'Tipo':'Número de Registros'})
+    fig2 = go.Figure()
+    fig2.add_trace(go.Bar(
+    x = responsable_df['Número de Registros'],
+    y = responsable_df['Responsable Ingreso'],
+    text = responsable_df['Número de Registros'],
+    name = "",
+    textposition = 'outside',
+    texttemplate="%{x}",
+    orientation='h',
+    cliponaxis=False,
+    
+    hovertemplate ='<br>'+'Responsable Ingreso'+': <b>%{y}</b><br>Número de Registros: <b>%{x}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
+    ))
+    fig2.update_layout(
+        title = f"<b>Top N° Ingresos por Responsable</b>",
+        title_font_family="sans-serif", 
+        title_font_size = 18,
+        template= 'none',
+        margin = dict( l = 20, r = 40, b = 40, t = 60, pad = 5, autoexpand = True),
+        height = height
+        #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
+    )
+    fig2.update_xaxes(tickfont=dict(size=12),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+    fig2.update_yaxes(tickfont=dict(size=12),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
+    fig2.update_layout(xaxis_tickformat = ',')
+    return fig2

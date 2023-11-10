@@ -503,8 +503,8 @@ class Entry():
     
 class Title():
     
-    def title(text="",order=1,ids='id'):
-        return html.Div([dmc.Title(text, order=order,id=ids)])
+    def title(text="",order=1,ids='id',align = 'left'):
+        return html.Div([dmc.Title(text, order=order,id=ids,align = align)])
     
 
 class Picking():

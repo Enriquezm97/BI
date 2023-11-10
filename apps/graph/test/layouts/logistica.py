@@ -36,13 +36,19 @@ def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
         app.layout = ERROR
     return app
 
-def alm_stock_dash(filtros = ['select-almacen','select-tipo']):
+def alm_stock_dash(filtros = ['select-almacen','select-tipo','select-grupo']):
     
     app = DjangoDash('alm_stock',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     try:
         dff  = connection_api_almstock()
         alm_dff = clean_stock_alm(df = dff)
+        
         app.layout = alm_stock_build(df = alm_dff)
         filter_callback_alm(app, filt = filtros, dataframe = alm_dff)
+        graph_alm(app)
+        opened_modal(app, modal_id="modal-bar-importe-stock",children_out_id="bar-importe-stock", id_button="maximize-bar-importe-stock",height_modal=900)
+        opened_modal(app, modal_id="modal-pie-estadoinv",children_out_id="pie-estadoinv", id_button="maximize-pie-estadoinv",height_modal=900)
+        opened_modal(app, modal_id="modal-bar-respon",children_out_id="bar-respon", id_button="maximize-bar-respon",height_modal=900)
     except:
         app.layout = ERROR 
+    return app

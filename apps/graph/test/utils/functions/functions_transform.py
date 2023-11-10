@@ -286,6 +286,8 @@ def mes_short(x):
     elif x == 12:
         return 'Dic'
     
+
+        
 def clean_inventarios(df = None):
     
     df['mes'] = df['mes'].astype('int')
@@ -330,6 +332,14 @@ def clean_inventarios(df = None):
     )
     return df
 
+
+def new_col_salidas(x):
+    if x == '':
+        return 'Sin Salida'
+    else:
+        return 'Tuvo Salida'
+    
+    
 def clean_stock_alm(df = None):
     df['ALMACEN'] = df['ALMACEN'].apply(lambda x: x.strip())
     df['tipo'] = df['tipo'].fillna('No Especificado')
@@ -346,6 +356,12 @@ def clean_stock_alm(df = None):
     df['RESPONSABLESALIDA'] = df['RESPONSABLESALIDA'].apply(lambda x: x.strip())
     df['ULTFECHAINGRESO'] = pd.to_datetime(df['ULTFECHAINGRESO'].str[:-14], format="%Y-%m-%d")
     df['ULTFECHASALIDA'] = pd.to_datetime(df['ULTFECHASALIDA'].str[:-14], format="%Y-%m-%d")
+    df['Duracion_Inventario'] = df['ULTFECHASALIDA']-df['ULTFECHAINGRESO']
+    df['Duracion_Inventario'] = (df['Duracion_Inventario'].dt.days)
+    df= df[df["ULTFECHAINGRESO"].notna()]
+    df['Estado Inventario'] = df['ULTFECHASALIDA'].astype('string')
+    df['Estado Inventario'] = df['Estado Inventario'].replace([np.nan],[''])
+    df['Estado Inventario'] = df.apply(lambda x: new_col_salidas(x['Estado Inventario']),axis=1)
     df = df.drop(['codmodelo','modelo'], axis=1)
     dff = df.rename(columns = {
         'CODSUCURSAL': 'Código Sucursal', 

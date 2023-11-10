@@ -6,6 +6,7 @@ from ...components.components_main import *
 from ...functions.functions_filters import *
 from ...functions.functions_data import *
 from ...functions.functions_figure import *
+from ...figures import GraphPiego
 from ...styles_ import *
 
 
@@ -88,3 +89,49 @@ def filter_callback_alm(app, filt =[], dataframe = None):
                df.to_dict('series'),
                DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update'),  
         ]  
+
+def graph_alm(app):
+    @app.callback(
+        Output('bar-importe-stock','figure'),
+        Output('table-status','rowData'),
+        Output('table-status','columnDefs'),
+        Output('table-status','getRowStyle'),
+        Output('pie-estadoinv','figure'),
+        Output('bar-respon','figure'),
+        Input("data-values","data"),
+        Input("segmented-col","value"),
+        Input('select-moneda','value')
+    )
+    def update_graph(data, segmented,moneda):
+        df = pd.DataFrame(data)
+        #print(df['Última Fecha Salida'].unique())
+        dff = df[df['Duracion_Inventario'].notna()]
+        
+        table_dff = dff[['Sucursal', 'Almacén', 'Tipo','Grupo','Sub Grupo','Producto','Responsable Ingreso','Última Fecha Ingreso', 'Última Fecha Salida','Duracion_Inventario','Stock',moneda]]
+        return [
+            figure_stock_alm_y2(df = df, height = 300 , moneda = moneda, tipo = segmented),
+            table_dff.to_dict("records"),
+            [{"field": i,"cellStyle": {'font-size': 11}} for i in table_dff.columns],
+            {"styleConditions": [
+                    {
+                        "condition": "params.data.Duracion_Inventario < 0",
+                        "style": {"backgroundColor": "grey"},
+                    },
+                    {
+                        "condition": "params.data.Duracion_Inventario >= 0 && params.data.Duracion_Inventario <= 10",
+                        "style": {"backgroundColor": "#66f756"},
+                    },
+                    {
+                        "condition": "params.data.Duracion_Inventario > 10 && params.data.Duracion_Inventario <= 50",
+                        "style": {"backgroundColor": "yellow"},
+                    },
+                    {
+                        "condition": "params.data.Duracion_Inventario > 50",
+                        "style": {"backgroundColor": "#ff4f4f"},
+                    },
+                ],
+                #"defaultStyle": {"backgroundColor": "grey", "color": "white"},
+            },
+            figure_pie_estado_inv(df = df),
+            figure_bar_responsable(df = df, height = 400)
+        ]
