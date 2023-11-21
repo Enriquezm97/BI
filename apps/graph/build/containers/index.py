@@ -10,7 +10,7 @@ import pandas as pd
 from apps.graph.test.constans import EXTERNAL_SCRIPTS, EXTERNAL_STYLESHEETS
 #from apps.graph.data.transform_finanzas import balancePivot
 from apps.graph.test.utils.frame import Column, Row, Div, Store, Download, Modal,Modal
-from apps.graph.test.utils.crum import get_empresa,get_nombre_user
+from apps.graph.test.utils.crum import get_empresa,get_nombre_user,get_rubro_empresa
 from apps.graph.test.utils.theme import themeProvider, Container,Contenedor
 from PIL import Image
 
@@ -56,8 +56,11 @@ def card_index( img = '', title_card = '', description = '', url = ''):
         
     )])
 
+from asgiref.sync import sync_to_async
 
+@sync_to_async
 def index(rubro = ''):
+    
     if rubro == 'Comercial':
         row = Row([
                 
@@ -86,6 +89,7 @@ def index(rubro = ''):
                     card_index(img = "inventario.jpeg",title_card= "Inventarios", url= 'inventario')
                 ], size=3),
             ])
+    
     app = DjangoDash('index', external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
 
     app.layout = Container([

@@ -1,6 +1,7 @@
 import pandas as pd
 from django_plotly_dash import DjangoDash
 from ..constans import EXTERNAL_SCRIPTS, EXTERNAL_STYLESHEETS
+from asgiref.sync import sync_to_async
 #from ..utils.components.components_main import *
 from ..utils.functions.callbacks.callbacks_logistica import *
 from ..utils.functions.functions_transform import clean_inventarios,clean_stock_alm
@@ -12,7 +13,7 @@ from ..build.build_logistica import logistica_build,alm_stock_build
 #print(logistica_df)
 
 
-    
+@sync_to_async    
 def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
 
     app = DjangoDash('logistica_',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -36,6 +37,7 @@ def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
         app.layout = ERROR
     return app
 
+@sync_to_async 
 def alm_stock_dash(filtros = ['select-almacen','select-tipo','select-grupo']):
     
     app = DjangoDash('alm_stock',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -52,3 +54,5 @@ def alm_stock_dash(filtros = ['select-almacen','select-tipo','select-grupo']):
     except:
         app.layout = ERROR 
     return app
+
+

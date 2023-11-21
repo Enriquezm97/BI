@@ -14,7 +14,7 @@ def update_profile(request):
 
 def login_view(request):
     empresas=list(Empresa.objects.all())
-    print(empresas)
+    
     context={'empresas':empresas}
     if request.method == 'POST':
         

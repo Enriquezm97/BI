@@ -32,6 +32,7 @@ from django.shortcuts import get_object_or_404
 from apps.graph.build.containers.Finanzas.finanzas import dashEstadoSituacion,dashEstadoGananciasPerdidas,dashCostosGenerales ,dashER,dashEstadoSituacion2
 
 from django.core.cache import cache
+from ..test.utils.crum import * 
 #####new structure
 from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,resumenCampania
 from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes,ventasProductos,ventasCultivos,ventasComparativo
@@ -43,7 +44,7 @@ from apps.graph.test.Connection.apis import connection_api
 from apps.graph.test.utils.functions.functions_transform import *
 import asyncio 
 from django.http.response import HttpResponse
-
+from django.views.decorators.cache import never_cache
 def home(request):
     #owo=request.user.id
     dashboard=HomeScraper()
@@ -76,72 +77,44 @@ class TestView(LoginRequiredMixin,View):
         context = {'dashboard':dashboard}
        
         return render(request,'test.html',context)
+        
 """
+from asgiref.sync import sync_to_async
+#print(get_rubro_empresa())
+
+async def view_test(request):#
+    id_user = get_current_user()
+    print('owo')
+    print(id_user)
+    #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        #print(get_rubro_empresa())
+       #dashboard =  await index(rubro='Comercial' )#get_rubro_empresa()
+    return render(request,'test.html',{'dashboard':await index('Comercial')})
+    
+import asyncio     
+from django.utils.decorators import classonlymethod  
+from django.contrib.auth import get_user_model
+#result = await asyncio.gather(do_a_network_call("some_input")) 
 class TestView(LoginRequiredMixin,View):
     models=Usuario
     template_name='test.html'
     login_url = reverse_lazy('login')
-    def get(self,request,*args, **kwargs):
-        from apps.graph.test.constans import EXTERNAL_SCRIPTS, EXTERNAL_STYLESHEETS
-        from apps.graph.test.utils.frame import Column, Row, Div, Store, Download, Modal,Modal
-        from apps.graph.test.utils.crum import get_empresa,get_nombre_user
-        from apps.graph.test.utils.theme import themeProvider, Container,Contenedor
-        from ..build.containers.index import card_index
-        import dpd_components as dpd
-
-        id_user=self.request.user.id
-        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        #username=list(Usuario.objects.filter(user_id=id_user).values_list('username',flat=True))
-        empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
-        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
-        print(empresa[0],rubro[0])
-        if rubro[0] == 'Comercial':
-            row = Row([
-                    
-                    Column([
-                        card_index(img = "finanzas.jpeg",title_card= "Estado de Resultados",url='estado-resultados')
-                    ], size=3),
-                    Column([
-                        card_index(img = "ventas.png",title_card= "Ventas Clientes", url= 'comercial-cliente')
-                    ], size=3),
-                    Column([
-                        card_index(img = "inventario.jpeg",title_card= "Inventarios", url= 'inventario')
-                    ], size=3),
-                ])
-        else :
-            row = Row([
-                    Column([
-                        card_index(img = "agricola.jpg",title_card= "Costos Agrícola", url='costos-campaña')
-                    ], size=3),#apps/graph/build/containers/assets/agricola.png
-                    Column([
-                        card_index(img = "finanzas.jpeg",title_card= "Estado de Resultados",url='estado-resultados')
-                    ], size=3),
-                    Column([
-                        card_index(img = "ventas.png",title_card= "Ventas Clientes", url= 'comercial-cliente')
-                    ], size=3),
-                    Column([
-                        card_index(img = "inventario.jpeg",title_card= "Inventarios", url= 'inventario')
-                    ], size=3),
-                ])
-        app = DjangoDash('index', external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
-
-        app.layout = Container([
-            dpd.Pipe(id="named_count_pipe",               # ID in callback
-             value=None,                          # Initial value prior to any message
-             label="named_counts",                # Label used to identify relevant messages
-             channel_name="live_button_counter"),
-            #Row([
-            #    Column([dmc.Title(f"Bienvenido {get_nombre_user()}", align="center"),])
-                
-            #]),
-            Row([
-                Column([html.P()])
-                
-            ]),
-                row
+    view_is_async = True
+    @classonlymethod
+    def as_view(cls, **initkwargs):
+        view = super().as_view(**initkwargs)
+        view._is_coroutine = asyncio.coroutines._is_coroutine
+        return view
+    async def get(self,request,*args, **kwargs):
         
-            ])
-        return render(request,'test.html',{'dashboard':app})
+        id_user=self.request.user.id
+        user_filter= list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        username=list(Usuario.objects.filter(user_id=id_user).values_list('username',flat=True))
+        empresa=  (Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
+        rubro=  Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
+        print(rubro)
+        #contexto = 
+        return render(request,'test.html',{'dashboard': await index(rubro = rubro)})
         
 
 class Test2View(View):
@@ -158,9 +131,7 @@ class Test2View(View):
         #dashboard=dashComercialCultivo()
         #dashboard=informeComercial()
         dashboard = resumenCampania()
-        print(empresa)
-        print(type(empresa))
-        print(empresa[0])
+
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
         context = {'dashboard':dashboard,'empresa':empresa[0]}
@@ -310,6 +281,8 @@ class InformedeVentas1View(LoginRequiredMixin,AsistenteMixin,View):
         
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Comercial/informe_ventas_1.html',context)
+
+
 
 
 class VentasExportacionView(LoginRequiredMixin,AsistenteMixin,View):
@@ -536,9 +509,7 @@ class dashC(LoginRequiredMixin,AsistenteMixin,View):
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProductoCultivo()
         dashboard=dashComercialCultivo()
-        print(empresa)
-        print(type(empresa))
-        print(empresa[0])
+
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
         context = {'dashboard':dashboard,'empresa':empresa[0]}
@@ -558,9 +529,7 @@ class dashCC(LoginRequiredMixin,AsistenteMixin,View):
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
-        print(empresa)
-        print(type(empresa))
-        print(empresa[0])
+
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
         context = {'dashboard':dashboard,'empresa':empresa[0]}
@@ -578,9 +547,6 @@ class dashCCC(LoginRequiredMixin,AsistenteMixin,View):
         #dashboard=dashComercialCliente()
         dashboard=dashComercialClienteCultivo()
         
-        print(empresa)
-        print(type(empresa))
-        print(empresa[0])
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
         context = {'dashboard':dashboard,'empresa':empresa[0]}
@@ -619,10 +585,7 @@ class dashCPC(LoginRequiredMixin,AsistenteMixin,View):
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProducto()
         dashboard=dashComercialProductoCultivo()
-        #dashboard=dashComercialCultivo()
-        print(empresa)
-        print(type(empresa))
-        print(empresa[0])
+
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
         context = {'dashboard':dashboard,'empresa':empresa[0]}
@@ -662,9 +625,7 @@ class dashCComparativo(LoginRequiredMixin,AsistenteMixin,View):
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
         dashboard=ventasComparativo()
-        print(empresa)
-        print(type(empresa))
-        print(empresa[0])
+
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
         context = {'dashboard':dashboard,'empresa':empresa[0]}

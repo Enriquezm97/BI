@@ -1,10 +1,11 @@
 from pathlib import Path
 import os
 import environ
+
 #import dj_database_url
 env = environ.Env()
 environ.Env.read_env()
-
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 ENVIRONMENT = env
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -116,7 +117,7 @@ DATABASES = {
     
 }
 
-DATABASES["default"]["ATOMIC_REQUESTS"] = True
+DATABASES["default"]["ATOMIC_REQUESTS"] = False
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -185,12 +186,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'BACKEND':'channels_redis.core.RedisChannelLayer',# 'channels.layers.InMemoryChannelLayer'
         'CONFIG': {
             'hosts': [('127.0.0.1', 6379),],
+            
         }
     }
 }
+ASGI_THREADS = 1000
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -242,12 +245,12 @@ CACHES = {
         }
     }
 }
-
+"""
 PLOTLY_DASH = {
 
     
     # Route used for the message pipe websocket connection
-    "ws_route" :   "dpd/ws/channel",
+    "ws_route" :   "ws/channel",
 
     # Route used for direct http insertion of pipe messages
     "http_route" : "dpd/views",
@@ -256,7 +259,7 @@ PLOTLY_DASH = {
     "http_poke_enabled" : True,
 
     # Insert data for the demo when migrating
-    "insert_demo_migrations" : False,
+    "insert_demo_migrations" : True,
 
     # Timeout for caching of initial arguments in seconds
     "cache_timeout_initial_arguments": 60,
@@ -269,5 +272,8 @@ PLOTLY_DASH = {
 
     # Flag controlling local serving of assets
     "serve_locally": False,
+    "stateless_loader" : "demo.scaffold.stateless_app_loader",
 }
+"""
 DATA_UPLOAD_MAX_MEMORY_SIZE=1000000000
+MAX_ACTIVE_TASKS  = 100

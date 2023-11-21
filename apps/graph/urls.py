@@ -3,10 +3,11 @@ from django.urls import path, include, re_path
 import apps.graph.createdash_view as createdash_view
 from .views.views_logistica import *
 from .views.views import *
+from ..graph.test.layouts.logistica import alm_stock_dash,logistica_dash
 
 urlpatterns = [
-    path('',TestView.as_view(), name='home'),#template_name='app_name/template_name.html'),
-    
+    path('',TestView.as_view(), name='home'),#TestView.as_view()
+    #path('',view_test, name='home'),
     path('live',TestView,name='test'),
     path('test',Test2View.as_view(),name='test2'),    
     path('<str:username>/comercial-cliente',dashCC.as_view(),name='com-cliente'),  
