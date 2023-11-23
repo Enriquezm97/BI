@@ -29,7 +29,8 @@ def connection_api(sp_name = 'nsp_rpt_ventas_detallado', test = 'no'):
         df_ventas_detalle['Fecha']=df_ventas_detalle['Fecha'].apply(lambda a: pd.to_datetime(a).date())
         dataframe = df_ventas_detalle.copy()
     return dataframe
-
+from celery import shared_task
+#@shared_task()
 def connection_api_almstock():
     
     ip, token_ =get_data_connection()

@@ -24,7 +24,7 @@ from apps.graph.build.containers.Scraper.scraper import *
 from apps.graph.models import Indicador,TipoIndicador
 from apps.users.models import Empresa,Usuario,Rubro
 #from apps.graph.build.containers.test import *
-from apps.graph.build.containers.index import index
+from apps.graph.build.containers.index import index,row_index
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
@@ -99,22 +99,41 @@ class TestView(LoginRequiredMixin,View):
     models=Usuario
     template_name='test.html'
     login_url = reverse_lazy('login')
-    view_is_async = True
-    @classonlymethod
-    def as_view(cls, **initkwargs):
-        view = super().as_view(**initkwargs)
-        view._is_coroutine = asyncio.coroutines._is_coroutine
-        return view
-    async def get(self,request,*args, **kwargs):
+    #view_is_async = True
+   # @classonlymethod
+    #def as_view(cls, **initkwargs):
+    #    view = super().as_view(**initkwargs)
+    #    view._is_coroutine = asyncio.coroutines._is_coroutine
+    #    return view
+    def get(self,request,*args, **kwargs):
         
         id_user=self.request.user.id
         user_filter= list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        username=list(Usuario.objects.filter(user_id=id_user).values_list('username',flat=True))
         empresa=  (Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
-        rubro=  Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
-        print(rubro)
-        #contexto = 
-        return render(request,'test.html',{'dashboard': await index(rubro = rubro)})
+        rubro_empresa=  Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
+        #{'dashboard':  index.delay(rubro_empresa)}
+        from apps.graph.test.constans import EXTERNAL_SCRIPTS, EXTERNAL_STYLESHEETS
+        from apps.graph.test.utils.frame import Column, Row, Div, Store, Download, Modal,Modal
+        from apps.graph.test.utils.crum import get_empresa,get_nombre_user,get_rubro_empresa
+        from apps.graph.test.utils.theme import themeProvider, Container,Contenedor
+        from ..tasks import row_index
+        rowwd=row_index(rubro=rubro_empresa)#.apply_async(kwargs={'rubro':rubro_empresa},serializer='json')#,serializer='json'
+        
+        app = DjangoDash('index', external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+
+        app.layout = Container([
+            #Row([
+            #    Column([dmc.Title(f"Bienvenido {get_nombre_user()}", align="center"),])
+                
+            #]),
+            Row([
+                Column([html.P()])
+                
+            ]),
+            rowwd
+        
+        ])
+        return render(request,'test.html',{'dashboard':  app})#kwargs={'rubro': rubro_empresa}
         
 
 class Test2View(View):
@@ -644,3 +663,33 @@ class EstadoSituacion2View(LoginRequiredMixin,AnalistaMixin,View):
         context = {'dashboard':dashboard}
        
         return render(request,'dashboards/Finanzas/estado_situacion2.html',context)
+    
+    
+    
+
+
+
+"""
+import asyncio     
+from django.utils.decorators import classonlymethod  
+from django.contrib.auth import get_user_model
+#result = await asyncio.gather(do_a_network_call("some_input")) 
+class TestView(LoginRequiredMixin,View):
+    models=Usuario
+    template_name='test.html'
+    login_url = reverse_lazy('login')
+    view_is_async = True
+    @classonlymethod
+    def as_view(cls, **initkwargs):
+        view = super().as_view(**initkwargs)
+        view._is_coroutine = asyncio.coroutines._is_coroutine
+        return view
+    async def get(self,request,*args, **kwargs):
+        
+        id_user=self.request.user.id
+        user_filter= list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=  (Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
+        rubro=  Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
+        return render(request,'test.html',{'dashboard': await index(rubro = rubro)})
+
+"""

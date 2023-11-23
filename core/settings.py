@@ -20,7 +20,7 @@ SECRET_KEY=os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = False
-DEBUG = False    #'RENDER' not in os.environ
+DEBUG = True    #'RENDER' not in os.environ
 
 ALLOWED_HOSTS = ['*']
 
@@ -235,6 +235,14 @@ AUTHENTICATION_BACKENDS = (
 FILE_UPLOAD_PERMISSIONS = 0o640
 
 EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+#BROKER_CONNECTION_RETRY = True
+#BROKER_CONNECTION_MAX_RETRIES = 0
+#BROKER_CONNECTION_TIMEOUT = 120
 
 CACHES = {
     "default": {
