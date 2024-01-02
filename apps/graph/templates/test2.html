@@ -2,8 +2,6 @@
 {% load static %}
 {% block content %}
 {% load plotly_dash %}
-    {% plotly_header %}
-    {% plotly_direct name='resumen_campania'%}
-    {% plotly_footer %}
+{% plotly_app name='Ex2' initial_arguments='{"target_id": {"value": "67"}}' ratio=0.6 %}
     
 {%endblock%}

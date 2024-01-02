@@ -53,11 +53,11 @@ def opened_modal(
     type_children = 'Figure'
 ): 
     @app.callback(
-        Output(modal_id, "opened"),
-        Output(modal_id, "children"),
-        Input(id_button, "n_clicks"),
-        State(children_out_id,'figure'),
-        State(modal_id, "opened"),
+        [Output(modal_id, "opened"),
+         Output(modal_id, "children")],
+        [Input(id_button, "n_clicks")],
+        [State(children_out_id,'figure'),
+        State(modal_id, "opened")],
         prevent_initial_call=True,
     )
     #if type_children == 'Figure':

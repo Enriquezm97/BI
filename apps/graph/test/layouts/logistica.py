@@ -14,9 +14,9 @@ from ..build.build_logistica import logistica_build,alm_stock_build
 
 
 
-def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
+def logistica_dash(codido = '',filtros = ['select-anio','select-grupo','select-rango']):
 
-    app = DjangoDash('logistica_',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name=codido,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     try:
         if get_empresa()== 'SAMPLAST':
             dff  = connection_api(sp_name = 'nsp_stocks_bi_samplast')
@@ -38,12 +38,12 @@ def logistica_dash(filtros = ['select-anio','select-grupo','select-rango']):
     return app
 
 
-def alm_stock_dash(filtros = ['select-almacen','select-tipo','select-grupo']):
+def alm_stock_dash(codido= '',filtros = ['select-almacen','select-tipo','select-grupo']):
     
-        app = DjangoDash('alm_stock',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+        app = DjangoDash(name = codido,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)#,kwargs={'dash_app_id':{'value':123}}
     #try:
         dff  = connection_api_almstock()#.apply_async()
-        print(dff)
+        
         alm_dff = clean_stock_alm(df = dff)
         
         app.layout = alm_stock_build(df = alm_dff)

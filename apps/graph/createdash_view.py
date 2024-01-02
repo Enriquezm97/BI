@@ -26,9 +26,9 @@ class FormIndicadorView(LoginRequiredMixin,AnalistaMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        print(empresa[0],id_user)
-        dashboard=crear_ratio_finanzas(empresa[0],id_user)
-        context = {'dashboard':dashboard}
+        id_app =f'{id_user}-create_ratio'#'create_ratio'
+        dashboard=crear_ratio_finanzas(codigo = id_app,empresa = empresa[0],usuario = id_user)
+        context = {'dashboard':dashboard,'code':id_app}
         return render(request,'dash_created/Indicadores/form_indicador.html',context)
 
 #@login_required
@@ -46,8 +46,7 @@ class IndicadorAllView(LoginRequiredMixin,AnalistaMixin,View):
         user_filter=list(Usuario.objects.filter(user_id=self.request.user.id).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         indicadores=Indicador.objects.filter(dataframe=empresa[0])
-        print(Indicador.objects.all())
-        print(indicadores)
+        
         context={'indicadores':indicadores}
         return render(request,'dash_created/Indicadores/mostrar_all.html',context)
 

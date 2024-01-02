@@ -15,7 +15,8 @@ def cardGraph(
     with_id=True,
     fig=None,
     icon_maximize=True,
-    height = 400
+    height = 400,
+    id_item = ''
 ):
     if icon_maximize == True:
         #padding
@@ -23,6 +24,31 @@ def cardGraph(
             return html.Div([
                 dmc.Card(
                                     children=[
+                                        dmc.Menu(
+                                                [
+                                                    dmc.MenuTarget(dmc.ActionIcon(DashIconify(icon="tabler:settings"))),
+                                                    dmc.MenuDropdown(
+                                                        [
+                                                            dmc.MenuLabel("Application"),
+                                                            dmc.MenuItem("Piechart", icon=DashIconify(icon="tabler:chart-pie"),id=f'{id_item}-pie', n_clicks=0),
+                                                            dmc.MenuItem("Barchart", icon=DashIconify(icon="tabler:chart-bar"),id=f'{id_item}-bar', n_clicks=0),
+                                                            dmc.MenuItem("Linechart", icon=DashIconify(icon="tabler:chart-line"),id=f'{id_item}-line', n_clicks=0),
+                                                            #dmc.MenuItem("Search", icon=DashIconify(icon="tabler:search")),
+                                                            #dmc.MenuDivider(),
+                                                            #dmc.MenuLabel("Danger Zone"),
+                                                            #dmc.MenuItem(
+                                                            #    "Transfer my data",
+                                                            #    icon=DashIconify(icon="tabler:arrows-left-right"),
+                                                            #),
+                                                            
+                                                        ]
+                                                    ),
+                                                ],
+                                                
+                                                trigger="hover",
+                                                style={'position': 'absolute','top': '4px','z-index': '99'},
+                                                id='id-test'
+                                            ),
                                         Button.actionIcon(id=id_maximize),
                                         #actionIcon(ids=id_download,icono='download'),
                                         dcc.Graph(id=id_graph,figure = graph_empty)
@@ -55,6 +81,7 @@ def cardGraph(
                 return html.Div([
                     dmc.Card(
                                         children=[
+                                            
                                             #actionIcon(ids=id_maximize,style=button_style),
                                             #actionIcon(ids=id_download,icono='download'),
                                             dcc.Graph(id=id_graph,figure = graph_empty)

@@ -54,16 +54,12 @@ input_ventas_samplast={
 }
 #anio_campania = sorted(df_ventas_detalle['YEAR'].unique())
 
-def informeComercial(rubro_empresa = 'Agricola',df_ventas_detalle = None):
+def informeComercial(codigo= '',rubro_empresa = 'Agricola'):
+    dff = connection_api(test='no')
+    df_ventas_detalle = etl_comercial(dff)
     
     
-    
-    
-    
-    
-    #df_ventas_detalle = data_comercial(empresa=get_empresa())
-    
-    app = DjangoDash('informe-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
         Modal(id="modal-bar-comercial-productos", size= "85%"),
         Modal(id="modal-bar-comercial-mes", size= "85%"),
@@ -101,7 +97,8 @@ def informeComercial(rubro_empresa = 'Agricola',df_ventas_detalle = None):
                                             DataDisplay.loadingOverlay(
                                                 cardGraph(
                                                     id_graph='bar-comercial-productos', 
-                                                    id_maximize = 'maximize-bar-comercial-productos'
+                                                    id_maximize = 'maximize-bar-comercial-productos',
+                                                    id_item = 'first'
                                                 )
                                             )
                                     ]) 
@@ -165,8 +162,8 @@ def informeComercial(rubro_empresa = 'Agricola',df_ventas_detalle = None):
     Modal(id='modal'),    
     ])
     create_callback_offcanvas_filters(app,id_input_btn = "btn-config")
-    create_callback_filter_comercial_informe(app = app,dataframe =df_ventas_detalle)    
-    create_title_comercial_informe(app=app,title='Informe de Ventas ')
+    create_callback_filter_comercial_informe(app = app,dataframe =df_ventas_detalle, rubro= rubro_empresa)    
+    create_title_comercial_informe(app=app,title='Informe de Ventas ', rubro= rubro_empresa)
     create_callback_download_data(app)
     create_graph_informe_comercial(app)
     create_callback_opened_modal(app, modal_id="modal-bar-comercial-productos",children_out_id="bar-comercial-productos", id_button="maximize-bar-comercial-productos",height_modal=700)
@@ -175,7 +172,7 @@ def informeComercial(rubro_empresa = 'Agricola',df_ventas_detalle = None):
     create_callback_opened_modal(app, modal_id="modal-pie-comercial-vendedor",children_out_id="pie-comercial-vendedor", id_button="maximize-pie-comercial-vendedor",height_modal=600)
     create_callback_opened_modal(app, modal_id="modal-funnel-comercial-selector_second",children_out_id="funnel-comercial-selector_second", id_button="maximize-funnel-comercial-selector_second",height_modal=700)
 
-def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
+def ventaSegmented(codigo = '',rubro_empresa = 'Agricola', filtros = input_dict_general ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
@@ -186,7 +183,7 @@ def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
     print(df_ventas_detalle.columns)
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
-    app = DjangoDash('segmented-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
 
     app.layout = Container([
         Modal(id="modal-line-comercial-st", size= "85%"),
@@ -283,7 +280,7 @@ def ventaSegmented(rubro_empresa = 'Agricola', filtros = input_dict_general ):
     create_callback_opened_modal(app, modal_id="modal-bar-comercial",children_out_id="bar-comercial", id_button="maximize-bar-comercial",height_modal=600)
 
 
-def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
+def ventasClientes(codigo = '',rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
@@ -294,7 +291,7 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
-    app = DjangoDash('clientes-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
 
     app.layout = Container([
         Modal(id="modal-bar-comercial", size= "85%"),
@@ -387,7 +384,7 @@ def ventasClientes(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     create_callback_opened_modal(app, modal_id="modal-bar-secundario-comercial",children_out_id="bar-secundario-comercial", id_button="maximize-bar-secundario-comercial",height_modal=700)
     create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st",height_modal=700)
     
-def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
+def ventasProductos(codigo = '',rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
@@ -398,7 +395,7 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
-    app = DjangoDash('productos-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
 
     app.layout = Container([
         Modal(id="modal-bar-comercial", size= "85%"),
@@ -492,7 +489,7 @@ def ventasProductos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st",height_modal=700)
     
     
-def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
+def ventasCultivos(codigo = '',rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
@@ -503,7 +500,7 @@ def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
-    app = DjangoDash('cultivos-comercial',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
 
     app.layout = Container([
         Modal(id="modal-bar-comercial", size= "85%"),
@@ -599,7 +596,7 @@ def ventasCultivos(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     create_callback_opened_modal(app, modal_id="modal-bar-secundario-comercial",children_out_id="bar-secundario-comercial", id_button="maximize-bar-secundario-comercial",height_modal=700)
     create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st",height_modal=700)
     
-def ventasComparativo(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
+def ventasComparativo(codigo = '',rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
@@ -614,7 +611,7 @@ def ventasComparativo(rubro_empresa = 'Agricola', filtros = input_ventas_x ):
     
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
-    app = DjangoDash('comercial_comparativo',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name =  codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
 
     
     

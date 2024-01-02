@@ -24,11 +24,11 @@ import dash
 
 
 #plan de siembra
-def ejecucionCampania():
+def ejecucionCampania(codigo=''):
 
     df_var_agricolas_default= data_agricola(empresa=get_empresa())[0]
     campaña_list=sorted(df_var_agricolas_default['AÑO_CULTIVO'].unique())
-    app = DjangoDash('vagricola',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
             Modal(id="modal-line-recurso-agricola", size= "85%"),
             offcanvas_recurso_agricola,
@@ -117,10 +117,10 @@ def ejecucionCampania():
     create_callback_modal_graph(app,id_modal = 'modal', id_btn_modal = 'maximize-line-recurso-agricola', id_figure = 'line-recurso-agricola')
     create_callback_opened_modal(app, modal_id="modal-line-recurso-agricola",children_out_id="line-recurso-agricola", id_button="maximize-line-recurso-agricola",height_modal=700)
     
-def costosCampania():
+def costosCampania(codigo=''):
     df_costos_agricola_default=data_agricola(empresa=get_empresa())[1]
     anio_campania = sorted(df_costos_agricola_default['AÑO_CAMPAÑA'].unique())
-    app = DjangoDash('vcostos',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
         Modal(id="modal-bar-costos-cultivo", size= "85%"),
         Modal(id="modal-bar-costos-variedad", size= "85%"),
@@ -401,3 +401,29 @@ def resumenCampania():
             ],size=3),
         ])
     ])
+
+def rtesind_sin_estado():
+    import dash
+    a2 = DjangoDash("Ex2",)
+
+    a2.layout = html.Div([
+        dcc.RadioItems(id="dropdown-one",options=[{'label':i,'value':j} for i,j in [
+        ("O2","Oxygen"),("N2","Nitrogen"),("CO2","Carbon Dioxide")]
+        ],value="Oxygen"),
+        html.Div(id="output-one")
+        ])
+    """
+    @a2.callback(
+    dash.dependencies.Output('output-one','children'),
+    [dash.dependencies.Input('dropdown-one','value')]
+    )
+    def callback_c(*args, **kwargs):
+        return "Args are [%s], the extra parameter  and kwargs are %s" %(",".join(args), kwargs)
+    """
+    @a2.callback(
+    dash.dependencies.Output('output-one','children'),
+    [dash.dependencies.Input('dropdown-one','value')]
+    )
+    def callback_c(*args,**kwargs):
+        
+        return "Args are [%s] and kwargs are %s" %(",".join(args), kwargs)

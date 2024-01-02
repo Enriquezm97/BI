@@ -34,11 +34,12 @@ from apps.graph.build.containers.Finanzas.finanzas import dashEstadoSituacion,da
 from django.core.cache import cache
 from ..test.utils.crum import * 
 #####new structure
-from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,resumenCampania
+from apps.graph.test.layouts.produccion import ejecucionCampania,costosCampania,resumenCampania,rtesind_sin_estado
 from apps.graph.test.layouts.comercial import informeComercial,ventaSegmented,ventasClientes,ventasProductos,ventasCultivos,ventasComparativo
 from apps.graph.test.layouts.finanzas import estadoResultados,estadoGP,crear_ratio_finanzas
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin,AsistenteMixin
 from apps.graph.test.layouts.comercial import input_dict_general,input_ventas_x,input_ventas_samplast
+from apps.graph.test.layouts.inicio import inicio_dash
 
 from apps.graph.test.Connection.apis import connection_api
 from apps.graph.test.utils.functions.functions_transform import *
@@ -99,41 +100,13 @@ class TestView(LoginRequiredMixin,View):
     models=Usuario
     template_name='test.html'
     login_url = reverse_lazy('login')
-    #view_is_async = True
-   # @classonlymethod
-    #def as_view(cls, **initkwargs):
-    #    view = super().as_view(**initkwargs)
-    #    view._is_coroutine = asyncio.coroutines._is_coroutine
-    #    return view
+
     def get(self,request,*args, **kwargs):
         
         id_user=self.request.user.id
-        user_filter= list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        empresa=  (Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
-        rubro_empresa=  Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
-        #{'dashboard':  index.delay(rubro_empresa)}
-        from apps.graph.test.constans import EXTERNAL_SCRIPTS, EXTERNAL_STYLESHEETS
-        from apps.graph.test.utils.frame import Column, Row, Div, Store, Download, Modal,Modal
-        from apps.graph.test.utils.crum import get_empresa,get_nombre_user,get_rubro_empresa
-        from apps.graph.test.utils.theme import themeProvider, Container,Contenedor
-        from ..tasks import row_index
-        rowwd=row_index(rubro=rubro_empresa)#.apply_async(kwargs={'rubro':rubro_empresa},serializer='json')#,serializer='json'
+        id_app =f'{id_user}-inicio'
         
-        app = DjangoDash('index', external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
-
-        app.layout = Container([
-            #Row([
-            #    Column([dmc.Title(f"Bienvenido {get_nombre_user()}", align="center"),])
-                
-            #]),
-            Row([
-                Column([html.P()])
-                
-            ]),
-            rowwd
-        
-        ])
-        return render(request,'test.html',{'dashboard':  app})#kwargs={'rubro': rubro_empresa}
+        return render(request,'test.html',{'dashboard':  inicio_dash(codigo = id_app),'code':id_app})#kwargs={'rubro': rubro_empresa}
         
 
 class Test2View(View):
@@ -149,11 +122,11 @@ class Test2View(View):
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
         #dashboard=informeComercial()
-        dashboard = resumenCampania()
-
+        dashboard = rtesind_sin_estado()#resumenCampania()
+        kwargs['dash_app_id']=id_user
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
-        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        context = {'dashboard':dashboard,'id':{"target_id": {"value": id_user}} }
         #name_empresa
         return render(request,'test2.html',context)
 
@@ -166,10 +139,10 @@ class PlanSiembraView(LoginRequiredMixin,AdministradoMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        
+        id_app =f'{id_user}-vagricola'
         #dashboard=plandeSiembra(empresa[0])
-        dashboard=ejecucionCampania()
-        context = {'dashboard':dashboard}
+        dashboard=ejecucionCampania(codigo = id_app)
+        context = {'dashboard':dashboard, 'code':id_app}
         
         return render(request,'dashboards/Agricola/plansiembra.html',context)
 
@@ -177,12 +150,12 @@ class CostosCampañaView(LoginRequiredMixin,AdministradoMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
-        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        id_app =f'{id_user}-vcostos'
+        
         #dashboard=costosAgricola(empresa[0])
         #dashboard=dashCostosProduccionAgricola()
-        dashboard=costosCampania()
-        context = {'dashboard':dashboard}
+        dashboard=costosCampania(codigo=id_app)
+        context = {'dashboard':dashboard,'code':id_app}
         return render(request,'dashboards/Agricola/costos_campaña.html',context)
 
 class VariablesAgricolasView(LoginRequiredMixin,View):
@@ -191,7 +164,7 @@ class VariablesAgricolasView(LoginRequiredMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        #dashboard=variablesAgricolas(empresa[0])
+        
         dashboard=comparativoRecursos(empresa[0])
         context = {'dashboard':dashboard}
         return render(request,'dashboards/Agricola/variables_agricolas.html',context)
@@ -285,20 +258,16 @@ class InformedeVentas1View(LoginRequiredMixin,AsistenteMixin,View):
     def get(self,request,*args, **kwargs):
         
         id_user=self.request.user.id
-       
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
-        empresa_name=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
+        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
+        id_app =f'{id_user}-informe-comercial'
         
-        rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)
-        staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
-        dffff = connection_api(test='no')
-        dataframe = etl_comercial(dffff)
-        dataframe['empresa'] = empresa_name[0]
-        dataframe = dataframe[dataframe['empresa']==empresa_name[0]]
-        dashboard=informeComercial(df_ventas_detalle = dataframe)#informeVentas(empresa_name[0],rubro[0],staff_filter[0])
         
-        context = {'dashboard':dashboard}
+        
+        dashboard=informeComercial(codigo = id_app,rubro_empresa=rubro)#informeVentas(empresa_name[0],rubro[0],staff_filter[0])
+        
+        context = {'dashboard':dashboard, 'code': id_app}
         return render(request,'dashboards/Comercial/informe_ventas_1.html',context)
 
 
@@ -356,16 +325,16 @@ class VentasCore(LoginRequiredMixin,AsistenteMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)[0]
-        #staff_filter=list(Usuario.objects.filter(user_id=id_user).values_list('is_staff',flat=True))
-        #input_dict_general,input_ventas_x,input_ventas_samplast
+        id_app =f'{id_user}-segmented-comercial'
+        
         if empresa =='SAMPLAST':
             entrada_filt = input_ventas_samplast
         else:
             entrada_filt = input_dict_general
-        dashboard=ventaSegmented(filtros=entrada_filt)
+        dashboard=ventaSegmented(filtros=entrada_filt,codigo = id_app)
         #
 
-        context = {'dashboard':dashboard}
+        context = {'dashboard':dashboard,'code':id_app}
         return render(request,'dashboards/Comercial/comercial_segmented.html',context)
 
 class VentasTipo(LoginRequiredMixin,AsistenteMixin,View):
@@ -459,12 +428,11 @@ class EstadoGananciasPerdidasView(LoginRequiredMixin,AnalistaMixin,View):
     #login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
-        #id_user=self.request.user.id
-        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        #dashboard=ventas2(empresa[0])
-        dashboard=estadoGP()#dashEstadoGananciasPerdidas()#contenedoresExportados2('ARONA',True)
-        context = {'dashboard':dashboard}
+        id_user=self.request.user.id
+        id_app =f'{id_user}-estado_perdidas_ganancias'
+        #'estado_perdidas_ganancias'
+        dashboard=estadoGP(codigo=id_app)
+        context = {'dashboard':dashboard, 'code': id_app}
        
         return render(request,'dashboards/Finanzas/estado_gp.html',context)
     
@@ -485,12 +453,11 @@ class FinanzasEstadoResultados(LoginRequiredMixin,AnalistaMixin,View):
     #login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
-        #id_user=self.request.user.id
-        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        #empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-        #dashboard=ventas2(empresa[0])
-        dashboard=estadoResultados()#contenedoresExportados2('ARONA',True)
-        context = {'dashboard':dashboard}
+        id_user=self.request.user.id
+        id_app =f'{id_user}-estado_resultados_finanzas'
+        #'estado_resultados_finanzas'
+        dashboard=estadoResultados(codigo = id_app)#contenedoresExportados2('ARONA',True)
+        context = {'dashboard':dashboard, 'code': id_app}
        
         return render(request,'dashboards/Finanzas/finanzas_estado_resultados.html',context)
 
@@ -542,16 +509,13 @@ class dashCC(LoginRequiredMixin,AsistenteMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-         
-        #dashboard=dashComercialCliente()
-        dashboard=ventasClientes()
-        #dashboard=dashComercialClienteCultivo()
-        #dashboard=dashComercialProductoCultivo()
-        #dashboard=dashComercialCultivo()
+        id_app =f'{id_user}-clientes-comercial' 
+        dashboard=ventasClientes(codigo=id_app)#'clientes-comercial'
+        
 
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
-        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        context = {'dashboard':dashboard,'empresa':empresa[0],'code':id_app}
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_cliente.html',context)
 
@@ -579,16 +543,16 @@ class dashCP(LoginRequiredMixin,AsistenteMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-         
+        id_app =f'{id_user}-productos-comercial' 
         #dashboard=dashComercialCliente()
         #dashboard=dashComercialClienteCultivo()
-        dashboard=ventasProductos()
+        dashboard=ventasProductos(codigo = id_app)#'productos-comercial'
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
         
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
-        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        context = {'dashboard':dashboard,'empresa':empresa[0],'code': id_app}
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_producto.html',context)
 
@@ -618,16 +582,16 @@ class dashCCultivo(LoginRequiredMixin,AsistenteMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-         
+        id_app =f'{id_user}-cultivos-comercial'
         #dashboard=dashComercialCliente()
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProducto()
         #dashboard=dashComercialProductoCultivo()
-        dashboard=ventasCultivos()
+        dashboard=ventasCultivos(codigo = id_app)
         
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
-        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        context = {'dashboard':dashboard,'empresa':empresa[0],'code':id_app}
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_cultivo.html',context)
 
@@ -638,16 +602,16 @@ class dashCComparativo(LoginRequiredMixin,AsistenteMixin,View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-         
+        id_app =f'{id_user}-comercial_comparativo'
         #dashboard=dashComercialCliente()
         #dashboard=dashComercialClienteCultivo()
         #dashboard=dashComercialProductoCultivo()
         #dashboard=dashComercialCultivo()
-        dashboard=ventasComparativo()
+        dashboard=ventasComparativo(codigo = id_app)
 
         kwargs['codigo']=id_user
         kwargs['empresa']=empresa
-        context = {'dashboard':dashboard,'empresa':empresa[0]}
+        context = {'dashboard':dashboard,'empresa':empresa[0],'code':id_app}
         #name_empresa
         return render(request,'dashboards/Comercial/comercial_comparativo.html',context)
     

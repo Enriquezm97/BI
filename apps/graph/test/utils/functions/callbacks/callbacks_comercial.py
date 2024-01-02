@@ -33,26 +33,31 @@ def create_callback_download_data(
 
 def  create_callback_filter_comercial_informe(
     app, dataframe=pd.DataFrame(), 
-    id_inputs = ['select-anio','select-cliente','select-cultivo','select-variedad','select-grupo-cliente','select-producto'], 
-    id_outputs = ['select-anio','select-cliente','select-cultivo','select-variedad','select-grupo-cliente','select-producto']
+    rubro = ''
     ):
+    if rubro =='Agricola':
+        inp_out = ['select-anio','select-cliente','select-cultivo','select-variedad','select-grupo-cliente','select-producto']
+    else:
+        inp_out = ['select-anio','select-cliente','select-tipo-venta','select-grupo-producto','select-grupo-cliente','select-producto']
+        
     @app.callback(
-                 [Output(output_,'data')for output_ in id_outputs]+
+                 [Output(output_,'data')for output_ in inp_out]+
                  [
                   #Output('checklist-comercial-tipoventa','options'),
                   #Output('checklist-comercial-tipoventa','value'),   
                   Output("data-values","data"),
                   Output('chipgroup-mes','children'),
                   Output("notifications-update-data","children")],
-                 [Input(input_,"value")for input_ in id_inputs]  
+                 [Input(input_,"value")for input_ in inp_out]  
                  )
     def update_filter_comercial_informe(*args):
         if validar_all_none(variables = args) == True:
             df=dataframe.copy()
         else:
-            df=dataframe.query(dataframe_filtro(values=list(args),columns_df=create_col_for_dataframe(id_components = id_inputs, dict_cols_dataframe=COMERCIAL_SELECTS_COLUMNS)))
-
-        return create_list_dict_outputs(dataframe = df,id_components = id_inputs, dict_cols_dataframe=COMERCIAL_SELECTS_COLUMNS)+[
+            df=dataframe.query(dataframe_filtro(values=list(args),columns_df=create_col_for_dataframe(id_components = inp_out, dict_cols_dataframe=COMERCIAL_SELECTS_COLUMNS)))
+        print('here')
+        print(df.columns)
+        return create_list_dict_outputs(dataframe = df,id_components = inp_out, dict_cols_dataframe=COMERCIAL_SELECTS_COLUMNS)+[
                #[{'label': i, 'value': i} for i in sorted(df['Tipo de Venta'].unique())],
                #sorted(df['Tipo de Venta'].unique()),
                df.to_dict('series'),
@@ -61,7 +66,12 @@ def  create_callback_filter_comercial_informe(
         ]   
 
 
-def create_title_comercial_informe(app, title ='', rubro_empresa = '',id_inputs = ['select-anio','select-cliente','select-cultivo','select-variedad','select-moneda']):
+def create_title_comercial_informe(app, title ='', rubro = '',id_inputs = ['select-anio','select-cliente','select-cultivo','select-variedad','select-moneda']):
+    if rubro =='Agricola':
+        id_inputs = ['select-anio','select-cliente','select-cultivo','select-variedad','select-grupo-cliente','select-producto','select-moneda']
+    else:
+        id_inputs = ['select-anio','select-cliente','select-tipo-venta','select-grupo-producto','select-grupo-cliente','select-producto','select-moneda']
+        
     @app.callback(
         Output("title","children"),
         [Input(input_,"value")for input_ in id_inputs]
@@ -94,6 +104,9 @@ def create_graph_informe_comercial(app):
         Input('chipgroup-mes',"value"),
         Input('radio-paleta-color','value'),
         Input('slider-size-tickfont','value'),
+        Input('first-pie','n_clicks'),
+        Input('first-bar','n_clicks'),
+        
         #Input('checklist-comercial-tipoventa','value'),
     )
     def update_graph_informe_comercial(*args):
@@ -102,6 +115,8 @@ def create_graph_informe_comercial(app):
         importe = args[1]#"IMPORTEMOF" if args[1] == 'Soles' else "IMPORTEMOF"
         df = pd.DataFrame(args[0])
         #df = df[df['Tipo de Venta'].isin(args[5])]
+        
+        
         
         if args[2] != None and len(args[2])==0:
             df = df.copy()
@@ -131,14 +146,17 @@ def create_graph_informe_comercial(app):
         #df[importe].map('{:,.1f}%'.format)
         pais_df = df.groupby(['Pais'])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
         vendedor_df = df.groupby(['Vendedor'])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
-        
-        
-        return[
-            GraphBargo.bar_(df=productos_df_20, x= importe, y= 'Producto',orientation= 'h', height = 400, 
+        if args[6] == 0:
+            graph1_ =GraphBargo.bar_(df=productos_df_20, x= importe, y= 'Producto',orientation= 'h', height = 400, 
                title= 'Los 20 Productos más Vendidos', customdata=['Grupo Producto','Subgrupo Producto'],space_ticked= 280, text= importe,
                showticklabel_y=True, 
                xaxis_title = importe, template= 'none', list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Alphabet
-            ),
+            )
+        elif args[5]:
+            graph1_ = GraphPiego.pie_(df = productos_df_20, title = 'Los 20 Productos más Vendidos',label_col = 'Producto', value_col = importe, height = 400, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
+                            textfont_size = 10)
+        return[
+            graph1_,
             GraphBargo.bar_(df=meses_df_12, x= 'Mes', y= importe,orientation= 'v', height = 400, 
                 title= 'Ventas por Mes', customdata=['Porcentaje'],space_ticked= 50, text= importe, yaxis_title= importe,xaxis_title= 'Mes',
                 template='none',list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Set3

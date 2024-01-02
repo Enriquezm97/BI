@@ -21,6 +21,7 @@ def filter_callback(app, filt =[], dataframe = None):
         [Input(input_,"value")for input_ in filt]
     )
     def update_filter(*args):
+        
         if validar_all_none(variables = args) == True:
             df=dataframe.copy()
         else:
@@ -29,7 +30,7 @@ def filter_callback(app, filt =[], dataframe = None):
         return create_list_dict_outputs(dataframe = df,id_components = filt, dict_cols_dataframe=COMERCIAL_LOGISTICA)+[
                df.to_dict('series'),
                [dmc.Chip(x,value=x,variant="outline",radius= 'xs',styles=styles_chip)for x in order_mes_text(df['Mes'].unique())],
-               DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update'),  
+               DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update'),
         ]  
 def graph_log(app):
     @app.callback(
@@ -75,7 +76,8 @@ def filter_callback_alm(app, filt =[], dataframe = None):
         [Input(input_,"value")for input_ in filt]+
          [Input("datepicker-inicio","value"),Input("datepicker-fin","value")]
     )
-    def update_filter(*args):
+    def update_filter(*args,**kwargs):
+        
         datepicker_inicio = datetime.strptime(args[-2], '%Y-%m-%d').date()
         datepicker_fin = datetime.strptime(args[-1], '%Y-%m-%d').date()
         inputs = args[:-2]
@@ -92,15 +94,15 @@ def filter_callback_alm(app, filt =[], dataframe = None):
 
 def graph_alm(app):
     @app.callback(
-        Output('bar-importe-stock','figure'),
+        [Output('bar-importe-stock','figure'),
         Output('table-status','rowData'),
         Output('table-status','columnDefs'),
         Output('table-status','getRowStyle'),
         Output('pie-estadoinv','figure'),
-        Output('bar-respon','figure'),
-        Input("data-values","data"),
+        Output('bar-respon','figure')],
+        [Input("data-values","data"),
         Input("segmented-col","value"),
-        Input('select-moneda','value')
+        Input('select-moneda','value')]
     )
     def update_graph(data, segmented,moneda):
         df = pd.DataFrame(data)

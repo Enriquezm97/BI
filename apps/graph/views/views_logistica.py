@@ -11,20 +11,22 @@ class Logistica_View(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
-        #id_user=self.request.user.id
-        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        #empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
-        #rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
-        context = {'dashboard': logistica_dash()}
+        id_user=self.request.user.id
+        id_app =f'{id_user}-alm_stock'
+
+        context = {'dashboard': logistica_dash(codido = id_app),'code':id_app}
         return render(request,'logistica/logistica_dash.html',context)
 
 class Alm_View(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     
     def get(self,request,*args, **kwargs):
-        #id_user=self.request.user.id
-
-        context = {'dashboard':  alm_stock_dash()}
+        id_user=self.request.user.id
+        #'initial_arguments':{"dash_app_id": {"value": id_user}}
+        #name_app = f'id_user-{alm_stock}'
+        id_app =f'{id_user}-alm_stock'
+        context = {'dashboard':  alm_stock_dash(codido= id_app), 'code': id_app}
         return render(request,'logistica/logistica_alm.html',context)
+    
     
   

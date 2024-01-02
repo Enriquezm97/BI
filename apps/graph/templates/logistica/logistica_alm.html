@@ -2,8 +2,7 @@
 {% load static %}
 {% block content %}
     {% load plotly_dash %}
-    
     {% plotly_header %}
-    {% plotly_direct name='alm_stock'%}
+    {% plotly_direct name=code %}
     {% plotly_footer %}
 {%endblock%}

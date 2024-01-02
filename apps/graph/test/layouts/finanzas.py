@@ -338,7 +338,7 @@ def figure__line2(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_colo
 
 
 
-def estadoResultados():
+def estadoResultados(codigo = ''):
     if get_empresa() == 'SAMPLAST':
         dfff = connection_api(sp_name='nsp_eeff_json')
         finanzas_df = etl_bc(dfff)
@@ -361,7 +361,7 @@ def estadoResultados():
     year_list = sorted(finanzas_df['Año'].unique())
     
 
-    app = DjangoDash('estado_resultados_finanzas',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
         Modal(id="modal-area-finanzas-ingresos", size= "85%"),
         Modal(id="modal-area-finanzas-gastos", size= "85%"),
@@ -519,7 +519,7 @@ def estadoResultados():
     create_callback_opened_modal(app, modal_id="modal-area-finanzas-gastos",children_out_id="area-finanzas-gastos", id_button="maximize-area-finanzas-gastos",height_modal=700)
     create_callback_opened_modal(app, modal_id="modal-area-finanzas-costos",children_out_id="area-finanzas-costos", id_button="maximize-area-finanzas-costos",height_modal=700)
 
-def estadoGP():
+def estadoGP(codigo = ''):
     if get_empresa() == 'SAMPLAST':
         dfff = connection_api(sp_name='nsp_eeff_json')
         finanzas_df = etl_bc(dfff)
@@ -539,7 +539,7 @@ def estadoGP():
     
     
 
-    app = DjangoDash('estado_perdidas_ganancias',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
         Modal(id="modal-bar-finanzas-ubruta", size= "85%"),
         Modal(id="modal-bar-finanzas-uoperativa", size= "85%"),
@@ -732,7 +732,7 @@ def estadoGP():
     create_callback_opened_modal(app, modal_id="modal-bar-finanzas-uoperativa",children_out_id="bar-finanzas-uoperativa", id_button="maximize-bar-finanzas-uoperativa",height_modal=700)
     create_callback_opened_modal(app, modal_id="modal-bar-finanzas-uneta",children_out_id="bar-finanzas-uneta", id_button="maximize-bar-finanzas-uneta",height_modal=700)
 
-def crear_ratio_finanzas(empresa,usuario):
+def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
     print('for here')
     print(get_current_user())
     empresa_login = get_empresa()
@@ -757,7 +757,7 @@ def crear_ratio_finanzas(empresa,usuario):
     list_dicts=[]
     for (i,j) in zip(tipoind_list,idind_list):
         list_dicts.append({'label': i, 'value': j})
-    app = DjangoDash('create_ratio',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Contenedor([
         Modal(id="modal-line-finanzas-mostrar", size= "85%"),
         Row([
@@ -946,30 +946,31 @@ def crear_ratio_finanzas(empresa,usuario):
 
     )
     def update_guardar(*args):
-        n_clicks_guardar = args[0]
-        tipo_indicador = args[1]
-        nombre_indicador = args[2].upper()
-        formula_indicador = args[3].upper()
-        desde_negativo_indicador = args[4]
-        hasta_negativo_indicador = args[5]
-        color_negativo_indicador = args[6]
-        desde_medio_indicador = args[7]
-        hasta_medio_indicador = args[8]
-        color_medio_indicador = args[9]
-        desde_positivo_indicador = args[10]
-        hasta_positivo_indicador = args[11]
-        color_positivo_indicador = args[12]
-        comentario_indicador = args[13]
-        if n_clicks_guardar:
-            if (tipo_indicador == None or tipo_indicador == '') or (nombre_indicador == None or nombre_indicador == '')or (formula_indicador == None or formula_indicador == ''):
-                return html.Div([dmc.Alert("No olvide ingresar datos",title="Error :",color="red",duration=5000)]),False
-            elif (tipo_indicador != None or tipo_indicador != '') and (nombre_indicador != None or nombre_indicador != '') and (formula_indicador != None or formula_indicador != ''):
-                if nombre_indicador not in get_indicadores_name():
-                    RegistrarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,False,empresa,usuario)
-                    return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)]),True
-                elif nombre_indicador in get_indicadores_name():
-                    return html.Div([dmc.Alert("El nombre del indicador ya existe",title="Error :",color="red",duration=5000)]),False
-            
+        
+            n_clicks_guardar = args[0]
+            tipo_indicador = args[1]
+            nombre_indicador = args[2].upper()
+            formula_indicador = args[3].upper()
+            desde_negativo_indicador = args[4]
+            hasta_negativo_indicador = args[5]
+            color_negativo_indicador = args[6]
+            desde_medio_indicador = args[7]
+            hasta_medio_indicador = args[8]
+            color_medio_indicador = args[9]
+            desde_positivo_indicador = args[10]
+            hasta_positivo_indicador = args[11]
+            color_positivo_indicador = args[12]
+            comentario_indicador = args[13]
+            if n_clicks_guardar:
+                if (tipo_indicador == None or tipo_indicador == '') or (nombre_indicador == None or nombre_indicador == '')or (formula_indicador == None or formula_indicador == ''):
+                    return html.Div([dmc.Alert("No olvide ingresar datos",title="Error :",color="red",duration=5000)]),False
+                elif (tipo_indicador != None or tipo_indicador != '') and (nombre_indicador != None or nombre_indicador != '') and (formula_indicador != None or formula_indicador != ''):
+                    if nombre_indicador not in get_indicadores_name():
+                        RegistrarIndicador(tipo_indicador,nombre_indicador,formula_indicador,desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador,comentario_indicador,False,empresa,usuario)
+                        return  html.Div([dmc.Alert("Se guardó correctamente",title="Exitoso :",color="green",duration=5000)]),True
+                    elif nombre_indicador in get_indicadores_name():
+                        return html.Div([dmc.Alert("El nombre del indicador ya existe",title="Error :",color="red",duration=5000)]),False
+        
                     
         
         #    return  html.Div([dmc.Alert("Error al intentar guardar",title="Error :",color="red",duration=5000)])
