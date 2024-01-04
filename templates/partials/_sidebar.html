@@ -27,7 +27,7 @@
                 <li class="nav-item"> <a class="nav-link" href="{% url "com-producto" user.usuario.username%}">Ventas Productos</a></li>
                 {% if user.usuario.empresa.rubro_empresa_id == 2 or user.usuario.empresa.rubro_empresa_id == 3 %}
                   <li class="nav-item"><a class="nav-link" href="{% url "com-cultivo" user.usuario.username%}">Ventas Cultivo</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo" user.usuario.username%}">Ventas Anuales</a></li>
+                  <!--<li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo" user.usuario.username%}">Ventas Anuales</a></li>-->
                 {% endif %} 
 
               </ul>
@@ -114,7 +114,8 @@
               <li class="nav-item"> <a class="nav-link" href="{% url "com-cliente" user.usuario.username%}">Ventas Clientes</a></li>
               <li class="nav-item"> <a class="nav-link" href="{% url "com-producto" user.usuario.username%}">Ventas Productos</a></li>
               <li class="nav-item"><a class="nav-link" href="{% url "com-cultivo" user.usuario.username%}">Ventas Cultivo</a></li>
-              <li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo"%}">Ventas Anuales</a></li>
+              
+              <!--<li class="nav-item"> <a class="nav-link" href="{% url "com-comparativo" user.usuario.username%}">Ventas Anuales</a></li>-->
 
             </ul>
           </div>

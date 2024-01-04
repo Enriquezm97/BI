@@ -194,8 +194,8 @@ def ventaSegmented(codigo = '',rubro_empresa = 'Agricola', filtros = input_dict_
         Row([
                 Column([
                     Button.btnFilter(style={'position': 'absolute','z-index': '99'}),
-                    
-                    Div(id='title')
+                    dmc.Title(children=['Seguimiento de Ventas'],order=2,align='center')
+                    #Div(id='title')
                 ],size=11),
                 Column([Button.btnDownload()],size=1),
                 
@@ -273,7 +273,7 @@ def ventaSegmented(codigo = '',rubro_empresa = 'Agricola', filtros = input_dict_
     #{'Año' : {'select':{'id':'select-anio','componente':select_anio},'multiselect':multiselect_anio}}
     create_callback_offcanvas_filters(app)
     create_callback_filter_comercial_segmented(app, dataframe=df_ventas_detalle,id_inputs= id_list, id_outputs= id_list)
-    create_title_comercial_informe(app=app,title='Seguimiento de Ventas ', id_inputs=id_list_title)
+    #create_title_comercial_informe(app=app,title='Seguimiento de Ventas ')#, id_inputs=id_list_title
     create_graph_comercial_segmented(app=app)
     create_callback_opened_modal(app, modal_id="modal-line-comercial-st",children_out_id="line-comercial-st", id_button="maximize-line-comercial-st")
     create_callback_opened_modal(app, modal_id="modal-pie-comercial",children_out_id="pie-comercial", id_button="maximize-pie-comercial")
@@ -311,8 +311,9 @@ def ventasClientes(codigo = '',rubro_empresa = 'Agricola', filtros = input_venta
         ),
         Row([
             Column([
-                    Button.btnFilter(style={'position': 'absolute','z-index': '99'}),                    
-                    Div(id='title')
+                    Button.btnFilter(style={'position': 'absolute','z-index': '99'}),     
+                    dmc.Title(children=['Ventas Clientes'],order=2,align='center')               
+                    #Div(id='title')
             ],size=8),
             Column([
                 datepicker_(dataframe=df_ventas_detalle, name_fecha = 'Fecha', name_anio = 'Año', tipo = 'Inicio')
@@ -377,7 +378,7 @@ def ventasClientes(codigo = '',rubro_empresa = 'Agricola', filtros = input_venta
     ])
     create_callback_offcanvas_filters(app)
     create_callback_filter_comercial_ventas(app, dataframe=df_ventas_detalle,id_inputs= id_list, id_outputs= id_list)
-    create_title_comercial_informe(app=app,title='Ventas Clientes ', id_inputs=id_list_title)
+    #create_title_comercial_informe(app=app,title='Ventas Clientes ', id_inputs=id_list_title)
     create_graph_comercial_bar(app)
     create_graph_comercial_crossfiltering(app=app)
     create_callback_opened_modal(app, modal_id="modal-bar-comercial",children_out_id="bar-comercial", id_button="maximize-bar-comercial",height_modal=900)
@@ -416,7 +417,8 @@ def ventasProductos(codigo = '',rubro_empresa = 'Agricola', filtros = input_vent
         Row([
             Column([
                     Button.btnFilter(style={'position': 'absolute','z-index': '99'}),                    
-                    Div(id='title')
+                    dmc.Title(children=['Ventas Productos'],order=2,align='center')  
+                    #Div(id='title')
             ],size=8),
             Column([
                 datepicker_(dataframe=df_ventas_detalle, name_fecha = 'Fecha', name_anio = 'Año', tipo = 'Inicio')
@@ -481,7 +483,7 @@ def ventasProductos(codigo = '',rubro_empresa = 'Agricola', filtros = input_vent
     ])
     create_callback_offcanvas_filters(app)
     create_callback_filter_comercial_ventas(app, dataframe=df_ventas_detalle,id_inputs= id_list, id_outputs= id_list)
-    create_title_comercial_informe(app=app,title='Ventas Productos ', id_inputs=id_list_title)
+    #create_title_comercial_informe(app=app,title='Ventas Productos ', id_inputs=id_list_title)
     create_graph_comercial_bar(app,columns_top='Producto')
     create_graph_comercial_crossfiltering(app=app,column = 'Producto')
     create_callback_opened_modal(app, modal_id="modal-bar-comercial",children_out_id="bar-comercial", id_button="maximize-bar-comercial",height_modal=900)
@@ -521,7 +523,8 @@ def ventasCultivos(codigo = '',rubro_empresa = 'Agricola', filtros = input_venta
         Row([
             Column([
                     Button.btnFilter(style={'position': 'absolute','z-index': '99'}),                    
-                    Div(id='title')
+                    dmc.Title(children=['Ventas Cultivos'],order=2,align='center')  
+                    #Div(id='title')
             ],size=8),
             Column([
                 datepicker_(dataframe=df_ventas_detalle, name_fecha = 'Fecha', name_anio = 'Año', tipo = 'Inicio')
@@ -589,7 +592,7 @@ def ventasCultivos(codigo = '',rubro_empresa = 'Agricola', filtros = input_venta
     ])
     create_callback_offcanvas_filters(app)
     create_callback_filter_comercial_ventas(app, dataframe=df_ventas_detalle,id_inputs= id_list, id_outputs= id_list)
-    create_title_comercial_informe(app=app,title='Ventas Cultivos ', id_inputs=id_list_title)
+    #create_title_comercial_informe(app=app,title='Ventas Cultivos ', id_inputs=id_list_title)
     create_graph_comercial_bar(app,columns_top='Cultivo')
     create_graph_comercial_crossfiltering(app=app,column = 'Cultivo')
     create_callback_opened_modal(app, modal_id="modal-bar-comercial",children_out_id="bar-comercial", id_button="maximize-bar-comercial",height_modal=900)

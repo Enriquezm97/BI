@@ -7,24 +7,8 @@ from apps.graph.test.utils.components.components_main import Entry
 from dash_iconify import DashIconify
 
 graph_empty = create_graph_empty('Esperando carga de DATA')
-
-def cardGraph(
-    id_maximize='id-maximize',
-    id_download='id-download',
-    id_graph='id-graph',
-    with_id=True,
-    fig=None,
-    icon_maximize=True,
-    height = 400,
-    id_item = ''
-):
-    if icon_maximize == True:
-        #padding
-        if with_id == True:
-            return html.Div([
-                dmc.Card(
-                                    children=[
-                                        dmc.Menu(
+"""
+dmc.Menu(
                                                 [
                                                     dmc.MenuTarget(dmc.ActionIcon(DashIconify(icon="tabler:settings"))),
                                                     dmc.MenuDropdown(
@@ -49,6 +33,25 @@ def cardGraph(
                                                 style={'position': 'absolute','top': '4px','z-index': '99'},
                                                 id='id-test'
                                             ),
+
+"""
+def cardGraph(
+    id_maximize='id-maximize',
+    id_download='id-download',
+    id_graph='id-graph',
+    with_id=True,
+    fig=None,
+    icon_maximize=True,
+    height = 400,
+    id_item = ''
+):
+    if icon_maximize == True:
+        #padding
+        if with_id == True:
+            return html.Div([
+                dmc.Card(
+                                    children=[
+                                        
                                         Button.actionIcon(id=id_maximize),
                                         #actionIcon(ids=id_download,icono='download'),
                                         dcc.Graph(id=id_graph,figure = graph_empty)
@@ -170,7 +173,7 @@ def card(content = [],shadow='xl', radius='md', border =  True):
             )
     
 
-def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '', num = 0, color_text ='white',color_section_title = '#5468b7',contenido ='numero', content = [], padding_section=5,color_section_content = 'white', icon =''):
+def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '', num = 0, color_text ='white',color_section_title = '#228be6',contenido ='numero', content = [], padding_section=5,color_section_content = 'white', icon =''):
     if contenido == 'numero':
             section =  dmc.Text(children=[dmc.Center(children=num,id=id_value)], weight=500, style={"fontSize": 30})
                             

@@ -135,11 +135,11 @@ def inicio_build(dataframe = None, dataframe_ventas = None):
     productos_df_20=dataframe_ventas.groupby(['Producto','Grupo Producto','Subgrupo Producto'])[["Importe Dolares"]].sum().sort_values("Importe Dolares",ascending=True).tail(20).reset_index()
     productos_df_20['Producto']=productos_df_20['Producto'].str.capitalize()
     return Container([
-        Row([
-            Column([
-                Title.title(text = 'Inicio')  
-            ],size=12), 
-        ]),
+        #Row([
+        #    Column([
+        #        Title.title(text = 'Inicio')  
+        #    ],size=12), 
+        #]),
         Row([
             Column([
             card_l(title_card='Almacen',child=[
@@ -147,7 +147,7 @@ def inicio_build(dataframe = None, dataframe_ventas = None):
                         dcc.Graph(figure = figure_stock_var_y2(df=dataframe, height = 300, moneda = 'Dolares'),)
                         
                 )  
-            ])  
+            ],url='inventario')  
             ],size=4), 
              Column([
                 card_l(title_card='Ventas',child=[
@@ -160,7 +160,7 @@ def inicio_build(dataframe = None, dataframe_ventas = None):
                             )
                             
                     )  
-                ])  
+                ],url='informe-ventas')  
             ],size=4), 
             Column([
                 card_tc()

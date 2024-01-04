@@ -97,7 +97,7 @@ def graph_alm(app):
         [Output('bar-importe-stock','figure'),
         Output('table-status','rowData'),
         Output('table-status','columnDefs'),
-        Output('table-status','getRowStyle'),
+        #Output('table-status','getRowStyle'),
         Output('pie-estadoinv','figure'),
         Output('bar-respon','figure')],
         [Input("data-values","data"),
@@ -114,7 +114,12 @@ def graph_alm(app):
             figure_stock_alm_y2(df = df, height = 300 , moneda = moneda, tipo = segmented),
             table_dff.to_dict("records"),
             [{"field": i,"cellStyle": {'font-size': 11}} for i in table_dff.columns],
-            {"styleConditions": [
+            
+            figure_pie_estado_inv(df = df),
+            figure_bar_responsable(df = df, height = 400)
+        ]
+"""
+{"styleConditions": [
                     {
                         "condition": "params.data.Duracion_Inventario < 0",
                         "style": {"backgroundColor": "grey"},
@@ -134,6 +139,4 @@ def graph_alm(app):
                 ],
                 #"defaultStyle": {"backgroundColor": "grey", "color": "white"},
             },
-            figure_pie_estado_inv(df = df),
-            figure_bar_responsable(df = df, height = 400)
-        ]
+"""

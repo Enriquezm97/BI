@@ -2,6 +2,7 @@ import pandas as pd
 from datetime import datetime
 from apps.graph.test.utils.crum import get_data_connection
 from apps.graph.test.Connection.read_api import getApi
+from ..utils.functions.functions_transform import *
 
 
 def connection_api(sp_name = 'nsp_rpt_ventas_detallado', test = 'no'):
@@ -37,4 +38,22 @@ def connection_api_almstock():
     fecha_now = (str(datetime.now())[:10].replace('-', ""))
     dataframe = pd.DataFrame(getApi(api=f"http://{ip}:3005/api/consulta/STOCKALMVAL?EMPRESA=001&SUCURSAL=&ALMACEN&FECHA={fecha_now}&IDGRUPO&SUBGRUPO&DESCRIPCION&IDPRODUCTO",token = token_))
     
+    return dataframe
+
+def connection_api_agricola(tipo = 'fertilizantes'):
+    print('consulta api owo')
+    ip, token_ =get_data_connection()
+    if tipo ==  'fertilizantes':
+        consumidores = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_consumidores',token = token_))
+        variedades = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_variedades_cultivos',token = token_))
+        cultivos = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_cultivos',token = token_))
+        fertilizantes = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_plan_fertilizacion',token = token_))
+       
+        dataframe = cleanVariablesAgricolas(df_consumidores=consumidores,df_variedad=variedades,df_cultivos=cultivos,df_fertilizacion= fertilizantes)
+    elif tipo ==  'costos':
+        consumidores = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_consumidores',token = token_))
+        variedades = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_variedades_cultivos',token = token_))
+        cultivos = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_cultivos',token = token_))
+        costos = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_detalle_costos_campana',token = token_))
+        dataframe = costosAgricolas(df_costos_campana = costos,df_consumidores = consumidores,df_cultivos = cultivos,df_variedad = variedades)
     return dataframe

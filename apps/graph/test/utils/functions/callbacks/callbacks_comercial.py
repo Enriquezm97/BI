@@ -66,11 +66,11 @@ def  create_callback_filter_comercial_informe(
         ]   
 
 
-def create_title_comercial_informe(app, title ='', rubro = '',id_inputs = ['select-anio','select-cliente','select-cultivo','select-variedad','select-moneda']):
+def create_title_comercial_informe(app, title ='', rubro = ''):
     if rubro =='Agricola':
-        id_inputs = ['select-anio','select-cliente','select-cultivo','select-variedad','select-grupo-cliente','select-producto','select-moneda']
+        id_inputs = ['select-anio','select-cliente','select-cultivo','select-variedad','select-grupo-cliente','select-producto']
     else:
-        id_inputs = ['select-anio','select-cliente','select-tipo-venta','select-grupo-producto','select-grupo-cliente','select-producto','select-moneda']
+        id_inputs = ['select-anio','select-cliente','select-tipo-venta','select-grupo-producto','select-grupo-cliente','select-producto']#,'select-moneda'
         
     @app.callback(
         Output("title","children"),
@@ -104,8 +104,8 @@ def create_graph_informe_comercial(app):
         Input('chipgroup-mes',"value"),
         Input('radio-paleta-color','value'),
         Input('slider-size-tickfont','value'),
-        Input('first-pie','n_clicks'),
-        Input('first-bar','n_clicks'),
+        #Input('first-pie','n_clicks'),
+        #Input('first-bar','n_clicks'),
         
         #Input('checklist-comercial-tipoventa','value'),
     )
@@ -146,17 +146,21 @@ def create_graph_informe_comercial(app):
         #df[importe].map('{:,.1f}%'.format)
         pais_df = df.groupby(['Pais'])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
         vendedor_df = df.groupby(['Vendedor'])[[importe]].sum().sort_values(importe,ascending=True).reset_index()
-        if args[6] == 0:
-            graph1_ =GraphBargo.bar_(df=productos_df_20, x= importe, y= 'Producto',orientation= 'h', height = 400, 
-               title= 'Los 20 Productos más Vendidos', customdata=['Grupo Producto','Subgrupo Producto'],space_ticked= 280, text= importe,
-               showticklabel_y=True, 
-               xaxis_title = importe, template= 'none', list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Alphabet
-            )
-        elif args[5]:
-            graph1_ = GraphPiego.pie_(df = productos_df_20, title = 'Los 20 Productos más Vendidos',label_col = 'Producto', value_col = importe, height = 400, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
-                            textfont_size = 10)
+        #if args[6] == 0:
+        #    graph1_ =GraphBargo.bar_(df=productos_df_20, x= importe, y= 'Producto',orientation= 'h', height = 400, 
+        #       title= 'Los 20 Productos más Vendidos', customdata=['Grupo Producto','Subgrupo Producto'],space_ticked= 280, text= importe,
+        #       showticklabel_y=True, 
+        #       xaxis_title = importe, template= 'none', list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Alphabet
+        #    )
+        #elif args[5]:
+        #    graph1_ = GraphPiego.pie_(df = productos_df_20, title = 'Los 20 Productos más Vendidos',label_col = 'Producto', value_col = importe, height = 400, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
+        #                    textfont_size = 10)
         return[
-            graph1_,
+            GraphBargo.bar_(df=productos_df_20, x= importe, y= 'Producto',orientation= 'h', height = 400, 
+              title= 'Los 20 Productos más Vendidos', customdata=['Grupo Producto','Subgrupo Producto'],space_ticked= 280, text= importe,
+              showticklabel_y=True, 
+                xaxis_title = importe, template= 'none', list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Alphabet
+            ),
             GraphBargo.bar_(df=meses_df_12, x= 'Mes', y= importe,orientation= 'v', height = 400, 
                 title= 'Ventas por Mes', customdata=['Porcentaje'],space_ticked= 50, text= importe, yaxis_title= importe,xaxis_title= 'Mes',
                 template='none',list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Set3

@@ -8,9 +8,7 @@ from apps.graph.test.utils.tables import tableDag
 from apps.graph.test.utils.functions.callbacks.callbacks_produccion import *
 from apps.graph.test.utils.functions.callbacks.callbacks_ import create_callback_opened_modal
 from apps.graph.test.utils.blocks.block_card import cardGraph,card,cardSection
-
-from apps.graph.test.utils.crum import get_empresa
-from apps.graph.test.data import data_agricola
+from ..Connection.apis import connection_api_agricola
 
 
 
@@ -26,7 +24,8 @@ import dash
 #plan de siembra
 def ejecucionCampania(codigo=''):
 
-    df_var_agricolas_default= data_agricola(empresa=get_empresa())[0]
+    #df_var_agricolas_default= data_agricola(empresa=get_empresa())[0]
+    df_var_agricolas_default= connection_api_agricola(tipo = 'fertilizantes')
     campaña_list=sorted(df_var_agricolas_default['AÑO_CULTIVO'].unique())
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([
@@ -118,7 +117,8 @@ def ejecucionCampania(codigo=''):
     create_callback_opened_modal(app, modal_id="modal-line-recurso-agricola",children_out_id="line-recurso-agricola", id_button="maximize-line-recurso-agricola",height_modal=700)
     
 def costosCampania(codigo=''):
-    df_costos_agricola_default=data_agricola(empresa=get_empresa())[1]
+    df_costos_agricola_default= connection_api_agricola(tipo = 'costos')
+    #df_costos_agricola_default=data_agricola(empresa=get_empresa())[1]
     anio_campania = sorted(df_costos_agricola_default['AÑO_CAMPAÑA'].unique())
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Container([

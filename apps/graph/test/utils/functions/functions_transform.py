@@ -176,6 +176,7 @@ def costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad):
     if df_costos_campana.empty: 
         df_campaña_ccc= pd.DataFrame()
     else:
+        
         df_costos_campana['TIPO']=df_costos_campana['TIPO'].str.capitalize()
         df_campaña_cc=df_costos_campana.merge(df_consumidores, how='inner', left_on=["IDCONSUMIDOR","CODSIEMBRA","CODCAMPAÑA"], right_on=["CODCONSUMIDOR","CODSIEMBRA","CODCAMPAÑA"])
         df_campaña_ccc=df_campaña_cc.merge(df_cultivos, how='inner', left_on=["CODCULTIVO"], right_on=["CODCULTIVO"])
@@ -188,6 +189,7 @@ def costosAgricolas(df_costos_campana,df_consumidores,df_cultivos,df_variedad):
                                 (df_campaña_ccc['NCONSUMIDOR']!='            ')]
         choicelist_1 = [df_campaña_ccc['CODCONSUMIDOR'],df_campaña_ccc['NCONSUMIDOR']]
         df_campaña_ccc['NCONSUMIDOR'] = np.select(conditionlist, choicelist_1,default='Not Specified')
+        df_campaña_ccc['CULTIVO']=df_campaña_ccc['CULTIVO'].str.capitalize()
     return df_campaña_ccc
 
 def etl_bc(df):
