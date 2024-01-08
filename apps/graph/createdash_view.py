@@ -18,7 +18,7 @@ from apps.graph.models import Indicador
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.graph.mixins import AdministradoMixin,AnalistaMixin
 from apps.graph.test.layouts.finanzas import crear_ratio_finanzas,editar_ratio_finanzas,eliminar_ratio_finanzas
-
+from crum import get_current_user
 class FormIndicadorView(LoginRequiredMixin,AnalistaMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     
@@ -51,17 +51,15 @@ class IndicadorAllView(LoginRequiredMixin,AnalistaMixin,View):
         return render(request,'dash_created/Indicadores/mostrar_all.html',context)
 
 class IndicadorShowView(LoginRequiredMixin,AnalistaMixin,DetailView):
-
+    
     models=Indicador
     template_name= 'dash_created/Indicadores/mostrar_indicador.html'
     pk_url_kwarg='pk'
     login_url = reverse_lazy('login')#'/user/login/'
-    #if pk == None:
-    #    template_name= 'dash_created/Indicadores/mostrar_indicador.html'
-    #elif pk !=None:
-    #    template_name= 'dash_created/Indicadores/mostrar_all.html'
+
     def get(self,request, *args, **kwargs):
         id_user=self.request.user.id
+        id_app =f'{id_user}-show-indicador'
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         pk=kwargs['pk']
@@ -82,9 +80,9 @@ class IndicadorShowView(LoginRequiredMixin,AnalistaMixin,DetailView):
        
         parametros=name+formula+rango_desde_1+rango_hasta_1+rango_color_1+rango_desde_2+rango_hasta_2+rango_color_2+rango_desde_3+rango_hasta_3+rango_color_3+comentario
         #graph=Draw_Ind(parametros[1],parametros[0],parametros[2],parametros[3],parametros[4],parametros[5]) 
-        dashboard=IndicadorDash(parametros[0],parametros[1],parametros[2],parametros[3],parametros[4],parametros[5],parametros[6],parametros[7],parametros[8],parametros[9],parametros[10],parametros[11],empresa[0])
+        dashboard=IndicadorDash(parametros[0],parametros[1],parametros[2],parametros[3],parametros[4],parametros[5],parametros[6],parametros[7],parametros[8],parametros[9],parametros[10],parametros[11],empresa[0],id_app)
         
-        context={'name':parametros[0],'dashboard':dashboard}#,''graph':graph,
+        context={'name':parametros[0],'dashboard':dashboard,'codigo':id_app}#,''graph':graph,
         return render(request,'dash_created/Indicadores/mostrar_indicador.html',context)
     
 
@@ -97,6 +95,7 @@ class IndicadorEditarView(LoginRequiredMixin,AnalistaMixin,DetailView):
 
     def get(self,request, *args, **kwargs):
         id_user=self.request.user.id
+        id_app =f'{id_user}-editar-indicador'
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         pk=kwargs['pk']
@@ -116,9 +115,9 @@ class IndicadorEditarView(LoginRequiredMixin,AnalistaMixin,DetailView):
        
         parametros=tipo + name+formula+rango_desde_1+rango_hasta_1+rango_color_1+rango_desde_2+rango_hasta_2+rango_color_2+rango_desde_3+rango_hasta_3+rango_color_3+comentario
         #graph=Draw_Ind(parametros[1],parametros[0],parametros[2],parametros[3],parametros[4],parametros[5]) 
-        dashboard=editar_ratio_finanzas(parametros[0],parametros[1],parametros[2],parametros[3],parametros[4],parametros[5],parametros[6],parametros[7],parametros[8],parametros[9],parametros[10],parametros[11],parametros[12],pk)
+        dashboard=editar_ratio_finanzas(parametros[0],parametros[1],parametros[2],parametros[3],parametros[4],parametros[5],parametros[6],parametros[7],parametros[8],parametros[9],parametros[10],parametros[11],parametros[12],pk,id_app)
         
-        context={'dashboard':dashboard}#,''graph':graph,
+        context={'dashboard':dashboard, 'code':id_app}#,''graph':graph,
         return render(request,'dash_created/Indicadores/editar_indicador.html',context) 
     
 class IndicadorEliminarView(LoginRequiredMixin,AnalistaMixin,DetailView):
@@ -130,6 +129,7 @@ class IndicadorEliminarView(LoginRequiredMixin,AnalistaMixin,DetailView):
 
     def get(self,request, *args, **kwargs):
         id_user=self.request.user.id
+        id_app =f'{id_user}-eliminar-indicador'
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
         pk=kwargs['pk']
@@ -137,9 +137,9 @@ class IndicadorEliminarView(LoginRequiredMixin,AnalistaMixin,DetailView):
         name=list(Indicador.objects.filter(id=pk).values_list('name',flat=True))[0]
         formula=list(Indicador.objects.filter(id=pk).values_list('formula',flat=True))[0]
     
-        dashboard=eliminar_ratio_finanzas(tipo,name,formula,pk)
+        dashboard=eliminar_ratio_finanzas(tipo,name,formula,pk,id_app)
         
-        context={'dashboard':dashboard}#,''graph':graph,
+        context={'dashboard':dashboard, 'code':id_app}#,''graph':graph,
         return render(request,'dash_created/Indicadores/eliminar_indicador.html',context) 
     
     
@@ -147,6 +147,7 @@ class IndicadorEliminarView(LoginRequiredMixin,AnalistaMixin,DetailView):
 
 @login_required
 def IndicadorShowView2(request,pk):
+    print(get_current_user())
     #current_user = request.user.id
     #Usuario.objects.filter(user_id=).values_list('empresa_id',flat=True)
     if pk==None:
@@ -167,9 +168,9 @@ def IndicadorShowView2(request,pk):
         comentario=list(Indicador.objects.filter(id=pk).values_list('indicador_comentario',flat=True))
         parametros=name+formula+rango_desde_1+rango_hasta_1+rango_color_1+rango_desde_2+rango_hasta_2+rango_color_2+rango_desde_3+rango_hasta_3+rango_color_3+comentario
         #graph=Draw_Ind(parametros[1],parametros[0],parametros[2],parametros[3],parametros[4],parametros[5]) 
-        dashboard=IndicadorDash(parametros[0],parametros[1],parametros[2],parametros[3],parametros[4],parametros[5],parametros[6],parametros[7],parametros[8],parametros[9],parametros[10],parametros[11],'Nisira')
-    
-    context={'name':parametros[0],'dashboard':dashboard}#,''graph':graph,
+        dashboard=IndicadorDash(parametros[0],parametros[1],parametros[2],parametros[3],parametros[4],parametros[5],parametros[6],parametros[7],parametros[8],parametros[9],parametros[10],parametros[11],'Nisira','test')
+        #IndicadorDash
+    context={'name':parametros[0],'dashboard':dashboard,'codigo':'test'}#,''graph':graph,
     return render(request,template,context)
 
 class IndicadorCreateView(CreateView):

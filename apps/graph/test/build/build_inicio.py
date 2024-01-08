@@ -153,7 +153,7 @@ def inicio_build(dataframe = None, dataframe_ventas = None):
                 card_l(title_card='Ventas',child=[
                     DataDisplay.loadingOverlay(
                             dcc.Graph(figure = GraphBargo.bar_(df=productos_df_20, x= "Importe Dolares", y= 'Producto',orientation= 'h', height = 300, 
-                                    title= 'Top 10 Productos Vendidos', customdata=['Grupo Producto','Subgrupo Producto'],space_ticked= 280, text= "Importe Dolares",
+                                    title= 'Top 10 Productos Vendidos', customdata=['Grupo Producto','Subgrupo Producto'], text= "Importe Dolares",
                                     showticklabel_y=True, 
                                     xaxis_title = "Importe Dolares", template= 'none',size_tickfont=13#px.colors.qualitative.Alphabet
                                     ),

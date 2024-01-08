@@ -54,7 +54,6 @@ class Empresa(models.Model):
 
         return self.name_empresa
 
-
 class Usuario(models.Model):
     #account = models.CharField(max_length=255, unique=True)
     username = models.CharField(max_length=255)
@@ -82,7 +81,7 @@ class Usuario(models.Model):
 
     def __str__(self):
 
-        return self.username
+        return self.username#, self.empresa
 
 class Mantenedor(models.Model):
     

@@ -3,6 +3,11 @@ from django.contrib import admin
 #from users.models import Usuario,Empresa
 from .models import Usuario,Empresa,Rubro,Rol,Mantenedor
 # Register your models here.
+
+
+#@admin.register(Empresa)
+#class EmpresaAdmin(admin.ModelAdmin):
+#    list_display = ("name_empresa","rubro_empresa")
 admin.site.register(Usuario)
 admin.site.register(Empresa)
 admin.site.register(Rubro)

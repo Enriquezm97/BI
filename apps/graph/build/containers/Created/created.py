@@ -137,7 +137,7 @@ def figure__line(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color
     )
     
     fig.update_layout(template='none', title=name)
-    fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
+    #fig.update_layout(paper_bgcolor='#f7f7f7',plot_bgcolor='#f7f7f7')
     fig.add_hrect(y0=rango_desde_1,y1=rango_hasta_1, line_width=0, fillcolor=rango_color_1, opacity=0.2)
     fig.add_hrect(y0=rango_desde_2,y1=rango_hasta_2, line_width=0, fillcolor=rango_color_2, opacity=0.2)
     fig.add_hrect(y0=rango_desde_3,y1=rango_hasta_3, line_width=0, fillcolor=rango_color_3, opacity=0.2)
@@ -457,19 +457,19 @@ def IndicadorDash(nombres,formulas,
            rango_desde_1,rango_hasta_1,rango_color_1,
            rango_desde_2,rango_hasta_2,rango_color_2,
            rango_desde_3,rango_hasta_3,rango_color_3,
-           comentario,empresa):
+           comentario,empresa,codigo):
     empresa_login = get_empresa()
-    if empresa_login == 'SAMPLAST':
-        dfff = connection_api(sp_name='nsp_eeff_json')
+    if empresa_login == 'FUNDO EL PARAISO':
+        dfff = connection_api(sp_name='nsp_eeff_json2')
     else:
-        dfff = pd.read_parquet('bc_paraiso.parquet', engine='pyarrow')
+        dfff = connection_api(sp_name='nsp_eeff_json')
     
     df_bcomprobacion=etl_bc(dfff)
     print(df_bcomprobacion)
     external_stylesheets = [dbc.themes.BOOTSTRAP,dbc.icons.BOOTSTRAP,dbc.icons.FONT_AWESOME]
 
 
-    app = DjangoDash('TESTVIEW',external_stylesheets=external_stylesheets)
+    app = DjangoDash(name = codigo,external_stylesheets=external_stylesheets)
     app.layout = html.Div([
         Modal(id="btn-modal", size= "85%"),
         Modal(id="btn-modal-2", size= "85%"),

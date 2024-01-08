@@ -350,7 +350,9 @@ def estadoResultados(codigo = ''):
                      'Costos': costos
         }
     else:
-        finanzas_df = finanzas_dff.copy()
+        dfff = connection_api(sp_name='nsp_eeff_json2')
+        finanzas_df = etl_bc(dfff)
+        #finanzas_df = finanzas_dff.copy()
         ingresos = ['Ingresos Financieros','Ventas Netas (ingresos operacionales)','Otros Ingresos']#Ventas Netas (ingresos operacionales)
         gastos = ['Gastos Financieros', 'Gastos de Administración', 'Gastos de Venta','Otros Gastos']
         costos = ['Costo de ventas']
@@ -530,7 +532,9 @@ def estadoGP(codigo = ''):
         utilidad_operativa = ['Gastos de administración','Otros ingresos','Gastos de distribución y ventas', 'Otros Ingresos Operacionales',]
         utilidad_neta = ['Gastos financieros','Ingresos financieros','Diferencia de cambio, neto']
     else:
-        finanzas_df = finanzas_dff.copy()
+        dfff = connection_api(sp_name='nsp_eeff_json2')
+        finanzas_df = etl_bc(dfff)
+        #finanzas_df = finanzas_dff.copy()
         utilidad_bruta = ['Ventas Netas (ingresos operacionales)','Costo de ventas']
         utilidad_operativa = ['Gastos de Administración','Gastos de Venta','Otros Ingresos','Otros Gastos']
         utilidad_neta = ['Gastos Financieros','Ingresos Financieros']
@@ -733,8 +737,7 @@ def estadoGP(codigo = ''):
     create_callback_opened_modal(app, modal_id="modal-bar-finanzas-uneta",children_out_id="bar-finanzas-uneta", id_button="maximize-bar-finanzas-uneta",height_modal=700)
 
 def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
-    print('for here')
-    print(get_current_user())
+
     empresa_login = get_empresa()
     if  empresa_login == 'SAMPLAST':
         dfff = connection_api(sp_name='nsp_eeff_json')
@@ -771,7 +774,7 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
                         Entry.select(id='select-tipo-indicador',texto='Tipo de Indicador', place= 'Seleccione el Tipo de Indicador', data=list_dicts,size='sm',clearable=False, value=idind_list[-1])
                     ],size=6),
                     Column([
-                        Entry.textInput(id='input-nombre-indicador', label= 'Nombre del Indicador',place='Ingrese el nombre de su indicador',size='sm',required=True)
+                        Entry.textInput(id='input-nombre-indicador', label= 'Nombre del Indicador',place='Ingrese el nombre de su indicador',size='sm')
                     ],size=6)
                 ]),
                 Row([
@@ -779,7 +782,7 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
                         Entry.select(id='select-partidas',texto='Partidas',size='sm', data=partidas_df.columns[3:])
                     ],size=6),
                     Column([
-                        Entry.textInput(id='input-formula-indicador', label= 'Ingrese Fórmula',place='',size='sm',required=True)
+                        Entry.textInput(id='input-formula-indicador', label= 'Ingrese Fórmula',place='',size='sm')
                     ],size=6)
                 ]),
                 
@@ -835,6 +838,12 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
                 ]),
                 Row([
                     Column([
+                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-finanzas-mostrar', id_maximize = 'maximize-line-finanzas-mostrar',height=300))
+                    ],size=12),
+                    
+                ]), 
+                Row([
+                    Column([
                     Entry.textAreaInput(id = 'textarea-comentario',label='Comentarios')
                     ],size=12),
                 ]),
@@ -853,12 +862,7 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
                     ],size=12),
                     
                 ]), 
-                Row([
-                    Column([
-                        DataDisplay.loadingOverlay(cardGraph(id_graph = 'line-finanzas-mostrar', id_maximize = 'maximize-line-finanzas-mostrar',height=300))
-                    ],size=12),
-                    
-                ]), 
+                
             
             
             ]),
@@ -1045,7 +1049,7 @@ def editar_ratio_finanzas(*args):
     list_dicts=[]
     for (i,j) in zip(tipoind_list,idind_list):
         list_dicts.append({'label': i, 'value': j})
-    app = DjangoDash('editar-indicador',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name=args[14],external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Contenedor([
         Modal(id="modal-line-finanzas-mostrar", size= "85%"),
         Row([
@@ -1212,7 +1216,7 @@ def eliminar_ratio_finanzas(*args):
     
     indicador_tipo_text = TipoIndicador.objects.filter(id = indicador_pk).values_list('name_tipo_indicador',flat=True)
     print(indicador_tipo_text)
-    app = DjangoDash('eliminar-indicador',external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name=args[4],external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout = Contenedor([
         Modal(id="modal-line-finanzas-mostrar", size= "85%"),
         Row([
