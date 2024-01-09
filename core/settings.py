@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import environ
-
+from google.oauth2 import service_account
 #import dj_database_url
 env = environ.Env()
 environ.Env.read_env()
@@ -43,6 +43,7 @@ DJANGO_APPS = [
 PROJECT_APPS = [
    'apps.graph',
    'apps.users',
+   'apps.dashboards',
 ]
 
 THIRD_PARTY_APPS = [
@@ -279,9 +280,14 @@ PLOTLY_DASH = {
     "cache_arguments": True,
 
     # Flag controlling local serving of assets
-    "serve_locally": False,
+    "serve_locally": False,<
     "stateless_loader" : "demo.scaffold.stateless_app_loader",
 }
 """
 DATA_UPLOAD_MAX_MEMORY_SIZE=1000000000
 MAX_ACTIVE_TASKS  = 100
+#GOOGLE_APPLICATION_CREDENTIALS = 'apps/users/key/stable-hologram-410021-93f04a1d61d1.json'
+#GS_CREDENTIALS = service_account.Credentials.from_service_account_file(GOOGLE_APPLICATION_CREDENTIALS)
+#DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+#GS_BUCKET_NAME = 'bucket_nisira'
+#STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'

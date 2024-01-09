@@ -28,6 +28,7 @@ def ejecucionCampania(codigo=''):
     df_var_agricolas_default= connection_api_agricola(tipo = 'fertilizantes')
     campaña_list=sorted(df_var_agricolas_default['AÑO_CULTIVO'].unique())
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
             Modal(id="modal-line-recurso-agricola", size= "85%"),
             offcanvas_recurso_agricola,
@@ -121,6 +122,7 @@ def costosCampania(codigo=''):
     #df_costos_agricola_default=data_agricola(empresa=get_empresa())[1]
     anio_campania = sorted(df_costos_agricola_default['AÑO_CAMPAÑA'].unique())
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
         Modal(id="modal-bar-costos-cultivo", size= "85%"),
         Modal(id="modal-bar-costos-variedad", size= "85%"),

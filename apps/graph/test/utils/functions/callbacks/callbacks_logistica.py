@@ -59,10 +59,10 @@ def graph_log(app):
             figure_stock_var_y2(df=dff, height = 380, moneda = moneda),
             figure_bar_familia(df = dff, height = 380, moneda = moneda),
             figure_bar_top_producto(df = dff, height = 380, moneda = moneda),
-            figure_bar_relative(df = dff, height = 350, eje_color = 'ABC Ventas', title = '% Stock por el ABC Ventas', moneda = moneda),
-            figure_bar_relative(df = dff, height = 350, eje_color = 'ABC Stock', title = '% Stock por el ABC de Stock Valorizado', moneda = moneda),
-            figure_pie_rango_stock(df = dff, height = 350, moneda = moneda),
-            figure_pie_rango_stock_count(df = dff, height = 350, moneda = moneda)
+            figure_bar_relative(df = dff, height = 380, eje_color = 'ABC Ventas', title = '% Stock por el ABC Ventas', moneda = moneda),
+            figure_bar_relative(df = dff, height = 380, eje_color = 'ABC Stock', title = '% Stock por el ABC de Stock Valorizado', moneda = moneda),
+            figure_pie_rango_stock(df = dff, height = 380, moneda = moneda),
+            figure_pie_rango_stock_count(df = dff, height = 380, moneda = moneda)
         ]
         
 def filter_callback_alm(app, filt =[], dataframe = None):

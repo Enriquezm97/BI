@@ -10,6 +10,7 @@ from ..build.build_inicio import *
 def inicio_dash(codigo = ''):
     
     app = DjangoDash(name = codigo,external_stylesheets = EXTERNAL_STYLESHEETS, external_scripts = EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     #try:
     if get_empresa()== 'SAMPLAST':
         dff  = connection_api(sp_name = 'nsp_stocks_bi_samplast')

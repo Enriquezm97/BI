@@ -60,6 +60,7 @@ def informeComercial(codigo= '',rubro_empresa = 'Agricola'):
     
     
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
         Modal(id="modal-bar-comercial-productos", size= "85%"),
         Modal(id="modal-bar-comercial-mes", size= "85%"),
@@ -184,7 +185,7 @@ def ventaSegmented(codigo = '',rubro_empresa = 'Agricola', filtros = input_dict_
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
-
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
         Modal(id="modal-line-comercial-st", size= "85%"),
         Modal(id="modal-pie-comercial", size= "65%"),
@@ -292,7 +293,7 @@ def ventasClientes(codigo = '',rubro_empresa = 'Agricola', filtros = input_venta
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
-
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
         Modal(id="modal-bar-comercial", size= "85%"),
         Modal(id="modal-bar-secundario-comercial", size= "85%"),
@@ -397,7 +398,7 @@ def ventasProductos(codigo = '',rubro_empresa = 'Agricola', filtros = input_vent
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
-
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
         Modal(id="modal-bar-comercial", size= "85%"),
         Modal(id="modal-bar-secundario-comercial", size= "85%"),
@@ -503,7 +504,7 @@ def ventasCultivos(codigo = '',rubro_empresa = 'Agricola', filtros = input_venta
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
-
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
         Modal(id="modal-bar-comercial", size= "85%"),
         Modal(id="modal-bar-secundario-comercial", size= "85%"),
@@ -615,7 +616,7 @@ def ventasComparativo(codigo = '',rubro_empresa = 'Agricola', filtros = input_ve
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash(name =  codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
-
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     
     
     app.layout = Container([

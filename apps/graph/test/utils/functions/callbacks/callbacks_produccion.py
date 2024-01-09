@@ -70,7 +70,6 @@ def create_callback_filter_agricola_recurso(app,dataframe=pd.DataFrame()):
                   Input('select-lote','value'),
                  )
     def update_filter_agricola_recurso(*args):#select_campania,select_variedad,select_lote
-        print(dataframe)
         if validar_all_none(variables = args) == True:
             df=dataframe.copy()
         else:

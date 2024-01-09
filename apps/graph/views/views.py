@@ -151,9 +151,6 @@ class CostosCampañaView(LoginRequiredMixin,AdministradoMixin,View):
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         id_app =f'{id_user}-vcostos'
-        
-        #dashboard=costosAgricola(empresa[0])
-        #dashboard=dashCostosProduccionAgricola()
         dashboard=costosCampania(codigo=id_app)
         context = {'dashboard':dashboard,'code':id_app}
         return render(request,'dashboards/Agricola/costos_campaña.html',context)

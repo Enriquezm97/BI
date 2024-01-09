@@ -13,6 +13,7 @@ urlpatterns = [
     path('', include('django_plotly_dash.urls')),#django_plotly_dash/
     path('',include('apps.graph.urls')),
     path('user/',include('apps.users.urls')),
+    path('dashboard/',include('apps.dashboards.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

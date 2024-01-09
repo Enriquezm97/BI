@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "stable-hologram-410021",
+  "private_key_id": "93f04a1d61d1c4f2c1e0170c2b4aaa670f3a45d0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC8wkTQeD1ZxAsZ\nvq/DTznvvbOItuXmGM4FyTkTAnww3C5V+vB6iOl8YQh6nALpPyGtJ0ngqf1/FfD3\nZBqE9jj95OVUfIfDena5JOaXv0kPU4N2g8ai9GcQG/zQ/P8tyB1z7ojbvRaXg1BZ\np33zKVZeZ0VKWyhZlsVFfCl7sGX6GguID9gyXtM8PIhys8QjrPiR6E+bs0RK94+y\nI8cznnOiO+m/hBa9O4Yx8ev327oqGx3mw1BR5NbQLeOCfuqpn/X4r86KRxJ2gdPf\nW360jdm+EZZSILfYFACzjrxi2E4hKXV4Z7qVECj+ejTgL89HI93nOh4Vp4rGJs8Z\nP1G/MeEbAgMBAAECggEAWb1MhQYdOM+U7XT0T/kbFMkOEVnO+/FgBW0wtsJwM7SC\nTPtEGCV+R9VD+DKyyZxrkMxEecyniaNvT9ZmKz96Qe7wPpYD36IZzpTmEk/tVp2A\nOziUF8X1N7nunJcjZGsm4YaOx1Vi576U1ULlhNTqzG/xh9PF363n9Mx+VmE7Ykbs\nmRSx5sFs97r5m0/Xb0PbNitTikncxSghxGe5HL0GKIqin/cr7uDA7iTudr99esnt\nmSSzLvczA9Ukps54pckD5zFrvUaXgtUU+NTbOuWfHt4QrGayxJTf3Kg7vTm0kXvt\nmFRJgO9PbsXwjTmRguJQT3q5iZlxcVZL18r9U7HMRQKBgQDyqKtmWLIZQ1IlCCPO\n1KVkhYOI3P2QWo+CDbJEvuVRH35Aq3xL5q2ELVld08OwC1uukEX5f2N02eC5R61s\nVbVs4owpSvsB3RwComVTesBkQ00wDFuk8rD/RUFs0OTMS4hxJIAodWwih32Oa38R\nQl1Krv6yUR3ID86X2YqnCiAb7wKBgQDHIvo3UEMlGG4D3+EmXyCJG7EvuEb2fK0g\n5q72opGyg3UWpF01xN0K0HoRVFpTsek7dZxO0XeNT6geqFD0II8HXp72/WQsW9Ha\n94sW0pUIfohoX0D4bdFMPos5ywjXsHqZ0UY2PAvLWxwoOiXr5iNyWAAO038AQA5u\niSYQOgVRlQKBgQCmICkvqTtMplUfeyIgoF4Won05fqmtYQJsc/n+rH4L+raRiZVP\n1T4nhnBvFuIarLv4l1cAh2DMh7kcv2CQEWFiiPqR7n5HeVuKxij+bMQ4IAdBBMTc\n+TWJnZ075QsufeuMIgQHLtR4EzA3B4r3guqhjYpbA8OSypeSR+FvmDQBSwKBgC0d\nv5LInG3LGyHFlz0aUETAAWTOW0V8+bx6hylZq6jGH8EBfByyfWH12bITamOL60uN\nWdyBmJRrd6t6dtzYg48n4NwUjJ2AMAtsChchnqJOCJmc+xtNxh2ADgsJ9PbpBN3U\njBO9hu6LtdVnVzAa8+z0Aw9Y220zFhH1AKqseogBAoGAKsyCKoH5qLdCVeNbdNPH\neleVGPxIFUMNQzHkDr0/JqDbL8vkSAV13F3nHAh42lg0SPW3sYKV9pPUEzjSY2Ms\n1YAMLccL2ChWTVnnSIO6BfugRzKa9xPPtH0Qln6CM/xLyGiZRKEOayfkG6LtdMYA\njvi+7jLD7eo7F3gI6rpUNFQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "nisirastorage@stable-hologram-410021.iam.gserviceaccount.com",
+  "client_id": "111654300489656050823",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/nisirastorage%40stable-hologram-410021.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

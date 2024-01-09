@@ -75,7 +75,7 @@ def logistica_build():
                                 )
                 )
                   
-            ],size=4), 
+            ],size=7), 
             Column([
                 DataDisplay.loadingOverlay(
                         cardGraph(
@@ -84,7 +84,10 @@ def logistica_build():
                                 height = 380
                                 )
                 )   
-            ],size=4), 
+            ],size=5), 
+            
+        ]),
+        Row([
             Column([
                 DataDisplay.loadingOverlay(
                         cardGraph(
@@ -93,33 +96,14 @@ def logistica_build():
                                 height = 380
                                 )
                 )
-            ],size=4), 
-        ]),
-        Row([
-            Column([
-               DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'bar-stock-abc-ventas', 
-                                id_maximize = 'maximize-bar-stock-abc-ventas',
-                                height = 350
-                                )
-                )    
-            ],size=3), 
-            Column([
-                DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'bar-stock-abc-valorizado', 
-                                id_maximize = 'maximize-bar-stock-abc-valorizado',
-                                height = 350
-                                )
-                )   
-            ],size=3), 
+            ],size=6), 
+            
             Column([
                 DataDisplay.loadingOverlay(
                         cardGraph(
                                 id_graph = 'pie-stock-antiguedad', 
                                 id_maximize = 'maximize-pie-stock-antiguedad',
-                                height = 350
+                                height = 380
                                 )
                 )    
             ],size=3), 
@@ -128,11 +112,32 @@ def logistica_build():
                         cardGraph(
                                 id_graph = 'pie-items-antiguedad', 
                                 id_maximize = 'maximize-pie-items-antiguedad',
-                                height = 350
+                                height = 380
                                 )
                 )    
-            ],size=3), 
+            ],size=3),
         ]),
+        Row([
+            Column([
+               DataDisplay.loadingOverlay(
+                        cardGraph(
+                                id_graph = 'bar-stock-abc-ventas', 
+                                id_maximize = 'maximize-bar-stock-abc-ventas',
+                                height = 380
+                                )
+                )    
+            ],size=6), 
+            Column([
+                DataDisplay.loadingOverlay(
+                        cardGraph(
+                                id_graph = 'bar-stock-abc-valorizado', 
+                                id_maximize = 'maximize-bar-stock-abc-valorizado',
+                                height = 380
+                                )
+                )   
+            ],size=6),  
+        ]), 
+        
     Div(id='notifications-update-data'),
     Store(id='data-values'),
 ])

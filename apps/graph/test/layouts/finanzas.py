@@ -364,6 +364,7 @@ def estadoResultados(codigo = ''):
     
 
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
         Modal(id="modal-area-finanzas-ingresos", size= "85%"),
         Modal(id="modal-area-finanzas-gastos", size= "85%"),
@@ -544,6 +545,7 @@ def estadoGP(codigo = ''):
     
 
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Container([
         Modal(id="modal-bar-finanzas-ubruta", size= "85%"),
         Modal(id="modal-bar-finanzas-uoperativa", size= "85%"),
@@ -761,6 +763,7 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
     for (i,j) in zip(tipoind_list,idind_list):
         list_dicts.append({'label': i, 'value': j})
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Contenedor([
         Modal(id="modal-line-finanzas-mostrar", size= "85%"),
         Row([
@@ -1050,6 +1053,7 @@ def editar_ratio_finanzas(*args):
     for (i,j) in zip(tipoind_list,idind_list):
         list_dicts.append({'label': i, 'value': j})
     app = DjangoDash(name=args[14],external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Contenedor([
         Modal(id="modal-line-finanzas-mostrar", size= "85%"),
         Row([
@@ -1217,6 +1221,7 @@ def eliminar_ratio_finanzas(*args):
     indicador_tipo_text = TipoIndicador.objects.filter(id = indicador_pk).values_list('name_tipo_indicador',flat=True)
     print(indicador_tipo_text)
     app = DjangoDash(name=args[4],external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Contenedor([
         Modal(id="modal-line-finanzas-mostrar", size= "85%"),
         Row([

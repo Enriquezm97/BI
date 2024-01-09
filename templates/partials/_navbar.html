@@ -1,7 +1,15 @@
 {% load static %}
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-      <a class="navbar-brand brand-logo mr-5" href=""><img src="{{request.user.usuario.empresa.picture_empresa.url}}" width="100" height="100" class="mr-2" alt=""/></a>
+      <!--<a class="navbar-brand brand-logo mr-5" href=""><img src="{{request.user.usuario.empresa.picture_empresa.url}}" width="100" height="100" class="mr-2" alt=""/></a>-->
+      {% if user.usuario.empresa.name_empresa == 'SAMPLAST' %}  
+      
+        <a class="navbar-brand brand-logo mr-5" href=""><img src="{% static 'images/samplast.png' %}" width="100" height="100" class="mr-2" alt=""/></a>
+     
+      {% elif user.usuario.empresa.name_empresa == 'FUNDO EL PARAISO' %} 
+        <a class="navbar-brand brand-logo mr-5" href=""><img src="{% static 'images/paraiso.png' %}" width="100" height="100" class="mr-2" alt=""/></a>
+      {% else %}
+      {% endif %}
       <a class="navbar-brand brand-logo-mini" href=""><img src="{% static 'favicon.ico' %}" alt="logo"/></a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
@@ -15,7 +23,8 @@
         </li>
         <li class="nav-item nav-profile dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-            <img src="{{request.user.usuario.picture.url}}" alt="profile"/>
+            <!--<img src="{{request.user.usuario.picture.url}}" alt="profile"/>-->
+            <img src="{% static 'images/guest.webp' %}" alt="profile"/>
           </a>
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
             <a class="dropdown-item">
