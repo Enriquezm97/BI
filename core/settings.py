@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import environ
-from google.oauth2 import service_account
+#from google.oauth2 import service_account
 #import dj_database_url
 env = environ.Env()
 environ.Env.read_env()
