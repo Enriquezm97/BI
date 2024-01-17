@@ -178,7 +178,7 @@ def inicio_build(dataframe = None, dataframe_ventas = None):
                 ],url='informe-ventas')  
             ],size=4), 
             Column([
-                card_status_service()
+                #card_status_service()
             ],size=4), 
         ]),
     
