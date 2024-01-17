@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from ..helpers import mes_short,new_col_salidas
 from ...utils.estructura_data import columns_nsp_stocks, columns_nsp_stockalmval
 

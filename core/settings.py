@@ -29,7 +29,7 @@ ALLOWED_HOSTS = ['*']
 #    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
-
+INTERNAL_IPS = ['127.0.0.1']
 
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -52,6 +52,7 @@ THIRD_PARTY_APPS = [
     'channels',
     'channels_redis',
     'crum',
+    'debug_toolbar'
     #'dash_ag_grid'
     
 
@@ -75,6 +76,8 @@ MIDDLEWARE= [
     'django_plotly_dash.middleware.BaseMiddleware',
     #'crum.CurrentRequestUserMiddleware'
     'crum.CurrentRequestUserMiddleware',
+    ##
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 
 
 ]

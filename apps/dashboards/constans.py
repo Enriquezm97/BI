@@ -12,6 +12,9 @@ EXTERNAL_STYLESHEETS =  [
                             "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css",
                             dbc.icons.BOOTSTRAP
                         ]
+
+DASH_CSS_FILE = { "external_url" : "/static/css/dashstyles.css" }
+
 DICT_CULTIVOS_COLOR={'Arandano':'#7A325A',
                'Esparrago':'#87AA6C',
                'Uva':'#AF799F',

@@ -132,8 +132,8 @@ class DataDisplay():
         
     def tabss( content=[], value = ''):
         return dmc.Tabs(children=content,value= value)
-    def text(id = '', text = '',weight = 800, align = "center"):
-        return dmc.Text(text, weight=weight,align=align)
+    def text(id = '', text = '',weight = 800, align = "center", size = 14):
+        return dmc.Text(text, weight = weight,align = align, size = size)
             
                                     
 
@@ -434,9 +434,17 @@ class Entry():
         )    
     
     def textInput(
-        label="",id='',required=False,size="sm",error=False,value = None,place = ''
+        label="",id='',required=False,size="sm",error=False,value = None,place = '', icon =''
     ):
-        return html.Div([dmc.TextInput(label=label,id=id,required=required,size=size,error=error,value=value,placeholder=place)]) 
+        return html.Div([dmc.TextInput(label=label,
+                                       id=id,
+                                       required=required,
+                                       size=size,
+                                       error=error,
+                                       value=value,
+                                       placeholder=place,
+                                       icon= icon)
+                ]) 
     
     def numberInput(
         label="",id=None,value=0,precision=2,minimo=-10,step=0.01
@@ -500,9 +508,8 @@ class Entry():
                 ]
             )
     
-class Title():
-    
-    def title(text="",order=1,ids='id',align = 'left'):
+
+def title(text="",order=1,ids='id',align = 'left'):
         return html.Div([dmc.Title(text, order=order,id=ids,align = align)])
     
 

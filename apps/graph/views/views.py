@@ -22,7 +22,7 @@ from apps.graph.build.containers.Created.created import *
 from apps.graph.build.containers.Scraper.scraper import *
 
 from apps.graph.models import Indicador,TipoIndicador
-from apps.users.models import Empresa,Usuario,Rubro
+from apps.users.models import Empresa,Usuario,Rubro                 
 #from apps.graph.build.containers.test import *
 from apps.graph.build.containers.index import index,row_index
 from django.contrib.auth.models import User
@@ -45,7 +45,10 @@ from apps.graph.test.Connection.apis import connection_api
 from apps.graph.test.utils.functions.functions_transform import *
 import asyncio 
 from django.http.response import HttpResponse
-from django.views.decorators.cache import never_cache
+
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
 def home(request):
     #owo=request.user.id
     dashboard=HomeScraper()
@@ -96,11 +99,13 @@ import asyncio
 from django.utils.decorators import classonlymethod  
 from django.contrib.auth import get_user_model
 #result = await asyncio.gather(do_a_network_call("some_input")) 
+
+#@method_decorator(cache_page(60 * 15), name='dispatch')
 class TestView(LoginRequiredMixin,View):
     models=Usuario
     template_name='test.html'
     login_url = reverse_lazy('login')
-
+    
     def get(self,request,*args, **kwargs):
         
         id_user=self.request.user.id
@@ -116,12 +121,7 @@ class Test2View(View):
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)
-         
-        #dashboard=dashComercialCliente()
-        #dashboard=dashComercialClienteCultivo()
-        #dashboard=dashComercialProductoCultivo()
-        #dashboard=dashComercialCultivo()
-        #dashboard=informeComercial()
+
         dashboard = rtesind_sin_estado()#resumenCampania()
         kwargs['dash_app_id']=id_user
         kwargs['codigo']=id_user

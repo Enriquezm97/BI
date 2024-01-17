@@ -5,6 +5,7 @@ from .views.views_logistica import *
 from .views.views import *
 from ..graph.test.layouts.logistica import alm_stock_dash,logistica_dash
 
+
 urlpatterns = [
     path('',TestView.as_view(), name='home'),#TestView.as_view()
     #path('',view_test, name='home'),

@@ -4,8 +4,8 @@ styles_chip = {
     "label": {
         "&[data-checked]": {
             "&, &:hover": {
-                "backgroundColor": dmc.theme.DEFAULT_COLORS["indigo"][5],
-                "color": "white",
+                "backgroundColor": dmc.theme.DEFAULT_COLORS["blue"][1],
+                "color": "black",
             },
         },
     }

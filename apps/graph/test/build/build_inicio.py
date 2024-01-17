@@ -116,6 +116,21 @@ def card_tc(title_card = '', description = '', url = '',child = []):
         
         
     )])
+def card_status_service():
+    return Div([dmc.Card(
+        children=[
+            dmc.Text(children =[dmc.Center(children=['Servicios ON'])] , weight=600, color='black', size="xl"),
+            dmc.Divider(variant="solid"),
+            
+        
+        ],
+        withBorder=True,
+        shadow="sm",
+        radius="md",
+        
+        
+        
+    )])
 """
                     #BBVA
                     dmc.Image(src = 'https://cuantoestaeldolar.pe/icons/bbva.svg',height=25,width=80),
@@ -163,7 +178,7 @@ def inicio_build(dataframe = None, dataframe_ventas = None):
                 ],url='informe-ventas')  
             ],size=4), 
             Column([
-                card_tc()
+                card_status_service()
             ],size=4), 
         ]),
     

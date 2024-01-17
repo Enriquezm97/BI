@@ -8,7 +8,7 @@ from ..components.figure_comp import graph_empty
 
 graph_empty = graph_empty('Esperando carga')
 
-def cardGraph(id_maximize='id-maximize', id_graph='id-graph',with_id=True,fig=None,icon_maximize=True,height = 400,id_item = ''):
+def card_graph(id_maximize='id-maximize', id_graph='id-graph',with_id=True,fig=None,icon_maximize=True,height = 400,id_item = ''):
     if icon_maximize == True:
         #padding
         if with_id == True:
@@ -98,9 +98,9 @@ def card(content = [],shadow='xl', radius='md', border =  True):
                 p = 8
             )
     
-def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '', num = 0, color_text ='white',color_section_title = '#228be6',contenido ='numero', content = [], padding_section=5,color_section_content = 'white', icon =''):
+def card_value(id_value = '',shadow='xl', radius='md', border =  True, text = '', num = 0, color_text ='white',color_section_title = '#228be6',contenido ='numero', content = [], padding_section=5,color_section_content = 'white', icon =''):
     if contenido == 'numero':
-            section =  dmc.Text(children=[dmc.Center(children=num,id=id_value)], weight=500, style={"fontSize": 30})
+            section =  dmc.Text(children=[dmc.Center(children=num,id=id_value)], weight=500, style={"fontSize": 25})
                             
     elif contenido == 'tabla':
             section = content      

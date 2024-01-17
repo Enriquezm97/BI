@@ -4,7 +4,7 @@ from ...components.display_comp import *
 ERROR = Container([
     Row([
         Column([
-                 Title.title(text = 'ERROR API')  
+                 title(text = 'ERROR API')  
         ],size=4)
     ]),
 ])

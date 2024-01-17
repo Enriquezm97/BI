@@ -335,31 +335,57 @@ def figure__line2(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_colo
     
     return fig
 
-
+def tipo_partida(lista = []):
+    list_ingresos = []
+    list_gastos = []
+    list_costos = []
+    list_otros = []
+    partidas_ = [x for x in lista if x != None]
+    for partida in partidas_:
+        if 'Ventas' in partida:
+            list_ingresos.append(partida)
+        elif 'ingreso' in partida:
+            list_ingresos.append(partida)
+        elif 'Ingreso' in partida:
+            list_ingresos.append(partida)
+        elif 'Gasto' in partida:
+            list_gastos.append(partida)
+        elif 'Costo' in partida:
+            list_costos.append(partida)
+        else:
+            list_otros.append(partida)
+    return {
+        'Ingresos': list_ingresos,
+        'Gastos': list_gastos,
+        'Costos': list_costos
+        }
 
 
 def estadoResultados(codigo = ''):
     if get_empresa() == 'SAMPLAST':
         dfff = connection_api(sp_name='nsp_eeff_json')
-        finanzas_df = etl_bc(dfff)
-        ingresos = ['Ingresos financieros','Otros Ingresos Operacionales','Otros ingresos','Ventas línea film - Automático','Ventas línea film - Colores', 'Ventas línea film - Manual','Ventas línea film - Pre-Estirado']
-        gastos = ['Gastos de administración', 'Gastos de distribución y ventas','Gastos financieros']
-        costos = ['Costo de ventas línea film Automático','Costo de ventas línea film Colores','Costo de ventas línea film Manual','Costo de ventas línea film Pre-Estirado','Otros Costos Operacionales']
-        g_funcion_dict ={'Ingresos': ingresos,
-                     'Gastos': gastos,
-                     'Costos': costos
-        }
+        #finanzas_df = etl_bc(dfff)
+        #ingresos = ['Ingresos financieros','Otros Ingresos Operacionales','Otros ingresos','Ventas línea film - Automático','Ventas línea film - Colores', 'Ventas línea film - Manual','Ventas línea film - Pre-Estirado']
+        #gastos = ['Gastos de administración', 'Gastos de distribución y ventas','Gastos financieros']
+        #costos = ['Costo de ventas línea film Automático','Costo de ventas línea film Colores','Costo de ventas línea film Manual','Costo de ventas línea film Pre-Estirado','Otros Costos Operacionales']
+        #g_funcion_dict ={'Ingresos': ingresos,
+        #             'Gastos': gastos,
+        #             'Costos': costos
+        #}
     else:
         dfff = connection_api(sp_name='nsp_eeff_json2')
-        finanzas_df = etl_bc(dfff)
+        
         #finanzas_df = finanzas_dff.copy()
-        ingresos = ['Ingresos Financieros','Ventas Netas (ingresos operacionales)','Otros Ingresos']#Ventas Netas (ingresos operacionales)
-        gastos = ['Gastos Financieros', 'Gastos de Administración', 'Gastos de Venta','Otros Gastos']
-        costos = ['Costo de ventas']
-        g_funcion_dict ={'Ingresos': ingresos,
-                     'Gastos': gastos,
-                     'Costos': costos
-        }
+        #ingresos = ['Ingresos Financieros','Ventas Netas (ingresos operacionales)','Otros Ingresos']#Ventas Netas (ingresos operacionales)
+        #gastos = ['Gastos Financieros', 'Gastos de Administración', 'Gastos de Venta','Otros Gastos']
+        #costos = ['Costo de ventas']
+        #g_funcion_dict ={'Ingresos': ingresos,
+        #             'Gastos': gastos,
+        #             'Costos': costos
+        #}
+    finanzas_df = etl_bc(dfff)
+    g_funcion_dict = tipo_partida(lista = finanzas_df['grupo_funcion'].unique())
+    
     year_list = sorted(finanzas_df['Año'].unique())
     
 
@@ -468,13 +494,13 @@ def estadoResultados(codigo = ''):
         
         bc_df = pd.pivot_table(dff,index=['Año','Mes','Mes Num','Periodo'],columns='grupo_funcion',values = moneda).fillna(0).reset_index()
         
-        print(bc_df.columns)
-        for col_ingresos in ingresos:
+        
+        for col_ingresos in g_funcion_dict['Ingresos']:
             bc_df[col_ingresos] = bc_df[col_ingresos]*-1
         
-        bc_df['Ingresos Generales'] = bc_df[ingresos].sum(axis=1)
-        bc_df['Gastos Generales'] = bc_df[gastos].sum(axis=1)
-        bc_df['Costos Generales'] = bc_df[costos].sum(axis=1)
+        bc_df['Ingresos Generales'] = bc_df[g_funcion_dict['Ingresos']].sum(axis=1)
+        bc_df['Gastos Generales'] = bc_df[g_funcion_dict['Gastos']].sum(axis=1)
+        bc_df['Costos Generales'] = bc_df[g_funcion_dict['Costos']].sum(axis=1)
         
         bd_st_df = bc_df.groupby(['Mes','Mes Num'])[['Ingresos Generales','Gastos Generales','Costos Generales']].sum().reset_index().sort_values('Mes Num',ascending=True)
         
@@ -509,7 +535,7 @@ def estadoResultados(codigo = ''):
             dff = df.copy()
       
         table_cuentas_df =dff[dff['grupo_funcion'].isin(g_funcion_dict[segmented])]  
-        print(table_cuentas_df)
+        
         if segmented == "Ingresos":
             table_cuentas_df[moneda]=table_cuentas_df[moneda]*-1
         df_www=table_cuentas_df.groupby(['idcuenta','descripcion','grupo_funcion'])[[moneda]].sum().reset_index()
@@ -522,24 +548,50 @@ def estadoResultados(codigo = ''):
     create_callback_opened_modal(app, modal_id="modal-area-finanzas-gastos",children_out_id="area-finanzas-gastos", id_button="maximize-area-finanzas-gastos",height_modal=700)
     create_callback_opened_modal(app, modal_id="modal-area-finanzas-costos",children_out_id="area-finanzas-costos", id_button="maximize-area-finanzas-costos",height_modal=700)
 
+def tipo_utilidad(lista = []):
+    utilidad_bruta = []
+    utilidad_operativa = []
+    utilidad_neta = []
+    utilidad_otros = []
+    partidas_ = [x for x in lista if x != None]
+    for partida in partidas_:
+        if 'Ventas' in partida or 'Costo' in partida:
+            utilidad_bruta.append(partida)
+        elif 'Gastos financieros' in partida or 'Gastos Financieros' in partida:
+            utilidad_neta.append(partida)
+        elif 'Ingresos financieros' in partida or 'Ingresos Financieros' in partida:
+            utilidad_neta.append(partida)    
+        elif 'Diferencia de cambio' in partida:
+            utilidad_neta.append(partida)    
+        elif 'Gasto' in partida or 'Otros' in partida:
+            utilidad_operativa.append(partida)
+        else:
+            utilidad_otros.append(partida)
+    return [utilidad_bruta,utilidad_operativa,utilidad_neta,utilidad_otros]
+
+
+
 def estadoGP(codigo = ''):
     if get_empresa() == 'SAMPLAST':
         dfff = connection_api(sp_name='nsp_eeff_json')
-        finanzas_df = etl_bc(dfff)
-        utilidad_bruta = ['Ventas línea film - Colores', 'Ventas línea film - Manual','Ventas línea film - Pre-Estirado',
-                        'Ventas línea film - Automático','Costo de ventas línea film Automático','Costo de ventas línea film Colores',
-                        'Costo de ventas línea film Manual','Costo de ventas línea film Pre-Estirado'   ,'Otros Costos Operacionales',
-                        ]
-        utilidad_operativa = ['Gastos de administración','Otros ingresos','Gastos de distribución y ventas', 'Otros Ingresos Operacionales',]
-        utilidad_neta = ['Gastos financieros','Ingresos financieros','Diferencia de cambio, neto']
+        #finanzas_df = etl_bc(dfff)
+        #utilidad_bruta = ['Ventas línea film - Colores', 'Ventas línea film - Manual','Ventas línea film - Pre-Estirado',
+                        #'Ventas línea film - Automático','Costo de ventas línea film Automático','Costo de ventas línea film Colores',
+                        #'Costo de ventas línea film Manual','Costo de ventas línea film Pre-Estirado'   ,'Otros Costos Operacionales',
+        #                ]
+        #utilidad_operativa = ['Gastos de administración','Otros ingresos','Gastos de distribución y ventas', 'Otros Ingresos Operacionales',]
+        #utilidad_neta = ['Gastos financieros','Ingresos financieros','Diferencia de cambio, neto']
     else:
         dfff = connection_api(sp_name='nsp_eeff_json2')
-        finanzas_df = etl_bc(dfff)
+        #finanzas_df = etl_bc(dfff)
         #finanzas_df = finanzas_dff.copy()
-        utilidad_bruta = ['Ventas Netas (ingresos operacionales)','Costo de ventas']
-        utilidad_operativa = ['Gastos de Administración','Gastos de Venta','Otros Ingresos','Otros Gastos']
-        utilidad_neta = ['Gastos Financieros','Ingresos Financieros']
+        #utilidad_bruta = ['Ventas Netas (ingresos operacionales)','Costo de ventas']
+        #utilidad_operativa = ['Gastos de Administración','Gastos de Venta','Otros Ingresos','Otros Gastos']
+        #utilidad_neta = ['Gastos Financieros','Ingresos Financieros']
+    finanzas_df = etl_bc(dfff)
+    utilidad_ = tipo_utilidad(lista = finanzas_df['grupo_funcion'].unique())
     year_list = sorted(finanzas_df['Año'].unique())
+    
     
     
     
@@ -630,6 +682,9 @@ def estadoGP(codigo = ''):
         Input("chipgroup-mes","value"),
     )
     def update_graph_bc(*args):
+        utilidad_bruta = utilidad_[0]
+        utilidad_operativa = utilidad_[1]
+        utilidad_neta = utilidad_[2]
         df = pd.DataFrame(args[0])
         moneda = args[1]
         
@@ -707,8 +762,7 @@ def estadoGP(codigo = ''):
             df_utilidad_neta_proc=df_utilidad_neta_proc.drop([0],axis=0)
             #######################DATAFRAME CORE
             df_table_gp=pd.concat([df_utilidad_bruta, df_utilidad_operativa_proc,df_utilidad_neta_proc])
-            print(df_table_gp.columns)
-            print(df_table_gp)
+            
             #for periodo_col in df_table_gp.columns[1:]:
             #    print(periodo_col)
             #    df_table_gp[periodo_col] = df_table_gp.apply(lambda x: "{:,.0f}".format(x[periodo_col]), axis=1)
@@ -747,7 +801,7 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
         partidas_df = pivot_data_finanzas(finanzas_df)
         partidas_df = partidas_df.drop(['PATRIMONIO_y'],axis=1)
         partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO'})
-        print(partidas_df.columns)
+        
     else:
         finanzas_df = finanzas_dff.copy()
         partidas_df = pivot_data_finanzas(finanzas_df)
