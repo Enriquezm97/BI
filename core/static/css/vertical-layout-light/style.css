@@ -28450,10 +28450,11 @@ div.tagsinput span.tag a {
 
 .content-wrapper {
   
-  padding: 0.7rem 0.8rem;
+  padding: 0.8rem 1.5rem;
   width: 100%;
   -webkit-flex-grow: 1;
   flex-grow: 1;
+  background-color: #f9fafb !important;
 }
 
 @media (max-width: 767px) {
