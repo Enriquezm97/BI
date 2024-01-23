@@ -54,7 +54,7 @@ def cardGraph(
                                         
                                         Button.actionIcon(id=id_maximize),
                                         #actionIcon(ids=id_download,icono='download'),
-                                        dcc.Graph(id=id_graph,figure = graph_empty)
+                                        dcc.Graph(id=id_graph,figure = graph_empty, config={"locale": 'es'})
                                         
                                     ],
                                     withBorder=True,
@@ -70,7 +70,7 @@ def cardGraph(
                                     children=[
                                         Button.actionIcon(id=id_maximize),
                                         #actionIcon(ids=id_download,icono='download'),
-                                        dcc.Graph(figure=fig)
+                                        dcc.Graph(figure=fig, config={"locale": 'es'})
                                         
                                     ],
                                     withBorder=True,
@@ -87,7 +87,7 @@ def cardGraph(
                                             
                                             #actionIcon(ids=id_maximize,style=button_style),
                                             #actionIcon(ids=id_download,icono='download'),
-                                            dcc.Graph(id=id_graph,figure = graph_empty)
+                                            dcc.Graph(id=id_graph,figure = graph_empty, config={"locale": 'es'})
                                             
                                         ],
                                         withBorder=True,
@@ -102,7 +102,7 @@ def cardGraph(
                                         children=[
                                             #actionIcon(ids=id_maximize,style=button_style),
                                             #actionIcon(ids=id_download,icono='download'),
-                                            dcc.Graph(figure = fig)
+                                            dcc.Graph(figure = fig, config={"locale": 'es'})
                                             
                                         ],
                                         withBorder=True,
@@ -233,3 +233,147 @@ def cardGF(id = 'card-value',value_total=90000,text='owo',list_element=[{'value'
                 radius='md',
                 #style={'width': 440}
             )
+    
+    
+def card_graph_(
+    id_maximize='id-maximize',
+    id_download='id-download',
+    id_graph='id-graph',
+    with_id=True,
+    fig=None,
+    icon_maximize=True,
+    height = 400,
+    id_item = '',
+    title =''
+):
+    if icon_maximize == True:
+        #padding
+        if with_id == True:
+            return html.Div([
+                dmc.Card(
+                    children=[
+                        dmc.CardSection(
+                            dmc.Group(
+                                children=[
+                                    dmc.Text(title, weight=600),
+                                    dmc.ActionIcon(
+                                        DashIconify(icon="carbon:overflow-menu-horizontal"),
+                                        color="gray",
+                                        variant="transparent",
+                                    ),
+                                ],
+                                position="apart",
+                            ),
+                            withBorder=True,
+                            inheritPadding=True,
+                            py="xs",
+                        ),
+                        
+                        dmc.CardSection(
+                            dcc.Graph(id=id_graph,figure = graph_empty, config={"locale": 'es'})
+                        ),
+                    ],
+                    withBorder=True,
+                    shadow="sm",
+                    radius="md",
+                    style={'height':height}#dcc.Graph(figure = fig, config={"locale": 'es'})
+                )
+            ])
+        elif with_id == False:
+            return html.Div([
+                dmc.Card(
+                    children=[
+                        dmc.CardSection(
+                            dmc.Group(
+                                children=[
+                                    dmc.Text(title, weight=600),
+                                    dmc.ActionIcon(
+                                        DashIconify(icon="carbon:overflow-menu-horizontal"),
+                                        color="gray",
+                                        variant="transparent",
+                                    ),
+                                ],
+                                position="apart",
+                            ),
+                            withBorder=True,
+                            inheritPadding=True,
+                            py="xs",
+                        ),
+                        
+                        dmc.CardSection(
+                            dcc.Graph(figure=fig, config={"locale": 'es'})
+                        ),
+                    ],
+                    withBorder=True,
+                    shadow="sm",
+                    radius="md",
+                    style={'height':height}
+                )
+            ])
+    else:
+            if with_id == True:
+                return html.Div([
+                    dmc.Card(
+                        children=[
+                            dmc.CardSection(
+                                dmc.Group(
+                                    children=[
+                                        dmc.Text(title, weight=600),
+                                        dmc.ActionIcon(
+                                            DashIconify(icon="carbon:overflow-menu-horizontal"),
+                                            color="gray",
+                                            variant="transparent",
+                                        ),
+                                    ],
+                                    position="apart",
+                                ),
+                                withBorder=True,
+                                inheritPadding=True,
+                                py="xs",
+                            ),
+                            
+                            dmc.CardSection(
+                                dcc.Graph(id=id_graph,figure = graph_empty, config={"locale": 'es'})
+                            ),
+                        ],
+                        withBorder=True,
+                        shadow="sm",
+                        radius="md",
+                        style={'height':height}
+                    )
+                ])
+            elif with_id == False:
+                return html.Div([
+                    dmc.Card(
+                        children=[
+                            dmc.CardSection(
+                                dmc.Group(
+                                    children=[
+                                        dmc.Text(title, weight=600),
+                                        dmc.ActionIcon(
+                                            DashIconify(icon="carbon:overflow-menu-horizontal"),
+                                            color="gray",
+                                            variant="transparent",
+                                        ),
+                                    ],
+                                    position="apart",
+                                ),
+                                withBorder=True,
+                                inheritPadding=True,
+                                py="xs",
+                            ),
+                            
+                            dmc.CardSection(
+                                dcc.Graph(figure = fig, config={"locale": 'es'})
+                            ),
+                        ],
+                        withBorder=True,
+                        shadow="sm",
+                        radius="md",
+                        style={'height':height}
+                    )
+                ])
+#dcc.Graph(id=id_graph,figure = graph_empty, config={"locale": 'es'})
+#dcc.Graph(figure=fig, config={"locale": 'es'})
+#dcc.Graph(id=id_graph,figure = graph_empty, config={"locale": 'es'})
+#dcc.Graph(figure = fig, config={"locale": 'es'})

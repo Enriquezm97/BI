@@ -1,4 +1,5 @@
 import pandas as pd
+import requests
 from datetime import datetime
 from apps.graph.test.utils.crum import get_data_connection
 from apps.graph.test.Connection.read_api import getApi
@@ -56,4 +57,17 @@ def connection_api_agricola(tipo = 'fertilizantes'):
         cultivos = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_cultivos',token = token_))
         costos = pd.DataFrame(getApi(api=f'http://{ip}:3005/api/consulta/nsp_datos_detalle_costos_campana',token = token_))
         dataframe = costosAgricolas(df_costos_campana = costos,df_consumidores = consumidores,df_cultivos = cultivos,df_variedad = variedades)
+    return dataframe
+
+def conecction_data_tc():
+    fecha_now =datetime.now()
+    response = requests.get(f"https://api.apis.net.pe/v1/tipo-cambio-sunat?month={fecha_now.month}&year={fecha_now.year}")
+    data = response.json()
+    dataframe = pd.DataFrame(data)
+    dataframe = dataframe.rename(columns = {
+                                    'compra':'Compra',
+                                    'venta': 'Venta',
+                                    'fecha': 'Fecha'
+                                }
+                )
     return dataframe

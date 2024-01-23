@@ -97,16 +97,22 @@ def test_dashboard(codigo= '',data_almacen = []):
                 Row([
                     Column([
                         DataDisplay.loadingOverlay(
-                            card_graph(id_graph = 'bar-minv-prom',height=380 , id_maximize = 'maximize-bar-minv-prom')
+                            card_graph(id_graph = 'bar-minv-prom',height=350 , id_maximize = 'maximize-bar-minv-prom')
                         ) 
                     ],size = 6),
                     Column([
                          DataDisplay.loadingOverlay(
-                             card_graph(id_graph = 'bar-inv-val',height=380, id_maximize = 'maximize-bar-inv-val')
+                             card_graph(id_graph = 'bar-inv-val',height=350, id_maximize = 'maximize-bar-inv-val')
                          )
                     ],size = 6),
                 ]),
-                Row([
+                
+            ],size = 9)
+            
+           
+            
+        ]),
+        Row([
                     Column([
                         html.Div(children=[
                                 dag.AgGrid(
@@ -132,11 +138,6 @@ def test_dashboard(codigo= '',data_almacen = []):
                     ]),
                    
                 ]),
-            ],size = 9)
-            
-           
-            
-        ]),
         Div(id='notifications-update-data'),
         Store(id='data-stock'),
         Store(id='data-values'),

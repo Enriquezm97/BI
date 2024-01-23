@@ -5,6 +5,7 @@ import plotly.express as px
 EXTERNAL_SCRIPTS = [
     "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/dayjs.min.js",
     "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.8/locale/es.min.js",
+    "https://cdn.plot.ly/plotly-locale-de-latest.js"
 ]
 
 EXTERNAL_STYLESHEETS =  [

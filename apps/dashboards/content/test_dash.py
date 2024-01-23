@@ -450,8 +450,8 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
             cpm, invval, stock, consumo,
             #bar_(df = df_mi_,x = 'DESCRIPCION', y = 'Meses Inventario', orientation= 'v',height = 380,title = 'Meses de Inventario Promedio',text='Meses Inventario',
             #     xaxis_title = 'Descripción', yaxis_title = 'Meses de Inventario'),
-            bar_y1(df = df_mi_,height = 380),
-            bar_y2(df = df_mi_iv,height = 380 ),
+            bar_y1(df = df_mi_,height = 350),
+            bar_y2(df = df_mi_iv,height = 350 ),
             df.to_dict("records"),
             fields_columns(columns = df.columns)#[{"field": i,"cellStyle": {'font-size': 12},"type": "rightAligned",'cellStyle': {"styleConditions": [{"condition": "params.value > 0 ","style": {"backgroundColor": "#C6EFCE"}}],"defaultStyle": {"backgroundColor": "white"}} } for i in df.columns],
         ]
