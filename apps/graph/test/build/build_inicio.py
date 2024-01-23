@@ -385,13 +385,13 @@ def inicio_build(dataframe_tc = None):#dataframe = None, dataframe_ventas = None
                 card_graph_(title = 'TIPO DE CAMBIO (SUNAT)',height=380,with_id=False,fig=line_2trace(df = dataframe_tc, height = 380, title = '',x = 'Fecha', y = 'Compra',y2 = 'Venta',x_title='Fecha', y_title = 'Soles'))  
             ],size=5), 
              Column([
-                card_graph_(title = 'PBI Y DEMANDA INTERNA (VAR% ANUAL)',height=380,with_id=False,fig=fillarea_(df=dff,height = 380, title = '',x = 'periodo', y = PBI_,x_title = '',y_title = '%'))  
+                card_graph_(title = 'PBI Y DEMANDA INTERNA (VAR% ANUAL) - PERÚ',height=380,with_id=False,fig=fillarea_(df=dff,height = 380, title = '',x = 'periodo', y = PBI_,x_title = '',y_title = '%'))  
             ],size=7), 
             
         ]),
         Row([
             Column([
-                card_graph_(title = 'PRODUCCIÓN (MILES-TONELADAS)',height=380,with_id=False,fig=bar_iter(df=produccion_ton_df,height = 380, title = '',x = 'year', y = PRODUCCION_,x_title = '',y_title = 'Toneladas', color_list = px.colors.qualitative.Pastel, legend_site='under'))  
+                card_graph_(title = 'PRODUCCIÓN (MILES-TONELADAS) - PERÚ',height=380,with_id=False,fig=bar_iter(df=produccion_ton_df,height = 380, title = '',x = 'year', y = PRODUCCION_,x_title = '',y_title = 'Toneladas', color_list = px.colors.qualitative.Pastel, legend_site='under'))  
             ],size=12), 
         ]),
     ])

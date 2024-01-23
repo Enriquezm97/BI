@@ -21,12 +21,12 @@ def filter_callback(app, filt =[], dataframe = None):
         [Input(input_,"value")for input_ in filt]
     )
     def update_filter(*args):
-        
+        print(args)
         if validar_all_none(variables = args) == True:
             df=dataframe.copy()
         else:
             df=dataframe.query(dataframe_filtro(values=list(args),columns_df=create_col_for_dataframe(id_components = filt, dict_cols_dataframe=COMERCIAL_LOGISTICA)))
-
+        print(df)
         return create_list_dict_outputs(dataframe = df,id_components = filt, dict_cols_dataframe=COMERCIAL_LOGISTICA)+[
                df.to_dict('series'),
                [dmc.Chip(x,value=x,variant="outline",radius= 'xs',styles=styles_chip)for x in order_mes_text(df['Mes'].unique())],
@@ -86,7 +86,7 @@ def filter_callback_alm(app, filt =[], dataframe = None):
             df = filter_datepicker_df.copy()
         else:
             df = dataframe.query(dataframe_filtro(values=list(inputs),columns_df=create_col_for_dataframe(id_components = filt, dict_cols_dataframe=ALM_LOGISTICA)))
-
+        print(df)
         return create_list_dict_outputs(dataframe = df,id_components = filt, dict_cols_dataframe=ALM_LOGISTICA)+[
                df.to_dict('series'),
                DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update'),  
