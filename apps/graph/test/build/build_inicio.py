@@ -301,7 +301,7 @@ def bar_iter(df = None, height = 380, title = 'test',x = '', y = [],x_title = ''
                 cliponaxis=False,
                 marker=dict(color = color),
                 hoverlabel=dict(font_size=13,bgcolor="white"),
-                hovertemplate='<br>'+ejey[47:]+': <b>%{x:,.yf}</b><br>'+'Año'+': <b>%{x}</b>'
+                hovertemplate='<br>'+ejey[47:]+': <b>%{y:,.0f}</b><br>'+'Año'+': <b>%{x}</b>'
                 
             ))
     
