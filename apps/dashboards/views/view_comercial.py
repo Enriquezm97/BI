@@ -71,3 +71,17 @@ class Ventas_cultivos(LoginRequiredMixin,View):
         dashboard = dashboard_ventas_cultivos(codigo = id_app)
         context = {'dashboard':dashboard, 'code':id_app}
         return render(request,'Comercial/comercial.html',context)
+    
+    
+class Ventas_Agro_exp(LoginRequiredMixin,View):
+    login_url = reverse_lazy('login')
+    def get(self,request,*args, **kwargs):
+        
+        id_user=self.request.user.id
+        id_app =f'{id_user}-ventas-exportacion'
+        user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True)
+        #rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
+        dashboard = dashboard_ventas_agricola(codigo = id_app)
+        context = {'dashboard':dashboard, 'code':id_app}
+        return render(request,'Comercial/comercial.html',context)

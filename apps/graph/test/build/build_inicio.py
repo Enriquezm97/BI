@@ -177,7 +177,7 @@ def line_2trace(df = None, height = 380, title = 'test',x = '', y = '',y2='',x_t
         go.Indicator(
                 mode = "number+delta",
                 value = list(df[y])[-1],
-                delta = {"reference": list(df[y])[-2], "valueformat": ".0f"},
+                delta = {"reference": list(df[y])[-2], "valueformat": ".2f"},
                 number = {'valueformat':'.3f'},
                 title = {"text": "HOY"},
                 domain = {'y': [0, 1], 'x': [0.25, 0.75]})

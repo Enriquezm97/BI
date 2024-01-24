@@ -71,8 +71,8 @@ MIDDLEWARE= [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
-    "django.middleware.cache.UpdateCacheMiddleware",
-    "django.middleware.cache.FetchFromCacheMiddleware",
+    #"django.middleware.cache.UpdateCacheMiddleware",
+    #"django.middleware.cache.FetchFromCacheMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     #me
     'django_plotly_dash.middleware.ExternalRedirectionMiddleware',
@@ -251,7 +251,12 @@ CELERY_RESULT_SERIALIZER = 'json'
 #BROKER_CONNECTION_RETRY = True
 #BROKER_CONNECTION_MAX_RETRIES = 0
 #BROKER_CONNECTION_TIMEOUT = 120
-
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
+    }
+}
 """
 CACHES = {
     "default": {

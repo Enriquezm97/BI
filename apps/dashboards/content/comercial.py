@@ -51,3 +51,13 @@ def dashboard_ventas_cultivos(codigo = ''):
     
     return app
 
+
+def dashboard_ventas_agricola(codigo = ''):
+    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css(DASH_CSS_FILE)
+    try:
+        app.layout =  ventas_exportacion_agro()#ventas_cultivos(filtros={}, dataframe = None)
+    except:
+        app.layout = ERROR
+    
+    return app

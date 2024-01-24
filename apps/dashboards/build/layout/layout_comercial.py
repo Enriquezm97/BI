@@ -391,3 +391,68 @@ def ventas_cultivos(filtros = {}, dataframe = None):
         Store(id='data-values'),
         Download(),
     ])
+########TEST DATA
+VARIEDAD_=['Satsuma_Iwasaki', 'NO ESPECIFICADO', 'Wonderful',
+       'ROJO BRILLANTE', 'Clementina Oronules', 'Zutano', 'Ettinger',
+       'Nova', 'Clementina Nour', 'Washington Navel', 'Tango', 'Minneola',
+       'Hass', 'Washington Tardia', 'Murcott', 'Lamb Hass', 'Bacon',
+       'PECANA']
+
+
+
+def ventas_exportacion_agro(rubro_empresa = ''):
+    return Container([
+        Modal(id="modal-bar-comercial-productos", size= "85%"),
+        Modal(id="modal-bar-comercial-mes", size= "85%"),
+        Modal(id="modal-pie-comercial-pais", size= "85%"),
+        Modal(id="modal-pie-comercial-vendedor", size= "85%"),
+        Modal(id="modal-funnel-comercial-selector_second", size= "85%"),
+        Row([
+            Column([Div(content=['test title'])],size=11),
+            Column([Button.btnDownload()],size=1),
+        ]),
+        Row([
+            Column([
+                dmc.Card(
+                    children=[
+                        html.Div(
+                        [
+                            dmc.ChipGroup(
+                                [
+                                    dmc.Chip(
+                                        x,
+                                        value=x,
+                                        variant="outline",
+                                        styles= {
+                                                    "label": {
+                                                        "&[data-checked]": {
+                                                            "&, &:hover": {
+                                                                "backgroundColor": dmc.theme.DEFAULT_COLORS["green"][5],
+                                                                "color": "white",
+                                                            },
+                                                        },
+                                                    }
+                                                }
+                                    )
+                                    for x in VARIEDAD_
+                                ],
+                                id="chips-callback",
+                                value=[VARIEDAD_[0]],
+                                multiple=True,
+                                mb=10,
+                                align='stretch'
+                            ),
+                            dmc.Text(id="chips-values-output"),
+                        ]
+                    )
+                    ],
+                    withBorder=True,
+                    shadow="sm",
+                    radius="md",
+                    #style={"width": 350},
+                )    
+            
+            ],size=2),
+            Column([],size=9),
+        ]),
+    ])

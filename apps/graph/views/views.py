@@ -109,9 +109,10 @@ class TestView(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):
         
         id_user=self.request.user.id
-        id_app =f'{id_user}-inicio'
-        
-        return render(request,'test.html',{'dashboard':  inicio_dash(codigo = id_app),'code':id_app})#kwargs={'rubro': rubro_empresa}
+        cache_key =f'{id_user}-inicio'
+        cached_data  = cache.get(inicio_dash(codigo = cache_key)) 
+        cache.set(cache_key,cached_data)
+        return render(request,'test.html',{'dashboard':  cached_data,'code':cache_key})#kwargs={'rubro': rubro_empresa}
         
 
 class Test2View(View):

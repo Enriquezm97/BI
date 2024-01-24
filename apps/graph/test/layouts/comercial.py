@@ -57,7 +57,7 @@ input_ventas_samplast={
 def informeComercial(codigo= '',rubro_empresa = 'Agricola'):
     dff = connection_api(test='no')
     df_ventas_detalle = etl_comercial(dff)
-    
+    df_ventas_detalle.to_parquet("ventas_detalle.parquet")
     
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })

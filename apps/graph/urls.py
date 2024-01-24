@@ -33,7 +33,7 @@ urlpatterns = [
     path('<str:username>/gastos-operativos',GastosOperativosView.as_view(),name='gastos_operativos'),
 
     path('<str:username>/informe-ventas', InformedeVentas1View.as_view(),name='informe_ventas'),
-    path('<str:username>/ventas-exportacion',VentasExportacionView.as_view(),name='ventas_exportacion'),
+    #path('<str:username>/ventas-exportacion',VentasExportacionView.as_view(),name='ventas_exportacion'),
     path('<str:username>/ventas-1',Ventas1View.as_view(),name='ventas_1'),
     path('<str:username>/ventas-2',VentasTipo.as_view(),name='ventas_2'),
     path('<str:username>/ventas-core',VentasCore.as_view(),name='vencore'),
