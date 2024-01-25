@@ -272,3 +272,31 @@ def deleteElementList(lista,elemento_eliminar):
                 if element!=elemento_eliminar:
                        new_lista.append(element)
             return new_lista
+
+def extraer_list_value_dict(dict_input = {}, dict_componentes ={}, tipe_value = 'componente', for_title = False):
+        lista_values= []
+        if for_title == False:
+            if tipe_value == 'id':
+                for key, value in dict_input.items():
+                    if key != 'Moneda':
+                        lista_values.append(dict_componentes[key][value['tipo_componente']][tipe_value])
+            else :
+                for key, value in dict_input.items():
+                        lista_values.append(dict_componentes[key][value['tipo_componente']][tipe_value])
+        else :
+            for key, value in dict_input.items():
+                        lista_values.append(dict_componentes[key][value['tipo_componente']][tipe_value])
+        return lista_values
+
+
+def list_dict_outputs(id_components = [],dict_cols_dataframe = {}, dataframe=None):
+    outputs_list =[]
+    for element in id_components:
+        
+        if type(dict_cols_dataframe[element]) == list:
+            
+            outputs_list.append([{'label': i, 'value': i} for i in sorted(dataframe[dict_cols_dataframe[element][0]].unique()) ])
+        else:
+           
+            outputs_list.append([{'label': i, 'value': i} for i in sorted(dataframe[dict_cols_dataframe[element]].unique())])
+    return outputs_list

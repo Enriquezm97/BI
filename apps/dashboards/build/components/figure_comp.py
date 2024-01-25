@@ -253,7 +253,8 @@ class GraphPiego():
     def pie_(df = pd.DataFrame(),label_col = '', 
              value_col = '',list_or_color = None, dict_color = None,
              title = '', textinfo = 'percent+label+value' , textposition = 'inside',
-             height = 300, showlegend = True, color_list = [], textfont_size = 12
+             height = 300, showlegend = True, color_list = [], textfont_size = 12, hole = 0,
+             template = 'plotly_white'
              
     ):
         if dict_color != None:
@@ -268,21 +269,22 @@ class GraphPiego():
                 marker_colors = marker_colors,
                 #hovertemplate='<br><b>'+label_col+': %{labels}</b><br><b>'+value_col+': %{value:,.2f}</b>'
                 hoverlabel=dict(font_size=15,bgcolor="white"),
-                hovertemplate = "<b>%{label}</b> <br>Porcentaje:<b> %{percent} </b></br>Importe: <b>%{value}</b>",
+                hovertemplate = "<b>%{label}</b> <br>Porcentaje:<b> %{percent} </b></br>Importe: <b>%{value:,.0f}</b>",
                 name='',
                 )
         )    
 
         figure.update_layout(
-            title={'text': f"<b>{title}</b>",'y':0.97,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+            title={'text': f"<b>{title}</b>"},
             title_font_family="sans-serif", 
             title_font_size = 18,
             title_font_color = "rgba(0, 0, 0, 0.7)",
+            template = template
         
         )
-        figure.update_traces(textposition = textposition, textinfo = textinfo)
+        figure.update_traces(textposition = textposition, textinfo = textinfo, hole = hole)
         figure.update_traces(hoverinfo='label+percent+value', textfont_size = textfont_size,marker=dict(line=dict(color='#000000', width=1)))
-        figure.update_layout(height = height,margin = dict(t=40, b=30, l=10, r=10),showlegend = showlegend)
+        figure.update_layout(height = height,margin = dict(t=40, b=40, l=10, r=10),showlegend = showlegend)
         
         return figure
     
@@ -369,3 +371,52 @@ class GraphFunnelgo():
         figure.update_yaxes(tickfont=dict(size=size_tickfont),color='rgba(0, 0, 0, 0.7)',showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)
         figure.update_layout(margin=dict(l = 50, r = 40, b= 30, t = 40, pad = 1))
         return figure
+
+def bar_chart(df = None,x = '',y = '', height = 450 , titulo = '' , name = '', color = '#3aa99b', orientacion = 'v'):
+
+    fig = go.Figure()
+    #'Meses Inventario','Inventario Valorizado'
+    fig.add_trace(go.Bar(
+    x = df[x],
+    y = df[y],
+    name = name,
+    cliponaxis=False,
+    marker=dict(color = color),
+    hovertemplate ='<br>'+x+': <b>%{x}</b><br>'+y+': <b>%{y}</b>',hoverlabel=dict(font_size=13,bgcolor="white"),
+    orientation=orientacion,
+    ))
+    
+    fig.update_layout(
+        #legend=dict(orientation="v"),
+        #'<b>'+xaxis_title+'</b>'
+        yaxis=dict(
+            title=dict(text='<b>'+y+'</b>'),
+            side="left",
+            
+        ),
+        
+        template= 'none',
+        xaxis_title='<b>'+x+'</b>',
+    )
+    
+    fig.update_layout(
+        title = f"<b>{titulo}</b>",
+        title_font_family="sans-serif", 
+        title_font_size = 18,
+        height = height,
+        template = 'plotly_white'
+        #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
+    )
+    fig.update_xaxes(tickfont=dict(size=12),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+    fig.update_yaxes(tickfont=dict(size=12),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
+    if orientacion == 'h':
+        fig.update_layout(xaxis_tickformat = ',')
+    elif orientacion == 'v':
+        fig.update_layout(yaxis_tickformat = ',')
+    fig.update_layout(margin=dict(r = 40, b = 40, t=50)),
+    fig.update_traces(
+                    marker_line_color='black',
+                    marker_line_width=1, 
+                    opacity=0.8
+    )
+    return fig

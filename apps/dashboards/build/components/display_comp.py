@@ -430,7 +430,7 @@ class Entry():
                         data=data,
                         style={'font-size': "80%"},
                         size=size, 
-                    )
+            )
         )    
     
     def textInput(

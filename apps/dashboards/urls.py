@@ -12,7 +12,7 @@ urlpatterns = [
     path('ventas-clientes',Ventas_clientes.as_view(),name='ventas_clientes'),
     path('ventas-productos',Ventas_productos.as_view(),name='ventas_productos'),
     path('ventas-cultivos',Ventas_cultivos.as_view(),name='ventas_cultivos'),
-    path('ventas-exportacion',Ventas_Agro_exp.as_view(),name='ventas_exportacion'),
+    path('ventas',Ventas_Agro_exp.as_view(),name='ventas_'),
     #logistica
     path('stocks',Stocks_View.as_view(),name='stocks'),
     path('gestion-stock',test_View.as_view(),name='gestion_stock'),

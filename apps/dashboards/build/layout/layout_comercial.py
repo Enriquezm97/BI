@@ -4,6 +4,9 @@ from ..components.card_comp import *
 from ..components.block_comp import *
 from ..components.group_comp import *
 from ..components.dict_sp_comp import nsp_rpt_ventas_detallado_comp
+from ..utils.helpers import *
+from ..components.block_comp import *
+from ..components.dict_sp_comp import nsp_rpt_ventas_detallado_comp
 #####
 TIEMPO_DIMENSION = [  {'label': 'Mensual', 'value': 'Mes'}, {'label': 'Trimestral', 'value': 'Trimestre'},{'label': 'Semanal', 'value': 'Semana'},{'label': 'Fecha', 'value': 'Fecha'}]
 DIMENSION_PIE = [{'label': 'Vendedor', 'value': 'Vendedor'},{'label': 'País', 'value': 'Pais'},{'label': 'Sucursal', 'value': 'Sucursal'},{'label': 'Mes', 'value': 'Mes'}]
@@ -397,62 +400,238 @@ VARIEDAD_=['Satsuma_Iwasaki', 'NO ESPECIFICADO', 'Wonderful',
        'Nova', 'Clementina Nour', 'Washington Navel', 'Tango', 'Minneola',
        'Hass', 'Washington Tardia', 'Murcott', 'Lamb Hass', 'Bacon',
        'PECANA']
+CULTIVO_ = ['MANDARINA', 'NO ESPECIFICADO', 'GRANADA', 'KAKI', 'PALTA',
+       'NARANJA', 'TANGELO', 'PECANA']
 
-
-
-def ventas_exportacion_agro(rubro_empresa = ''):
-    return Container([
-        Modal(id="modal-bar-comercial-productos", size= "85%"),
-        Modal(id="modal-bar-comercial-mes", size= "85%"),
-        Modal(id="modal-pie-comercial-pais", size= "85%"),
-        Modal(id="modal-pie-comercial-vendedor", size= "85%"),
-        Modal(id="modal-funnel-comercial-selector_second", size= "85%"),
-        Row([
-            Column([Div(content=['test title'])],size=11),
-            Column([Button.btnDownload()],size=1),
-        ]),
-        Row([
-            Column([
-                dmc.Card(
-                    children=[
-                        html.Div(
-                        [
-                            dmc.ChipGroup(
-                                [
-                                    dmc.Chip(
-                                        x,
-                                        value=x,
-                                        variant="outline",
-                                        styles= {
+def card_chips(id_chipgroup = '',titulo = '',variant = 'outline',color_chip = 'green', color_text = 'white', elements = [], size = 'md', head = True):
+        head_element = [dmc.Title(titulo, order=3),dmc.Divider(variant="solid"),dmc.Space(h=10)] if head == True else []
+        return dmc.Card(
+                        children = head_element+[
+                            
+                            html.Div(
+                            [
+                                dmc.ChipGroup(
+                                    [
+                                        dmc.Chip(
+                                            x,
+                                            value=x,
+                                            size = size,
+                                            variant= variant,
+                                            styles= {
                                                     "label": {
                                                         "&[data-checked]": {
-                                                            "&, &:hover": {
-                                                                "backgroundColor": dmc.theme.DEFAULT_COLORS["green"][5],
-                                                                "color": "white",
+                                                        "&, &:hover": {
+                                                            "backgroundColor": dmc.theme.DEFAULT_COLORS[color_chip][5],
+                                                            "color": color_text,
                                                             },
                                                         },
                                                     }
-                                                }
-                                    )
-                                    for x in VARIEDAD_
-                                ],
-                                id="chips-callback",
-                                value=[VARIEDAD_[0]],
-                                multiple=True,
-                                mb=10,
-                                align='stretch'
-                            ),
-                            dmc.Text(id="chips-values-output"),
-                        ]
-                    )
-                    ],
-                    withBorder=True,
-                    shadow="sm",
-                    radius="md",
-                    #style={"width": 350},
-                )    
+                                            }
+                                        )
+                                        for x in elements
+                                    ],
+                                    id = id_chipgroup,
+                                    value=[],
+                                    multiple=True,
+                                    mb=10,
+                                
+                                ),
+                            ]
+                        )
+                        ],
+                        withBorder=True,
+                        shadow="sm",
+                        radius="md",
+                        #style={"width": 350},
+                    )     
+
+def card_filt_select(id_select = '', label = 'texto', clearable = True, searchable = False, size='md', value = None, data = [], place_holder = 'Todos'):
+    return dmc.Card(
+        children=[
             
+            dmc.CardSection(
+                children=[ dmc.Text(label, weight=500, size="md",align='center')],
+               
+                withBorder=True,
+                inheritPadding=True,
+                py="1",
+                style={'background-color': '#white', 'color' : 'black'}
+            ),
+            dmc.Space(h=10),
+            dmc.Select(
+                    id = id_select,
+                    clearable = clearable,
+                    placeholder=place_holder,
+                    size = size,
+                    value = value,
+                    data = data,
+                    searchable = searchable,
+                    
+                    nothingFound= 'No encontrado'
+                ),
+            
+        ],
+        withBorder=True,
+        shadow="sm",
+        radius="md",
+        style={"position": "static"},
+    )   
+
+def card_filt_multiselect(id_multi = '', label = 'texto', searchable = True, size='md', value = None, data = [],  place_holder = 'Todos'):
+    return dmc.Card(
+        children=[
+            
+            dmc.CardSection(
+                children=[ dmc.Text(label, weight=500, size="md",align='center')],
+               
+                withBorder=True,
+                inheritPadding=True,
+                py="1",
+                style={'background-color': '#white', 'color' : 'black'}
+            ),
+            dmc.Space(h=10),
+            dmc.MultiSelect(
+                        id = id_multi,
+                        placeholder = place_holder,
+                        searchable = searchable,
+                        nothingFound="Opción no encontrada",
+                        value=value,
+                        data=data,
+                        style={'font-size': "90%"},
+                        size=size, 
+            )
+            
+        ],
+        withBorder=True,
+        shadow="sm",
+        radius="md",
+        style={"position": "static"},
+    ) 
+def dict_dataframe(dataframe = None):
+    list_year = sorted(dataframe['Año'].astype('string').unique())
+    list_tv = sorted(dataframe['Tipo de Venta'].unique())
+    list_moneda = [{"value": "Importe Dolares", "label": "USD"},{"value": "Importe Soles", "label": "PEN"}]
+    return {
+        'lista_anio':list_year,
+        'value_anio': list_year[-1],
+        'lista_tipo_venta':list_tv,
+        'lista_moneda' : list_moneda,
+        'value_moneda' : list_moneda[0]['value']
+    }
+
+def ventas_exportacion_agro(dict_data = {}, comp_filtros = {}):
+   
+    return Container([
+        Modal(id="modal_pie_tipo_venta", size= "85%"),
+        Modal(id="modal_bar_gp", size= "85%"),
+        Modal(id="modal_bar_gc", size= "85%"),
+        Modal(id="modal_bar_cliente_top", size= "85%"),
+        Modal(id="modal_bar_producto_top", size= "85%"),
+        Modal(id="modal_bar_mes", size= "85%"),
+        #block_offcanvas_comercial_filter
+        #block_offcanvas_comercial_filter
+        #block_offcanvas_comercial_filter(dict_filtros = comp_filtros, diccionario_componentes = nsp_rpt_ventas_detallado_comp),
+        DataDisplay.offcanvas(
+            label='Filtros',
+            componentes = [
+                Entry.select(
+                    id = 'select-grupo-producto',
+                    texto = 'Grupo de Producto',
+                    size = 'md',
+                    clearable = True,
+                    searchable = True
+                ),
+                Entry.select(
+                    id = 'select-grupo-cliente',
+                    texto = 'Grupo de Cliente',
+                    size = 'md',
+                    clearable = True,
+                    searchable = True
+                ),
+                Entry.select(
+                    id = 'select-producto',
+                    texto = 'Producto',
+                    size = 'md',
+                    clearable = True,
+                    searchable = True
+                ),
+                Entry.select(
+                    id = 'select-cliente',
+                    texto = 'Cliente',
+                    size = 'md',
+                    clearable = True,
+                    searchable = True
+                ),
+            
+            ]
+        ),
+        Row([
+            Column([
+                Button.btnFilter(style={'position': 'absolute','z-index': '99'}),
+                
+            ],size=1),
+            Column([
+                title(text=['Ventas Resumen'],order=2)
             ],size=2),
-            Column([],size=9),
+            Column([card_filt_select(id_select = 'id_year', label = 'Año', clearable = True, searchable = True, size='md', data=dict_data['lista_anio'], value = dict_data['value_anio'])],size=2),
+            Column([card_filt_multiselect(id_multi = 'id_tipo_venta', label = 'Tipo de Venta',searchable = True, size='md', data = dict_data['lista_tipo_venta'])],size=5),
+            Column([card_filt_select(id_select = 'id_moneda', label = 'Moneda', clearable = False, searchable = True, size='md', value=dict_data['value_moneda'],data=dict_data['lista_moneda'])],size=2),
         ]),
+        
+        Row([
+            Column([
+                card_graph(
+                    id_graph = 'pie_tipo_venta', 
+                    id_maximize = 'maxi_pie_tipo_venta',
+                    height=380
+                )
+                                
+            ],size=4),
+            Column([
+                card_graph(
+                    id_graph = 'bar_gp', 
+                    id_maximize = 'maxi_bar_gp',
+                    height=380
+                )
+                                  
+            ],size=4),
+            Column([
+                card_graph(
+                    id_graph = 'bar_gc', 
+                    id_maximize = 'maxi_bar_gc',
+                    height=380
+                )        
+            ],size=4)
+        ]),
+        Row([
+            Column([
+                card_graph(
+                    id_graph = 'bar_cliente_top', 
+                    id_maximize = 'maxi_bar_cliente_top',
+                    height=380
+                )
+                                
+            ],size=4),
+            Column([
+                card_graph(
+                    id_graph = 'bar_producto_top', 
+                    id_maximize = 'maxi_bar_producto_top',
+                    height=380
+                )
+                                  
+            ],size=4),
+            Column([
+                card_graph(
+                    id_graph = 'bar_mes', 
+                    id_maximize = 'maxi_bar_mes',
+                    height=380
+                )        
+            ],size=4)
+        ]),
+        Div(id='notifications-update-data'),
+        Store(id='data-values'),
+        
+        
     ])
+
+        

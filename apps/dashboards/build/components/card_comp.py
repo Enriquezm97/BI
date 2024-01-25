@@ -12,42 +12,45 @@ def card_graph(id_maximize='id-maximize', id_graph='id-graph',with_id=True,fig=N
     if icon_maximize == True:
         #padding
         if with_id == True:
-            return html.Div([
+            return DataDisplay.loadingOverlay(
                 dmc.Card(children=[Button.actionIcon(id=id_maximize),dcc.Graph(id=id_graph,figure = graph_empty)],
                                     withBorder=True,
                                     shadow="sm",
                                     radius="md",
                                     style={'padding': "0px", 'height':height}
                         )
-            ])
+            )
+            
         elif with_id == False:
-            return html.Div([
+            return DataDisplay.loadingOverlay(
                 dmc.Card( children=[Button.actionIcon(id=id_maximize),dcc.Graph(figure=fig)],
                                     withBorder=True,
                                     shadow="sm",
                                     radius="md",
                                     style={'padding': "0px", 'height':height}
                         )
-            ])
+            )
+            
     else:
             if with_id == True:
-                return html.Div([
+                return DataDisplay.loadingOverlay(
                     dmc.Card(children=[dcc.Graph(id=id_graph,figure = graph_empty)],
                                         withBorder=True,
                                         shadow="sm",
                                         radius="md",
                                         style={'padding': "0px", 'height':height}
                             )
-                ])
+                    )
+                
             elif with_id == False:
-                return html.Div([
+                return DataDisplay.loadingOverlay(
                     dmc.Card(children=[dcc.Graph(figure = fig)],
                                         withBorder=True,
                                         shadow="sm",
                                         radius="md",
                                         style={'padding': "0px", 'height':height}
                                     )
-                ])
+                )
 
 def cardGraphwithfilter(id_maximize='id-maximize',id_graph='id-graph',slider_id =''):
             return html.Div([

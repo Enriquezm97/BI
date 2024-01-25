@@ -178,7 +178,7 @@ def line_2trace(df = None, height = 380, title = 'test',x = '', y = '',y2='',x_t
                 mode = "number+delta",
                 value = list(df[y])[-1],
                 delta = {"reference": list(df[y])[-2], "valueformat": ".2f"},
-                number = {'valueformat':'.3f'},
+                number = {'valueformat':'.3f',},
                 title = {"text": "HOY"},
                 domain = {'y': [0, 1], 'x': [0.25, 0.75]})
     )
@@ -369,10 +369,7 @@ def inicio_build(dataframe_tc = None):#dataframe = None, dataframe_ventas = None
        'Producción agropecuaria (miles de toneladas) - Agrícola - Maíz Amarillo Duro',
        'Producción agropecuaria (miles de toneladas) - Agrícola - Mango']
     dff = get_bcrp()
-    print(dff)
-    print(dff.columns)
     produccion_ton_df = dff.groupby(['year'])[PRODUCCION_].sum().reset_index()
-    print(produccion_ton_df)
     return Container([
         #Row([
         #    Column([

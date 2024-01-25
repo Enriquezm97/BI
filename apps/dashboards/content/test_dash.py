@@ -8,6 +8,7 @@ from ..build.utils.transform.t_logistica import *
 from dash import Input, Output,State,dcc
 from ..build.utils.builder import *
 from ...dashboards.build.components.display_comp import DataDisplay
+from ..build.utils.global_callback import *
 
 ########
 stockxalmacen_df = pd.read_parquet("stockxalmacen.parquet", engine="pyarrow")
@@ -422,6 +423,7 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
         Output("bar-inv-val","figure"),
         Output("table","rowData"),
         Output("table","columnDefs"),
+        Output("data-table","data"),
         #Output("line-inv-val","value"),
         Input("data-values","data"),
         Input("select-moneda","value"),
@@ -453,8 +455,11 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
             bar_y1(df = df_mi_,height = 350),
             bar_y2(df = df_mi_iv,height = 350 ),
             df.to_dict("records"),
-            fields_columns(columns = df.columns)#[{"field": i,"cellStyle": {'font-size': 12},"type": "rightAligned",'cellStyle': {"styleConditions": [{"condition": "params.value > 0 ","style": {"backgroundColor": "#C6EFCE"}}],"defaultStyle": {"backgroundColor": "white"}} } for i in df.columns],
+            fields_columns(columns = df.columns),
+            df.to_dict("series"),
+            
         ]
+    download_data(app,input_id_data='data-table',name_file = 'stocks_producto.xlsx')
     opened_modal(app, modal_id="modal-bar-minv-prom",children_out_id="bar-minv-prom", id_button="maximize-bar-minv-prom",height_modal=900)
     opened_modal(app, modal_id="modal-bar-inv-val",children_out_id="bar-inv-val", id_button="maximize-bar-inv-val",height_modal=900)
     return app

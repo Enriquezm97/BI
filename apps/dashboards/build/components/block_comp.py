@@ -2,6 +2,7 @@ from ..components.display_comp import *
 from ..components.layout_comp import *
 from ..components.card_comp import *
 from ..utils.builder import *
+from ..utils.helpers import *
 
 def comercial_block_filt(rubro = 'Agricola', orientation = 'h'):
         select_anio = Entry.select(id = 'select-anio', texto = "Año", size = 'sm',clearable=True)
@@ -79,3 +80,12 @@ def agricola_offcanvas_filt():
                             ]
                         
                         )
+        
+def block_offcanvas_comercial_filter(dict_filtros = {}, diccionario_componentes = {}, add_filter = []):
+        # extraer_list_value_dict con el value = componente nos traer objetos inputs-selects
+        if len(add_filter) == 0:
+                lista_componentes = extraer_list_value_dict(dict_input = dict_filtros, dict_componentes = diccionario_componentes, tipe_value ='componente')
+        else:
+                lista_componentes = extraer_list_value_dict(dict_input = dict_filtros, dict_componentes = diccionario_componentes, tipe_value ='componente') + add_filter
+        
+        return DataDisplay.offcanvas(componentes= lista_componentes,label='Filtros')

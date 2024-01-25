@@ -96,14 +96,14 @@ def test_dashboard(codigo= '',data_almacen = []):
                 ]),
                 Row([
                     Column([
-                        DataDisplay.loadingOverlay(
+                        
                             card_graph(id_graph = 'bar-minv-prom',height=350 , id_maximize = 'maximize-bar-minv-prom')
-                        ) 
+                        
                     ],size = 6),
                     Column([
-                         DataDisplay.loadingOverlay(
+                         
                              card_graph(id_graph = 'bar-inv-val',height=350, id_maximize = 'maximize-bar-inv-val')
-                         )
+                         
                     ],size = 6),
                 ]),
                 
@@ -115,6 +115,8 @@ def test_dashboard(codigo= '',data_almacen = []):
         Row([
                     Column([
                         html.Div(children=[
+                                Button.actionIcon(id='btn-download',icono='download',style={'position': 'absolute','top': '0px','right': '9px','z-index': '99'},),
+                                        #actionIcon(ids=id_download,icono='download'),
                                 dag.AgGrid(
                                         id="table",
                                         #rowData=df.to_dict("records"),
@@ -141,6 +143,7 @@ def test_dashboard(codigo= '',data_almacen = []):
         Div(id='notifications-update-data'),
         Store(id='data-stock'),
         Store(id='data-values'),
+        Store(id='data-table'),
         Download(),
     ])
 

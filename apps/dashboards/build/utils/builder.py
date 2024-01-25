@@ -36,7 +36,10 @@ def dataframe_filtro(values=[],columns_df=[]):
             elif type(value) == str:
                 text=f"`{col}` == '{value}'"
             elif type(value) == list:
-                text=f"`{col}` in {value}"
+                if len(value) == 0:
+                    pass
+                elif len(value) != 0:
+                    text=f"`{col}` in {value}"
             query += text + " and "
             
    return query[:-5]

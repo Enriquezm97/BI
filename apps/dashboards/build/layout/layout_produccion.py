@@ -34,12 +34,11 @@ def ejecucion_campania(dataframe = None):
         Row([
             Column([
                 Picking.segmented(id='segmented-recurso'),
-                DataDisplay.loadingOverlay(
-                    card_graph(
-                        id_graph='line-recurso-agricola', 
-                        id_maximize = 'maximize-line-recurso-agricola'
-                    )
+                card_graph(
+                    id_graph='line-recurso-agricola', 
+                    id_maximize = 'maximize-line-recurso-agricola'
                 )
+                
             ])
         ]),
         Row([

@@ -66,74 +66,69 @@ def almacen_stock():
         Row([
             
             Column([
-                DataDisplay.loadingOverlay(
-                        card_graph(
-                                id_graph = 'bar-stock-items', 
-                                id_maximize = 'maximize-bar-stock-items',
-                                height = 380
-                                )
-                )
+                
+                    card_graph(
+                        id_graph = 'bar-stock-items', 
+                        id_maximize = 'maximize-bar-stock-items',
+                        height = 380
+                    )
+               
                   
             ],size=7), 
             Column([
-                DataDisplay.loadingOverlay(
-                        card_graph(
-                                id_graph = 'bar-stock-familia', 
-                                id_maximize = 'maximize-bar-stock-familia',
-                                height = 380
-                                )
-                )   
+                card_graph(
+                    id_graph = 'bar-stock-familia', 
+                    id_maximize = 'maximize-bar-stock-familia',
+                    height = 380
+                )
+                
             ],size=5), 
             
         ]),
         Row([
             Column([
-                DataDisplay.loadingOverlay(
-                        card_graph(
-                                id_graph = 'bar-top-producto', 
-                                id_maximize = 'maximize-bar-top-producto',
-                                height = 380
-                                )
+                
+                card_graph(
+                    id_graph = 'bar-top-producto', 
+                    id_maximize = 'maximize-bar-top-producto',
+                    height = 380
                 )
+                
             ],size=6), 
             
             Column([
-                DataDisplay.loadingOverlay(
-                        card_graph(
-                                id_graph = 'pie-stock-antiguedad', 
-                                id_maximize = 'maximize-pie-stock-antiguedad',
-                                height = 380
-                                )
-                )    
+                card_graph(
+                    id_graph = 'pie-stock-antiguedad', 
+                    id_maximize = 'maximize-pie-stock-antiguedad',
+                    height = 380
+                )
+                    
             ],size=3), 
             Column([
-                DataDisplay.loadingOverlay(
-                        card_graph(
-                                id_graph = 'pie-items-antiguedad', 
-                                id_maximize = 'maximize-pie-items-antiguedad',
-                                height = 380
-                                )
-                )    
+                card_graph(
+                    id_graph = 'pie-items-antiguedad', 
+                    id_maximize = 'maximize-pie-items-antiguedad',
+                    height = 380
+                )
+                  
             ],size=3),
         ]),
         Row([
             Column([
-               DataDisplay.loadingOverlay(
-                        card_graph(
-                                id_graph = 'bar-stock-abc-ventas', 
-                                id_maximize = 'maximize-bar-stock-abc-ventas',
-                                height = 380
-                                )
-                )    
+                card_graph(
+                    id_graph = 'bar-stock-abc-ventas', 
+                    id_maximize = 'maximize-bar-stock-abc-ventas',
+                    height = 380
+                )
+                    
             ],size=6), 
             Column([
-                DataDisplay.loadingOverlay(
-                        card_graph(
-                                id_graph = 'bar-stock-abc-valorizado', 
-                                id_maximize = 'maximize-bar-stock-abc-valorizado',
-                                height = 380
-                                )
-                )   
+                card_graph(
+                    id_graph = 'bar-stock-abc-valorizado', 
+                    id_maximize = 'maximize-bar-stock-abc-valorizado',
+                    height = 380
+                )
+                 
             ],size=6),  
         ]), 
         
