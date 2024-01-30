@@ -52,7 +52,7 @@ THIRD_PARTY_APPS = [
     'channels',
     'channels_redis',
     'crum',
-    'dash_resizable_panels'
+
     #'debug_toolbar'
     #'dash_ag_grid'
     

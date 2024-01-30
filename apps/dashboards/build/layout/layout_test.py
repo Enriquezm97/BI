@@ -149,7 +149,7 @@ def test_dashboard(codigo= '',data_almacen = []):
 
 
 def resize_dashboard():
-    #from dash_resizable_panels import PanelGroup, Panel, PanelResizeHandle
+    
     return Container([])
 
 """
