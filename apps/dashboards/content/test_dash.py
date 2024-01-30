@@ -2,7 +2,7 @@ from django_plotly_dash import DjangoDash
 from ..constans import EXTERNAL_SCRIPTS, EXTERNAL_STYLESHEETS, DASH_CSS_FILE
 from ..build.layout.error.dashboard_error import ERROR
 from ..build.api.get_connect import connect_api
-from ..build.layout.layout_test import test_dashboard
+from ..build.layout.layout_test import test_dashboard,resize_dashboard
 from ..build.utils.transform.t_logistica import *
 #####
 from dash import Input, Output,State,dcc
@@ -464,6 +464,16 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
     opened_modal(app, modal_id="modal-bar-inv-val",children_out_id="bar-inv-val", id_button="maximize-bar-inv-val",height_modal=900)
     return app
 
+
+def dashboard_resize(codigo = ''):
+    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.css.append_css(DASH_CSS_FILE)
+    try:
+        app.layout =  resize_dashboard()
+    except:
+        app.layout = ERROR
+    
+    return app
 
 """
  @app.callback(

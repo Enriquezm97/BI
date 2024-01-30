@@ -103,3 +103,7 @@
       transform: rotate(360deg);
     }
   }
+
+input:invalid {
+    outline: none !important;
+}

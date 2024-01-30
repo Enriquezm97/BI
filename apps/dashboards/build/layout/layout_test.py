@@ -148,17 +148,30 @@ def test_dashboard(codigo= '',data_almacen = []):
     ])
 
 
+def resize_dashboard():
+    #from dash_resizable_panels import PanelGroup, Panel, PanelResizeHandle
+    return Container([])
+
 """
- Column(
-            [
-                #Div(id = 'slider-rango-cpm'),
-                #DataDisplay.text(text = 'Testeando', weight= 500, size=14, align = 'left'),
-                #Entry.slider(id = 'owoww')
-            ],size = 2),
-            Column(
-            [
-               # Div(id = 'slider-rango-mi'),
-                #DataDisplay.text(text = 'Testeando', weight= 500, size=14, align = 'left'),
-                #Entry.slider(id = 'owoww')
-            ],size = 2),
+html.Div([
+    PanelGroup(
+        id='panel-group',
+        children=[
+            Panel(
+                id='panel-1',
+                children=[
+                    html.H1('Black')
+                ],
+            ),
+            PanelResizeHandle(html.Div(style={"backgroundColor": "grey", "height": "100%", "width": "5px"})),
+            Panel(
+                id='panel-2',
+                children=[
+                    html.H1('White')
+                ],
+                style={"backgroundColor": "black", "color": "white"}
+            )
+        ], direction='horizontal'
+    )
+], style={"height": "100vh"})
 """

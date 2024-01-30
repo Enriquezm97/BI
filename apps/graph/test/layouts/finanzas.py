@@ -286,6 +286,37 @@ def formula_paraiso(formula = '',df = pd.DataFrame()):
         pass
     formula=formula.replace(" ", "")
     return eval(formula)
+
+def formula_smartcold(formula = '',df = pd.DataFrame()):
+    ACTIVO = df['ACTIVO']
+    PASIVO = df['PASIVO']
+    PATRIMONIO = df['PATRIMONIO']
+    ACTIVOCORRIENTE = df['ACTIVO CORRIENTE']
+    ACTIVONOCORRIENTE = df['ACTIVO NO CORRIENTE']
+    PASIVOCORRIENTE = df['PASIVO CORRIENTE']
+    CAPITALSOCIAL = df['Capital Social']
+    CUENTASPORCOBRARDIVERSASRELACIONADAS = df['Cuentas por Cobrar Diversas  Relacionadas']
+    CUENTASPORCOBRARDIVERSASTERCEROS = df['Cuentas por Cobrar Diversas Terceros']
+    CUENTASPORCOBRARRELACIONADAS = df['Cuentas por Cobrar Relacionadas']
+    CUENTASPORCOBRARTERCEROS = df['Cuentas por Cobrar Terceros']
+    CUENTASPORCOBRARALPERSONALALOSACCIONISTAS = df['Cuentas por Cobrar al Personal a los Accionistas']
+    CUENTASPORPAGARCOMERCIALES = df['Cuentas por Pagar Comerciales']
+    CUENTASPORPAGARDIVERSASCORRIENTE = df['Cuentas por Pagar Diversas (Corriente)']
+    CUENTASPORPAGARVINCULADAS = df['Cuentas por Pagar Vinculadas']
+    EFECTIVOYEQUIVALENTEAEFECTIVO = df['Efectivo y equivalente a efectivo']
+    EXISTENCIAS = df['Existencias']
+    INMUEBLEMAQUINARIAYEQUIPO = df['Inmueble, Maquinaria y Equipo']
+    INTANGIBLE = df['Intangible']
+    PRODUCTOSENPROCESO = df['Productos en Proceso']
+    PERDIDASACUMULADAS = df['Pérdidas Acumuladas']
+    REMUNERACIONESPORPAGAR = df['Remuneraciones por Pagar']
+    SERVICIOSYOTROSCONTRATOSPORANTICIPADOS = df['Servicios y Otros Contratos por Anticipados']
+    TRIBUTOSPORPAGAR = df['Tributos por Pagar']
+    MENOSEFECTIVO = df['menos efectivo']
+    GASTOSADMINISTRATIVOS = df['GASTOS ADMINISTRATIVOS']
+    formula=formula.replace(" ", "")
+    return eval(formula)
+
 def figure__line2(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3):#,esperado,permitido,limite
     fig = go.Figure()
 
@@ -362,8 +393,9 @@ def tipo_partida(lista = []):
 
 
 def estadoResultados(codigo = ''):
-    if get_empresa() == 'SAMPLAST':
-        dfff = connection_api(sp_name='nsp_eeff_json')
+    if get_empresa() == 'FUNDO EL PARAISO':
+        dfff = connection_api(sp_name='nsp_eeff_json2')
+        
         #finanzas_df = etl_bc(dfff)
         #ingresos = ['Ingresos financieros','Otros Ingresos Operacionales','Otros ingresos','Ventas línea film - Automático','Ventas línea film - Colores', 'Ventas línea film - Manual','Ventas línea film - Pre-Estirado']
         #gastos = ['Gastos de administración', 'Gastos de distribución y ventas','Gastos financieros']
@@ -373,7 +405,7 @@ def estadoResultados(codigo = ''):
         #             'Costos': costos
         #}
     else:
-        dfff = connection_api(sp_name='nsp_eeff_json2')
+        dfff = connection_api(sp_name='nsp_eeff_json')
         
         #finanzas_df = finanzas_dff.copy()
         #ingresos = ['Ingresos Financieros','Ventas Netas (ingresos operacionales)','Otros Ingresos']#Ventas Netas (ingresos operacionales)
@@ -572,8 +604,9 @@ def tipo_utilidad(lista = []):
 
 
 def estadoGP(codigo = ''):
-    if get_empresa() == 'SAMPLAST':
-        dfff = connection_api(sp_name='nsp_eeff_json')
+    if get_empresa() == 'FUNDO EL PARAISO':
+        dfff = connection_api(sp_name='nsp_eeff_json2')
+        
         #finanzas_df = etl_bc(dfff)
         #utilidad_bruta = ['Ventas línea film - Colores', 'Ventas línea film - Manual','Ventas línea film - Pre-Estirado',
                         #'Ventas línea film - Automático','Costo de ventas línea film Automático','Costo de ventas línea film Colores',
@@ -582,7 +615,7 @@ def estadoGP(codigo = ''):
         #utilidad_operativa = ['Gastos de administración','Otros ingresos','Gastos de distribución y ventas', 'Otros Ingresos Operacionales',]
         #utilidad_neta = ['Gastos financieros','Ingresos financieros','Diferencia de cambio, neto']
     else:
-        dfff = connection_api(sp_name='nsp_eeff_json2')
+        dfff = connection_api(sp_name='nsp_eeff_json')
         #finanzas_df = etl_bc(dfff)
         #finanzas_df = finanzas_dff.copy()
         #utilidad_bruta = ['Ventas Netas (ingresos operacionales)','Costo de ventas']
@@ -802,11 +835,17 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
         partidas_df = partidas_df.drop(['PATRIMONIO_y'],axis=1)
         partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO'})
         
-    else:
+    elif  empresa_login == 'FUNDO EL PARAISO':
         finanzas_df = finanzas_dff.copy()
         partidas_df = pivot_data_finanzas(finanzas_df)
         partidas_df = partidas_df.drop(['PATRIMONIO_y','Ingresos Financieros_y'],axis=1)
         partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO','Ingresos Financieros_x':'Ingresos Financieros'})
+    elif empresa_login == 'SMARTCOLD':
+        dfff = connection_api(sp_name='nsp_eeff_json')
+        finanzas_df = etl_bc(dfff)
+        partidas_df = pivot_data_finanzas(finanzas_df)
+        partidas_df = partidas_df.drop(['PATRIMONIO_y'],axis=1)
+        partidas_df = partidas_df.rename(columns={'PATRIMONIO_x':'PATRIMONIO'})
     df_bcomprobacion=finanzas_df.copy()
     
     #test_df.columns[3:]
@@ -976,6 +1015,8 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
             df['Agrupado']=partidas_df['Trimestre']
             if empresa_login == 'SAMPLAST': 
                 df['valor']=formula_samplast(formula = formula_indicador,df = partidas_df)
+            elif empresa_login == 'SMARTCOLD':
+                df['valor'] = formula_smartcold(formula = formula_indicador,df = partidas_df)
             else:
                 
                 df['valor']=formula_paraiso(formula = formula_indicador,df = partidas_df)

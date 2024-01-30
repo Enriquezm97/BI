@@ -83,9 +83,6 @@ def dashboard_ventas_agricola(codigo = ''):
     )
     
     def update_data(*args):
-        print(args)
-        #year,tipo_v
-        #anio =int(args[0])
         if validar_all_none(variables = args) == True:#(anio,tipo_v)
             df = dff.copy()
         else:   
@@ -94,7 +91,6 @@ def dashboard_ventas_agricola(codigo = ''):
                 args = tuple(year_mod if i == 0 else elemento for i, elemento in enumerate(args))
             #df = dff.query(dataframe_filtro(values=(anio,tipo_v),columns_df=['Año','Tipo de Venta'])) 
             df = dff.query(dataframe_filtro(values=args,columns_df=['Año','Tipo de Venta','Grupo Producto','Grupo Cliente','Producto','Cliente']))   
-        print(df)
         return list_dict_outputs(dataframe=df, id_components=['select-grupo-producto','select-grupo-cliente','select-producto','select-cliente'],dict_cols_dataframe=COMERCIAL_SELECTS_COLUMNS)+[
           df.to_dict('series'),  
           DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update')
@@ -121,7 +117,7 @@ def dashboard_ventas_agricola(codigo = ''):
         client_top_df = df.groupby(['Cliente'])[[moneda]].sum().sort_values(moneda).tail(20).reset_index()
         product_top_df = df.groupby(['Producto'])[[moneda]].sum().sort_values(moneda).tail(20).reset_index()
         
-        meses_df = dff.groupby(['Mes','Mes Num'])[[moneda]].sum().reset_index().sort_values('Mes Num',ascending=True).reset_index()
+        meses_df = df.groupby(['Mes','Mes Num'])[[moneda]].sum().reset_index().sort_values('Mes Num',ascending=True).reset_index()
         meses_df['Porcentaje']=(meses_df[moneda]/meses_df[moneda].sum())*100
         meses_df['Porcentaje']=meses_df['Porcentaje'].map('{:,.1f}%'.format)
         return [ 

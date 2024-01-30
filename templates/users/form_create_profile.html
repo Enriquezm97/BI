@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Creación Profile</h1>
+
+<form class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Nombres</label>
+        <input type="text" class="form-control">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Apellidos</label>
+        <input type="text" class="form-control">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" id="inputEmail4">
+    </div>
+    
+    <div class="col-12">
+        <label for="inputState" class="form-label">User</label>
+        <select id="inputState" class="form-select">
+          {% for opcion_value, opcion_label in lista %}
+              <option value="{{ opcion_value }}">{{ opcion_label }}</option>
+          {% endfor %}
+          
+        </select>
+    </div>
+
+    <div class="col-4">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="autoSizingCheck">
+          <label class="form-check-label" for="autoSizingCheck">
+            Activo
+          </label>
+        </div>
+    </div>
+    <div class="col-6">
+        <label for="formFile" class="form-label">Imagen</label>
+        <input class="form-control" type="file" id="formFile">
+    </div> 
+    <div class="col-6">
+        <label class="form-label">Celular</label>
+        <input type="text" class="form-control">
+    </div> 
+    <div class="col-6">
+        <label for="inputState" class="form-label">Empresa</label>
+        <select id="inputState" class="form-select">
+          {% for opcion_value, opcion_label in empresas %}
+              <option value="{{ opcion_value }}">{{ opcion_label }}</option>
+          {% endfor %}
+          
+        </select>
+    </div> 
+    <div class="col-6">
+        <label for="inputState" class="form-label">Rol</label>
+        <select id="inputState" class="form-select">
+          {% for opcion_value, opcion_label in roles %}
+              <option value="{{ opcion_value }}">{{ opcion_label }}</option>
+          {% endfor %}
+          
+        </select>
+    </div>
+    
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Sign in</button>
+    </div>
+  </form>
+{%endblock%}

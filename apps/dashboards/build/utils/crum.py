@@ -9,3 +9,4 @@ def get_data_connect():
     api_publica = Mantenedor.objects.filter(empresa_id=id_empresa).values_list('api_publica',flat=True)[0]
     token = Mantenedor.objects.filter(empresa_id=id_empresa).values_list('token',flat=True)[0]
     return api_publica,token
+

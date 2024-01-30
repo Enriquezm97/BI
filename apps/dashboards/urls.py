@@ -18,4 +18,6 @@ urlpatterns = [
     path('gestion-stock',test_View.as_view(),name='gestion_stock'),
     #produccion
     path('ejecucion-campania',Ejecucion_campania.as_view(),name='ejecucion_campania'),
+    #testing 
+    path('resize',resize_View.as_view(),name='resize'),
 ]

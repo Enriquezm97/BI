@@ -1,0 +1,15 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Creación de Usuario</h1>
+    <form method="post" action="{% url 'crear_user' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+        <div class="form-group">
+            <button type="submit">Registrar</button>
+        </div>
+    </form>
+{%endblock%}

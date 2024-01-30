@@ -8,7 +8,11 @@
      
       {% elif user.usuario.empresa.name_empresa == 'FUNDO EL PARAISO' %} 
         <a class="navbar-brand brand-logo mr-5" href=""><img src="{% static 'images/paraiso.png' %}" width="100" height="100" class="mr-2" alt=""/></a>
-      {% else %}
+      
+      {% elif user.usuario.empresa.name_empresa == 'SMARTCOLD' %} 
+        <a class="navbar-brand brand-logo mr-5" href=""><img src="{% static 'images/smartcold.png' %}" width="100" height="100" class="mr-2" alt=""/></a>
+      
+        {% else %}
       {% endif %}
       <a class="navbar-brand brand-logo-mini" href=""><img src="{% static 'favicon.ico' %}" alt="logo"/></a>
     </div>
