@@ -254,8 +254,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 #BROKER_CONNECTION_TIMEOUT = 120
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/var/tmp/django_cache',
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
     }
 }
 """

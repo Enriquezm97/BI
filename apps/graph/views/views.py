@@ -88,7 +88,7 @@ from asgiref.sync import sync_to_async
 
 async def view_test(request):#
     id_user = get_current_user()
-    print('owo')
+    
     print(id_user)
     #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         #print(get_rubro_empresa())
@@ -107,12 +107,12 @@ class TestView(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')
     
     def get(self,request,*args, **kwargs):
-        
+            
         id_user=self.request.user.id
-        cache_key =f'{id_user}-inicio'
-        cached_data  = cache.get(inicio_dash(codigo = cache_key)) 
-        cache.set(cache_key,cached_data)
-        return render(request,'test.html',{'dashboard':  cached_data,'code':cache_key})#kwargs={'rubro': rubro_empresa}
+        app_id =f'{id_user}-inicio'
+        #cached_data  = cache.get(inicio_dash(codigo = cache_key)) 
+        #cache.set(cache_key,cached_data)
+        return render(request,'test.html',{'dashboard':  inicio_dash(codigo = app_id),'code':app_id})#kwargs={'rubro': rubro_empresa}
         
 
 class Test2View(View):
