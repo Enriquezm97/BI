@@ -55,7 +55,7 @@ THIRD_PARTY_APPS = [
     'channels_redis',
     'crum',
 
-    'debug_toolbar'
+    #'debug_toolbar'
     #'dash_ag_grid'
     
 
@@ -84,7 +84,7 @@ MIDDLEWARE= [
     #'crum.CurrentRequestUserMiddleware'
     'crum.CurrentRequestUserMiddleware',
     ##
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    #'debug_toolbar.middleware.DebugToolbarMiddleware'
 
 
 ]

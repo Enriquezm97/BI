@@ -7,7 +7,7 @@ from apps.graph.views.views import Error404View,Error505View
 from apps.graph.test.utils.crum import *
 #app_name = "users_app"
 from datetime import datetime
-import debug_toolbar
+#import debug_toolbar
 #{str(datetime.now()).strip().replace(" ","").replace(":","").replace("-","").replace(".","")}/
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,7 +15,7 @@ urlpatterns = [
     path('',include('apps.graph.urls')),
     path('user/',include('apps.users.urls')),
     path('dashboard/',include('apps.dashboards.urls')),
-    path('__debug__',include(debug_toolbar.urls)),
+    #path('__debug__',include(debug_toolbar.urls)),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = Error404View.as_view()
