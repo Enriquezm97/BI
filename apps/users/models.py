@@ -3,7 +3,7 @@
 import os
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,AbstractUser
 
 
 RUBRO = (
@@ -83,6 +83,15 @@ class Usuario(models.Model):
 
         return self.username#, self.empresa
 
+#class PerfilUser(AbstractUser):
+#    picture = models.ImageField(upload_to='media',blank=True,null=True)
+#    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
+#    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, null=True, blank=True)
+    # Otros campos adicionales del usuario
+
+#    def __str__(self):
+#        return self.username
+
 class Mantenedor(models.Model):
     
     empresa=models.ForeignKey(Empresa,on_delete=models.CASCADE)
@@ -100,4 +109,10 @@ class Mantenedor(models.Model):
     def __str__(self):
 
         return self.name_bd
+    
+"""
+LA TABLA USUARIO SE QUIERE ELIMNAR CREANDO UNA ABSTRACCION DEL MODEL USER 
+ESTO AYUDARA A PODER CREAR USUARIOS SIN PROBLEMA PERO TENIENDO ENCUENTA QUE 
+LA TABLA USER DEBE ESTAR RELACIONADA A UNA EMPRESA Y A UN ROL
+"""
 

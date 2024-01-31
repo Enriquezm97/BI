@@ -178,7 +178,7 @@ def line_2trace(df = None, height = 380, title = 'test',x = '', y = '',y2='',x_t
                 mode = "number+delta",
                 value = list(df[y])[-1],
                 delta = {"reference": list(df[y])[-2], "valueformat": ".2f"},
-                number = {'valueformat':'.3f',},
+                number = {'valueformat':'.3f',"font":{"size":50}},
                 title = {"text": "HOY"},
                 domain = {'y': [0, 1], 'x': [0.25, 0.75]})
     )
@@ -215,7 +215,7 @@ def line_2trace(df = None, height = 380, title = 'test',x = '', y = '',y2='',x_t
         title_font_family="sans-serif", 
         title_font_size = 18,
         height = height,
-        template = 'plotly_white'
+        template = 'ggplot2'
     )
     fig.update_layout(legend=dict(
         orientation="h",
@@ -273,7 +273,7 @@ def fillarea_(df = None, height = 380, title = 'test',x = '', y = [],x_title = '
         title_font_family="sans-serif", 
         title_font_size = 18,
         height = height,
-        template = 'plotly_white'
+        template = 'ggplot2'
     )
     if legend_site == 'over':
         fig.update_layout(legend=dict(
@@ -320,7 +320,7 @@ def bar_iter(df = None, height = 380, title = 'test',x = '', y = [],x_title = ''
         title_font_family="sans-serif", 
         title_font_size = 18,
         height = height,
-        template = 'plotly_white'
+        template = 'ggplot2'
     )
     if legend_site == 'over':
         fig.update_layout(legend=dict(
@@ -328,10 +328,11 @@ def bar_iter(df = None, height = 380, title = 'test',x = '', y = [],x_title = ''
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1
-        ))
-    fig.update_xaxes(tickfont=dict(size=13),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
-    fig.update_yaxes(tickfont=dict(size=13),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
+            x=1,
+            
+        ),legend_title_text='Producción')
+    fig.update_xaxes(tickfont=dict(size=13),showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+    fig.update_yaxes(tickfont=dict(size=13),showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
     fig.update_layout(yaxis_tickformat = ',')
     fig.update_layout(margin=dict(r = 40, b = 90 ,t = 40, l = 40 ))
     fig.update_layout( barmode='group',bargap=0.15, bargroupgap=0.1 )
@@ -388,7 +389,7 @@ def inicio_build(dataframe_tc = None):#dataframe = None, dataframe_ventas = None
         ]),
         Row([
             Column([
-                card_graph_(title = 'PRODUCCIÓN (MILES-TONELADAS) - PERÚ',height=380,with_id=False,fig=bar_iter(df=produccion_ton_df,height = 380, title = '',x = 'year', y = PRODUCCION_,x_title = '',y_title = 'Toneladas', color_list = px.colors.qualitative.Pastel, legend_site='under'))  
+                card_graph_(title = 'PRODUCCIÓN (MILES-TONELADAS) - PERÚ',height=420,with_id=False,fig=bar_iter(df=produccion_ton_df,height = 420, title = '',x = 'year', y = PRODUCCION_,x_title = '',y_title = 'Toneladas', color_list = px.colors.qualitative.Pastel, legend_site='under'))  
             ],size=12), 
         ]),
     ])

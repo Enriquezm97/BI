@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Usuario, Empresa, Rol
 from.crum import get_empresa_id
-
+"""
 class RegistroUser(UserCreationForm):
     email = forms.EmailField()
 
@@ -35,3 +35,4 @@ class RegistroProfile(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name','last_name','username','email','user','is_staff','verified','picture','phone','empresa','rol']
+        """

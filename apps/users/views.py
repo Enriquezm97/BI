@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from apps.users.models import Empresa,Usuario,Rubro,Rol
 from django.contrib.auth.models import User
 from .crum import *
-from .form import RegistroUser,RegistroProfile
+#from .form import RegistroUser,RegistroProfile
 # Create your views here.
 def update_profile(request):
      return render(request,'users/update_profile.html')

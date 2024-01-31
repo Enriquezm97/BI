@@ -22,6 +22,8 @@ SECRET_KEY=os.environ.get('SECRET_KEY')
 #DEBUG = False
 DEBUG = False    #'RENDER' not in os.environ
 
+
+
 ALLOWED_HOSTS = ['*']
 
 #RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -53,14 +55,14 @@ THIRD_PARTY_APPS = [
     'channels_redis',
     'crum',
 
-    #'debug_toolbar'
+    'debug_toolbar'
     #'dash_ag_grid'
     
 
 
 ]
 
-
+#AUTH_USER_MODEL = 'users.PerfilUser'
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE= [
@@ -72,8 +74,8 @@ MIDDLEWARE= [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
-    #"django.middleware.cache.UpdateCacheMiddleware",
-    #"django.middleware.cache.FetchFromCacheMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     #me
     'django_plotly_dash.middleware.ExternalRedirectionMiddleware',
@@ -82,7 +84,7 @@ MIDDLEWARE= [
     #'crum.CurrentRequestUserMiddleware'
     'crum.CurrentRequestUserMiddleware',
     ##
-   # 'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 
 
 ]
@@ -252,24 +254,19 @@ CELERY_RESULT_SERIALIZER = 'json'
 #BROKER_CONNECTION_RETRY = True
 #BROKER_CONNECTION_MAX_RETRIES = 0
 #BROKER_CONNECTION_TIMEOUT = 120
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'cache_table',
-    }
-}
-"""
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
-"""
-"""
+
+
+#CACHES = {
+#    "default": {
+#        "BACKEND": "django_redis.cache.RedisCache",
+#        "LOCATION": "redis://127.0.0.1:6379/1",
+#        "OPTIONS": {
+#            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#        }
+#    }
+#}
+
+
 PLOTLY_DASH = {
 
     
@@ -295,10 +292,10 @@ PLOTLY_DASH = {
     "cache_arguments": True,
 
     # Flag controlling local serving of assets
-    "serve_locally": False,<
+    "serve_locally": False,
     "stateless_loader" : "demo.scaffold.stateless_app_loader",
 }
-"""
+
 DATA_UPLOAD_MAX_MEMORY_SIZE=1000000000
 MAX_ACTIVE_TASKS  = 100
 #GOOGLE_APPLICATION_CREDENTIALS = 'apps/users/key/stable-hologram-410021-93f04a1d61d1.json'

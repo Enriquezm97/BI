@@ -9,6 +9,20 @@
           </li>
         {% if user.usuario.rol.name_rol == 'Administrador' %}  
           <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#profile" aria-expanded="false" aria-controls="profile">
+              <i class="mdi mdi-account-box menu-icon"></i>
+              <span class="menu-title">Gestión Perfiles</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="profile">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{%url "crear_profile"%}">Crear Perfil</a></li>
+                <li class="nav-item"> <a class="nav-link" href="">Perfiles</a></li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#comercial" aria-expanded="false" aria-controls="comercial">
               <i class="mdi mdi-percent menu-icon"></i>
               <span class="menu-title">Comercial</span>
