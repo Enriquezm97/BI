@@ -60,14 +60,10 @@ def connection_api_agricola(tipo = 'fertilizantes'):
     return dataframe
 
 def conecction_data_tc():
+    iter_data= pd.DataFrame(columns=['compra','venta','origen','moneda','fecha'])
     fecha_now =datetime.now()
-    response = requests.get(f"https://api.apis.net.pe/v1/tipo-cambio-sunat?month={fecha_now.month}&year={fecha_now.year}")
-    data = response.json()
-    dataframe = pd.DataFrame(data)
-    dataframe = dataframe.rename(columns = {
-                                    'compra':'Compra',
-                                    'venta': 'Venta',
-                                    'fecha': 'Fecha'
-                                }
-                )
-    return dataframe
+    for mes  in range(1,fecha_now.month+1):
+        response = requests.get(f"https://api.apis.net.pe/v1/tipo-cambio-sunat?month={mes}&year={fecha_now.year}")
+        data = response.json()
+        iter_data=pd.concat([iter_data,pd.DataFrame(data)])
+    return iter_data.rename(columns = {'compra':'Compra','venta': 'Venta','fecha': 'Fecha'})
