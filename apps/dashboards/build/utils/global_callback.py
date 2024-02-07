@@ -1,7 +1,9 @@
 from dash import Input, Output,State,no_update,dcc,html
 import pandas as pd
 import plotly.graph_objects as go
-
+from ..utils.helpers import *
+from ..utils.builder import *
+from ...constans import COMERCIAL_SELECTS_COLUMNS
 
 def opened_modal(
     app,
@@ -93,3 +95,39 @@ def download_data(
         if n_clicks_download:
             df = pd.DataFrame(data)
             return dcc.send_data_frame(df.to_excel, name_file, sheet_name="Sheet_name_1",index =False)
+
+
+#cATEGORIA
+"""
+filter_estandar : filtros en la segunda fila
+filter_estandas_mes : filtros en la segunda fila + filtro chipen la tercera fila
+filter_drawer: filtros en un drawer despegable
+filter_complejo: filtros con drawer + filtros en la segunda fila + filtro chip en la tercera fila
+
+
+"""
+
+def update_data(app = None, categoria = '', out_ = [], input_ = [], data = None, dict_campos = COMERCIAL_SELECTS_COLUMNS): 
+    always_output = [Output('data-values','data'),Output('notifications-update-data','children')]
+    mes_chip_filter = [Output('chipgroup-mes','children')]
+    if categoria == 'filter_estandar':
+        salidas = [Output(output,'data')for output in out_] + always_output
+        entradas = [Input(input,'data')for input in input_]
+    elif categoria == 'filter_estandas_mes':
+        salidas = [Output(output,'data')for output in out_] + mes_chip_filter+ always_output
+        entradas = [Input(input,'data')for input in input_]
+    elif categoria == 'filter_drawer':
+        salidas = [Output(output,'data')for output in out_] + always_output
+        entradas = [Input(input,'data')for input in input_]
+    elif categoria == 'filter_complejo':
+        salidas = [Output(output,'data')for output in out_]+ mes_chip_filter + always_output
+        entradas = [Input(input,'data')for input in input_]
+    @app.callback(
+        output= salidas,
+        input = entradas,
+    ) 
+    def update (*args):  
+        if validar_all_none(variables = args) == True:
+            df = data.copy()
+        else:
+            df = data.query(dataframe_filtro(values=list(args),columns_df=create_col_for_dataframe(id_components = entradas, dict_cols_dataframe = dict_campos)))

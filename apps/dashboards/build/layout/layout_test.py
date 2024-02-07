@@ -69,14 +69,25 @@ def test_dashboard(codigo= '',data_almacen = []):
                 Row([
                     Column([
                         Entry.multiSelect(id = 'multiselect-almacen',texto='Almacen',data = data_almacen,place = 'Todos'),
-                        Entry.textInput(id = 'text-input-find',label='Buscar Código',icon=DashIconify(icon="ic:search"),size='md',place = 'Buscar...' ),
-                        dmc.Space(h=30),
-                        #Entry.slider(id='slider-rango-cpm')
+                        dmc.Space(h=10),
+                        Entry.textInput(id = 'text-input-find',label='Buscar Código o Descripción',icon=DashIconify(icon="ic:search"),size='md',place = 'Buscar...' ),
+                        dmc.Space(h=10),
+                        dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
+                        dcc.RangeSlider(
+                            min = 0,
+                            marks=None,
+                            tooltip={
+                                "placement": "bottom",
+                                "always_visible": True,
+                                "style": {"color": "Black", "fontSize": "30px", "font-size":"18px"},
+                            },
+                            id='range-slider-cpm',
+                            
+                            
+                        ),
                     
                     ]),
-                    #Column([Entry.textInput(id = 'text-input-find',label='Buscar Código',icon=DashIconify(icon="ic:search"),size='md',place = 'Buscar...' )]),
-                    #Column([Entry.slider(id='slider-rango-cpm')]),
-                    #Column([Entry.slider(id='slider-rango-mi')]),
+
                 ])
             ],size = 3),
             Column([

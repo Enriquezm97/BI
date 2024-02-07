@@ -88,7 +88,7 @@ def create_title_comercial_informe(app, title ='', rubro = ''):
                     badges.append(dmc.Badge(i,variant='dot',color='blue', size='lg',radius="lg"))
             return dmc.Title(children=[title]+badges,order=2,align='center')#,style={"margin-left":"35px"}
     
-def create_graph_informe_comercial(app):
+def create_graph_informe_comercial(app, configuracion = {}):
     @app.callback(
         #Output('pie-comercial-selector_first','figure'),
         #Output('pie-comercial-selector_second','figure'),
@@ -158,18 +158,22 @@ def create_graph_informe_comercial(app):
         return[
             GraphBargo.bar_(df=productos_df_20, x= importe, y= 'Producto',orientation= 'h', height = 400, 
               title= 'Los 20 Productos más Vendidos', customdata=['Grupo Producto','Subgrupo Producto'],space_ticked= 180, text= importe,
-              showticklabel_y=True, 
-                xaxis_title = importe, template= 'none', list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Alphabet
+              showticklabel_y=configuracion['showticklabels'], ticklabel_color = configuracion['ticklabel_color'],
+                xaxis_title = importe, template= 'none', list_or_color=  eval(configuracion['data_colors']) ,size_tickfont=configuracion['ticklabel_size'],#px.colors.qualitative.Alphabet
+                plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor']
             ),
             GraphBargo.bar_(df=meses_df_12, x= 'Mes', y= importe,orientation= 'v', height = 400, 
                 title= 'Ventas por Mes', customdata=['Porcentaje'],space_ticked= 50, text= importe, yaxis_title= importe,xaxis_title= 'Mes',
-                template='none',list_or_color=   lista_colores,size_tickfont=size_ticked#px.colors.qualitative.Set3
+                template='none',list_or_color= eval(configuracion['data_colors']),size_tickfont=configuracion['ticklabel_size'],#px.colors.qualitative.Set3
+                plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor'],ticklabel_color = configuracion['ticklabel_color']
             ),
-            GraphFunnelgo.funnel_(df = grupo_producto_df, x = importe, y = 'Grupo Producto', height = 400,xaxis_title = importe, yaxis_title = 'Grupo Producto', title = 'Grupo Producto mas vendido',list_or_color=lista_colores,size_tickfont=size_ticked),
-            GraphPiego.pie_(df = pais_df, title = 'Ventas - País',label_col = 'Pais', value_col = importe, height = 400, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
-                            textfont_size = 10),
-            GraphPiego.pie_(df = vendedor_df, title = 'Ventas - Vendedor',label_col = 'Vendedor', value_col = importe, height = 400, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
-                            textfont_size = 10),
+            GraphFunnelgo.funnel_(df = grupo_producto_df, x = importe, y = 'Grupo Producto', height = 400,xaxis_title = importe, yaxis_title = 'Grupo Producto', 
+                                  title = 'Grupo Producto mas vendido',list_or_color=eval(configuracion['data_colors']),size_tickfont=configuracion['ticklabel_size'],
+                                  plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor'],ticklabel_color = configuracion['ticklabel_color']),
+            GraphPiego.pie_(df = pais_df, title = 'Ventas - País',label_col = 'Pais', value_col = importe, height = 400, showlegend=False, color_list=eval(configuracion['data_colors']),#px.colors.qualitative.Set3, 
+                            textfont_size = 10,plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor']),
+            GraphPiego.pie_(df = vendedor_df, title = 'Ventas - Vendedor',label_col = 'Vendedor', value_col = importe, height = 400, showlegend=False, color_list=eval(configuracion['data_colors']),#px.colors.qualitative.Set3, 
+                            textfont_size = 10,plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor']),
         ]
            
         

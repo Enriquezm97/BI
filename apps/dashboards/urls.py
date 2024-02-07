@@ -4,6 +4,7 @@ from .views.view_finanzas import *
 from .views.view_logistica import *
 from .views.view_produccion import *
 from .views.view_test import *
+from .views.view_formularios import *
 
 urlpatterns = [
     #comercial
@@ -20,4 +21,6 @@ urlpatterns = [
     path('ejecucion-campania',Ejecucion_campania.as_view(),name='ejecucion_campania'),
     #testing 
     path('resize',resize_View.as_view(),name='resize'),
+    
+    path('modficar-config-dashboard',update_config_dashboards,name='update_config_dashboard'),
 ]

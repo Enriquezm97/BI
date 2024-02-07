@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  /* Estilo para el input de tipo color */
+  input[type="color"] {
+      width: 200px; /* Ancho del input */
+      height: 40px; /* Altura del input */
+      padding: 5px; /* Espacio interno del input */
+      font-size: 16px; /* Tamaño del texto dentro del input */
+  }
+  input[type="color"] {
+    width: 200px; /* Ancho del input */
+    height: 40px; /* Altura del input */
+    padding: 5px; /* Espacio interno del input */
+    font-size: 16px; /* Tamaño del texto dentro del input */
+}
+</style>
+<div class="col-md-6 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Modificar Dashboards</h4>
+      <p class="card-description">
+        Formulario
+      </p>
+      <form class="forms-sample" method="POST" action="{% url "update_config_dashboard" %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="exampleInputUsername1">Color de Funete del Ticked</label>
+          <input type="color" class="form-control form-control-color" id="exampleColorInput" value="{{ config_dash.ticklabel_color }}" name = 'ticklabel_color'>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Tamaño de Fuente del Ticked</label>
+          <input type="number" class="form-control" name = 'ticklabel_size' value = "{{ config_dash.ticklabel_size }}" width= '200px' >
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Plot bgcolor</label>
+          <input type="color" class="form-control form-control-color" id="exampleColorInput" value="{{ config_dash.plot_bgcolor }}" name = 'plot_bgcolor'>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputConfirmPassword1">Paper bgcolor</label>
+          <input type="color" class="form-control form-control-color" id="exampleColorInput" value="{{ config_dash.paper_bgcolor }}" name = 'paper_bgcolor'>
+        </div>
+        <div class="form-group">
+          <label for="exampleSelectGender">Paleta de Colores</label>
+          <select class="form-control" name="paleta_colores">
+            {% for opcion_value, opcion_label in paleta %}
+              <option value="{{ opcion_value }}" {% if id_paleta == opcion_value %}selected{% endif %}>{{ opcion_label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-check form-check-flat form-check-primary">
+          <label class="form-check-label">
+            <input type="checkbox" class="form-check-input" name = 'showticklabels' {% if config_dash.showticklabels  %}checked{% endif %}>
+            Mostrar Tickeds
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Actualizar</button>
+        <button class="btn btn-light">Cancelar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{%endblock%}

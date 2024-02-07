@@ -40,7 +40,7 @@ class GraphLinepx():
         y_title = '', title_legend = '', order = {}, title ='',
         template = 'plotly_white', discrete_color = {}, custom_data=[],
         hover_template = '', size_text = 11, legend_orizontal = True, markers = False,legend_font_size = 12,
-        tickfont_x = 11, tickfont_y = 11
+        tickfont_x = 11, tickfont_y = 11, 
     ):
         ejex = 'Semana' if x == 'week' else 'Fecha'
         figure = px.line(
@@ -77,7 +77,8 @@ class GraphBargo():
     def bar_(df = pd.DataFrame(), x = '', y = '', text = '', orientation = 'v', height = 400 ,
         title = '', space_ticked = 130, xaxis_title = '',yaxis_title = '', showticklabel_x = True, 
         showticklabel_y = True , color_dataframe= '#145f82',list_or_color = None, customdata = [],
-        template = 'plotly_white', size_tickfont = 11, title_font_size = 20, clickmode = False
+        template = 'plotly_white', size_tickfont = 11, title_font_size = 20, clickmode = False,
+        ticklabel_color = 'rgba(0, 0, 0, 0.7)',plot_bgcolor = 'white', paper_bgcolor = 'white'
     ):  
         #print(df)
         figure = go.Figure()
@@ -156,10 +157,10 @@ class GraphBargo():
         if clickmode == True:
             figure.update_layout(clickmode='event+select')
         size_list = len(df[x].unique()) if orientation == 'v' else len(df[y].unique())
-        figure.update_xaxes(tickfont=dict(size=size_tickfont),color='rgba(0, 0, 0, 0.7)',showticklabels = showticklabel_x,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
-        figure.update_yaxes(tickfont=dict(size=size_tickfont),color='rgba(0, 0, 0, 0.7)',showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
-        figure.update_layout(margin=dict(l = value_left, r = 40, b= value_bottom, t = 40, pad = 1))
-        
+        figure.update_xaxes(tickfont=dict(size=size_tickfont),color=ticklabel_color,showticklabels = showticklabel_x,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+        figure.update_yaxes(tickfont=dict(size=size_tickfont),color=ticklabel_color,showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
+        figure.update_layout(margin=dict(l = 40, r = 40, b= 40, t = 40, pad = 1))
+        figure.update_layout(plot_bgcolor = plot_bgcolor, paper_bgcolor = paper_bgcolor)
         if  size_list== 1:
             figure.update_layout(bargap=0.7)
         elif size_list== 2:
@@ -255,7 +256,8 @@ class GraphPiego():
     def pie_(df = pd.DataFrame(),label_col = '', 
              value_col = '',list_or_color = None, dict_color = None,
              title = '', textinfo = 'percent+label+value' , textposition = 'inside',
-             height = 300, showlegend = True, color_list = [], textfont_size = 12
+             height = 300, showlegend = True, color_list = [], textfont_size = 12,
+             plot_bgcolor = 'white', paper_bgcolor = 'white'
              
     ):
         if dict_color != None:
@@ -285,7 +287,7 @@ class GraphPiego():
         figure.update_traces(textposition = textposition, textinfo = textinfo)
         figure.update_traces(hoverinfo='label+percent+value', textfont_size = textfont_size,marker=dict(line=dict(color='#000000', width=1)))
         figure.update_layout(height = height,margin = dict(t=40, b=30, l=10, r=10),showlegend = showlegend)
-        
+        figure.update_layout(plot_bgcolor = plot_bgcolor, paper_bgcolor = paper_bgcolor)
         return figure
     
 class GraphMapgo():
@@ -333,7 +335,8 @@ class GraphFunnelgo():
     def funnel_(df = pd.DataFrame(), x = '', y = '', text = '', height = 400 ,
         title = '', xaxis_title = '',yaxis_title = '', showticklabel_x = True, 
         showticklabel_y = True ,list_or_color = [],
-        template = 'plotly_white',size_tickfont = 11
+        template = 'plotly_white',size_tickfont = 11,
+        plot_bgcolor = 'white', paper_bgcolor = 'white',ticklabel_color = 'rgba(0, 0, 0, 0.7)'
     ):  
         
         figure = go.Figure(go.Funnel(
@@ -367,8 +370,9 @@ class GraphFunnelgo():
                 title_font_color = "rgba(0, 0, 0, 0.7)",
                 height = height, 
         )
-        figure.update_xaxes(tickfont=dict(size=size_tickfont),color='rgba(0, 0, 0, 0.7)',showticklabels = showticklabel_x,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
-        figure.update_yaxes(tickfont=dict(size=size_tickfont),color='rgba(0, 0, 0, 0.7)',showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)
+        figure.update_xaxes(tickfont=dict(size=size_tickfont),color=ticklabel_color,showticklabels = showticklabel_x,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+        figure.update_yaxes(tickfont=dict(size=size_tickfont),color=ticklabel_color,showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)
         figure.update_layout(margin=dict(l = 50, r = 40, b= 30, t = 40, pad = 1))
+        figure.update_layout(plot_bgcolor = plot_bgcolor, paper_bgcolor = paper_bgcolor)
         return figure
 

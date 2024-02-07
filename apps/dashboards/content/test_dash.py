@@ -343,6 +343,8 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
             Output('select-grupo','data'),
             Output('select-subgrupo','data'),
             Output('select-marca','data'),
+            Output('range-slider-cpm','max'),
+            Output('range-slider-cpm','value'),
             #Output('slider-rango-cpm','marks'),
             #Output('slider-rango-cpm','value'),
             #Output('slider-rango-mi','marks'),
@@ -360,6 +362,7 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
             #Input('slider-rango-mi','value'),
             Input('select-moneda','value'),
             Input('text-input-find','value'),
+            
             Input('data-stock','data'),
             
         ]
@@ -402,14 +405,23 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
         dff['TI'] = dff['TI'].replace([np.inf],0)
         if input_text != None:
             
-            dff = dff[dff['CODIGO'].str.contains(input_text)]
+            dff = dff[(dff['CODIGO'].str.contains(input_text))|(dff['DESCRIPCION'].str.contains(input_text))]
+        
             
-
-        print(dff)
+        
+        #cpm_max = dff['CPM'].max()
+        #print(cpm_max)
+        #df['CANT'].mean()
+        #dff.to_excel('dash.xlsx')
+        print(dff['CANT'].max())
+        cpm_max = round(dff['CANT'].max())
         return [
             [{'label': i, 'value': i} for i in sorted(dff['GRUPO'].unique())],
             [{'label': i, 'value': i} for i in sorted(dff['SUBGRUPO'].unique())],
             [{'label': i, 'value': i} for i in sorted(dff['MARCA'].unique())],
+            cpm_max,
+            
+            [0,cpm_max],
             dff.to_dict('series'),
             DataDisplay.notification(text=f'Se cargaron {len(dff)} filas',title='Update')
         ]
@@ -427,9 +439,11 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
         #Output("line-inv-val","value"),
         Input("data-values","data"),
         Input("select-moneda","value"),
+        Input('range-slider-cpm','value'),
     )
-    def update_outs(data,moneda):
+    def update_outs(data,moneda,slider_cpm):
         df = pd.DataFrame(data)
+        df = df[(df['CANT']>=slider_cpm[0])&(df['CANT']<=(slider_cpm[1]+1))]
         sig = 'S/.' if moneda == 'PROMEDIOMOF' else '$'
         cpm = round(df['CANT'].mean(),2)
         invval = f"{sig} {(round(df['Inventario Valorizado'].sum(),2)):,}"
@@ -448,6 +462,7 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
         
         df = df.drop(['FILTRO'], axis=1)
         df = df.rename(columns = {'CANT':'CPM','moneda':'Precio Unitario','Meses Inventario':'Meses de Inventario'})
+        
         return [
             cpm, invval, stock, consumo,
             #bar_(df = df_mi_,x = 'DESCRIPCION', y = 'Meses Inventario', orientation= 'v',height = 380,title = 'Meses de Inventario Promedio',text='Meses Inventario',

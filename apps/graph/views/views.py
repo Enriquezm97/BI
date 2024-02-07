@@ -21,6 +21,7 @@ from apps.graph.build.containers.Otros.Otros import *
 from apps.graph.build.containers.Created.created import *
 from apps.graph.build.containers.Scraper.scraper import *
 
+from apps.dashboards.models import ConfigDashboard,PaletaColores
 from apps.graph.models import Indicador,TipoIndicador
 from apps.users.models import Empresa,Usuario,Rubro                 
 #from apps.graph.build.containers.test import *
@@ -105,7 +106,7 @@ class TestView(LoginRequiredMixin,View):
     models=Usuario
     template_name='test.html'
     login_url = reverse_lazy('login')
-    
+    #@method_decorator(cache_page(60 , key_prefix='user_{user.id}_'))
     def get(self,request,*args, **kwargs):
             
         id_user=self.request.user.id
@@ -244,26 +245,30 @@ class GastosOperativosView(LoginRequiredMixin,AnalistaMixin,View):
 
 
 
-
+from django.core.cache import cache
 class InformedeVentas1View(LoginRequiredMixin,AsistenteMixin,View):
+    
     login_url = reverse_lazy('login')#'/user/login/'
-    #model=Usuario
-    #def get_object(self):
-    #    return get_object_or_404(Usuario, username=self.kwargs['username'])
-    #def get_success_url(self):
-    #    return reverse_lazy('informe_ventas', kwargs={"pk": self.request.user.id})
 
     def get(self,request,*args, **kwargs):
         
+        #print(type(eval(config_dashboard.data_colors)))
         id_user=self.request.user.id
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
+        ######
+        #FILTRAR ID EMPRESA
+        config_id = Empresa.objects.filter(pk=user_filter[0]).values_list('config_dashboard_id',flat=True)[0]
+        config_dashboard = ConfigDashboard.objects.filter(id = config_id)[0]
+        print(config_dashboard)
+        config_ = {campo.name: getattr(config_dashboard, campo.name) for campo in config_dashboard._meta.fields}
+        paleta = PaletaColores.objects.filter(name_paleta = config_['paleta_colores']).values_list('colors_list',flat =True)[0]
+        config_['data_colors'] = paleta
+        #####
         empresa=(Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True))
         rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
         id_app =f'{id_user}-informe-comercial'
-        
-        
-        
-        dashboard=informeComercial(codigo = id_app,rubro_empresa=rubro)#informeVentas(empresa_name[0],rubro[0],staff_filter[0])
+
+        dashboard=informeComercial(codigo = id_app,rubro_empresa=rubro, config_dash= config_)#informeVentas(empresa_name[0],rubro[0],staff_filter[0])
         
         context = {'dashboard':dashboard, 'code': id_app}
         return render(request,'dashboards/Comercial/informe_ventas_1.html',context)

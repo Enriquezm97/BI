@@ -54,10 +54,10 @@ input_ventas_samplast={
 }
 #anio_campania = sorted(df_ventas_detalle['YEAR'].unique())
 
-def informeComercial(codigo= '',rubro_empresa = 'Agricola'):
+def informeComercial(codigo= '',rubro_empresa = 'Agricola', config_dash = {}):
     dff = connection_api(test='no')
     df_ventas_detalle = etl_comercial(dff)
-    df_ventas_detalle.to_parquet("ventas_detalle.parquet")
+    #df_ventas_detalle.to_parquet("ventas_detalle.parquet")
     
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
@@ -71,9 +71,9 @@ def informeComercial(codigo= '',rubro_empresa = 'Agricola'):
                 
                 Column([
                     Div(id='title')
-                ],size=10),
+                ],size=11),
                 Column([Button.btnDownload()],size=1),
-                Column([Button.btnConfig()],size=1),
+                
         ]),
         
         offcanvas_comercial_config,
@@ -166,7 +166,7 @@ def informeComercial(codigo= '',rubro_empresa = 'Agricola'):
     create_callback_filter_comercial_informe(app = app,dataframe =df_ventas_detalle, rubro= rubro_empresa)    
     create_title_comercial_informe(app=app,title='Informe de Ventas ', rubro= rubro_empresa)
     create_callback_download_data(app)
-    create_graph_informe_comercial(app)
+    create_graph_informe_comercial(app, configuracion = config_dash)
     create_callback_opened_modal(app, modal_id="modal-bar-comercial-productos",children_out_id="bar-comercial-productos", id_button="maximize-bar-comercial-productos",height_modal=700)
     create_callback_opened_modal(app, modal_id="modal-bar-comercial-mes",children_out_id="bar-comercial-mes", id_button="maximize-bar-comercial-mes",height_modal=700)
     create_callback_opened_modal(app, modal_id="modal-pie-comercial-pais",children_out_id="pie-comercial-pais", id_button="maximize-pie-comercial-pais",height_modal=600)

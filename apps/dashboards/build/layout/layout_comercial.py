@@ -15,9 +15,23 @@ DIMENSION_CATEGORIA_CLIENTE = [{'label': 'Producto', 'value': 'Producto'},{'labe
 DIMENSION_CATEGORIA_PRODUCTO = [{'label': 'Cliente', 'value': 'Cliente'},{'label': 'Tipo de Venta', 'value': 'Tipo de Venta'},   {'label': 'Pais', 'value': 'Pais'},{'label': 'Vendedor', 'value': 'Vendedor'}]
 DIMENSION_CATEGORIA_CULTIVO = [{'label': 'Cliente', 'value': 'Cliente'},{'label': 'Producto', 'value': 'Producto'},{'label': 'Grupo Producto', 'value': 'Grupo Producto'},{'label': 'Tipo de Venta', 'value': 'Tipo de Venta'},{'label': 'Pais', 'value': 'Pais'},{'label': 'Vendedor', 'value': 'Vendedor'}]
 ####
+ELEMENTOS_DATAFRAME_PARA_FILTROS = ['Año','Producto','Cliente']
+GRAF_DATA ={
+    'DESCRIPCION': 'Importe Cliente',
+    'TIPO_OUTPUT': 'bar',
+    'VAR_CATEGORICO': ['Productos', 'Cliente'],
+    'VAR_NUMERICO':['Importe Soles', 'Importe Dolares'],
+    'LIMITE_ROW': 0,
+    
+}
+DASHBOARD = {
+    
+}
+
 
 def informe_comercial(rubro_empresa = ''):
     return Container([
+        #Div([Modal(id=f"modal-bar-comercial-productos", size= "85%") for i in ELEMENTOS_DATAFRAME_PARA_FILTROS]),
         Modal(id="modal-bar-comercial-productos", size= "85%"),
         Modal(id="modal-bar-comercial-mes", size= "85%"),
         Modal(id="modal-pie-comercial-pais", size= "85%"),

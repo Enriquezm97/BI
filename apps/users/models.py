@@ -4,6 +4,7 @@ import os
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User,AbstractUser
+from ..dashboards.models import ConfigDashboard
 
 
 RUBRO = (
@@ -45,7 +46,7 @@ class Empresa(models.Model):
     codigo_empresa= models.CharField(max_length=15, blank=True,null=True)
     ruc_empresa = models.CharField(max_length=12, blank=True,null=True)
     rubro_empresa=models.ForeignKey(Rubro,on_delete=models.CASCADE)
-
+    config_dashboard=models.ForeignKey(ConfigDashboard,on_delete=models.CASCADE,null=True)
     create_empresa = models.DateTimeField(auto_now_add=True,null=True)
     modified_empresa = models.DateTimeField(auto_now=True,null=True)
     
@@ -86,7 +87,7 @@ class Usuario(models.Model):
 #class PerfilUser(AbstractUser):
 #    picture = models.ImageField(upload_to='media',blank=True,null=True)
 #    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
-#    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, null=True, blank=True)
+#3    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, null=True, blank=True)
     # Otros campos adicionales del usuario
 
 #    def __str__(self):
@@ -116,3 +117,10 @@ ESTO AYUDARA A PODER CREAR USUARIOS SIN PROBLEMA PERO TENIENDO ENCUENTA QUE
 LA TABLA USER DEBE ESTAR RELACIONADA A UNA EMPRESA Y A UN ROL
 """
 
+#class UsuarioPersonalizado(AbstractUser):
+    # Añadir campos adicionales aquí
+#    fecha_nacimiento = models.DateField(null=True, blank=True)
+    #telefono = models.CharField(max_length=15, blank=True)
+    #direccion = models.CharField(max_length=255, blank=True)
+
+    # Agregar más c

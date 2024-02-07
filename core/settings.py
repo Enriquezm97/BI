@@ -74,8 +74,8 @@ MIDDLEWARE= [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
-    "django.middleware.cache.UpdateCacheMiddleware",
-    "django.middleware.cache.FetchFromCacheMiddleware",
+    #"django.middleware.cache.UpdateCacheMiddleware",
+    #"django.middleware.cache.FetchFromCacheMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     #me
     'django_plotly_dash.middleware.ExternalRedirectionMiddleware',
@@ -83,9 +83,10 @@ MIDDLEWARE= [
     'django_plotly_dash.middleware.BaseMiddleware',
     #'crum.CurrentRequestUserMiddleware'
     'crum.CurrentRequestUserMiddleware',
+    #'django.contrib.sessions.backends.cache.CacheSession',
     ##
     #'debug_toolbar.middleware.DebugToolbarMiddleware'
-
+    #'django.contrib.sessions.backends.cache.CacheSession',
 
 ]
 
@@ -113,22 +114,22 @@ ASGI_APPLICATION='core.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+#os.environ.get('SECRET_KEY')
 DATABASES = {
     
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME':  'config_dashboard',
-        'USER':'user_dashboard',
-        'PASSWORD':'AVNS_qzIvl--8EycKmegEnCk',
+        'USER': 'user_dashboard',
+        'PASSWORD': 'AVNS_qzIvl--8EycKmegEnCk',
         'HOST': 'db-mysql-prod-nisira-001-do-user-8636826-0.b.db.ondigitalocean.com',
-        'PORT':'25060'
+        'PORT': '25060'
     }
     
     
 }
 
-DATABASES["default"]["ATOMIC_REQUESTS"] = False
+#DATABASES["default"]["ATOMIC_REQUESTS"] = False
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -255,17 +256,17 @@ CELERY_RESULT_SERIALIZER = 'json'
 #BROKER_CONNECTION_MAX_RETRIES = 0
 #BROKER_CONNECTION_TIMEOUT = 120
 
-
-#CACHES = {
-#    "default": {
-#        "BACKEND": "django_redis.cache.RedisCache",
-#        "LOCATION": "redis://127.0.0.1:6379/1",
-#        "OPTIONS": {
-#            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#        }
-#    }
-#}
-
+"""
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+"""
+#SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+#SESSION_COOKIE_NAME = 'my_session_cookie'
+#SESSION_COOKIE_AGE = 172800
 
 PLOTLY_DASH = {
 
@@ -298,6 +299,7 @@ PLOTLY_DASH = {
 
 DATA_UPLOAD_MAX_MEMORY_SIZE=1000000000
 MAX_ACTIVE_TASKS  = 100
+
 #GOOGLE_APPLICATION_CREDENTIALS = 'apps/users/key/stable-hologram-410021-93f04a1d61d1.json'
 #GS_CREDENTIALS = service_account.Credentials.from_service_account_file(GOOGLE_APPLICATION_CREDENTIALS)
 #DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
