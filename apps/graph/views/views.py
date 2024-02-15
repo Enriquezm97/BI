@@ -90,7 +90,7 @@ from asgiref.sync import sync_to_async
 async def view_test(request):#
     id_user = get_current_user()
     
-    print(id_user)
+    
     #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         #print(get_rubro_empresa())
        #dashboard =  await index(rubro='Comercial' )#get_rubro_empresa()
@@ -259,7 +259,7 @@ class InformedeVentas1View(LoginRequiredMixin,AsistenteMixin,View):
         #FILTRAR ID EMPRESA
         config_id = Empresa.objects.filter(pk=user_filter[0]).values_list('config_dashboard_id',flat=True)[0]
         config_dashboard = ConfigDashboard.objects.filter(id = config_id)[0]
-        print(config_dashboard)
+        
         config_ = {campo.name: getattr(config_dashboard, campo.name) for campo in config_dashboard._meta.fields}
         paleta = PaletaColores.objects.filter(name_paleta = config_['paleta_colores']).values_list('colors_list',flat =True)[0]
         config_['data_colors'] = paleta

@@ -58,25 +58,6 @@
 {%endblock%}
 {% block javascript %}
 <script type="application/javascript">
-  $(function () {
-      $('#data').DataTable({
-        
-          responsive: true,
-          
-          autoWidth: false,
-          "language":{
-            url:'{% static 'lib/datatables-1.10.20/spanish.txt' %}'
-          },
-          //"columns": [
-          //      { "data": "Id" },
-          //      { "data": "Nombre"},
-          //      { "data": "Formula"},
-          //      { "data": "Tipo de Indicador" },
-          //      { "data": "Favorito" },
-          //      { "data": "Opciones" }                 
-          //      ],
-      });
-
-  });
+  
 </script>
 {% endblock %}

@@ -10,7 +10,7 @@ from ..utils.functions.callbacks.callbacks_ import *
 from ..utils.crum import get_empresa
 from ..build.build_error import ERROR
 from ..build.build_logistica import logistica_build,alm_stock_build
-#print(logistica_df)
+
 
 
 

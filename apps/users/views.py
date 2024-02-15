@@ -10,22 +10,11 @@ def update_profile(request):
      return render(request,'users/update_profile.html')
 
 def login_view(request):
-    #empresas=list(Empresa.objects.all())
-    
-    #context={'empresas':empresas}
+
     if request.method == 'POST':
-        
-        #print('*' * 10)
-        #username = request.POST['username']
-        #password = request.POST['password']
+
         username = request.POST.get('username')
         password = request.POST.get('password')
-        #empresa=request.POST.get('empresa')
-        #user_filter=list(Usuario.objects.filter(username=username).values_list('empresa_id',flat=True))
-        #enterprise=list(Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True))
-        #print(enterprise)
-        #print(empresa)
-        #if empresa in enterprise:
 
         user = authenticate(request,username=username,password=password)
         if user:
@@ -42,19 +31,45 @@ def logout_view(request):
     return redirect('login')
 
 def registo_user_view(request):
+    empresa_ = get_empresas()
+    rol_ = Rol.objects.all()
+    lista_rol = [(fila.id, fila.name_rol) for fila in rol_]
+    lista_empresa = [(fila.id, fila.name_empresa) for fila in empresa_]
     if request.method == 'POST':
-        form = RegistroUser(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')  # Puedes redirigir a donde desees después de registrar un nuevo usuario
-    else:
-        form = RegistroUser()
-
-    return render(request, 'users/form_create_user.html', {'form': form})
+        nombres = request.POST.get('nombres')
+        apellidos = request.POST.get('apellidos')
+        celular = request.POST.get('celular')
+        correo = request.POST.get('email')
+        username = request.POST.get('username').lower()
+        password = request.POST.get('password')
+        empresa = request.POST.get('empresa')
+        rol = request.POST.get('rol')
+        picture = request.FILES.get('picture')
+        print(nombres,apellidos,celular,correo,username,password,empresa,rol,picture)
+        # Crear el usuario
+        if User.objects.filter(username=username).exists():
+            return render(request, 'users/form_create_user.html', {'error': 'El nombre de usuario ya está en uso'})
+        user = User.objects.create_user(username=username, email=correo, password=password)
+        profile = Usuario(
+                    username= username,
+                    email = correo,
+                    first_name = nombres,
+                    last_name = apellidos,
+                    phone = celular,
+                    picture = picture,
+                    is_active = True,
+                    user = user,
+                    empresa = Empresa.objects.get(id=int(empresa)),
+                    rol = Rol.objects.get(id=int(rol)),        
+        )
+        profile.save()
+        return redirect('crear_user')
+    context = {'empresas':lista_empresa,'roles':lista_rol}
+    return render(request, 'users/form_create_user.html', context)
 
 
 def registo_profile_view(request):
-    print(User.objects.filter(id=get_user_id()))
+    
     empresa_ = get_empresas()
     rol_ = Rol.objects.all()
     lista_rol = [(fila.id, fila.name_rol) for fila in rol_]
@@ -71,3 +86,9 @@ def registo_profile_view(request):
 
 def form_test_view(request):
     return render(request, 'users/test_form.html')
+
+
+def listar_usuario(request):
+    #usuarios = Empresa.objects.filter(id=get_empresa_id())[0]#.values_list('user_id',flat=True)#[0]
+    usuarios = Usuario.objects.filter(empresa_id = get_empresa_id())
+    return render(request, 'users/lista_usuarios.html',context={'users': usuarios})

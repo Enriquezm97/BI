@@ -181,7 +181,7 @@ def ventaSegmented(codigo = '',rubro_empresa = 'Agricola', filtros = input_dict_
     df_ventas_detalle = etl_comercial(dff)
     
     #df_ventas_detalle=etl_comercial(dff)
-    print(df_ventas_detalle.columns)
+    
     id_list = extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id') 
     id_list_title=extraer_list_value_dict (dict_input = filtros, dict_componentes= dict_components_comercial(), tipe_value='id',for_title=True) 
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)

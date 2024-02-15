@@ -1020,7 +1020,7 @@ def crear_ratio_finanzas(codigo = '',empresa = '',usuario = ''):
             else:
                 
                 df['valor']=formula_paraiso(formula = formula_indicador,df = partidas_df)
-            print(df)
+            
             df['promedio'] = df['valor'].sum()/len(df['Agrupado'].unique())
             
             return figure__line2(df['Agrupado'],df['valor'],df['promedio'],nombre_indicador,'Valor','Promedio',desde_negativo_indicador,hasta_negativo_indicador,color_negativo_indicador,desde_medio_indicador,hasta_medio_indicador,color_medio_indicador,desde_positivo_indicador,hasta_positivo_indicador,color_positivo_indicador)
@@ -1138,7 +1138,7 @@ def editar_ratio_finanzas(*args):
     color_positivo_indicador = args[11]
     comentario_indicador = args[12]
     indicador_pk = args[13]
-    print(indicador_pk)
+    
     
     #test_df.columns[3:]
     idind_list=list(TipoIndicador.objects.all().values_list('id',flat=True))
@@ -1311,10 +1311,10 @@ def eliminar_ratio_finanzas(*args):
     nombre_indicador_ = args[1].upper()
     formula_indicador = args[2].upper()
     indicador_pk = args[3]
-    print(indicador_pk)
+    
     
     indicador_tipo_text = TipoIndicador.objects.filter(id = indicador_pk).values_list('name_tipo_indicador',flat=True)
-    print(indicador_tipo_text)
+    
     app = DjangoDash(name=args[4],external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     app.layout = Contenedor([

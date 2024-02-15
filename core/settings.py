@@ -23,7 +23,7 @@ SECRET_KEY=os.environ.get('SECRET_KEY')
 DEBUG = False    #'RENDER' not in os.environ
 
 
-
+NPM_BIN_PATH = f"C:\\Program Files\\nodejs\\npm.cmd"
 ALLOWED_HOSTS = ['*']
 
 #RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -54,14 +54,12 @@ THIRD_PARTY_APPS = [
     'channels',
     'channels_redis',
     'crum',
-
+    'tailwind',
+    'theme'
     #'debug_toolbar'
     #'dash_ag_grid'
-    
-
-
 ]
-
+TAILWIND_APP_NAME = 'theme'
 #AUTH_USER_MODEL = 'users.PerfilUser'
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 

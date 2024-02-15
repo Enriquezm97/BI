@@ -1,12 +1,13 @@
-{% load static %}
+{% load static tailwind_tags %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>BI</title>
+  {% tailwind_css %}
   <!-- plugins:css -->
   <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}">
   <link rel="stylesheet" href="{% static 'vendors/base/vendor.bundle.base.css' %}">
@@ -18,6 +19,7 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <!-- endinject -->
   <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
+  
 </head>
 <body>
   <div class="container-scroller">
@@ -26,7 +28,7 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
       <!-- partial:partials/_sidebar.html -->
-      {% include 'partials/_sidebar.html' %}
+      {% include 'partials/_sidebar_1.html' %}
       <!-- partial -->
       <div class="main-panel">
         <div class="content-wrapper">
@@ -43,12 +45,7 @@
     </div>
     <!-- page-body-wrapper ends -->
   </div>
-  <!-- container-scroller -->
-
-  <!-- plugins:js -->
   <script src="{% static 'vendors/base/vendor.bundle.base.js' %}"></script>
-  <!-- endinject -->
-  <!-- Plugin js for this page-->
   <script src="{% static 'vendors/chart.js/Chart.min.js' %}"></script>
   <script src="{% static 'vendors/datatables.net/jquery.dataTables.js' %}"></script>
   <script src="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
@@ -63,6 +60,10 @@
   <script src="{% static 'js/data-table.js' %}"></script>
   <script src="{% static 'js/jquery.dataTables.js' %}"></script>
   <script src="{% static 'js/dataTables.bootstrap4.js' %}"></script>
+
+
+  <!---->
+  
   <!-- End custom js for this page-->
 </body>
 

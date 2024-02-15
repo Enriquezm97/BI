@@ -16,4 +16,6 @@ def get_empresas():
     return Empresa.objects.filter(id = id_empresa)
 
 
+
+
     
