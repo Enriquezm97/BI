@@ -300,3 +300,13 @@ def list_dict_outputs(id_components = [],dict_cols_dataframe = {}, dataframe=Non
            
             outputs_list.append([{'label': i, 'value': i} for i in sorted(dataframe[dict_cols_dataframe[element]].unique())])
     return outputs_list
+
+def fields_columns(columns = []):
+    list_ = []
+    for col in columns:
+        if col =='CPM' or col == 'STOCK':
+            
+            list_.append({"field": col,"cellStyle": {'font-size': 12},"type": "rightAligned",'cellStyle':{"styleConditions": [{"condition": "params.value > 0 ","style": {"backgroundColor": "#C6EFCE"}}],"defaultStyle": {"backgroundColor": "white"}}})
+        else :
+            list_.append({"field": col,"cellStyle": {'font-size': 12},"type": "rightAligned"})
+    return list_

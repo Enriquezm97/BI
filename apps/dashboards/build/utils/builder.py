@@ -55,3 +55,10 @@ def create_col_for_dataframe(id_components = [],dict_cols_dataframe = {}):
             
             cols_dataframe.append(dict_cols_dataframe[element])
     return cols_dataframe
+
+
+def meses_inventario(cpm,stock):
+    if cpm == 0:
+        return 'NO ROTA'
+    else:
+        return round(stock/cpm,2)

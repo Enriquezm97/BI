@@ -26,13 +26,13 @@ def opened_modal(
     def toggle_modal(n_clicks,figure, opened):
         
             fig=go.Figure(figure)
-            fig.update_traces(hoverlabel=dict(font_size=30,bgcolor="white"),)
+            fig.update_traces(hoverlabel=dict(font_size=20,bgcolor="white"),)
             fig.update_layout(height = height_modal,
                               
                               title_font_size = 30)
             
             fig.update_xaxes(
-                             tickfont=dict(size=20),
+                             tickfont=dict(size=15),
                              color='black',
                              showticklabels = True,
                              title_font_family="sans-serif",

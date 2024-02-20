@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from apps.users.models import Empresa,Usuario,Rubro,Rol
 from django.contrib.auth.models import User
 from .crum import *
+import base64
 #from .form import RegistroUser,RegistroProfile
 # Create your views here.
 def update_profile(request):
@@ -44,7 +45,8 @@ def registo_user_view(request):
         password = request.POST.get('password')
         empresa = request.POST.get('empresa')
         rol = request.POST.get('rol')
-        picture = request.FILES.get('picture')
+        picture =  request.FILES.get('picture')
+        #picture = request.POST.get('picture')
         print(nombres,apellidos,celular,correo,username,password,empresa,rol,picture)
         # Crear el usuario
         if User.objects.filter(username=username).exists():
@@ -56,16 +58,60 @@ def registo_user_view(request):
                     first_name = nombres,
                     last_name = apellidos,
                     phone = celular,
-                    picture = picture,
+                    #picture = picture.read(),
+                    datos_picture = base64.b64encode(picture.read()).decode('utf-8') ,
                     is_active = True,
                     user = user,
                     empresa = Empresa.objects.get(id=int(empresa)),
                     rol = Rol.objects.get(id=int(rol)),        
         )
         profile.save()
-        return redirect('crear_user')
+        return redirect('lista_usuarios')
     context = {'empresas':lista_empresa,'roles':lista_rol}
     return render(request, 'users/form_create_user.html', context)
+
+def modificar_user_view(request,id):
+    rol_ = Rol.objects.all()
+    lista_rol = [(fila.id, fila.name_rol) for fila in rol_]
+    
+    reg_Usuario= Usuario.objects.get(id=id)
+    
+    if request.method == 'POST':
+        nombres = request.POST.get('nombres')
+        apellidos = request.POST.get('apellidos')
+        celular = request.POST.get('celular')
+        correo = request.POST.get('email')
+        username = request.POST.get('username').lower()
+        password = request.POST.get('password')
+        rol = request.POST.get('rol')
+        picture =  request.FILES.get('picture')
+        is_active =  request.FILES.get('is_active')
+        
+        if User.objects.filter(username=username).exists():
+            return render(request, 'users/form_modificar_user.html', {'error': 'El nombre de usuario ya está en uso'})
+        
+        user = User.objects.create_user(username=username, email=correo, password=password, is_active = True if is_active == 'on' else False)
+        profile = Usuario(
+                    username= username,
+                    email = correo,
+                    first_name = nombres,
+                    last_name = apellidos,
+                    phone = celular,
+                    #picture = picture.read(),
+                    datos_picture = base64.b64encode(picture.read()).decode('utf-8') ,
+                    is_active = True if is_active == 'on' else False,
+                    user = user,
+                    rol = Rol.objects.get(id=int(rol)),        
+        )
+    return render(request, 'users/form_modificar_user.html', context={'roles':lista_rol,'usuario':reg_Usuario})
+
+
+
+
+
+
+
+
 
 
 def registo_profile_view(request):
@@ -74,13 +120,7 @@ def registo_profile_view(request):
     rol_ = Rol.objects.all()
     lista_rol = [(fila.id, fila.name_rol) for fila in rol_]
     lista_empresa = [(fila.id, fila.name_empresa) for fila in empresa_]
-    #if request.method == 'POST':
-        #form = RegistroProfile(request.POST)
-        #if form.is_valid():
-        #    form.save()
-        #    return redirect('login')  # Puedes redirigir a donde desees después de registrar un nuevo usuario
-    #else:
-        #form = RegistroProfile()
+
 
     return render(request, 'users/form_create_profile.html',context={'roles':lista_rol,'empresas':lista_empresa})#, {'form': form}
 

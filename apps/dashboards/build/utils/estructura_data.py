@@ -92,3 +92,51 @@ columns_nsp_stockalmval = {
         'desde'      : 'Desde',
         'hasta'      : 'Hasta'
     }
+
+
+columns_nsp_saldosalmacen = {
+    'DSC_GRUPO':'Grupo', 
+    'DSC_SUBGRUPO':'Subgrupo', 
+    'COD_PRODUCTO':'Codigo Producto', 
+    'DESCRIPCION':'Producto', 
+    'UM':'Unidad Medida',
+    'MARCA':'Marca', 
+    'PU_S':'Precio Unitario Soles', 
+    'PU_D':'Precio Unitario Dolares', 
+    'STOCK':'Stock', 
+    'INV_VALMOF':'Inventario Valorizado Soles', 
+    'INV_VALMEX':'Inventario Valorizado Dolares'
+       
+    }
+
+columns_nsp_consumosalmacen = {
+    'IDEMPRESA':'Codigo Empresa', 
+    'IDINGRESOSALIDAALM':'Codigo Ingreso Salida', 
+    'VENTANA':'Ventana', 
+    'DOCUMENTO': 'Documento',
+    'IDRESPONSABLE':'Codigo Responsable', 
+    'LLEVADOPOR':'Responsable', 
+    'GLOSA': 'Glosa', 
+    'IDMOTIVO':'Codigo Motivo', 
+    'MOTIVO':'Motivo',
+    'IDSUCURSAL':'Codigo Sucursal', 
+    'IDALMACEN':'Codigo Almacen', 
+    'IDPRODUCTO':'Codigo Producto', 
+    'DOCORDENPRODUCCION':'Documento Produccion',
+    'IDCONSUMIDOR':'Codigo Consumidor', 
+    'FECHA':'Fecha', 
+    'CANTIDAD':'Cantidad', 
+    'FACTOR':'Factor', 
+    'IDSIEMBRA':'Codigo Siembra',
+    'IDCAMPANA':'Codigo Campaña', 
+    'DOCLOTEPRODUCCION':'Documento Lote Produccion', 
+    'IDACTIVIDAD': 'Codigo Actividad', 
+    'IDLABOR':'Codigo Labor',
+    'IDPARTIDAPSTAL':'Codigo Partidas',
+    'SEMANA':'Semana', 
+    'AREA':'Area', 
+    'DOSISLOTE':'Dosis Lote', 
+    'OBSERVACION':'Observacion',
+    'IDPRODUCTODESTINO':'Codigo Destino', 
+    'DSC_PRODUCTODESTINO':'Destino'
+}

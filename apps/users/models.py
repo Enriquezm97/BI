@@ -1,9 +1,9 @@
-
-#from django.contrib.auth.models import User
-import os
+import base64
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User,AbstractUser
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from ..dashboards.models import ConfigDashboard
 
 
@@ -69,7 +69,8 @@ class Usuario(models.Model):
     verified = models.BooleanField(default=False)
     requested_verified = models.BooleanField(default=False)
 
-    picture = models.ImageField(upload_to='media',blank=True,null=True)
+    picture = models.BinaryField(null=True)
+    datos_picture = models.TextField(blank=True)
     #username =  models.OneToOneField(User,on_delete=models.CASCADE)
     #name = models.CharField(max_length=15, blank=True,null=True)
     phone = models.CharField(max_length=20, blank=True,null=True)
@@ -79,10 +80,16 @@ class Usuario(models.Model):
     create = models.DateTimeField(auto_now_add=True,null=True)
     modified = models.DateTimeField(auto_now=True,null=True)
 
+    def imagen_encoded(self):
+        from base64 import b64encode
+        if self.picture:
+            return b64encode(self.picture).decode('utf8')
+        return None
 
     def __str__(self):
 
         return self.username#, self.empresa
+
 
 #class PerfilUser(AbstractUser):
 #    picture = models.ImageField(upload_to='media',blank=True,null=True)

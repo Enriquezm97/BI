@@ -16,7 +16,8 @@ urlpatterns = [
     path('ventas',Ventas_Agro_exp.as_view(),name='ventas_'),
     #logistica
     path('stocks',Stocks_View.as_view(),name='stocks'),
-    path('gestion-stock',test_View.as_view(),name='gestion_stock'),
+    path('gestion-stock-test',test_View.as_view(),name='gestion_stock_test'),
+    path('gestion-stock',Gestion_Stock.as_view(),name='gestion_stock'),
     #produccion
     path('ejecucion-campania',Ejecucion_campania.as_view(),name='ejecucion_campania'),
     #testing 

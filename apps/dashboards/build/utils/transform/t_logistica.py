@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from ..helpers import mes_short,new_col_salidas
-from ...utils.estructura_data import columns_nsp_stocks, columns_nsp_stockalmval
+from ...utils.estructura_data import *
 
 def clean_stocks(df = None):
     df['mes'] = df['mes'].astype('int')
@@ -47,3 +47,15 @@ def clean_stock_alm(df = None):
     df = df.drop(['codmodelo','modelo'], axis=1)
     dff = df.rename(columns = columns_nsp_stockalmval)
     return dff
+
+def transform_saldos_alm(df = None):
+    df['COD_PRODUCTO'] = df['COD_PRODUCTO'].str.strip()
+    df.loc[df.MARCA =='','MARCA']='NO ESPECIFICADO'
+    df = df.rename(columns = columns_nsp_saldosalmacen)
+    return df
+
+def transform_consumos_alm(df = None):
+    df['IDPRODUCTO'] = df['IDPRODUCTO'].str.strip()
+    df.loc[df.LLEVADOPOR =='','LLEVADOPOR']='NO ESPECIFICADO'
+    df = df.rename(columns = columns_nsp_consumosalmacen)
+    return df

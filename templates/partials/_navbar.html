@@ -55,7 +55,7 @@
           </li>
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-              <img src="{% static 'images/profile.png' %}" alt="profile"/>
+              <img src="data:image/jpg;base64, {{  user.usuario.datos_picture }}" alt="profile"/>
               <span class="nav-profile-name">{{user.usuario.first_name}} {{user.usuario.last_name}}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
