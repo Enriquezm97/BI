@@ -1,5 +1,6 @@
 import pandas as pd
 import requests
+import json
 from datetime import datetime
 from apps.graph.test.utils.crum import get_data_connection
 from apps.graph.test.Connection.read_api import getApi
@@ -63,7 +64,7 @@ def conecction_data_tc():
     iter_data= pd.DataFrame(columns=['compra','venta','origen','moneda','fecha'])
     fecha_now =datetime.now()
     for mes  in range(1,fecha_now.month+1):
-        response = requests.get(f"https://api.apis.net.pe/v1/tipo-cambio-sunat?month={mes}&year={fecha_now.year}")
-        data = response.json()
+        r = requests.get(f"https://api.apis.net.pe/v1/tipo-cambio-sunat?month={mes}&year={fecha_now.year}")
+        data = json.loads(r.text)
         iter_data=pd.concat([iter_data,pd.DataFrame(data)])
     return iter_data.rename(columns = {'compra':'Compra','venta': 'Venta','fecha': 'Fecha'})
