@@ -8,11 +8,13 @@ from apps.graph.test.utils.functions.functions_transform import *
 from ..build.build_inicio import * 
 from django.views.decorators.cache import cache_page
 from apps.dashboards.build.layout.error.dashboard_error import ERROR
+df =pd.read_parquet("data_inicio.parquet", engine="pyarrow")
 
 def inicio_dash(codigo = ''):
     
     app = DjangoDash(name = codigo,external_stylesheets = EXTERNAL_STYLESHEETS, external_scripts = EXTERNAL_SCRIPTS)
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
+    
     #try:
     #if get_empresa()== 'SAMPLAST':                
     #    dff  = connection_api(sp_name = 'nsp_stocks_bi_samplast')
@@ -24,7 +26,7 @@ def inicio_dash(codigo = ''):
         
     #logistica_df = clean_inventarios(df = dff) 
         
-    app.layout = inicio_build(dataframe_tc = conecction_data_tc() )
+    app.layout = inicio_build(dataframe_tc = df  )#conecction_data_tc()
     #except:
     #    app.layout = ERROR
     
