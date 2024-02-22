@@ -306,7 +306,7 @@ def fields_columns(columns = []):
     for col in columns:
         if col =='CPM' or col == 'STOCK':
             
-            list_.append({"field": col,"cellStyle": {'font-size': 12},"type": "rightAligned",'cellStyle':{"styleConditions": [{"condition": "params.value > 0 ","style": {"backgroundColor": "#C6EFCE"}}],"defaultStyle": {"backgroundColor": "white"}}})
+            list_.append({"field": col,"cellStyle": {'font-size': 11},"type": "rightAligned",'cellStyle':{"styleConditions": [{"condition": "params.value > 0 ","style": {"backgroundColor": "#C6EFCE"}}],"defaultStyle": {"backgroundColor": "white"}}})
         else :
-            list_.append({"field": col,"cellStyle": {'font-size': 12},"type": "rightAligned"})
+            list_.append({"field": col,"cellStyle": {'font-size': 11},"type": "rightAligned"})
     return list_

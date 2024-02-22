@@ -113,7 +113,7 @@ class TestView(LoginRequiredMixin,View):
         app_id =f'{id_user}-inicio'
         #cached_data  = cache.get(inicio_dash(codigo = cache_key)) 
         #cache.set(cache_key,cached_data)
-        return render(request,'test.html',{'dashboard':  inicio_dash(codigo = app_id),'code':app_id})#
+        return render(request,'home.html',)##{'dashboard':  inicio_dash(codigo = app_id),'code':app_id}
         
 
 class Test2View(View):

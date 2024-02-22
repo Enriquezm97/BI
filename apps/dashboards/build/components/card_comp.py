@@ -144,3 +144,23 @@ def cardGF(id = 'card-value',value_total=90000,text='owo',list_element=[{'value'
                 radius='md',
                 #style={'width': 440}
             )
+    
+def card_small(id_value = '',text = ''):
+  
+    return dmc.Card(
+            id='card',
+            children=[
+            dmc.Group([
+                dmc.Text(id= id_value , size='1.5rem', weight=700),
+                #dmc.Text('18%', size='xs', color='rgb(9, 146, 104)'),
+                #dmc.Text(html.I(className='fas fa-arrow-up fa-fw fa-xs'), color='rgb(9, 146, 104)')
+            ], spacing='0.5rem', sx={'align-items': 'baseline'}),
+            dmc.Text(text, size='mb', color='dimmed'),
+           
+           
+
+            ],
+            withBorder=True,
+            shadow='xl',
+            radius='md',
+        )

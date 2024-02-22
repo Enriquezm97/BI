@@ -160,8 +160,58 @@ def test_dashboard(codigo= '',data_almacen = []):
 
 
 def resize_dashboard():
-    
-    return Container([])
+    return dmc.Card(
+            id='card',
+            children=[
+            dmc.Group([
+                Entry.select(
+                                id = 'select-tipo-val', texto = "Tipo de Valorización", size = 'md',
+                                data=[
+                                    {"value": "1", "label": "CONTABLE"},
+                                    {"value": "2", "label": "ULTIMA COMPRA"},
+                                    {"value": "3", "label": "ULTIMO PROMEDIO"},
+                                    ],
+                                value='1',
+                                clearable=False
+                            ),
+            ], spacing='0.5rem', sx={'align-items': 'baseline'}),
+             Entry.multiSelect(id = 'multiselect-almacen',texto='Almacen',place = 'Todos'),
+                        dmc.Space(h=10),
+                        Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ),#,icon=DashIconify(icon="ic:search")
+                        dmc.Space(h=10),
+                        dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
+                        dcc.RangeSlider(
+                            min = 0,
+                            marks=None,
+                            tooltip={
+                                "placement": "bottom",
+                                "always_visible": True,
+                                "style": {"color": "Black", "fontSize": "30px", "font-size":"18px"},
+                            },
+                            id='range-slider-cpm',
+                            
+                        ),
+                        dmc.NumberInput(
+                            id = 'num-meses',
+                            label="Número de Meses",
+                            description="Ultimos meses",
+                            value=6,
+                            min=1,
+                            step=1,
+                            style={"width": 150},
+                            size="md",
+                            
+                        )
+           
+           
+
+            ],
+            withBorder=True,
+            shadow='xl',
+            radius='md',
+            style={'width': 300}
+        )
+
 
 """
 html.Div([

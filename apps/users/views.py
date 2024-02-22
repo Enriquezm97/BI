@@ -76,34 +76,31 @@ def modificar_user_view(request,id):
     
     reg_Usuario= Usuario.objects.get(id=id)
     
+    user = User.objects.get(pk=reg_Usuario.user_id)
     if request.method == 'POST':
         nombres = request.POST.get('nombres')
         apellidos = request.POST.get('apellidos')
         celular = request.POST.get('celular')
         correo = request.POST.get('email')
-        username = request.POST.get('username').lower()
-        password = request.POST.get('password')
         rol = request.POST.get('rol')
         picture =  request.FILES.get('picture')
-        is_active =  request.FILES.get('is_active')
+        is_active =  request.POST.get('is_active')
+        print(is_active)
         
-        if User.objects.filter(username=username).exists():
-            return render(request, 'users/form_modificar_user.html', {'error': 'El nombre de usuario ya está en uso'})
-        
-        user = User.objects.create_user(username=username, email=correo, password=password, is_active = True if is_active == 'on' else False)
-        profile = Usuario(
-                    username= username,
-                    email = correo,
-                    first_name = nombres,
-                    last_name = apellidos,
-                    phone = celular,
-                    #picture = picture.read(),
-                    datos_picture = base64.b64encode(picture.read()).decode('utf-8') ,
-                    is_active = True if is_active == 'on' else False,
-                    user = user,
-                    rol = Rol.objects.get(id=int(rol)),        
-        )
-    return render(request, 'users/form_modificar_user.html', context={'roles':lista_rol,'usuario':reg_Usuario})
+        user.email = correo
+        user.is_active = True if is_active == 'on' else False
+        user.save()
+
+        reg_Usuario.first_name = nombres
+        reg_Usuario.last_name = apellidos
+        reg_Usuario.email =  correo
+        reg_Usuario.phone = celular
+        reg_Usuario.is_active = True if is_active == 'on' else False
+        reg_Usuario.datos_picture = base64.b64encode(picture.read()).decode('utf-8')
+        reg_Usuario.rol = Rol.objects.get(id=int(rol))
+        reg_Usuario.save()
+        return redirect('lista_usuarios')
+    return render(request, 'users/form_modificar_user.html', context={'roles':lista_rol,'usuario':reg_Usuario,'user_id':id})
 
 
 

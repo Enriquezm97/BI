@@ -28,7 +28,7 @@
         </nav>
         <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Modificar Usuario</h1>
     </div>
-    <form method="POST" action="" enctype="multipart/form-data" > 
+    <form method="POST" action="{% url "modificar_user" id=user_id %}"enctype="multipart/form-data" > 
         {% csrf_token %}
         <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
@@ -50,11 +50,16 @@
             </div> 
             <div>
                 <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
-                <input type="text" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" name='username' value="{{ usuario.username }}" required>
+                <input type="text" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" name='username' value="{{ usuario.username }}" disabled>
             </div>  
-            <div class="mb-6">
-                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nueva Contraseña</label>
-                <input type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="**********" name='password'  required>
+            <div>
+              <label for="visitors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
+              <select id="underline_select" class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" name='rol' >
+                  {% for opcion_value, opcion_label in roles %} 
+                      
+                      <option value="{{ opcion_value }}" {% if usuario.rol_id == opcion_value %}selected{% endif %}>{{ opcion_label }}</option>
+                  {% endfor %}
+              </select>
             </div> 
             <div>
                 <div class="flex items-center gap-4">
@@ -66,15 +71,7 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <label for="visitors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
-                <select id="underline_select" class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" name='rol' >
-                    {% for opcion_value, opcion_label in roles %} 
-                        
-                        <option value="{{ opcion_value }}" {% if usuario.rol_id == opcion_value %}selected{% endif %}>{{ opcion_label }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            
             <div class="form-check form-check-flat form-check-primary">
                 <label class="form-check-label">
                   <input type="checkbox" class="form-check-input" name = 'is_active' {% if usuario.user.is_active  %}checked{% endif %}>

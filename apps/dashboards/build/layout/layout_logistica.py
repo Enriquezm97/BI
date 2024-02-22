@@ -2,7 +2,7 @@ import dash_ag_grid as dag
 from ..components.display_comp import * 
 from ..components.layout_comp import *
 from ..components.card_comp import *
-
+from datetime import datetime
 
 
 
@@ -194,8 +194,14 @@ def gestion_stock(data_almacen = []):
         Modal(id="modal_bar-inv-val", size= "85%"),
         Row([
             Column([
-                 title(text = 'Gestión de Stocks',order=1)  
-            ],size=4),
+                 title(text = 'Gestión de Stocks',order=1),
+                  
+            ],size=3),
+            Column(
+            [
+                Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ,icon=DashIconify(icon="ic:search")),#
+                
+            ],size = 2),
             Column(
             [
                 Entry.select(
@@ -226,6 +232,7 @@ def gestion_stock(data_almacen = []):
                     searchable = True
                 )
             ],size = 2),
+            
             Column(
             [
                 Entry.select(
@@ -238,7 +245,7 @@ def gestion_stock(data_almacen = []):
                                 value='dolares',
                                 clearable=False
                             )
-            ],size = 2),    
+            ],size = 1),    
         ]),
         Row([
             Column(
@@ -246,6 +253,19 @@ def gestion_stock(data_almacen = []):
                 #Entry.textInput(label='owo',id='input',icon=DashIconify(icon="ic:search"),)
                 Row([
                     Column([
+                    dmc.Card(
+            
+                    children=[
+                        
+                        dmc.Space(h=10),
+                        Entry.select(
+                            id = 'select-sucursal',
+                            texto = 'Sucursal',
+                            size = 'md',
+                            clearable = True,
+                            searchable = True
+                        ),
+                        Entry.multiSelect(id = 'multiselect-almacen',texto='Almacen',data = data_almacen,place = 'Todos'),
                         Entry.select(
                                 id = 'select-tipo-val', texto = "Tipo de Valorización", size = 'md',
                                 data=[
@@ -255,11 +275,7 @@ def gestion_stock(data_almacen = []):
                                     ],
                                 value='1',
                                 clearable=False
-                            ),
-                        
-                        Entry.multiSelect(id = 'multiselect-almacen',texto='Almacen',data = data_almacen,place = 'Todos'),
-                        dmc.Space(h=10),
-                        Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ),#,icon=DashIconify(icon="ic:search")
+                        ),
                         dmc.Space(h=10),
                         dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
                         dcc.RangeSlider(
@@ -273,17 +289,39 @@ def gestion_stock(data_almacen = []):
                             id='range-slider-cpm',
                             
                         ),
-                        dmc.NumberInput(
-                            id = 'num-meses',
-                            label="Número de Meses",
-                            description="Ultimos meses",
-                            value=6,
-                            min=1,
-                            step=1,
-                            style={"width": 150},
-                            size="md",
-                            
-                        )
+                        dmc.Grid(
+                            children=[
+                                dmc.Col(
+                                    dmc.NumberInput(
+                                        id = 'num-meses',
+                                        label="Número de Meses",
+                                        description="Ultimos meses",
+                                        value=6,
+                                        min=1,
+                                        step=1,
+                                        style={"width": 150},
+                                        size="md",
+                                        
+                                    )
+                                ,span=6),
+                                dmc.Col(
+                                    children=[
+                                    #dmc.Text("Desde", size="md",weight=500),
+                                    #dmc.Badge(datetime.now().strftime('%Y-%m-%d'), size="lg", variant="outline",color="black"),
+                                    #dmc.Text("Hasta", size="md",weight=500),
+                                    #sdmc.Badge('2022-02-01', size="lg", variant="outline",color="black")
+                                    ],span=6),
+                                
+                            ],
+                            gutter="xl",
+                        ),
+                        
+                    ],
+                    withBorder=True,
+                    shadow='xl',
+                    radius='md',
+                    
+                )
                     
                     ]),
 
@@ -292,16 +330,20 @@ def gestion_stock(data_almacen = []):
             Column([
                 Row([
                     Column([
-                        card_value(text='CPM',radius='xs',id_value='card-cpm',color_section_title= '#33ce96')
+                        card_small(id_value='card-cpm',text='CPM'),
+                       
                     ],size = 3),
                     Column([
-                        card_value(text='INV. VAL.',radius='xs',id_value='card-invval',color_section_title= '#33ce96')
+                        card_small(id_value='card-invval',text='INV. VAL'),
+                       
                     ],size = 3),
                     Column([
-                        card_value(text='TI STOCK',radius='xs',id_value='card-stock',color_section_title= '#33ce96')
+                        card_small(id_value='card-stock',text='TI STOCK'),
+                        #card_value(text='TI STOCK',radius='xs',id_value='card-stock',color_section_title= '#33ce96')
                     ],size = 3),
                     Column([
-                        card_value(text='TI CONSUMO',radius='xs',id_value='card-consumo',color_section_title= '#33ce96')
+                        card_small(id_value='card-consumo',text='TI CONSUMO'),
+                        #card_value(text='TI CONSUMO',radius='xs',id_value='card-consumo',color_section_title= '#33ce96')
                     ],size = 3),
                 ]),
                 Row([
@@ -333,16 +375,17 @@ def gestion_stock(data_almacen = []):
                                         #columnDefs=[{"field": i,} for i in df.columns],#"cellStyle": {'font-size': 18}
                                         defaultColDef = {
                                             "resizable": True,
-                                            "initialWidth": 160,
+                                            "initialWidth": 130,
                                             "wrapHeaderText": True,
                                             "autoHeaderHeight": True,
-                                            "minWidth":160,
+                                            "minWidth":130,
                                             "sortable": True, 
                                             "filter": True
                                         },
                                         className="ag-theme-alpine headers1",
                                         columnSize="sizeToFit",
-                                        style={'font-size': '13px'},
+                                        style={'font-size': '11px'},
+                                        dashGridOptions={"enableCellTextSelection": True, "ensureDomOrder": True},
                                         
 
                             )])    
