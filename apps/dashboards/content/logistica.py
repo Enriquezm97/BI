@@ -135,6 +135,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
     app.layout =  gestion_stock(data_almacen=['ALMACEN CENTRAL','ALMACEN EN PROCESO','ALMACEN PRODUCTO TERMINADO','ALMACEN EXTERIOR TEMPORAL','ALMACEN TERCEROS','ALMACEN DE AJUSTE DE INVENTARIO','ALMACEN TEMPORAL LATAM','ALMACEN AVERIADOS'])
     @app.callback(
         #Output('multiselect-almacen','data'),
+        Output("multiselect-almacen","data"),
         Output("data-stock","data"),
         Input('multiselect-almacen','value'),
         Input('select-tipo-val','value'),
@@ -150,7 +151,11 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
             df = consumo_alm_df.copy()
         else:
             df = consumo_alm_df[consumo_alm_df['ALMACEN'].isin(almacen)]
-        return df.to_dict('series')
+        
+        return [
+            [{'label': i, 'value': i} for i in df['ALMACEN'].unique()],
+            df.to_dict('series')
+        ]
 
     @app.callback(
         [
