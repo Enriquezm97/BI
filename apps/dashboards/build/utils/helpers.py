@@ -303,10 +303,27 @@ def list_dict_outputs(id_components = [],dict_cols_dataframe = {}, dataframe=Non
 
 def fields_columns(columns = []):
     list_ = []
+    cols_ = ['Inventario Valorizado dolares','Inventario Valorizado soles','Precio Unitario','STOCK','Consumo Promedio Mensual','TI']
     for col in columns:
-        if col =='CPM' or col == 'STOCK':
-            
-            list_.append({"field": col,"cellStyle": {'font-size': 11},"type": "rightAligned",'cellStyle':{"styleConditions": [{"condition": "params.value > 0 ","style": {"backgroundColor": "#C6EFCE"}}],"defaultStyle": {"backgroundColor": "white"}}})
-        else :
+        if col in cols_:
+            print('here')
+            list_.append({
+                "field": col,"cellStyle": {'font-size': 11},
+                "type": "rightAligned", "cellDataType":"number",
+                "valueFormatter": {"function": "params.value == null ? '' :  d3.format(',.2f')(params.value)"},
+                        })
+        elif col == 'Meses de Inventario':
+            list_.append({
+                "field": col,"cellStyle": {'font-size': 11},
+                "type": "rightAligned", "cellDataType":"number",
+                "valueFormatter": {"function": "params.value == null ? 'NO ROTA' :  d3.format(',.2f')(params.value)"},
+            })
+        else:
             list_.append({"field": col,"cellStyle": {'font-size': 11},"type": "rightAligned"})
+        #if col =='Consumo Promedio Mensual' or col == 'STOCK':
+            
+        #    list_.append({"field": col,"cellStyle": {'font-size': 11},"type": "rightAligned",'cellStyle':{"styleConditions": [{"condition": "params.value > 0 ","style": {"backgroundColor": "#C6EFCE"}}],"defaultStyle": {"backgroundColor": "white"}}})
+        #else :
+            
     return list_
+

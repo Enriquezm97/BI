@@ -14,7 +14,7 @@ def bar_logistica_y1(df = None, height = 450 , moneda = 'Soles'):
     name = "Meses Inventario",
     cliponaxis=False,
     marker=dict(color="#3aa99b"),
-    hovertemplate ='<br>'+'Descripción'+': <b>%{x}</b><br>'+'Meses Inventario'+': <b>%{y}</b>',hoverlabel=dict(font_size=13,bgcolor="white")
+    hovertemplate ='<br>'+'Producto'+': <b>%{x}</b><br>'+'Meses Inventario'+': <b>%{y}</b>',hoverlabel=dict(font_size=13,bgcolor="white")
     ))
     
     fig.update_layout(
@@ -27,7 +27,7 @@ def bar_logistica_y1(df = None, height = 450 , moneda = 'Soles'):
         ),
         
         template= 'none',
-        xaxis_title='<b>'+'Descripción'+'</b>',
+        xaxis_title='<b>'+'Producto'+'</b>',
     )
     
     fig.update_layout(
@@ -44,17 +44,17 @@ def bar_logistica_y1(df = None, height = 450 , moneda = 'Soles'):
     fig.update_layout(margin=dict(r = 40, b = 40))
     return fig
 
-def bar_logistica_y2(df = None, height = 450 , moneda = 'Soles'):
+def bar_logistica_y2(df = None, height = 450 , moneda = 'Soles', y_col = ''):
 
     fig = go.Figure()
     #'Meses Inventario','Inventario Valorizado'
     fig.add_trace(go.Bar(
     x = df['DESCRIPCION'],
-    y = df['Inventario Valorizado'],
-    name = "Inventario Valorizado",
+    y = df[y_col],
+    name = 'Inventario Valorizado',
     cliponaxis=False,
     marker=dict(color="#5175c7"),
-    hovertemplate ='<br>'+'Descripción'+': <b>%{x}</b><br>'+'Inventario Valorizado'+': <b>%{y:,.2f}</b>',hoverlabel=dict(font_size=13,bgcolor="white")
+    hovertemplate ='<br>'+'Producto'+': <b>%{x}</b><br>'+'Inventario Valorizado'+': <b>%{y:,.2f}</b>',hoverlabel=dict(font_size=13,bgcolor="white")
     ))
     fig.add_trace(
         go.Scatter(
@@ -64,7 +64,7 @@ def bar_logistica_y2(df = None, height = 450 , moneda = 'Soles'):
             name="Meses de Inventario",
             marker=dict(color="#3aa99b"),
             cliponaxis=False,
-            hovertemplate ='<br>'+'Descripción'+': <b>%{x}</b><br>'+'Meses de Inventario'+': <b>%{y}</b>',hoverlabel=dict(font_size=13,bgcolor="white")
+            hovertemplate ='<br>'+'Producto'+': <b>%{x}</b><br>'+'Meses de Inventario'+': <b>%{y}</b>',hoverlabel=dict(font_size=13,bgcolor="white")
         )
     )
     fig.update_layout(
@@ -73,7 +73,7 @@ def bar_logistica_y2(df = None, height = 450 , moneda = 'Soles'):
         yaxis=dict(
             title=dict(text='<b>'+'Inventario Valorizado'+'</b>'),
             side="left",
-            range=[0, df['Inventario Valorizado'].max()]
+            range=[0, df[y_col].max()]
         ),
         yaxis2=dict(
             title=dict(text='<b>'+'Meses Inventario'+'</b>'),
@@ -83,7 +83,7 @@ def bar_logistica_y2(df = None, height = 450 , moneda = 'Soles'):
             tickmode="auto",
         ),
         template= 'none',
-        xaxis_title='<b>'+'Descripción'+'</b>',
+        xaxis_title='<b>'+'Producto'+'</b>',
     )
     fig.update_layout(legend=dict(
         orientation="h",

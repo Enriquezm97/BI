@@ -198,8 +198,8 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
             consumo_alm_df = consumo_alm_df[consumo_alm_df['SUCURSAL']==sucursal]
         precio_ = 'PU_S' if moneda == 'soles' else 'PU_D'
         
-        sucursal_ = sucursal if sucursal != None else ''
-        almacen_ = almacen if almacen != None else ''
+        #sucursal_ = sucursal if sucursal != None else ''
+        #almacen_ = almacen if almacen != None else ''
         saldos_alm_df = connect_saldos_alm()
         if sucursal == None and almacen == None:
             saldos_alm_df = saldos_alm_df.copy()
@@ -239,8 +239,8 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         dff['CANTIDAD'] = dff['CANTIDAD']/mes_back
         dff['CANTIDAD'] = dff['CANTIDAD'].round(2)
         dff['Meses Inventario'] = dff.apply(lambda x: meses_inventario(x['CANTIDAD'],x['STOCK']),axis=1)
-        dff['Inventario Valorizado'] = dff[precio_] * dff['STOCK']
-        dff = dff.sort_values('Inventario Valorizado',ascending =  False)
+        #dff['Inventario Valorizado'] = dff[precio_] * dff['STOCK']
+        #dff = dff.sort_values('Inventario Valorizado',ascending =  False)
         dff['TI'] = 1/dff['CANTIDAD']
         dff['TI'] = dff['TI'].replace([np.inf],0)
         if input_text != None:
@@ -249,7 +249,6 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
             
         
         cpm_max = round(dff['CANTIDAD'].max())
-        print(len(dff['MARCA'].unique()))
         return [
             [{'label': i, 'value': i} for i in sorted(dff['DSC_GRUPO'].unique())],
             [{'label': i, 'value': i} for i in sorted(dff['DSC_SUBGRUPO'].unique())],
@@ -281,19 +280,22 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
     )
     def update_outs(data,moneda,slider_cpm,meses_back):
         df = pd.DataFrame(data)
+        
+        print(df['Meses Inventario'].sum())
+        print(len(df['Meses Inventario']))
         df = df[(df['CANTIDAD']>=slider_cpm[0])&(df['CANTIDAD']<=(slider_cpm[1]+1))]
         sig = 'S/.' if moneda == 'soles' else '$'
         moneda_ = 'PU_S' if moneda == 'soles' else 'PU_D'
         inv_val_moneda = 'INV_VALMOF' if moneda == 'soles' else 'INV_VALMEX'
         cpm = round(df['CANTIDAD'].mean(),2)
-        invval = f"{sig} {(int(round(df['Inventario Valorizado'].sum(),0))):,}"
+        invval = f"{sig} {(int(round(df[inv_val_moneda].sum(),0))):,}"
         meses_invet_prom = df[df['Meses Inventario']!='NO ROTA']
         stock = round(meses_invet_prom['Meses Inventario'].mean(),2)
         consumo = round(df['TI'].mean(),2)
         mi_dff = df[(df['Meses Inventario']!='NO ROTA')]
        
         df_mi_ =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario']].sum().sort_values('Meses Inventario').reset_index().tail(30)
-        df_mi_iv =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario','Inventario Valorizado']].sum().sort_values('Inventario Valorizado').reset_index().tail(30)
+        df_mi_iv =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario',inv_val_moneda]].sum().sort_values(inv_val_moneda).reset_index().tail(30)
         
         #df['CANTIDAD']=df.apply(lambda x: "{:,.2f}".format(x['CANTIDAD']), axis=1)
         #df['STOCK']=df.apply(lambda x: "{:,.2f}".format(x['STOCK']), axis=1)
@@ -302,11 +304,11 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         #df['Inventario Valorizado']=df.apply(lambda x: "{:,.2f}".format(x['Inventario Valorizado']), axis=1)
         #df['TI']=df.apply(lambda x: "{:,.2f}".format(x['TI']), axis=1)
         #print(df.columns)
-        df = df[['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA','Precio Unitario', 'STOCK', inv_val_moneda,'IDPRODUCTO', 'CANTIDAD', 'Meses Inventario', 'Inventario Valorizado','TI']]
+        df = df[['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA','Precio Unitario', 'STOCK', inv_val_moneda,'IDPRODUCTO', 'CANTIDAD', 'Meses Inventario','TI']]
         df = df.drop(['IDPRODUCTO'], axis=1)
         #{'CANTIDAD':'CPM','moneda':'Precio Unitario','Meses Inventario':'Meses de Inventario'}
-        for col_numeric in  ['STOCK', inv_val_moneda,'Precio Unitario', 'CANTIDAD', 'Inventario Valorizado','TI']:
-            df[col_numeric]=df.apply(lambda x: "{:,.2f}".format(x[col_numeric]), axis=1)
+        #for col_numeric in  ['STOCK', inv_val_moneda,'Precio Unitario', 'CANTIDAD', 'Inventario Valorizado','TI']:
+        #    df[col_numeric]=df.apply(lambda x: "{:,.2f}".format(x[col_numeric]), axis=1)
         df = df.rename(columns = {
                 'DSC_GRUPO':'GRUPO', 
                 'DSC_SUBGRUPO':'SUBGRUPO', 
@@ -317,18 +319,18 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
                 'STOCK':'STOCK', 
                 inv_val_moneda:f'Inventario Valorizado {moneda}', 
                 
-                'CANTIDAD': f'Consumo Prom Mensual({meses_back}meses)', 
+                'CANTIDAD': f'Consumo Promedio Mensual', 
                 'Meses Inventario':'Meses de Inventario', 
-                'Inventario Valorizado':'Inventario Valorizado', 
+                #'Inventario Valorizado':'Inventario Valorizado', 
                 'TI':'TI'
             })
-        
+        print(df.columns)
         return [
             cpm, invval, stock, consumo,
             #bar_(df = df_mi_,x = 'DESCRIPCION', y = 'Meses Inventario', orientation= 'v',height = 380,title = 'Meses de Inventario Promedio',text='Meses Inventario',
             #     xaxis_title = 'Descripción', yaxis_title = 'Meses de Inventario'),
             bar_logistica_y1(df = df_mi_,height = 350),
-            bar_logistica_y2(df = df_mi_iv,height = 350 ),
+            bar_logistica_y2(df = df_mi_iv,height = 350,y_col=inv_val_moneda ),
             df.to_dict("records"),
             fields_columns(columns = df.columns),
             df.to_dict("series"),

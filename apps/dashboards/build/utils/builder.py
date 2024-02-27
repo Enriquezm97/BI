@@ -59,6 +59,6 @@ def create_col_for_dataframe(id_components = [],dict_cols_dataframe = {}):
 
 def meses_inventario(cpm,stock):
     if cpm == 0:
-        return 'NO ROTA'
+        return None
     else:
         return round(stock/cpm,2)

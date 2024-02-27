@@ -5,6 +5,17 @@ from ..components.card_comp import *
 from datetime import datetime
 
 
+dataTypeDefinitions = {
+    
+    "company": {
+        "baseDataType": "number",
+        "extendsDataType": "number",
+        "valueFormatter": {
+            "function": "params.value == null ? '' :  d3.format(',.0f')(params.value)"
+        },
+    },
+}
+
 
 
 def almacen_stock():
