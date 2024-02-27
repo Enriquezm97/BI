@@ -129,10 +129,11 @@ def dashboard_stocks(codigo = '',empresa = ''):#filtros = ['select-anio','select
 
 def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio','select-grupo','select-rango']
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app.layout =  gestion_stock(data_almacen=['ALMACEN CENTRAL','ALMACEN EN PROCESO','ALMACEN PRODUCTO TERMINADO','ALMACEN EXTERIOR TEMPORAL','ALMACEN TERCEROS','ALMACEN DE AJUSTE DE INVENTARIO','ALMACEN TEMPORAL LATAM','ALMACEN AVERIADOS'])
     app.css.append_css(DASH_CSS_FILE)
     #print(connect_saldos_alm())
     
-    app.layout =  gestion_stock(data_almacen=['ALMACEN CENTRAL','ALMACEN EN PROCESO','ALMACEN PRODUCTO TERMINADO','ALMACEN EXTERIOR TEMPORAL','ALMACEN TERCEROS','ALMACEN DE AJUSTE DE INVENTARIO','ALMACEN TEMPORAL LATAM','ALMACEN AVERIADOS'])
+    
     @app.callback(
         #Output('multiselect-almacen','data'),
         Output("multiselect-almacen","data"),
@@ -144,19 +145,20 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
     def update_data_stock(almacen,tipo_val,meses_back):
         meses_back_ = 1 if meses_back == 0 or meses_back == None else meses_back
         consumo_alm_df = connect_consumo_alm(mes_back = meses_back_,tipo_val= tipo_val)
-        consumo_alm_df = consumo_alm_df.merge(pd.DataFrame(dict_almacen), how='left', left_on=["IDALMACEN"], right_on=["IDALMACEN"])
-        consumo_alm_df = consumo_alm_df.merge(pd.DataFrame(dict_sucursal), how='left', left_on=["IDSUCURSAL"], right_on=["IDSUCURSAL"])
+        #consumo_alm_df = consumo_alm_df.merge(pd.DataFrame(dict_almacen), how='left', left_on=["IDALMACEN"], right_on=["IDALMACEN"])
+        #consumo_alm_df = consumo_alm_df.merge(pd.DataFrame(dict_sucursal), how='left', left_on=["IDSUCURSAL"], right_on=["IDSUCURSAL"])
+        #consumo_alm_df.to_excel('consumo_alm_d.xlsx')
         #consumo_alm_df.to_excel('alm_suc.xlsx')
         if almacen == None or len(almacen) == 0:#(len(almacen)==0 or cultivo==None):
             df = consumo_alm_df.copy()
         else:
-            df = consumo_alm_df[consumo_alm_df['ALMACEN'].isin(almacen)]
+            df = consumo_alm_df[consumo_alm_df['ALMACEN']==almacen]
         
         return [
             [{'label': i, 'value': i} for i in df['ALMACEN'].unique()],
             df.to_dict('series')
         ]
-
+    
     @app.callback(
         [
             Output('select-grupo','data'),
@@ -179,6 +181,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
             Input('num-meses','value'),
             Input('data-stock','data'),
             Input('select-sucursal','value'),
+            Input('multiselect-almacen','value'),
         ]
     )
     def update_filter_(*args):
@@ -190,14 +193,25 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         mes_back = args[5]
         consumo_alm_df = pd.DataFrame(args[6])
         sucursal = args[7]
+        almacen = args[8]
         if sucursal != None:
             consumo_alm_df = consumo_alm_df[consumo_alm_df['SUCURSAL']==sucursal]
         precio_ = 'PU_S' if moneda == 'soles' else 'PU_D'
         
+        sucursal_ = sucursal if sucursal != None else ''
+        almacen_ = almacen if almacen != None else ''
         saldos_alm_df = connect_saldos_alm()
+        if sucursal == None and almacen == None:
+            saldos_alm_df = saldos_alm_df.copy()
+        elif sucursal != None and almacen == None:
+            saldos_alm_df=saldos_alm_df[saldos_alm_df['SUCURSAL']==sucursal]
+        elif sucursal == None and almacen != None:
+            saldos_alm_df=saldos_alm_df[saldos_alm_df['ALMACEN']==almacen]
+        elif sucursal != None and almacen != None:
+            saldos_alm_df=saldos_alm_df[(saldos_alm_df['ALMACEN']==almacen)&(saldos_alm_df['SUCURSAL']==sucursal)]
         #stock_producto = saldos_alm_df.groupby(['COD_PRODUCTO'])[['STOCK']].sum().reset_index()
         saldos_alm_df.loc[saldos_alm_df.MARCA =='','MARCA']='NO ESPECIFICADO'
-        
+        #saldos_alm_df.to_excel('saldos_alm_.xlsx')
         #stock_promedio_= saldos_alm_df.groupby(['COD_PRODUCTO'])[[precio_]].mean().reset_index()
         precio_unit = saldos_alm_df.groupby(['COD_PRODUCTO'])[[precio_]].mean().reset_index()
         precio_unit = precio_unit.rename(columns={precio_:'Precio Unitario'})
@@ -287,7 +301,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         #df['Meses Inventario']=df.apply(lambda x: "{:,.2f}".format(x['Meses Inventario']), axis=1)
         #df['Inventario Valorizado']=df.apply(lambda x: "{:,.2f}".format(x['Inventario Valorizado']), axis=1)
         #df['TI']=df.apply(lambda x: "{:,.2f}".format(x['TI']), axis=1)
-        print(df.columns)
+        #print(df.columns)
         df = df[['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA','Precio Unitario', 'STOCK', inv_val_moneda,'IDPRODUCTO', 'CANTIDAD', 'Meses Inventario', 'Inventario Valorizado','TI']]
         df = df.drop(['IDPRODUCTO'], axis=1)
         #{'CANTIDAD':'CPM','moneda':'Precio Unitario','Meses Inventario':'Meses de Inventario'}

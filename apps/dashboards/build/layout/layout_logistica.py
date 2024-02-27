@@ -265,7 +265,7 @@ def gestion_stock(data_almacen = []):
                             clearable = True,
                             searchable = True
                         ),
-                        Entry.multiSelect(id = 'multiselect-almacen',texto='Almacen',place = 'Todos'),
+                        Entry.select(id = 'multiselect-almacen',texto='Almacen',place = 'Todos'),
                         Entry.select(
                                 id = 'select-tipo-val', texto = "Tipo de Valorización", size = 'md',
                                 data=[
