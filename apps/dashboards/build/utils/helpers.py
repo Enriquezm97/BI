@@ -306,7 +306,7 @@ def fields_columns(columns = []):
     cols_ = ['Inventario Valorizado dolares','Inventario Valorizado soles','Precio Unitario','STOCK','Consumo Promedio Mensual','TI']
     for col in columns:
         if col in cols_:
-            print('here')
+            
             list_.append({
                 "field": col,"cellStyle": {'font-size': 11},
                 "type": "rightAligned", "cellDataType":"number",

@@ -5,16 +5,6 @@ from ..components.card_comp import *
 from datetime import datetime
 
 
-dataTypeDefinitions = {
-    
-    "company": {
-        "baseDataType": "number",
-        "extendsDataType": "number",
-        "valueFormatter": {
-            "function": "params.value == null ? '' :  d3.format(',.0f')(params.value)"
-        },
-    },
-}
 
 
 
@@ -199,7 +189,7 @@ def gestion_stock_():
         ]),
     ])
 
-def gestion_stock(data_almacen = []):
+def gestion_stock():
     return Container([
         Modal(id="modal_bar-minv-prom", size= "85%"),
         Modal(id="modal_bar-inv-val", size= "85%"),
@@ -317,6 +307,8 @@ def gestion_stock(data_almacen = []):
                                 ,span=6),
                                 dmc.Col(
                                     children=[
+                                    dmc.Space(h=55),
+                                    dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md'),
                                     #dmc.Text("Desde", size="md",weight=500),
                                     #dmc.Badge(datetime.now().strftime('%Y-%m-%d'), size="lg", variant="outline",color="black"),
                                     #dmc.Text("Hasta", size="md",weight=500),
@@ -326,6 +318,7 @@ def gestion_stock(data_almacen = []):
                             ],
                             gutter="xl",
                         ),
+                        
                         
                     ],
                     withBorder=True,
@@ -406,6 +399,7 @@ def gestion_stock(data_almacen = []):
                 ]),
         Div(id='notifications-update-data'),
         Store(id='data-stock'),
+        Store(id='inv_val_total'),
         Store(id='data-values'),
         Store(id='data-table'),
         Download(),
