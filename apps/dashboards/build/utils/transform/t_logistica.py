@@ -61,11 +61,16 @@ def transform_consumos_alm(df = None):
     return df
 
 def change_cols_saldosalm(df = None):
-    df['DESCRIPCION'] = df['DESCRIPCION'].str.strip()
-    
-    return df.rename(columns={
+    df = df.rename(columns={
         'sucursal':'SUCURSAL',
         'almacen':'ALMACEN',
         'codproducto':'COD_PRODUCTO',
         'stock':'STOCK'   
     })
+    df['DESCRIPCION'] = df['DESCRIPCION'].str.strip()
+    df['SUCURSAL'] = df['SUCURSAL'].str.strip()
+    df['ALMACEN'] = df['ALMACEN'].str.strip()
+    df['DSC_GRUPO'] = df['DSC_GRUPO'].str.strip()
+    df['DSC_SUBGRUPO'] = df['DSC_SUBGRUPO'].str.strip()
+    df['MARCA'] = df['MARCA'].str.strip()
+    return df
