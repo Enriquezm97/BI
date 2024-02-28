@@ -264,7 +264,8 @@ def gestion_stock():
                             texto = 'Sucursal',
                             size = 'md',
                             clearable = True,
-                            searchable = True
+                            searchable = True,
+                            
                         ),
                         Entry.select(id = 'multiselect-almacen',texto='Almacen',place = 'Todos'),
                         Entry.select(
@@ -289,7 +290,7 @@ def gestion_stock():
                                         
                         ),
                         dmc.Space(h=20),
-                        dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md',fullWidth=True),
+                        #dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md',fullWidth=True),
                         #dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
                         #dcc.RangeSlider(
                         #    min = 0,
