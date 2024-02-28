@@ -277,23 +277,7 @@ def gestion_stock():
                                 value='1',
                                 clearable=False
                         ),
-                        dmc.Space(h=10),
-                        dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
-                        dcc.RangeSlider(
-                            min = 0,
-                            marks=None,
-                            tooltip={
-                                "placement": "bottom",
-                                "always_visible": True,
-                                "style": {"color": "Black", "fontSize": "30px", "font-size":"18px"},
-                            },
-                            id='range-slider-cpm',
-                            
-                        ),
-                        dmc.Grid(
-                            children=[
-                                dmc.Col(
-                                    dmc.NumberInput(
+                        dmc.NumberInput(
                                         id = 'num-meses',
                                         label="Número de Meses",
                                         description="Ultimos meses",
@@ -303,21 +287,22 @@ def gestion_stock():
                                         style={"width": 150},
                                         size="md",
                                         
-                                    )
-                                ,span=6),
-                                dmc.Col(
-                                    children=[
-                                    dmc.Space(h=55),
-                                    dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md'),
-                                    #dmc.Text("Desde", size="md",weight=500),
-                                    #dmc.Badge(datetime.now().strftime('%Y-%m-%d'), size="lg", variant="outline",color="black"),
-                                    #dmc.Text("Hasta", size="md",weight=500),
-                                    #sdmc.Badge('2022-02-01', size="lg", variant="outline",color="black")
-                                    ],span=6),
-                                
-                            ],
-                            gutter="xl",
                         ),
+                        dmc.Space(h=20),
+                        dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md',fullWidth=True),
+                        #dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
+                        #dcc.RangeSlider(
+                        #    min = 0,
+                        #    marks=None,
+                        #    tooltip={
+                        #        "placement": "bottom",
+                        #        "always_visible": True,
+                        #        "style": {"color": "Black", "fontSize": "30px", "font-size":"18px"},
+                        #    },
+                        #    id='range-slider-cpm',
+                            
+                        #),
+                        
                         
                         
                     ],
@@ -330,7 +315,7 @@ def gestion_stock():
                     ]),
 
                 ])
-            ],size = 3),
+            ],size = 2),
             Column([
                 Row([
                     Column([
@@ -363,7 +348,7 @@ def gestion_stock():
                     ],size = 6),
                 ]),
                 
-            ],size = 9)
+            ],size = 10)
             
            
             

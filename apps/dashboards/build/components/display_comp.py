@@ -405,7 +405,7 @@ class Entry():
                 label=texto,
                 clearable=clearable,
                 placeholder=place,
-                style={'font-size': "90%"},
+                style={'font-size': "80%"},
                 value=value,
                 size=size,
                 searchable = searchable

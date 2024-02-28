@@ -59,3 +59,13 @@ def transform_consumos_alm(df = None):
     df.loc[df.LLEVADOPOR =='','LLEVADOPOR']='NO ESPECIFICADO'
     df = df.rename(columns = columns_nsp_consumosalmacen)
     return df
+
+def change_cols_saldosalm(df = None):
+    df['DESCRIPCION'] = df['DESCRIPCION'].str.strip()
+    
+    return df.rename(columns={
+        'sucursal':'SUCURSAL',
+        'almacen':'ALMACEN',
+        'codproducto':'COD_PRODUCTO',
+        'stock':'STOCK'   
+    })

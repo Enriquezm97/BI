@@ -167,10 +167,10 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
             Output('select-grupo','data'),
             Output('select-subgrupo','data'),
             Output('select-marca','data'),
-            Output('range-slider-cpm','max'),
-            Output('range-slider-cpm','value'),
+            #Output('range-slider-cpm','max'),
+            #Output('range-slider-cpm','value'),
             Output('select-sucursal','data'),
-            Output('inv_val_total','data'),
+            #Output('inv_val_total','data'),
         ]+
         [
          Output("data-values","data"),
@@ -204,7 +204,8 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         inv_val_moneda = 'INV_VALMOF' if moneda == 'soles' else 'INV_VALMEX'
         #sucursal_ = sucursal if sucursal != None else ''
         #almacen_ = almacen if almacen != None else ''
-        saldos_alm_df = connect_saldos_alm()
+        
+        saldos_alm_df = change_cols_saldosalm(df = connect_saldos_alm())
         if sucursal == None and almacen == None:
             saldos_alm_df = saldos_alm_df.copy()
         elif sucursal != None and almacen == None:
@@ -217,8 +218,8 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         saldos_alm_df.loc[saldos_alm_df.MARCA =='','MARCA']='NO ESPECIFICADO'
         #saldos_alm_df.to_excel('saldos_alm_.xlsx')
         #stock_promedio_= saldos_alm_df.groupby(['COD_PRODUCTO'])[[precio_]].mean().reset_index()
-        precio_unit = saldos_alm_df.groupby(['COD_PRODUCTO'])[[precio_]].mean().reset_index()
-        precio_unit = precio_unit.rename(columns={precio_:'Precio Unitario'})
+        #precio_unit = saldos_alm_df.groupby(['COD_PRODUCTO'])[[precio_]].mean().reset_index()
+        #precio_unit = precio_unit.rename(columns={precio_:'Precio Unitario'})
         cantidad_almacen_ = consumo_alm_df.groupby(['IDPRODUCTO'])[['CANTIDAD']].sum().reset_index()
         
         if validate_inputs(variables = (grupo,subgrupo,marca)) == True:
@@ -226,11 +227,14 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         else:
             productos_dff = saldos_alm_df.query(dataframe_filtro(values=list((grupo,subgrupo,marca)),columns_df = ['DSC_GRUPO','DSC_SUBGRUPO','MARCA']))
     
-        productos_cols_df = productos_dff.groupby(['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA'])[['PU_S', 'PU_D', 'STOCK', 'INV_VALMOF', 'INV_VALMEX']].sum().reset_index()
-        valor_inv_val = productos_cols_df[inv_val_moneda].sum()
+        productos_cols_df = productos_dff.groupby(['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA'])[[precio_, 'STOCK', 'INV_VALMOF', 'INV_VALMEX']].sum().reset_index()
+        productos_cols_df = productos_cols_df.rename(columns={precio_:'Precio Unitario'})
+        #val_inv_valorizado
+        
         productos_cant_df = productos_cols_df.merge(cantidad_almacen_, how='left', left_on=["COD_PRODUCTO"], right_on=["IDPRODUCTO"])
+        
         ##ADD PRECIO UNIT PROM
-        productos_cant_df = productos_cant_df.merge(precio_unit,how='left',left_on=['COD_PRODUCTO'],right_on=['COD_PRODUCTO'])
+        #productos_cant_df = productos_cant_df.merge(precio_unit,how='left',left_on=['COD_PRODUCTO'],right_on=['COD_PRODUCTO'])
         #productos_cant_stock_df = productos_cant_df.merge(stock_producto, how='left', left_on=["COD_PRODUCTO"], right_on=["COD_PRODUCTO"])
         #dff = productos_cant_df.merge(stock_promedio_, how='left', left_on=["COD_PRODUCTO"], right_on=["COD_PRODUCTO"])
         dff = productos_cant_df.copy()
@@ -240,7 +244,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         #dff.to_excel('productos_alm.xlsx')
         dff['CANTIDAD'] = dff['CANTIDAD'].fillna(0)
         dff['STOCK'] = dff['STOCK'].fillna(0)
-        dff[precio_] = dff[precio_].fillna(0)
+        dff['Precio Unitario'] = dff['Precio Unitario'].fillna(0)
         dff['CANTIDAD'] = dff['CANTIDAD']/mes_back
         dff['CANTIDAD'] = dff['CANTIDAD'].round(2)
         dff['Meses Inventario'] = dff.apply(lambda x: meses_inventario(x['CANTIDAD'],x['STOCK']),axis=1)
@@ -253,17 +257,17 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
             dff = dff[(dff['COD_PRODUCTO'].str.contains(input_text))|(dff['DESCRIPCION'].str.contains(input_text))]
             
         
-        cpm_max = round(dff['CANTIDAD'].max())+10
+        
         
         return [
             [{'label': i, 'value': i} for i in sorted(dff['DSC_GRUPO'].unique())],
             [{'label': i, 'value': i} for i in sorted(dff['DSC_SUBGRUPO'].unique())],
             [{'label': i, 'value': i} for i in sorted(dff['MARCA'].unique())],
-            cpm_max,
+            #
             
-            [0,cpm_max],
+            
             [{'label': i, 'value': i} for i in sorted(consumo_alm_df['SUCURSAL'].unique())],
-            valor_inv_val,
+            #valor_inv_val,
             dff.to_dict('series'),
             DataDisplay.notification(text=f'Se cargaron {len(dff)} filas',title='Update')
         ]
@@ -282,22 +286,24 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         #Output("line-inv-val","value"),
         Input("data-values","data"),
         Input("select-moneda","value"),
-        Input('range-slider-cpm','value'),
+        #Input('range-slider-cpm','value'),
         Input('num-meses','value'),
-        Input('inv_val_total','data'),
-    )
-    def update_outs(data,moneda,slider_cpm,meses_back,total_invval):
-        print(total_invval)
-        df = pd.DataFrame(data)
         
-        print(df['Meses Inventario'].sum())
-        print(len(df['Meses Inventario']))
-        df = df[(df['CANTIDAD']>=slider_cpm[0])&(df['CANTIDAD']<=(slider_cpm[1]+1))]
+    )
+    def update_outs(data,moneda,meses_back,):#,slider_cpm
+        
+        inv_val_moneda = 'INV_VALMOF' if moneda == 'soles' else 'INV_VALMEX'
+        df = pd.DataFrame(data)
+
+        #df = df[(df['CANTIDAD']>=slider_cpm[0])&(df['CANTIDAD']<=(slider_cpm[1]+1))]
+        
+        
         sig = 'S/.' if moneda == 'soles' else '$'
         moneda_ = 'PU_S' if moneda == 'soles' else 'PU_D'
-        inv_val_moneda = 'INV_VALMOF' if moneda == 'soles' else 'INV_VALMEX'
+        
         cpm = round(df['CANTIDAD'].mean(),2)
-        invval = f"{sig} {(int(round(total_invval,0))):,}"
+        invval = f"{sig} {(int(round(df[inv_val_moneda].sum(),0))):,}"
+        
         meses_invet_prom = df[df['Meses Inventario']!='NO ROTA']
         stock = round(meses_invet_prom['Meses Inventario'].mean(),2)
         consumo = round(df['TI'].mean(),2)
@@ -333,7 +339,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
                 #'Inventario Valorizado':'Inventario Valorizado', 
                 'TI':'TI'
             })
-        print(df.columns)
+        
         return [
             cpm, invval, stock, consumo,
             #bar_(df = df_mi_,x = 'DESCRIPCION', y = 'Meses Inventario', orientation= 'v',height = 380,title = 'Meses de Inventario Promedio',text='Meses Inventario',
