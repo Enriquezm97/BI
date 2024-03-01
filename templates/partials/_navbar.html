@@ -8,6 +8,8 @@
             <a class="navbar-brand brand-logo" href=""><img src="{% static 'images/paraiso.png'%}" alt="logo"/></a>
           {% elif user.usuario.empresa.name_empresa == 'SMARTCOLD' %} 
             <a class="navbar-brand brand-logo" href=""><img src="{% static 'images/smartcold.png'%}" alt="logo"/></a>
+          {% elif user.usuario.empresa.name_empresa == 'HERMETICA' %} 
+            <a class="navbar-brand brand-logo" href=""><img src="{% static 'images/hermetica.png'%}" alt="logo"/></a>  
           {% else %}
           {% endif %}
             <a class="navbar-brand brand-logo-mini" href=""><img src="{% static 'images/picture.png'%}"  alt="logo"/></a>

@@ -12,17 +12,15 @@ from ..build.components.display_comp import *
 from ..build.utils.builder import *
 from ..build.utils.global_callback import * 
 from ..build.utils.figure import *
+from ..build.utils.crum import get_data_connect
+from ..build.api.connector import  APIConnector
+
+from datetime import datetime,timedelta
+
+
 
 filt = ['select-anio','select-grupo','select-rango']
-dict_almacen = {
-            'IDALMACEN':['001','002','003','004','005','006','007','008'],
-            'ALMACEN':['ALMACEN CENTRAL','ALMACEN EN PROCESO','ALMACEN PRODUCTO TERMINADO','ALMACEN EXTERIOR TEMPORAL','ALMACEN TERCEROS','ALMACEN DE AJUSTE DE INVENTARIO','ALMACEN TEMPORAL LATAM','ALMACEN AVERIADOS']
-}
 
-dict_sucursal = {
-    'IDSUCURSAL':['001','002','003'],
-    'SUCURSAL':['LIMA','ICA','ALMACEN TERCEROS']
-}
 
 def validar_all_none(variables=()):
     contador = 0
@@ -127,17 +125,209 @@ def dashboard_stocks(codigo = '',empresa = ''):#filtros = ['select-anio','select
 
 
 
-def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio','select-grupo','select-rango']
+def dashboard_gestion_stock(codigo = '',empresa = ''):
+    ip, token_ =get_data_connect()
+    api = APIConnector(ip, token_)
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.layout =  gestion_stock()
     app.css.append_css(DASH_CSS_FILE)
-    #print(connect_saldos_alm())
     
-    
-    
-
-
     @app.callback(
+        [
+        Output('select-sucursal','data'),   
+        Output('select-almacen','data'),
+        Output('select-grupo','data'),
+        Output('select-subgrupo','data'),
+        Output('select-marca','data'),
+        Output("card-cpm","children"),
+        Output("card-invval","children"),
+        Output("card-stock","children"),
+        Output("card-consumo","children"),
+        Output("bar-minv-prom","figure"),
+        Output("bar-inv-val","figure"),
+        Output("table","rowData"),
+        Output("table","columnDefs"),
+        Output("data-table","data"),
+         #Output("data-values","data"),
+        Output("notifications-update-data","children")
+         
+        ],
+        [Input('btn-filtrar','n_clicks')],
+        [
+         State('select-sucursal','value'),   
+         State('select-almacen','value'),
+         State('select-grupo','value'),
+         State('select-subgrupo','value'),
+         State('select-marca','value'),
+         State('num-meses','value'),
+         State('text-input-find','value'),
+         
+         State('cpm-min','value'),
+         State('cpm-max','value'),
+         State('select-moneda','value'),
+        ]
+        
+    )
+    def update_data_stock(*args):
+        n_clicks = args[0]
+        sucursal =  args[1] if args[1] != None else ''
+        almacen =  args[2] if args[2] != None else ''
+        grupo =  args[3] if args[3] != None else ''
+        subgrupo =  args[4] if args[4] != None else ''
+        marca = args[5]
+        meses_back = args[6]# if args[6] != None or args[6] == 0 else '1'
+        find_text = args[7]
+        cpm_min = args[8] if args[8] != '' else None
+        cpm_max = args[9] if args[9] != '' else None
+        moneda = args[10]
+        print(args)
+        col_pu = 'PU_S' if moneda == 'soles' else 'PU_D'
+        inv_val_moneda = 'INV_VALMOF' if moneda == 'soles' else 'INV_VALMEX'
+        sig = 'S/.' if moneda == 'soles' else '$'
+
+        if n_clicks == None:
+            
+            dict_CONSUMOSALM = {
+                'C_EMP':'001','C_SUC':'','C_ALM': '',
+                'C_FECINI':str(datetime.now()- timedelta(days = meses_back * 30))[:8].replace('-', "")+str(datetime.now().day)  ,
+                'C_FECFIN':str(datetime.now())[:10].replace('-', ""),
+                'C_VALOR':'1','C_GRUPO':'','C_SUBGRUPO':'','C_TEXTO':'','C_IDPRODUCTO':'','LOTEP':'','C_CONSUMIDOR':''
+            }
+
+            dict_SALDOSALM = {
+                    'EMPRESA':'001','SUCURSAL':'','ALMACEN': '','FECHA':str(datetime.now())[:10].replace('-', ""),
+                    'IDGRUPO':'','SUBGRUPO':'','DESCRIPCION':'','IDPRODUCTO':'','LOTEP':'',
+            }
+        else:
+            dict_CONSUMOSALM = {
+                'C_EMP':'001','C_SUC':sucursal,'C_ALM': almacen,
+                'C_FECINI':str(datetime.now()- timedelta(days = meses_back * 30))[:8].replace('-', "")+str(datetime.now().day)  ,
+                'C_FECFIN':str(datetime.now())[:10].replace('-', ""),
+                'C_VALOR':'1','C_GRUPO':grupo,'C_SUBGRUPO':subgrupo,'C_TEXTO':'','C_IDPRODUCTO':'','LOTEP':'','C_CONSUMIDOR':''
+            }
+
+            dict_SALDOSALM = {
+                    'EMPRESA':'001','SUCURSAL':sucursal,'ALMACEN': almacen,'FECHA':str(datetime.now())[:10].replace('-', ""),
+                    'IDGRUPO':grupo,'SUBGRUPO':subgrupo,'DESCRIPCION':'','IDPRODUCTO':'','LOTEP':'',
+            }
+        print(datetime.now())
+        consumos_alm_df = api.send_get_dataframe(endpoint="NSP_OBJREPORTES_CONSUMOSALM_DET_BI",params=dict_CONSUMOSALM)
+        print(datetime.now())
+        saldos_alm_df = change_cols_saldosalm(api.send_get_dataframe(endpoint="NSP_OBJREPORTES_SALDOSALMACEN_BI",params=dict_SALDOSALM))
+        print(datetime.now())
+        if marca != None:
+            saldos_alm_df = saldos_alm_df[saldos_alm_df['MARCA']==marca]
+        ##FILTROS 
+        input_df = saldos_alm_df.groupby(['codsucursal', 'SUCURSAL', 'codalmacen', 'ALMACEN', 'codgrupo','DSC_GRUPO', 'codsubgrupo', 'DSC_SUBGRUPO','MARCA'])[['STOCK']].sum().reset_index()
+        ###
+        consumos_alm_df = consumos_alm_df.groupby(['IDPRODUCTO'])[['CANTIDAD']].sum().reset_index()
+        saldos_alm_group_df = saldos_alm_df.groupby(['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA'])[['PU_S','PU_D', 'STOCK', 'INV_VALMOF', 'INV_VALMEX']].sum().reset_index()
+        dff = saldos_alm_group_df.merge(consumos_alm_df, how='left', left_on=["COD_PRODUCTO"], right_on=["IDPRODUCTO"])
+        dff.loc[dff.MARCA =='','MARCA']='NO ESPECIFICADO'
+        if find_text != None:
+            dff = dff[(dff['COD_PRODUCTO'].str.contains(find_text))|(dff['DESCRIPCION'].str.contains(find_text))]
+        
+        
+            
+        dff['CANTIDAD'] = dff['CANTIDAD'].fillna(0)
+        dff['STOCK'] = dff['STOCK'].fillna(0)
+        dff['Precio Unitario'] = dff[col_pu].fillna(0)
+        dff['CANTIDAD'] = dff['CANTIDAD']/meses_back
+        dff['CANTIDAD'] = dff['CANTIDAD'].round(2)
+        dff['Meses Inventario'] = dff.apply(lambda x: meses_inventario(x['CANTIDAD'],x['STOCK']),axis=1)
+        dff['TI'] = 1/dff['CANTIDAD']
+        dff['TI'] = dff['TI'].replace([np.inf],0)
+        #CARDS
+        print(cpm_min,cpm_max)
+        if cpm_min != None and cpm_max != None:
+            dff = dff[(dff['CANTIDAD']>=cpm_min)&(dff['CANTIDAD']<=cpm_max)]
+            
+        cpm = round(dff['CANTIDAD'].mean(),2)
+        invval = f"{sig} {(int(round(dff[inv_val_moneda].sum(),0))):,}"
+        meses_invet_prom = dff[dff['Meses Inventario']!='NO ROTA']
+        stock = round(meses_invet_prom['Meses Inventario'].mean(),2)
+        consumo = round(dff['TI'].mean(),2)
+        #GRAPHS
+        mi_dff = dff[(dff['Meses Inventario']!='NO ROTA')]
+        df_mi_ =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario']].sum().sort_values('Meses Inventario').reset_index().tail(30)
+        df_mi_iv =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario',inv_val_moneda]].sum().sort_values(inv_val_moneda).reset_index().tail(30)
+        ##table
+        df_table = dff[['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA','Precio Unitario', 'STOCK', inv_val_moneda,'IDPRODUCTO', 'CANTIDAD', 'Meses Inventario','TI']]
+        df_table = df_table.drop(['IDPRODUCTO'], axis=1)
+        #{'CANTIDAD':'CPM','moneda':'Precio Unitario','Meses Inventario':'Meses de Inventario'}
+        #for col_numeric in  ['STOCK', inv_val_moneda,'Precio Unitario', 'CANTIDAD', 'Inventario Valorizado','TI']:
+        #    df[col_numeric]=df.apply(lambda x: "{:,.2f}".format(x[col_numeric]), axis=1)
+        df_table = df_table.rename(columns = {
+                'DSC_GRUPO':'GRUPO', 
+                'DSC_SUBGRUPO':'SUBGRUPO', 
+                'COD_PRODUCTO':'CODIGO', 
+                'DESCRIPCION':'DESCRIPCION', 
+                'UM':'UMD',
+                'MARCA':'MARCA', 
+                'STOCK':'STOCK', 
+                inv_val_moneda:f'Inventario Valorizado {moneda}', 
+                
+                'CANTIDAD': f'Consumo Promedio Mensual', 
+                'Meses Inventario':'Meses de Inventario', 
+                #'Inventario Valorizado':'Inventario Valorizado', 
+                'TI':'TI'
+            })
+        
+        return [
+           
+            [{'value': i[0], 'label': i[1]} for i in input_df.groupby(['codsucursal','SUCURSAL'])[['STOCK']].sum().reset_index()[['codsucursal','SUCURSAL']].values],
+            [{'value': i[0], 'label': i[1]} for i in input_df.groupby(['codalmacen','ALMACEN'])[['STOCK']].sum().reset_index()[['codalmacen','ALMACEN']].values],
+            [{'value': i[0], 'label': i[1]} for i in input_df.groupby(['codgrupo','DSC_GRUPO'])[['STOCK']].sum().reset_index()[['codgrupo','DSC_GRUPO']].values],
+            [{'value': i[0], 'label': i[1]} for i in input_df.groupby(['codsubgrupo','DSC_SUBGRUPO'])[['STOCK']].sum().reset_index()[['codsubgrupo','DSC_SUBGRUPO']].values], 
+            [{'label': i, 'value': i} for i in sorted(input_df['MARCA'].unique())],
+            cpm,invval,stock,consumo,
+            bar_logistica_y1(df = df_mi_,height = 350),
+            bar_logistica_y2(df = df_mi_iv,height = 350,y_col=inv_val_moneda ),
+            df_table.to_dict("records"),
+            fields_columns(columns = df_table.columns),
+            df_table.to_dict("series"),
+            #dff.to_dict('series'),
+            DataDisplay.notification(text=f'Se cargaron {len(dff)} filas',title='Update')
+        ]
+
+    download_data(app,input_id_data='data-table',name_file = 'stocks_producto.xlsx')
+    opened_modal(app, id="bar-minv-prom",height_modal=900)
+    opened_modal(app, id="bar-inv-val",height_modal=900)
+    return app
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+            
+
+"""
+@app.callback(
         #Output('multiselect-almacen','data'),
         Output("multiselect-almacen","data"),
         Output("data-stock","data"),
@@ -148,10 +338,6 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
     def update_data_stock(almacen,tipo_val,meses_back):
         meses_back_ = 1 if meses_back == 0 or meses_back == None else meses_back
         consumo_alm_df = connect_consumo_alm(mes_back = meses_back_,tipo_val= tipo_val)
-        #consumo_alm_df = consumo_alm_df.merge(pd.DataFrame(dict_almacen), how='left', left_on=["IDALMACEN"], right_on=["IDALMACEN"])
-        #consumo_alm_df = consumo_alm_df.merge(pd.DataFrame(dict_sucursal), how='left', left_on=["IDSUCURSAL"], right_on=["IDSUCURSAL"])
-        #consumo_alm_df.to_excel('consumo_alm_d.xlsx')
-        #consumo_alm_df.to_excel('alm_suc.xlsx')
         if almacen == None or len(almacen) == 0:#(len(almacen)==0 or cultivo==None):
             df = consumo_alm_df.copy()
         else:
@@ -312,13 +498,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
         df_mi_ =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario']].sum().sort_values('Meses Inventario').reset_index().tail(30)
         df_mi_iv =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario',inv_val_moneda]].sum().sort_values(inv_val_moneda).reset_index().tail(30)
         
-        #df['CANTIDAD']=df.apply(lambda x: "{:,.2f}".format(x['CANTIDAD']), axis=1)
-        #df['STOCK']=df.apply(lambda x: "{:,.2f}".format(x['STOCK']), axis=1)
-        #df[moneda_]=df.apply(lambda x: "{:,.2f}".format(x[moneda_]), axis=1)
-        #df['Meses Inventario']=df.apply(lambda x: "{:,.2f}".format(x['Meses Inventario']), axis=1)
-        #df['Inventario Valorizado']=df.apply(lambda x: "{:,.2f}".format(x['Inventario Valorizado']), axis=1)
-        #df['TI']=df.apply(lambda x: "{:,.2f}".format(x['TI']), axis=1)
-        #print(df.columns)
+
         df = df[['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA','Precio Unitario', 'STOCK', inv_val_moneda,'IDPRODUCTO', 'CANTIDAD', 'Meses Inventario','TI']]
         df = df.drop(['IDPRODUCTO'], axis=1)
         #{'CANTIDAD':'CPM','moneda':'Precio Unitario','Meses Inventario':'Meses de Inventario'}
@@ -355,3 +535,4 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):#filtros = ['select-anio',
     opened_modal(app, id="bar-minv-prom",height_modal=900)
     opened_modal(app, id="bar-inv-val",height_modal=900)
     return app
+"""

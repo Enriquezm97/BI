@@ -164,3 +164,63 @@ def card_small(id_value = '',text = ''):
             shadow='xl',
             radius='md',
         )
+    
+def card_stack(id_value = '',text = 'cpm'):
+  
+    return dmc.Card(
+            id='card',
+            children=[
+            dmc.Group([
+                dmc.Divider(orientation="vertical"),
+                dmc.Grid(
+                    children=[
+                        dmc.Col(dmc.Text('CPM', color='black',align='center',style={"fontSize": 12}), span=12,p=0),
+                        dmc.Col(dmc.Text(id= 'card-cpm' , weight=700,children=[],align='center',style={"fontSize": 18}), span=12,p=0),
+                        
+                    ],
+                    gutter="xs",id='grid-1',
+                ),
+                
+                dmc.Divider(orientation="vertical"),
+                dmc.Grid(
+                    children=[
+                        dmc.Col(dmc.Text('INV VAL', color='black',align='center',style={"fontSize": 12}), span=12,p=0),
+                        dmc.Col(dmc.Text(id= 'card-invval' , weight=700,children=[],align='center',style={"fontSize": 18}), span=12,p=0),
+                        
+                    ],
+                    gutter="xs",id='grid-2',
+                ),
+                
+                dmc.Divider(orientation="vertical"),
+                dmc.Grid(
+                    children=[
+                        dmc.Col(dmc.Text('TI STOCK', color='black',align='center',style={"fontSize": 12}), span=12,p=0),
+                        dmc.Col(dmc.Text(id= 'card-stock' , weight=700,children=[],align='center',style={"fontSize": 18}), span=12,p=0),
+                        
+                    ],
+                    gutter="xs",id='grid-3',
+                ),
+
+                dmc.Divider(orientation="vertical"),
+                dmc.Grid(
+                    children=[
+                        dmc.Col(dmc.Text('TI CON', color='black',align='center',style={"fontSize": 12}), span=12,p=0),
+                        dmc.Col(dmc.Text(id= 'card-consumo' , weight=700,children=[],align='center',style={"fontSize": 18}), span=12,p=0),
+                        
+                    ],
+                    gutter="xs",id='grid-4',
+                ),
+               
+                
+                #dmc.Text('18%', size='xs', color='rgb(9, 146, 104)'),
+                #dmc.Text(html.I(className='fas fa-arrow-up fa-fw fa-xs'), color='rgb(9, 146, 104)')
+            ], sx={'align-items': 'baseline'},grow=True,id='group-1'),#, spacing='0.5rem'
+            
+           
+           
+
+            ],
+            withBorder=True,
+            shadow='xl',
+            radius='md',
+        )

@@ -198,11 +198,7 @@ def gestion_stock():
                  title(text = 'Gestión de Stocks',order=1),
                   
             ],size=3),
-            Column(
-            [
-                Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ,icon=DashIconify(icon="ic:search")),#
-                
-            ],size = 2),
+        
             Column(
             [
                 Entry.select(
@@ -233,7 +229,30 @@ def gestion_stock():
                     searchable = True
                 )
             ],size = 2),
-            
+            Column([
+                dmc.NumberInput(
+                    id = 'cpm-min',
+                    label="Cpm Inicial",
+                    #value=0,
+                    min=-10000,
+                    max=100000,
+                    step=1,
+                    size="md",                   
+                ),
+                  
+            ],size=1),
+            Column([
+                dmc.NumberInput(
+                    id = 'cpm-max',
+                    label="Cpm Maximo",
+                    #value=0,
+                    min=-10000,
+                    max=100000,
+                    step=1,
+                    size="md",                   
+                ),
+                  
+            ],size=1),
             Column(
             [
                 Entry.select(
@@ -257,8 +276,6 @@ def gestion_stock():
                     dmc.Card(
             
                     children=[
-                        
-                        dmc.Space(h=10),
                         Entry.select(
                             id = 'select-sucursal',
                             texto = 'Sucursal',
@@ -267,17 +284,17 @@ def gestion_stock():
                             searchable = True,
                             
                         ),
-                        Entry.select(id = 'multiselect-almacen',texto='Almacen',place = 'Todos'),
-                        Entry.select(
-                                id = 'select-tipo-val', texto = "Tipo de Valorización", size = 'md',
-                                data=[
-                                    {"value": "1", "label": "CONTABLE"},
-                                    {"value": "2", "label": "ULTIMA COMPRA"},
-                                    {"value": "3", "label": "ULTIMO PROMEDIO"},
-                                    ],
-                                value='1',
-                                clearable=False
-                        ),
+                        Entry.select(id = 'select-almacen',texto='Almacen',place = 'Todos',searchable = True),
+                        #Entry.select(
+                        #        id = 'select-tipo-val', texto = "Tipo de Valorización", size = 'md',
+                        #        data=[
+                        #            {"value": "1", "label": "CONTABLE"},
+                        #            {"value": "2", "label": "ULTIMA COMPRA"},
+                        #            {"value": "3", "label": "ULTIMO PROMEDIO"},
+                        #            ],
+                        #        value='1',
+                        #        clearable=False
+                        #),
                         dmc.NumberInput(
                                         id = 'num-meses',
                                         label="Número de Meses",
@@ -290,7 +307,7 @@ def gestion_stock():
                                         
                         ),
                         dmc.Space(h=20),
-                        #dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md',fullWidth=True),
+                        dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md',fullWidth=True),
                         #dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
                         #dcc.RangeSlider(
                         #    min = 0,
@@ -319,22 +336,18 @@ def gestion_stock():
             ],size = 2),
             Column([
                 Row([
-                    Column([
-                        card_small(id_value='card-cpm',text='CPM'),
+                    Column(
+                    [
+                        Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ,icon=DashIconify(icon="ic:search")),#
+                        
+                    ],size = 3),
                        
-                    ],size = 3),
-                    Column([
-                        card_small(id_value='card-invval',text='INV. VAL'),
-                       
-                    ],size = 3),
-                    Column([
-                        card_small(id_value='card-stock',text='TI STOCK'),
-                        #card_value(text='TI STOCK',radius='xs',id_value='card-stock',color_section_title= '#33ce96')
-                    ],size = 3),
-                    Column([
-                        card_small(id_value='card-consumo',text='TI CONSUMO'),
-                        #card_value(text='TI CONSUMO',radius='xs',id_value='card-consumo',color_section_title= '#33ce96')
-                    ],size = 3),
+                    Column(
+                    [
+                        card_stack()
+                        
+                    ],size = 9),
+     
                 ]),
                 Row([
                     Column([
@@ -385,7 +398,6 @@ def gestion_stock():
                 ]),
         Div(id='notifications-update-data'),
         Store(id='data-stock'),
-        Store(id='inv_val_total'),
         Store(id='data-values'),
         Store(id='data-table'),
         Download(),

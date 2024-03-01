@@ -73,4 +73,5 @@ def change_cols_saldosalm(df = None):
     df['DSC_GRUPO'] = df['DSC_GRUPO'].str.strip()
     df['DSC_SUBGRUPO'] = df['DSC_SUBGRUPO'].str.strip()
     df['MARCA'] = df['MARCA'].str.strip()
+    df['MARCA'] = df['MARCA'].replace([''],['NO ESPECIFICADO'])
     return df
