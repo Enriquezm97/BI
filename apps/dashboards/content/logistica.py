@@ -200,7 +200,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):
         cpm_min = args[7] if args[7] != '' else None
         cpm_max = args[8] if args[8] != '' else None
         moneda = args[9]
-        print(args)
+        
         col_pu = 'PU_S' if moneda == 'soles' else 'PU_D'
         inv_val_moneda = 'INV_VALMOF' if moneda == 'soles' else 'INV_VALMEX'
         sig = 'S/.' if moneda == 'soles' else '$'
@@ -248,7 +248,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):
         dff['TI'] = 1/dff['CANTIDAD']
         dff['TI'] = dff['TI'].replace([np.inf],0)
         #CARDS
-        print(cpm_min,cpm_max)
+        
         if cpm_min != None and cpm_max != None:
             dff = dff[(dff['CANTIDAD']>=cpm_min)&(dff['CANTIDAD']<=cpm_max)]
             
