@@ -171,7 +171,7 @@ def card_stack(id_value = '',text = 'cpm'):
             id='card',
             children=[
             dmc.Group([
-                dmc.Divider(orientation="vertical"),
+                #dmc.Divider(orientation="vertical"),
                 dmc.Grid(
                     children=[
                         dmc.Col(dmc.Text('CPM', color='black',align='center',style={"fontSize": 12}), span=12,p=0),
@@ -181,7 +181,7 @@ def card_stack(id_value = '',text = 'cpm'):
                     gutter="xs",id='grid-1',
                 ),
                 
-                dmc.Divider(orientation="vertical"),
+                #dmc.Divider(orientation="vertical"),
                 dmc.Grid(
                     children=[
                         dmc.Col(dmc.Text('INV VAL', color='black',align='center',style={"fontSize": 12}), span=12,p=0),
@@ -190,8 +190,17 @@ def card_stack(id_value = '',text = 'cpm'):
                     ],
                     gutter="xs",id='grid-2',
                 ),
-                
-                dmc.Divider(orientation="vertical"),
+                #
+                dmc.Grid(
+                    children=[
+                        dmc.Col(dmc.Text('TOTAL STOCK', color='black',align='center',style={"fontSize": 12}), span=12,p=0),
+                        dmc.Col(dmc.Text(id= 'card-total-stock' , weight=700,children=[],align='center',style={"fontSize": 18}), span=12,p=0),
+                        
+                    ],
+                    gutter="xs",id='grid-2',
+                ),
+                #
+                #dmc.Divider(orientation="vertical"),
                 dmc.Grid(
                     children=[
                         dmc.Col(dmc.Text('TI STOCK', color='black',align='center',style={"fontSize": 12}), span=12,p=0),
@@ -201,7 +210,7 @@ def card_stack(id_value = '',text = 'cpm'):
                     gutter="xs",id='grid-3',
                 ),
 
-                dmc.Divider(orientation="vertical"),
+                #dmc.Divider(orientation="vertical"),
                 dmc.Grid(
                     children=[
                         dmc.Col(dmc.Text('TI CON', color='black',align='center',style={"fontSize": 12}), span=12,p=0),

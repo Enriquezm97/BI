@@ -2,7 +2,7 @@ import dash_ag_grid as dag
 from ..components.display_comp import * 
 from ..components.layout_comp import *
 from ..components.card_comp import *
-from datetime import datetime
+from datetime import datetime,timedelta
 
 
 
@@ -233,6 +233,7 @@ def gestion_stock():
                 dmc.NumberInput(
                     id = 'cpm-min',
                     label="Cpm Inicial",
+                    placeholder='-',
                     #value=0,
                     min=-10000,
                     max=100000,
@@ -245,6 +246,7 @@ def gestion_stock():
                 dmc.NumberInput(
                     id = 'cpm-max',
                     label="Cpm Maximo",
+                    placeholder='-',
                     #value=0,
                     min=-10000,
                     max=100000,
@@ -274,7 +276,7 @@ def gestion_stock():
                 Row([
                     Column([
                     dmc.Card(
-            
+                        
                     children=[
                         Entry.select(
                             id = 'select-sucursal',
@@ -295,17 +297,22 @@ def gestion_stock():
                         #        value='1',
                         #        clearable=False
                         #),
-                        dmc.NumberInput(
-                                        id = 'num-meses',
-                                        label="Número de Meses",
-                                        description="Ultimos meses",
-                                        value=6,
-                                        min=1,
-                                        step=1,
-                                        style={"width": 150},
-                                        size="md",
+                        #dmc.NumberInput(
+                        #                id = 'num-meses',
+                        #                label="Número de Meses",
+                        #                description="Ultimos meses",
+                        #                value=6,
+                        #                min=1,
+                        #                step=1,
+                        #                style={"width": 150},
+                        #                size="md",
                                         
-                        ),
+                        #),
+                        dmc.Space(h=20),
+                        Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ,icon=DashIconify(icon="ic:search")),#
+                        dmc.Space(h=20),
+                        dmc.Badge(str(datetime.now()- timedelta(days = 6 * 30))[:8].replace('-', "-")+str('01'), variant="dot", size='lg'),
+                        dmc.Badge(str(datetime.now())[:10].replace('-', "-"), variant="dot", size='lg'),
                         dmc.Space(h=20),
                         dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md',fullWidth=True),
                         #dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
@@ -336,17 +343,12 @@ def gestion_stock():
             ],size = 2),
             Column([
                 Row([
-                    Column(
-                    [
-                        Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ,icon=DashIconify(icon="ic:search")),#
-                        
-                    ],size = 3),
-                       
+                    
                     Column(
                     [
                         card_stack()
                         
-                    ],size = 9),
+                    ],size = 12),
      
                 ]),
                 Row([

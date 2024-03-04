@@ -30,9 +30,9 @@ class Gestion_Stock(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
-        id_app =f'{id_user}-gestion-stock'
-        #user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
-        #name_empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('name_empresa',flat=True)[0]
+        user_filter=Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True)[0]
+        code_empresa=Empresa.objects.filter(pk=user_filter).values_list('ruc_empresa',flat=True)[0]
+        id_app =f'{code_empresa}-gestion-stock'
         dashboard=dashboard_gestion_stock(codigo = id_app)
         context = {'dashboard':dashboard, 'code':id_app}
         

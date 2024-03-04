@@ -129,3 +129,16 @@ def listar_usuario(request):
     #usuarios = Empresa.objects.filter(id=get_empresa_id())[0]#.values_list('user_id',flat=True)#[0]
     usuarios = Usuario.objects.filter(empresa_id = get_empresa_id())
     return render(request, 'users/lista_usuarios.html',context={'users': usuarios})
+
+
+
+
+def modificar_empresa_view(request):
+    rol_ = Rol.objects.all()
+    lista_rol = [(fila.id, fila.name_rol) for fila in rol_]
+    
+    #reg_Usuario= Usuario.objects.get(id=id)
+    
+    #user = User.objects.get(pk=reg_Usuario.user_id)
+    #if request.method == 'POST':
+    return render(request, 'users/form_modificar_empresa.html', context={})
