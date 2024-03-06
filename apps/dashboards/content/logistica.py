@@ -165,6 +165,11 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):
         
         Output("bar-minv-prom","figure"),
         Output("bar-inv-val","figure"),
+        
+        Output("bar-inv_val-first","figure"),
+        Output("bar-inv_val-second","figure"),
+        Output("bar-inv_val-thrid","figure"),
+        
         Output("table","rowData"),
         Output("table","columnDefs"),
         Output("data-table","data"),
@@ -253,7 +258,7 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):
             dff = dff[(dff['CANTIDAD']>=cpm_min)&(dff['CANTIDAD']<=cpm_max)]
             
         cpm = round(dff['CANTIDAD'].mean(),2)
-        invval = f"{sig} {(int(round(dff[inv_val_moneda].sum(),0))):,}"
+        invval = f"{sig}{(int(round(dff[inv_val_moneda].sum(),0))):,}"
         meses_invet_prom = dff[dff['Meses Inventario']!='NO ROTA']
         stock = round(meses_invet_prom['Meses Inventario'].mean(),2)
         consumo = round(dff['TI'].mean(),2)
@@ -261,7 +266,11 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):
         
         #GRAPHS
         mi_dff = dff[(dff['Meses Inventario']!='NO ROTA')]
+        mi_dff = mi_dff[mi_dff['Meses Inventario']>0]
+        
         df_mi_ =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario']].sum().sort_values('Meses Inventario').reset_index().tail(30)
+        
+        
         df_mi_iv =mi_dff.groupby(['COD_PRODUCTO','DESCRIPCION'])[['Meses Inventario',inv_val_moneda]].sum().sort_values(inv_val_moneda).reset_index().tail(30)
         ##table
         df_table = dff[['DSC_GRUPO', 'DSC_SUBGRUPO', 'COD_PRODUCTO', 'DESCRIPCION', 'UM','MARCA','Precio Unitario Promedio', 'STOCK', inv_val_moneda,'IDPRODUCTO', 'CANTIDAD', 'Meses Inventario','TI']]
@@ -287,6 +296,9 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):
                 #'Inventario Valorizado':'Inventario Valorizado', 
                 'TI':'TI'
             })
+        sucursal_df = saldos_alm_df.groupby(['SUCURSAL'])[[inv_val_moneda]].sum().sort_values(inv_val_moneda).reset_index()
+        almacen_df = saldos_alm_df.groupby(['ALMACEN'])[[inv_val_moneda]].sum().sort_values(inv_val_moneda).reset_index()
+        grupo_df = saldos_alm_df.groupby(['DSC_GRUPO'])[[inv_val_moneda]].sum().sort_values(inv_val_moneda).reset_index()
         #print(df_table['STOCK'].sum())
         return [
             [{'label': i, 'value': i} for i in sorted(input_df['SUCURSAL'].unique())],
@@ -295,8 +307,11 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):
             [{'label': i, 'value': i} for i in sorted(input_df['DSC_SUBGRUPO'].unique())],
             [{'label': i, 'value': i} for i in sorted(input_df['MARCA'].unique())],
             cpm,invval,stock,consumo,total_stock,
-            bar_logistica_y1(df = df_mi_,height = 350),
-            bar_logistica_y2(df = df_mi_iv,height = 350,y_col=inv_val_moneda ),
+            bar_logistica_y1(df = df_mi_,height = 320),
+            bar_logistica_y2(df = df_mi_iv,height = 320,y_col=inv_val_moneda ),
+            bar_horizontal(df = sucursal_df, height = 350, x= inv_val_moneda, y = 'SUCURSAL', name_x='Inventario Valorizado', name_y='Sucursal',title = 'Sucursal por Inventario Valorizado',color = 'rgb(95, 70, 144)'),
+            bar_horizontal(df = almacen_df, height = 350, x= inv_val_moneda, y = 'ALMACEN', name_x='Inventario Valorizado', name_y='Almacen',title = 'Almacen por Inventario Valorizado',color ='rgb(29, 105, 150)'),
+            bar_horizontal(df = grupo_df, height = 350, x= inv_val_moneda, y = 'DSC_GRUPO', name_x='Inventario Valorizado', name_y='Grupo Producto',title = 'Grupo Producto por Inventario Valorizado',color = 'rgb(56, 166, 165)'),
             df_table.to_dict("records"),
             fields_columns(columns = df_table.columns),
             df_table.to_dict("series"),
@@ -306,6 +321,9 @@ def dashboard_gestion_stock(codigo = '',empresa = ''):
     download_data(app,input_id_data='data-table',name_file = 'stocks_producto.xlsx')
     opened_modal(app, id="bar-minv-prom",height_modal=900)
     opened_modal(app, id="bar-inv-val",height_modal=900)
+    opened_modal(app, id="bar-inv_val-first",height_modal=900)
+    opened_modal(app, id="bar-inv_val-second",height_modal=900)
+    opened_modal(app, id="bar-inv_val-thrid",height_modal=900)
     return app
    
 #LAST CALLBACK     

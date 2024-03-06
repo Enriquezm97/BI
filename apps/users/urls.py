@@ -20,6 +20,8 @@ urlpatterns = [
     path('crear-profile/',views.registo_profile_view, name='crear_profile'),
     path('lista-usuarios/',views.listar_usuario, name='lista_usuarios'),
     path('form-test/',views.form_test_view, name='form_test'),
+    
+     path('login2',views.login_2, name='login2'),
 ]
 
   

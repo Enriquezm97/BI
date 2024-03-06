@@ -311,9 +311,9 @@ def gestion_stock():
                         dmc.Space(h=20),
                         Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ,icon=DashIconify(icon="ic:search")),#
                         dmc.Space(h=20),
-                        dmc.Badge(str(datetime.now()- timedelta(days = 6 * 30))[:8].replace('-', "-")+str('01'), variant="dot", size='lg'),
-                        dmc.Badge(str(datetime.now())[:10].replace('-', "-"), variant="dot", size='lg'),
-                        dmc.Space(h=20),
+                        #dmc.Badge(str(datetime.now()- timedelta(days = 6 * 30))[:8].replace('-', "-")+str('01'), variant="dot", size='lg'),
+                        #dmc.Badge(str(datetime.now())[:10].replace('-', "-"), variant="dot", size='lg'),
+                        #dmc.Space(h=20),
                         dmc.Button("Filtrar", variant="filled",id='btn-filtrar',size='md',fullWidth=True),
                         #dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
                         #dcc.RangeSlider(
@@ -340,7 +340,7 @@ def gestion_stock():
                     ]),
 
                 ])
-            ],size = 2),
+            ],size = 3),
             Column([
                 Row([
                     
@@ -352,52 +352,87 @@ def gestion_stock():
      
                 ]),
                 Row([
-                    Column([
+                    Column(
+                        [
+                        dmc.Tabs(
+                                [
+                                    dmc.TabsList(
+                                        [
+                                            dmc.Tab("Meses de Inventario Promedio", value="1"),
+                                            dmc.Tab("Inventario Valorizado", value="2"),
+                                            #dmc.Tab("Tab three", value="3"),
+                                        ]
+                                    ),
+                                    dmc.TabsPanel(card_graph(id_graph = 'bar-minv-prom',height=320 , id_maximize = 'maxi_bar-minv-prom'), value="1"),
+                                    dmc.TabsPanel(card_graph(id_graph = 'bar-inv-val',height=320, id_maximize = 'maxi_bar-inv-val'), value="2"),
+                                    #dmc.TabsPanel(create_graph(), value="3"),
+                                ],
+                                value="1",
+                            )
+                        ],size = 12)
+                    #Column([
                         
-                            card_graph(id_graph = 'bar-minv-prom',height=350 , id_maximize = 'maxi_bar-minv-prom')
+                    #        card_graph(id_graph = 'bar-minv-prom',height=350 , id_maximize = 'maxi_bar-minv-prom')
                         
-                    ],size = 6),
-                    Column([
+                    #],size = 6),
+                    #Column([
                          
-                             card_graph(id_graph = 'bar-inv-val',height=350, id_maximize = 'maxi_bar-inv-val')
+                    #         card_graph(id_graph = 'bar-inv-val',height=350, id_maximize = 'maxi_bar-inv-val')
                          
-                    ],size = 6),
+                    #],size = 6),
                 ]),
                 
-            ],size = 10)
+            ],size = 9)
             
            
             
         ]),
         Row([
                     Column([
-                        html.Div(children=[
-                                Button.actionIcon(id='btn-download',icono='download',style={'position': 'absolute','top': '0px','right': '9px','z-index': '99'},),
-                                        #actionIcon(ids=id_download,icono='download'),
-                                dag.AgGrid(
-                                        id="table",
-                                        #rowData=df.to_dict("records"),
-                                        #columnDefs=[{"field": i,} for i in df.columns],#"cellStyle": {'font-size': 18}
-                                        defaultColDef = {
-                                            "resizable": True,
-                                            "initialWidth": 130,
-                                            "wrapHeaderText": True,
-                                            "autoHeaderHeight": True,
-                                            "minWidth":130,
-                                            "sortable": True, 
-                                            "filter": True
-                                        },
-                                        className="ag-theme-alpine headers1",
-                                        columnSize="sizeToFit",
-                                        style={'font-size': '11px'},
-                                        dashGridOptions={"enableCellTextSelection": True, "ensureDomOrder": True},
-                                        
+                        dmc.Accordion(
+                                value='table-accordion',
+                                children=[
+                                    dmc.AccordionItem(
+                                        [
+                                            dmc.AccordionControl("Tabla Detalle",icon=DashIconify(icon="tabler:table-filled",color=dmc.theme.DEFAULT_COLORS["blue"][6], width=20)),
+                                            dmc.AccordionPanel(
+                                               html.Div(children=[
+                                                    Button.actionIcon(id='btn-download',icono='download',style={'position': 'absolute','top': '60px','right': '9px','z-index': '99'},),
+                                                            #actionIcon(ids=id_download,icono='download'),
+                                                    dag.AgGrid(
+                                                            id="table",
+                                                            defaultColDef = {
+                                                                "resizable": True,
+                                                                "initialWidth": 130,
+                                                                "wrapHeaderText": True,
+                                                                "autoHeaderHeight": True,
+                                                                "minWidth":130,
+                                                                "sortable": True, 
+                                                                "filter": True
+                                                            },
+                                                            className="ag-theme-alpine headers1",
+                                                            columnSize="sizeToFit",
+                                                            style={'font-size': '11px'},
+                                                            dashGridOptions={"enableCellTextSelection": True, "ensureDomOrder": True},
+                                                            
 
-                            )])    
+                                            )])
+                                            ),
+                                        ],
+                                        value="table-accordion",
+                                    ),
+                                ],
+                            ),
+                            
                     
                     ]),
                    
                 ]),
+        Row([
+            Column([card_graph(id_graph = 'bar-inv_val-first',height=320 , id_maximize = 'maxi_bar-inv_val-first')],size=4),
+            Column([card_graph(id_graph = 'bar-inv_val-second',height=320 , id_maximize = 'maxi_bar-inv_val-second')],size=4),
+            Column([card_graph(id_graph = 'bar-inv_val-thrid',height=320 , id_maximize = 'maxi_bar-inv_val-thrid')],size=4),
+        ]),
         Div(id='notifications-update-data'),
         Store(id='data-stock'),
         Store(id='data-values'),

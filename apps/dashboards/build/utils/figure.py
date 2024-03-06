@@ -106,3 +106,44 @@ def bar_logistica_y2(df = None, height = 450 , moneda = 'Soles', y_col = ''):
     fig.update_layout(margin=dict(b = 40))
     
     return fig
+
+
+def bar_horizontal(df = None, height = 350 , x = '',y = '',name_x = '',name_y = '',color = '#3aa99b', title = ''):
+
+    fig = go.Figure()
+    #'Meses Inventario','Inventario Valorizado'
+    fig.add_trace(go.Bar(
+    x = df[x],
+    y = df[y],
+    name = '',
+    cliponaxis=False,
+    marker=dict(color = color,cornerradius=15),
+    hovertemplate ='<br>'+name_y+': <b>%{y}</b><br>'+name_x+': <b>%{x:,.1f}</b>',hoverlabel=dict(font_size=13,bgcolor="white"),
+    orientation='h'
+    ))
+    
+    fig.update_layout(
+        #legend=dict(orientation="v"),
+        #'<b>'+xaxis_title+'</b>'
+        yaxis=dict(
+            title=dict(text='<b>'+name_y+'</b>'),
+            side="left",
+            #range=[0, df['Meses Inventario'].max()]
+        ),
+        
+        xaxis_title='<b>'+name_x+'</b>',
+    )
+    
+    fig.update_layout(
+        title = f"<b>{title}</b>",
+        title_font_family="sans-serif", 
+        title_font_size = 14,
+        height = height,
+        template = 'plotly_white'
+        #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
+    )
+    fig.update_xaxes(tickfont=dict(size=11),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 12,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+    fig.update_yaxes(tickfont=dict(size=11),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 12,automargin=True)  
+    fig.update_layout(yaxis_tickformat = ',')
+    fig.update_layout(margin=dict(r = 20, b = 40, t = 40))
+    return fig

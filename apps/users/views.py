@@ -142,3 +142,34 @@ def modificar_empresa_view(request):
     #user = User.objects.get(pk=reg_Usuario.user_id)
     #if request.method == 'POST':
     return render(request, 'users/form_modificar_empresa.html', context={})
+
+
+
+
+
+
+def login_2(request):
+
+    #if request.method == 'POST':
+
+    #    username = request.POST.get('username')
+    #    password = request.POST.get('password')
+
+    #    user = authenticate(request,username=username,password=password)
+    #    if user:
+    #            login(request, user)
+    #            return redirect('home')#('/cuentas_por_pagar/')
+    #    else:
+    #            return render(request,'users/login.html',{'error':'Invalid username and password'})
+    if request.method == 'POST':
+        usuario_nombre = request.POST.get('username')
+        print(usuario_nombre)
+        #usuario = User.objects.get(username=usuario_nombre)
+        empresa_name = Usuario.objects.filter(username=usuario_nombre).values_list('empresa_id',flat=True)[0]
+        #Empresa.objects.filter(id = id_empresa)
+        empresas = Empresa.objects.filter(id=empresa_name)
+        print(empresas)
+        return render(request, 'users/login2.html', {'empresas': empresas})
+    else:
+        return render(request, 'users/login2.html', {'empresas': []})    
+    #return render (request,'users/login2.html')
