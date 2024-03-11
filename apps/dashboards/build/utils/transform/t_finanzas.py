@@ -1,4 +1,5 @@
 import pandas as pd
+from ..helpers import	*
 
 def clean_bcomprobacion(df =  None):
         df['al_periodo'] = df['al_periodo'].fillna('')
@@ -55,4 +56,20 @@ def pivot_bcomprobacion(df = pd.DataFrame() ,etapa = 'Trimestre', moneda = 'sole
     merge_3 = merge_2.merge(grupo_funcion_df_pivot,how ='inner',on = group)
     merge_4 = merge_3.merge(grupo_naturaleza_df_pivot,how ='left',on = group)
     return merge_4.fillna(0)    
+
+
+def clean_bg(df = None):
+    df['periodo'] = df['periodo'].fillna('')
+    df = df[df['periodo'] != '']
+    df['titulo1']=df['titulo1'].str.strip()
+    df['titulo2']=df['titulo2'].str.strip()
+    df['titulo3']=df['titulo3'].str.strip()
+    df['titulo4']=df['titulo4'].str.strip()
+    df['Año']=df['periodo'].str[:4]
+    df['Mes']=df['periodo'].str[4:]
+    df['Mes_num']= df['Mes'].astype('int')
+    df['Mes_'] = df.apply(lambda x: mes_short(x['Mes_num']),axis=1) 
+    df['Trimestre'] = df.apply(lambda x: cal_trim(x['Mes_num']),axis=1)
+    return df
+
     

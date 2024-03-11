@@ -160,57 +160,85 @@ def test_dashboard(codigo= '',data_almacen = []):
 
 
 def resize_dashboard():
-    return dmc.Card(
-            id='card',
-            children=[
-            dmc.Group([
-                Entry.select(
-                                id = 'select-tipo-val', texto = "Tipo de Valorización", size = 'md',
-                                data=[
-                                    {"value": "1", "label": "CONTABLE"},
-                                    {"value": "2", "label": "ULTIMA COMPRA"},
-                                    {"value": "3", "label": "ULTIMO PROMEDIO"},
-                                    ],
-                                value='1',
-                                clearable=False
-                            ),
-            ], spacing='0.5rem', sx={'align-items': 'baseline'}),
-             Entry.multiSelect(id = 'multiselect-almacen',texto='Almacen',place = 'Todos'),
-                        dmc.Space(h=10),
-                        Entry.textInput(id = 'text-input-find',label='Código o Descripción',size='md',place = 'Buscar...' ),#,icon=DashIconify(icon="ic:search")
-                        dmc.Space(h=10),
-                        dmc.Text("Consumo Promedio Mensual", size="md",weight=500),
-                        dcc.RangeSlider(
-                            min = 0,
-                            marks=None,
-                            tooltip={
-                                "placement": "bottom",
-                                "always_visible": True,
-                                "style": {"color": "Black", "fontSize": "30px", "font-size":"18px"},
-                            },
-                            id='range-slider-cpm',
+    return Container([
+        Row([
+            Column([
+                dmc.Card([
+                    dmc.Grid(
+                        children=[
+                            Column(title(text = 'Estado de Ganancias y Perdidas',color="white"), size=4),
+                            Column(
+                                Entry.select(
+                                    id = 'select-anio',
+                                    texto = 'Año',
+                                    size = 'sm',
+                                    clearable = True,
+                                    style={'font-size': "80%", 'color': "white"}
+                                )
+                            , size=2),
+                            Column(
+                                Entry.select(
+                                    id = 'select-aniofisca',
+                                    texto = 'Año Fiscal',
+                                    size = 'sm',
+                                    clearable = True
+                                )
                             
-                        ),
-                        dmc.NumberInput(
-                            id = 'num-meses',
-                            label="Número de Meses",
-                            description="Ultimos meses",
-                            value=6,
-                            min=1,
-                            step=1,
-                            style={"width": 150},
-                            size="md",
+                            , size=2),
+                            Column(
+                                Entry.select(
+                                    id = 'select-mes',
+                                    texto = 'Mes',
+                                    size = 'sm',
+                                    clearable = True
+                                )
+                            , size=2),
+                            Column(
+                                Entry.select(
+                                id = 'select-trismestre',
+                                texto = 'Trimestre',
+                                size = 'sm',
+                                clearable = True
+                            )
+                            , size=2),
                             
-                        )
-           
-           
-
-            ],
-            withBorder=True,
-            shadow='xl',
-            radius='md',
-            style={'width': 300}
-        )
+                        ],
+                        gutter="xs",
+                    )
+                    
+                ],style={'backgroundColor':"#00353e"},),
+                
+            ])
+        ]),
+        Row([
+            Column([
+                card_graph_1(text='Ingresos vs Egresos')
+            ],size=6),
+            Column([
+                card_graph_1(text='Ingresos')
+            ],size=3),
+            Column([
+                card_graph_1(text='Egresos')
+            ],size=3),
+        ]),
+        Row([   
+            Column([
+                card_value(contenido='tabla',
+                           text='Estado de ganancias y pérdidas ($)', 
+                           padding_section=0,
+                           radius='0px',
+                           color_section_content="#00353e",
+                           color_section_title="#00353e",
+                           content=[
+                               dag.AgGrid(
+                                    id = 'table-dag'
+                                )
+                           ]
+                ),
+                
+            ])
+        ]),
+    ])
 
 
 """

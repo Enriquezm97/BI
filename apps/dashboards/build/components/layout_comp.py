@@ -4,7 +4,7 @@ import dash_mantine_components as dmc
 
 
 def Column(content=[],size=12,margin_top = 0):
-      return dbc.Col(content,width=size,className=f"col-xl-{size} col-md-{size} col-sm-12 col-12 mb-1",style={'padding-left': '7px','padding-right': '10px','margin-top':margin_top})
+      return dbc.Col(content,width=size,className=f"col-xl-{size} col-md-{size} col-sm-12 col-12 mb-1",style={'padding-left': '7px','padding-right': '10px','margin-top':margin_top,"position": "static"})
 
 def Row(content=[]):
     return dbc.Row(content)

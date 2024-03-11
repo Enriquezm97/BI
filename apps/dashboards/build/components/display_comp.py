@@ -395,7 +395,7 @@ class Entry():
         ])
     
     def select(
-        id='',texto='',place="Todos",value=None,data=[],clearable=True, searchable = False, size='md'
+        id='',texto='',place="Todos",value=None,data=[],clearable=True, searchable = False, size='md',styles={},style = {'font-size': "80%"}
     ):
         return  html.Div(
             dmc.Select(
@@ -405,10 +405,11 @@ class Entry():
                 label=texto,
                 clearable=clearable,
                 placeholder=place,
-                style={'font-size': "80%"},
+                style = style,
                 value=value,
                 size=size,
-                searchable = searchable
+                searchable = searchable,
+                styles=styles
                 #searchable=True,
                 #style={"width": 200},
                 #icon=DashIconify(icon="radix-icons:magnifying-glass"),
@@ -417,7 +418,7 @@ class Entry():
     )
         
     def multiSelect(
-        id='w',texto='',place="",value=None,data=[],size='md'):
+        id='w',texto='',place="",value=None,data=[],size='md',styles={}):
         return html.Div(
             dmc.MultiSelect(
                         #data=["React", "Angular", "Svelte", "Vue"],
@@ -430,6 +431,7 @@ class Entry():
                         data=data,
                         style={'font-size': "80%"},
                         size=size, 
+                        styles=styles
             )
         )    
     
@@ -509,8 +511,8 @@ class Entry():
             )
     
 
-def title(text="",order=1,ids='id',align = 'left'):
-        return html.Div([dmc.Title(text, order=order,id=ids,align = align)])
+def title(text="",order=1,ids='id',align = 'left',color = "black"):
+        return html.Div([dmc.Title(text, order=order,id=ids,align = align, color= color)])
     
 
 class Picking():

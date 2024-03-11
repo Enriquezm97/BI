@@ -483,10 +483,10 @@ def dashboard_test(codigo = '',empresa = ''):#filtros = ['select-anio','select-g
 def dashboard_resize(codigo = ''):
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css(DASH_CSS_FILE)
-    try:
-        app.layout =  resize_dashboard()
-    except:
-        app.layout = ERROR
+    #try:
+    app.layout =  resize_dashboard()
+    #except:
+    #    app.layout = ERROR
     
     return app
 

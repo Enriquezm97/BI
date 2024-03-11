@@ -50,6 +50,7 @@ class GraphLinepx():
             custom_data = custom_data,
             markers = markers,
             category_orders=order,
+            
             #color_discrete_sequence  = '#0d6efd'
         )
         figure.update_layout(

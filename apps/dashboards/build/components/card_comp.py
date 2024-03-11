@@ -233,3 +233,63 @@ def card_stack(id_value = '',text = 'cpm'):
             shadow='xl',
             radius='md',
         )
+    
+
+def card_graph_1(id_maximize='id-maximize', id_graph='id-graph',height = 300,icon ='',text =''):
+    return dmc.Card(
+            children=[
+                dmc.CardSection(
+                    children=[  
+                            dmc.Text(children =[dmc.Center(children=[DashIconify(icon=icon, width=25,className="me-1"),text])] , weight=500, color='white'),
+                    ],
+                    withBorder=True,
+                    inheritPadding=True,
+                    p = 2,
+                    style={'backgroundColor':"#00353e"},
+
+                ),
+                DataDisplay.loadingOverlay(
+                dmc.CardSection(children = [
+                    
+                        Button.actionIcon(id=id_maximize),dcc.Graph(id=id_graph,figure = graph_empty)
+                   
+                ],p=0,style={'backgroundColor':'white','height':height,}),
+                 )
+            ],
+            withBorder = True,
+            shadow = 'xl',
+            radius = 'md',
+            style={"position": "static",'height':height},
+            p=0
+
+        )
+    
+
+def card_graph_select(id_maximize='id-maximize', id_graph='id-graph',height = 300,icon ='',text ='',id_select = 'select-cuenta',data = [],value = None):
+    return dmc.Card(
+            children=[
+                dmc.CardSection(
+                    children=[  
+                            dmc.Text(children =[dmc.Center(children=[DashIconify(icon=icon, width=25,className="me-1"),text])] , weight=500, color='white'),
+                    ],
+                    withBorder=True,
+                    inheritPadding=True,
+                    p = 2,
+                    style={'backgroundColor':"#00353e"},
+
+                ),
+                DataDisplay.loadingOverlay(
+                dmc.CardSection(children = [
+                        Entry.select(id = id_select,size = 'xs',clearable = False,searchable=True,data = data,value=value,style = {'font-size': "80%",'position': 'absolute','top': '4px','left': '4px','z-index': '99', 'width':'150px'}),
+                        Button.actionIcon(id=id_maximize),dcc.Graph(id=id_graph,figure = graph_empty)
+                   
+                ],p=0,style={'backgroundColor':'white','height':height,}),
+                 )
+            ],
+            withBorder = True,
+            shadow = 'xl',
+            radius = 'md',
+            style={"position": "static",'height':height},
+            p=0
+
+        )

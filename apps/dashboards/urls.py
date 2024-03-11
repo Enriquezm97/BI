@@ -24,4 +24,10 @@ urlpatterns = [
     path('resize',resize_View.as_view(),name='resize'),
     
     path('modficar-config-dashboard',update_config_dashboards,name='update_config_dashboard'),
+    
+    #finanzas
+    path('balance-general',Balance_General.as_view(),name='balence_general'),
+    path('balance-ap',Balance_AP.as_view(),name='balence_ap'),
+    path('analisis-activo',Analisis_Activo.as_view(), name = 'analisis_activo'),
+    path('analisis-pasivo',Analisis_Pasivo.as_view(), name = 'analisis_pasivo')
 ]

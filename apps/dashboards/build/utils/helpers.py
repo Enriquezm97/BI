@@ -2,30 +2,18 @@ import pandas as pd
 import numpy as np
 
 def mes_short(x):
-    if x == 1:
-        return 'Ene'
-    elif x == 2:
-        return 'Feb'
-    elif x == 3:
-        return 'Mar'
-    elif x == 4:
-        return 'Abr'
-    elif x == 5:
-        return 'May'
-    elif x == 6:
-        return 'Jun'
-    elif x == 7:
-        return 'Jul'
-    elif x == 8:
-        return 'Ago'
-    elif x == 9:
-        return 'Set'
-    elif x == 10:
-        return 'Oct'
-    elif x == 11:
-        return 'Nov'
-    elif x == 12:
-        return 'Dic'
+    dict_mes = {1:'Ene',2:'Feb',3:'Mar',4:'Abr',5:'May',6:'Jun',7:'Jul',8:'Ago',9:'Set',10:'Oct',11:'Nov',12:'Dic'}
+    return dict_mes[x]
+
+def cal_trim(mes):
+    if mes == 1 or mes == 2 or mes == 3:
+        return 1
+    elif mes == 4 or mes == 5 or mes == 6:
+        return 2
+    elif mes == 7 or mes == 8 or mes == 9:
+        return 3
+    elif mes == 10 or mes == 11 or mes == 12:
+        return 4    
     
 def semana_text(year, week):
         if len(str(week)) == 1:
@@ -326,4 +314,18 @@ def fields_columns(columns = []):
         #else :
             
     return list_
+
+def dataframe_filtro(values=[],columns_df=[]):
+   query = ""
+   for value, col in zip(values,columns_df):
+        if value != None:
+            if type(value) == int:
+                text=f"`{col}` == {value}"
+            elif type(value) == str:
+                text=f"`{col}` == '{value}'"
+            elif type(value) == list:
+                text=f"`{col}` in {value}"
+            query += text + " and "
+            
+   return query[:-5]
 
