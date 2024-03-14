@@ -96,11 +96,11 @@ def tabVentaDfGraph(df,tipo,tab,varnum,top_data):
 
 
 #df_ventas_nisira=pd.DataFrame(ventas_lista_nisira)
-df_ventas_detalle=pd.read_parquet('comercial_clean.parquet', engine='pyarrow')
+#df_ventas_detalle=pd.read_parquet('comercial_clean.parquet', engine='pyarrow')
 #df_ventas_default= pd.read_json(f"http://68.168.108.184:3000/api/consulta/NSP_RPT_VENTAS_DETALLADO_nisira")
 #df_ventas_detalle=cleanVentas(df_ventas_nisira)
 #df_ventas_detalle.to_parquet('comercial_clean.parquet')
-df_ventas_expo=df_ventas_detalle.copy()
+#df_ventas_expo=df_ventas_detalle.copy()
 ##
 
 

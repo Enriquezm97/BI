@@ -251,7 +251,7 @@ def card_graph_1(id_maximize='id-maximize', id_graph='id-graph',height = 300,ico
                 DataDisplay.loadingOverlay(
                 dmc.CardSection(children = [
                     
-                        Button.actionIcon(id=id_maximize),dcc.Graph(id=id_graph,figure = graph_empty)
+                        Button.actionIcon(id=id_maximize),dcc.Graph(id=id_graph,figure = graph_empty, config={'showEditInChartStudio': True,'plotlyServerURL': "https://chart-studio.plotly.com",'locale': 'es',})
                    
                 ],p=0,style={'backgroundColor':'white','height':height,}),
                  )

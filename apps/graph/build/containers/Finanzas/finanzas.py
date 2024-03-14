@@ -96,12 +96,7 @@ columnDefs = [
 #TOKEN='0Q10D10N10D10O10Z1lpu0N10O10H10Q10D10N10D10O10Z1mkidfgsgk0Q10D10N10D10O10Z1lpu0Q10d10n10d10o10z1lpu0Q1ert45g0d10o123d45gqwsmkiqwsqwspoi0I1asd0o10A1lpumkimkiertlpuertsdfasdasdlpuertbhgnjhsdfqwsasdnjhdfgdfgrtgertrtgqws'
 #API='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
 #finanzas=getApi(API,TOKEN)
-data_finanzas=pd.read_parquet('finanzas.parquet', engine='pyarrow')
 
-all_partidas=list(data_finanzas['grupo1'].dropna().unique())+list(data_finanzas['grupo2'].dropna().unique())+list(data_finanzas['grupo3'].dropna().unique())+list(data_finanzas['grupo_funcion'].dropna().unique())
-all_periodo=data_finanzas['al_periodo'].unique()
-all_year=data_finanzas['Año'].unique()
-data_finanzas['month']=data_finanzas['month'].astype("int")
 
 external_stylesheets=[dbc.themes.BOOTSTRAP,dbc.icons.BOOTSTRAP,dbc.icons.FONT_AWESOME]
 #data_finanzas#=df_finanzas.copy()

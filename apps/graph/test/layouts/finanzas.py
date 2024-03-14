@@ -10,7 +10,7 @@ from apps.graph.test.utils.blocks.block_card import cardGraph,cardSection,cardGr
 from apps.graph.test.utils.functions.callbacks.callbacks_ import *
 from apps.graph.test.utils.components.components_filters import dict_components_comercial, datepicker_
 from apps.graph.test.utils.functions.functions_dict import extraer_list_value_dict
-from apps.graph.test.data import finanzas_dff,pivot_data_finanzas,data_finanzas
+#from apps.graph.test.data import finanzas_dff,pivot_data_finanzas,data_finanzas
 from apps.graph.models import TipoIndicador
 #
 from apps.graph.test.utils.crum import get_indicadores_name,get_nombre_user, get_empresa,get_id_user

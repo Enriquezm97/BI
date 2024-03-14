@@ -15,6 +15,9 @@ EXTERNAL_STYLESHEETS =  [
 
 DASH_CSS_FILE = { "external_url" : "/static/css/dashstyles.css" }
 
+DASH_JS_FILE_1= { "external_url" : "/static/js/herpers.js" }
+DASH_JS_FILE_2 = { "external_url" : "/static/js/appexcahrts.js" }
+
 DICT_CULTIVOS_COLOR={'Arandano':'#7A325A',
                'Esparrago':'#87AA6C',
                'Uva':'#AF799F',

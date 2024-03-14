@@ -194,14 +194,22 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+#CHANNEL_LAYERS = {
+#    'default': {
+#        'BACKEND':'channels_redis.core.RedisChannelLayer',# 'channels.layers.InMemoryChannelLayer'
+#        'CONFIG': {
+#            'hosts': [('127.0.0.1', 6379),],
+            
+#        }
+#    }
+#}
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND':'channels_redis.core.RedisChannelLayer',# 'channels.layers.InMemoryChannelLayer'
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379),],
-            
-        }
-    }
+            'expiry': 500  # Tiempo de espera en segundos (ejemplo: 60 segundos)
+        },
+    },
 }
 ASGI_THREADS = 1000
 
@@ -254,14 +262,20 @@ CELERY_RESULT_SERIALIZER = 'json'
 #BROKER_CONNECTION_MAX_RETRIES = 0
 #BROKER_CONNECTION_TIMEOUT = 120
 
-"""
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-    }
-}
-"""
+
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#        'LOCATION': 'unique-snowflake',
+#    }
+#}
+#CACHES = {
+#        'default': {
+#        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+#        'LOCATION': 'django_cache',
+#    }
+#}
+
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 #SESSION_COOKIE_NAME = 'my_session_cookie'
 #SESSION_COOKIE_AGE = 172800

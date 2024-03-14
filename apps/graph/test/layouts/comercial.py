@@ -14,7 +14,6 @@ from apps.graph.test.utils.functions.functions_dict import extraer_list_value_di
 from apps.graph.test.constans import MESES_ORDER
 from crum import get_current_user
 from apps.graph.test.utils.crum import get_empresa,get_data_connection
-from apps.graph.test.data import data_comercial
 from apps.graph.test.utils.functions.functions_transform import *
 from apps.graph.test.Connection.apis import connection_api
 from crum import get_current_user

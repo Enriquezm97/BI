@@ -8,7 +8,8 @@ from apps.graph.test.utils.functions.functions_transform import *
 from ..build.build_inicio import * 
 from django.views.decorators.cache import cache_page
 from apps.dashboards.build.layout.error.dashboard_error import ERROR
-df =pd.read_parquet("data_inicio.parquet", engine="pyarrow")
+
+
 
 def inicio_dash(codigo = ''):
     

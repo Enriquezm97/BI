@@ -41,28 +41,11 @@ api_paraiso = 'http://190.117.112.27:3005/api/consulta/nsp_rpt_ventas_detallado'
 #agricola_df = cleanVariablesAgricolas(df_consumidores=consumidores,df_variedad=variedades,df_cultivos=cultivos,df_fertilizacion= fertilizantes)
 #costos_agricola_df = costosAgricolas(df_costos_campana = costos,df_consumidores = consumidores,df_cultivos = cultivos,df_variedad = variedades)
 
-df_ventas_detalle=pd.read_parquet('comercial_new_etl.parquet', engine='pyarrow')
-df_ventas_detalle['Tipo de Movimiento'] = df_ventas_detalle['Tipo de Movimiento'].astype(object)
-df_ventas_detalle['Tipo de Venta'] = df_ventas_detalle['Tipo de Venta'].astype(object)
-df_ventas_detalle['Tipo de Condicion'] = df_ventas_detalle['Tipo de Condicion'].astype(object)
-df_ventas_detalle['Grupo Producto'] = df_ventas_detalle['Grupo Producto'].astype(object)
-df_ventas_detalle['Subgrupo Producto'] = df_ventas_detalle['Subgrupo Producto'].astype(object)
-df_ventas_detalle['Vendedor'] = df_ventas_detalle['Vendedor'].astype(object)
-
-df_ventas_detalle['Tipo de Movimiento'] = df_ventas_detalle['Tipo de Movimiento'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Tipo de Venta'] = df_ventas_detalle['Tipo de Venta'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Tipo de Condicion'] = df_ventas_detalle['Tipo de Condicion'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Grupo Producto'] = df_ventas_detalle['Grupo Producto'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Subgrupo Producto'] = df_ventas_detalle['Subgrupo Producto'].fillna('NO ESPECIFICADO')
-df_ventas_detalle['Vendedor'] = df_ventas_detalle['Vendedor'].fillna('NO ESPECIFICADO')
-
-df_ventas_detalle['Cliente']=df_ventas_detalle['Cliente'].str[:30]
-df_ventas_detalle['Producto']=df_ventas_detalle['Producto'].str[:30]
-df_ventas_detalle['Fecha']=df_ventas_detalle['Fecha'].apply(lambda a: pd.to_datetime(a).date())
 
 
-bc_df = pd.read_parquet('bc_paraiso.parquet', engine='pyarrow')
-finanzas_dff = etl_bc(bc_df)
+
+#bc_df = pd.read_parquet('bc_paraiso.parquet', engine='pyarrow')
+#finanzas_dff = etl_bc(bc_df)
 
 
 def data_agricola(empresa = ''):

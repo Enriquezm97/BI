@@ -33,7 +33,7 @@ from apps.graph.data.gets import getApi
 #api_nisira_finanzas='http://69.64.92.160:3005/api/consulta/nsp_eeff_json'
 #finanzas_lista_nisira=getApi(api_nisira_finanzas,token_nisira)
 #df_owo=pd.DataFrame(finanzas_lista_nisira)
-df_bc_nisira=pd.read_parquet('finanzas.parquet', engine='pyarrow')
+#df_bc_nisira=pd.read_parquet('finanzas.parquet', engine='pyarrow')
 #df_bc_nisira=pd.read_parquet('bc_paraiso.parquet', engine='pyarrow')
 def figure__line2(x,y,y2,name,namex,namey,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3):#,esperado,permitido,limite
     fig = go.Figure()

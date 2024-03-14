@@ -40,7 +40,7 @@ from apps.graph.test.utils.functions.callbacks.callbacks_ import create_callback
 
 from apps.graph.test.Connection.apis import connection_api
 from apps.graph.test.utils.crum import get_indicadores_name,get_nombre_user, get_empresa
-from apps.graph.test.layouts.finanzas import formula_samplast,formula_paraiso
+#from apps.graph.test.layouts.finanzas import formula_samplast,formula_paraiso
 
 def TableDtScrolling_no_format_nototal(dff,rango_desde_1,rango_hasta_1,rango_color_1,rango_desde_2,rango_hasta_2,rango_color_2,rango_desde_3,rango_hasta_3,rango_color_3):#
     #df = get_data()
@@ -449,7 +449,7 @@ def EvaluarFormula(formula,df_ratios):#rbtnmoneda,ejex
     return eval(formula)
 
 
-from apps.graph.build.containers.Formularios.form_crear_indicador import df_bc_nisira
+#from apps.graph.build.containers.Formularios.form_crear_indicador import df_bc_nisira
 from apps.graph.data.transform_finanzas import *
 from apps.graph.data.gets import getApi
 
