@@ -42,14 +42,19 @@ class Empresa(models.Model):
     #user_empresa =  models.OneToOneField(User,on_delete=models.CASCADE)
     name_empresa = models.CharField(max_length=100, blank=True,null=True)
     phone_number_empresa = models.CharField(max_length=20, blank=True,null=True)
-    picture_empresa = models.ImageField(upload_to='media',blank=True,null=True)
+    picture_empresa = models.BinaryField(null=True)
     codigo_empresa= models.CharField(max_length=15, blank=True,null=True)
     ruc_empresa = models.CharField(max_length=12, blank=True,null=True)
     rubro_empresa=models.ForeignKey(Rubro,on_delete=models.CASCADE)
     config_dashboard=models.ForeignKey(ConfigDashboard,on_delete=models.CASCADE,null=True)
     create_empresa = models.DateTimeField(auto_now_add=True,null=True)
     modified_empresa = models.DateTimeField(auto_now=True,null=True)
-    
+    marca_empresa = models.TextField(blank=True)
+    def imagen_encoded(self):
+        from base64 import b64encode
+        if self.picture_empresa:
+            return b64encode(self.picture_empresa).decode('utf8')
+        return None
     
     def __str__(self):
 

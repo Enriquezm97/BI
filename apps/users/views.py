@@ -2,7 +2,9 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from apps.users.models import Empresa,Usuario,Rubro,Rol
+from apps.dashboards.models import ConfigDashboard
 from django.contrib.auth.models import User
+from ..dashboards.crum import get_values_empresa
 from .crum import *
 import base64
 #from .form import RegistroUser,RegistroProfile
@@ -133,23 +135,8 @@ def listar_usuario(request):
 
 
 
-def modificar_empresa_view(request):
-    rol_ = Rol.objects.all()
-    lista_rol = [(fila.id, fila.name_rol) for fila in rol_]
-    
-    #reg_Usuario= Usuario.objects.get(id=id)
-    
-    #user = User.objects.get(pk=reg_Usuario.user_id)
-    #if request.method == 'POST':
-    return render(request, 'users/form_modificar_empresa.html', context={})
-
-
-
-
-
-
 def login_2(request):
-
+    
     #if request.method == 'POST':
 
     #    username = request.POST.get('username')
@@ -173,3 +160,31 @@ def login_2(request):
     else:
         return render(request, 'users/login2.html', {'empresas': []})    
     #return render (request,'users/login2.html')
+    
+    
+def modificar_empresa_view(request):
+    rubro = Rubro.objects.all()
+    config_dashboard = ConfigDashboard.objects.all()
+    lista_rubro = [(fila.id, fila.name_rubro) for fila in rubro]
+    lista_config = [(fila.id, fila.name_config) for fila in config_dashboard]
+    print(get_values_empresa())
+    empresa,id_rubro,id_config =get_values_empresa()
+    if request.method == 'POST':
+        get_nombre = request.POST.get('nombre')
+        get_codigo = request.POST.get('codigo')
+        get_celular = request.POST.get('celular')
+        get_ruc = request.POST.get('ruc')
+        get_rubro = request.POST.get('rubro')
+        get_config = request.POST.get('config')
+        get_picture = request.FILES.get('picture')
+        
+        empresa.name_empresa = get_nombre
+        empresa.codigo_empresa = get_codigo
+        empresa.phone_number_empresa = get_celular
+        empresa.ruc_empresa = get_ruc
+        empresa.rubro_empresa = Rubro.objects.get(id=int(get_rubro))
+        empresa.config_dashboard = ConfigDashboard.objects.get(id=int(get_config))
+        empresa.marca_empresa = base64.b64encode(get_picture.read()).decode('utf-8')
+        empresa.save()
+        return redirect('home')
+    return render(request, 'users/form_modificar_empresa.html', {'empresa': empresa,'rubros':lista_rubro,'configs':lista_config}) 

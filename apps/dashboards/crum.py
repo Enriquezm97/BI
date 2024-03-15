@@ -23,3 +23,11 @@ def get_config_dashboard():
     config_ = ConfigDashboard.objects.get(id = id_config_dash)
     id_paleta = ConfigDashboard.objects.filter(id = id_config_dash).values_list('paleta_colores_id',flat=True)[0]
     return config_,id_paleta#(id = id_config_dash)
+
+def get_values_empresa():
+    id_user= User.objects.filter(username=get_current_user()).values_list('id',flat=True)[0]
+    id_empresa = Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True)[0]
+    empresa_obj = Empresa.objects.get(id = id_empresa)
+    rubro_id = empresa_obj.rubro_empresa_id
+    config_id = empresa_obj.config_dashboard_id
+    return empresa_obj, rubro_id,config_id
