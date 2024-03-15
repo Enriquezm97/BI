@@ -12,7 +12,7 @@ from ..build.utils.global_callback import *
 def dashboard_bg(codigo = ''):
     ip, token_ =get_data_connect()
     api = APIConnector(ip, token_)
-    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
+    app = DjangoDash(name = codigo,external_stylesheets=['https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator.min.css'],external_scripts=["https://unpkg.com/tabulator-tables@5.6.1/dist/js/tabulator.min.js"])
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     finanzas_df = clean_bg(api.send_get_dataframe(endpoint="nsp_etl_situacion_financiera",params=None))
     app.layout =  balance_general(formato=finanzas_df['formato'].unique())
@@ -96,6 +96,13 @@ def dashboard_bg(codigo = ''):
         ]
         #patrimonio = df[df['titulo1']=='PATRIMONIO']
         #patrimonio.groupby(['titulo1','titulo3'])[[col_moneda]].sum().reset_index()
+    app.clientside_callback(
+    """
+    """,
+    Output("table-js", "children"),
+    Input("data-values", "data"),
+    )
+    
     opened_modal(app, id="fondo-maniobra-graph",height_modal=900)
     opened_modal(app, id="activo-group3-graph",height_modal=900)
     opened_modal(app, id="pasivo-group3-graph",height_modal=900)

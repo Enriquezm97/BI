@@ -1467,7 +1467,7 @@ def dashboard_resize(codigo = ''):
     
     #app.css.append_css(DASH_CSS_FILE)
     #resize_dashboard()
-
+    
     app.layout = html.Div(
         children=[
             dcc.Store(id='ApexchartsSampleData', data=tradeData),
@@ -1557,9 +1557,9 @@ def dashboard_resize(codigo = ''):
                     enabled: true,
                     enabledOnSeries: [1],
                     formatter: GigatonneFormatter
-                  },
-              };
-              var chart = new ApexCharts(document.getElementById('apexAreaChart'), options);
+                },
+            };
+            var chart = new ApexCharts(document.getElementById('apexAreaChart'), options);
 
 
             chart.render();

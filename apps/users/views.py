@@ -184,7 +184,7 @@ def modificar_empresa_view(request):
         empresa.ruc_empresa = get_ruc
         empresa.rubro_empresa = Rubro.objects.get(id=int(get_rubro))
         empresa.config_dashboard = ConfigDashboard.objects.get(id=int(get_config))
-        empresa.marca_empresa = base64.b64encode(get_picture.read()).decode('utf-8')
+        empresa.marca_empresa = base64.b64encode(get_picture.read()).decode('utf-8') if get_picture != None else empresa.marca_empresa
         empresa.save()
         return redirect('home')
     return render(request, 'users/form_modificar_empresa.html', {'empresa': empresa,'rubros':lista_rubro,'configs':lista_config}) 

@@ -100,6 +100,11 @@ def balance_general(formato = []):
             ])
         ]),
         Row([
+            Column([
+                Div(id='table-js')
+            ])
+        ]),
+        Row([
             #Column([
                 
                 
