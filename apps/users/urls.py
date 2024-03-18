@@ -21,8 +21,16 @@ urlpatterns = [
     path('lista-usuarios/',views.listar_usuario, name='lista_usuarios'),
     path('form-test/',views.form_test_view, name='form_test'),
     
-     path('login2',views.login_2, name='login2'),
-]
+    path('login2',views.login_2, name='login2'),
+     
+     ##admin
+    path('new-user',views.regSuperUsuario_user, name='new_user'),
+    path('all-users',views.administrarUsuario, name='all_usuarios'),
+    path('new-empresa',views.regSuperUsuario_empresa, name='new_empresa'),
+    path('all-empresa',views.administrarEmpresa, name='all_empresas'),
+    path('update-empresa/<int:id>/',views.modSuperUsuario_empresa, name='update_empresa_admin'),
+     
+]   
 
   
 

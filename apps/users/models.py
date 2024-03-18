@@ -50,6 +50,15 @@ class Empresa(models.Model):
     create_empresa = models.DateTimeField(auto_now_add=True,null=True)
     modified_empresa = models.DateTimeField(auto_now=True,null=True)
     marca_empresa = models.TextField(blank=True)
+    #
+    api_publica = models.CharField(max_length=255,null=True)
+    api_local = models.CharField(max_length=255,null=True)
+    servidor_bd = models.CharField(max_length=255,null=True)
+    puerto_bd = models.CharField(max_length=255,default='1433',null=True)
+    usuario_bd = models.CharField(max_length=255,null=True)
+    password_bd = models.CharField(max_length=100,null=True)
+    name_bd = models.CharField(max_length=255,null=True)
+    token = models.CharField(max_length=255,null=True)
     def imagen_encoded(self):
         from base64 import b64encode
         if self.picture_empresa:
@@ -114,14 +123,14 @@ class Mantenedor(models.Model):
     puerto_bd = models.CharField(max_length=255,default='1433',null=True)
     usuario_bd = models.CharField(max_length=255,null=True)
     password_bd = models.CharField(max_length=100,null=True)
-    name_bd = models.CharField(max_length=255,null=True,unique=True)
+    name_bd = models.CharField(max_length=255,null=True)
     token = models.CharField(max_length=255,null=True)
     create_mantenedor = models.DateTimeField(auto_now_add=True,null=True)
     modified_mantenedor = models.DateTimeField(auto_now=True,null=True)
 
     def __str__(self):
 
-        return self.name_bd
+        return self.servidor_bd
     
 """
 LA TABLA USUARIO SE QUIERE ELIMNAR CREANDO UNA ABSTRACCION DEL MODEL USER 

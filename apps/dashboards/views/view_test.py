@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.urls import reverse_lazy
 from ...users.models import Empresa,Usuario,Rubro
-from ..content.test_dash import dashboard_test,dashboard_resize
+from ..content.test_dash import dashboard_test,dashboard_resize,dashboard_bg_test
 
 
 class test_View(LoginRequiredMixin,View):
@@ -29,7 +29,7 @@ class resize_View(LoginRequiredMixin,View):
         id_user=self.request.user.id
         id_app =f'{id_user}-resize'
         
-        dashboard=dashboard_resize(codigo = id_app)
+        dashboard=dashboard_bg_test(codigo = id_app)
         context = {'dashboard':dashboard, 'code':id_app}
         
         return render(request,'any.html',context)

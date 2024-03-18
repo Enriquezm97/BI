@@ -1,6 +1,53 @@
 {% load static tailwind_tags %}
 
 <aside  class="sidebar sidebar-offcanvas" id="sidebar">
+  {% if user.is_superuser == True and  user.is_staff == True and user.is_active == True%}
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url "home"%}">
+          <i class="mdi mdi-home menu-icon"></i>
+          <span class="menu-title">Inicio</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#user" aria-expanded="false" aria-controls="user">
+          <i class="mdi mdi mdi-account-multiple menu-icon"></i>
+          <span class="menu-title">Gestión de Usuarios</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="user">
+          <ul class="nav flex-column sub-menu">
+            
+            <li class="nav-item"> <a class="nav-link" href="{% url "new_user" %}">Crear Usuario</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url "all_usuarios" %}">Lista de Usuarios</a></li>
+
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#empresa" aria-expanded="false" aria-controls="empresa">
+          <i class="mdi mdi-domain menu-icon"></i>
+          <span class="menu-title">Gestión de Empresas</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="empresa">
+          <ul class="nav flex-column sub-menu">
+            
+            <li class="nav-item"> <a class="nav-link" href="{%url "new_empresa" %}">Crear Empresa</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{%url "all_empresas" %}">Lista de Empresas</a></li>
+
+          </ul>
+        </div>
+      </li>
+    </ul>
+
+
+
+
+
+  {% else %}
         <ul class="nav">
           <li class="nav-item">
             <a class="nav-link" href="{% url "home"%}">
@@ -8,12 +55,6 @@
               <span class="menu-title">Inicio</span>
             </a>
           </li>
-
-          
-
-        
-          
-
         {% if user.usuario.rol.name_rol == 'Administrador' %}
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#user" aria-expanded="false" aria-controls="user">
@@ -174,4 +215,5 @@
         
           
         </ul>
-      </aside >
+    {% endif %}
+</aside >

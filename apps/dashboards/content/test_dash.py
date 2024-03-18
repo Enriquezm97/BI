@@ -2,7 +2,7 @@ from django_plotly_dash import DjangoDash
 from ..constans import EXTERNAL_SCRIPTS, EXTERNAL_STYLESHEETS, DASH_CSS_FILE, DASH_JS_FILE_1,DASH_JS_FILE_2
 from ..build.layout.error.dashboard_error import ERROR
 from ..build.api.get_connect import connect_api
-from ..build.layout.layout_test import test_dashboard,resize_dashboard
+from ..build.layout.layout_test import test_dashboard,resize_dashboard,balance_general_test
 from ..build.utils.transform.t_logistica import *
 #####
 from dash import Input, Output,State,dcc, clientside_callback, ClientsideFunction
@@ -1695,8 +1695,63 @@ def dashboard_resize_test(codigo = ''):
 
 
 
+from ..build.utils.crum import get_data_connect
+from ..build.api.connector import  APIConnector
+from ..build.utils.transform.t_finanzas import *
 
-
+def dashboard_bg_test(codigo = ''):
+    ip, token_ =get_data_connect()
+    api = APIConnector(ip, token_)
+    app = DjangoDash(name = codigo,external_stylesheets=['https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator.min.css'],external_scripts=["https://unpkg.com/tabulator-tables@5.6.1/dist/js/tabulator.min.js"])
+    app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
+    finanzas_df = clean_bg(api.send_get_dataframe(endpoint="nsp_etl_situacion_financiera",params=None))
+    app.layout =  balance_general_test(formato=finanzas_df['formato'].unique())
+    
+    
+    @app.callback(
+        [   
+            Output('select-anio','data'),
+            Output('select-mes','data'),
+            Output('select-trismestre','data'),
+            Output("data-values","data"),
+            Output("notifications-update-data","children")
+        ],
+        [   
+            Input('select-formato','value'),
+            Input('select-anio','value'),
+            Input('select-mes','value'),
+            Input('select-trismestre','value'),
+            #Input('select-moneda','value'),
+        ],
+    )
+    def update_data_bg(*args):
+        formato = args[0]
+        year = args[1]
+        month = args[2]
+        trim = args[3]
+        print(args)
+        dff = finanzas_df[finanzas_df['formato']==formato]
+        if validar_all_none(variables = (year,month,trim)) == True:
+            df = dff.copy()
+        else:
+            df = dff.query(dataframe_filtro(values=(year,month,trim),columns_df=['Año','Mes_num','Trimestre']))
+        
+        return [
+            [{'label': i, 'value': i} for i in sorted(df['Año'].unique())],
+            [{'label': i, 'value': i} for i in sorted(df['Mes_num'].unique())],
+            [{'label': i, 'value': i} for i in sorted(df['Trimestre'].unique())],
+            df.to_dict('series'),  
+            DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update')
+        ]
+    
+    app.clientside_callback(
+    """
+    """,
+    Output("table-js", "children"),
+    Input("data-values", "data"),
+    )
+    
+    return app
 
 
 

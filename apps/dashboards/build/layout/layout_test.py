@@ -240,27 +240,121 @@ def resize_dashboard():
         ]),
     ])
 
+def balance_general_test(formato = []):
+    return Container([
+        Row([
+            Column([
+                dmc.Card(children=[
+                    dmc.Grid(
+                        children=[
+                            Column(title(text = 'Balance General',color="white"), size=3),
+                            Column(
+                                Entry.select(
+                                    id = 'select-formato',
+                                    texto = 'Formato',
+                                    size = 'sm',
+                                    value=formato[0],
+                                    data = formato,
+                                    clearable = False,
+                                    styles={"label": {"color": "white"}}
+                                )
+                            , size=2),
+                            Column(
+                                Entry.select(
+                                    id = 'select-anio',
+                                    texto = 'Año',
+                                    size = 'sm',
+                                    clearable = True,
+                                    styles={"label": {"color": "white"}}
+                                )
+                            , size=2),
+                            
+                            Column(
+                                Entry.select(
+                                    id = 'select-mes',
+                                    texto = 'Mes',
+                                    size = 'sm',
+                                    clearable = True,
+                                    styles={"label": {"color": "white"}}
+                                )
+                            , size=2),
+                            Column(
+                                Entry.select(
+                                id = 'select-trismestre',
+                                texto = 'Trimestre',
+                                size = 'sm',
+                                clearable = True,
+                                styles={"label": {"color": "white"}}
+                                
+                            )
+                            , size=2),
+                            Column(
+                                #Entry.select(
+                                #    id = 'select-moneda', texto = "Moneda", size = 'sm',
+                                #    data=[
+                                        
+                                #        {"value": "dolares", "label": "USD"},
+                                #        {"value": "soles", "label": "PEN"}
+                                #        ],
+                                #    value='dolares',
+                                #    clearable=False
+                                #)
+                                dmc.Select(
+                                    id = 'select-moneda',
+                                    clearable = False,
+                                    placeholder='Todos',
+                                    label = 'Moneda',
+                                    size = 'sm',
+                                    value = 'dolares',
+                                    data = [
+                                        {"value": "dolares", "label": "USD"},
+                                        {"value": "soles", "label": "PEN"}
+                                    ],
+                                    searchable = False,
+                                    styles={"label": {"color": "white"}}
+                                    
+                                    #nothingFound= 'No encontrado'
+                                )
+                            , size=1),
+                            
+                        ],
+                        gutter="xs",
+                    )
+                    
+                ],
+                    withBorder=True,
+                    shadow="sm",
+                    radius="md",         
+                    style={"position": "static",'background-color':'#00353e'}
+                ),
+                
+            ])
+        ]),
+        Row([
+            Column([
+                Div(id='table-js')
+            ])
+        ]),
+        Row([
+            #Column([
+                
+                
+            #],size=4),
+            Column([
+                Div(id = 'bar1')
+            ],size=6),
+            Column([
+                Div(id = 'bar2')
+            ],size=6),
+        ]),
+        Row([   
+            Column([
 
-"""
-html.Div([
-    PanelGroup(
-        id='panel-group',
-        children=[
-            Panel(
-                id='panel-1',
-                children=[
-                    html.H1('Black')
-                ],
-            ),
-            PanelResizeHandle(html.Div(style={"backgroundColor": "grey", "height": "100%", "width": "5px"})),
-            Panel(
-                id='panel-2',
-                children=[
-                    html.H1('White')
-                ],
-                style={"backgroundColor": "black", "color": "white"}
-            )
-        ], direction='horizontal'
-    )
-], style={"height": "100vh"})
-"""
+                Div(id = 'bar3')
+                
+            ])
+        ]),
+        Div(id='notifications-update-data'),
+        Store(id='data-values'),
+        Download(),
+    ])
