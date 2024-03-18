@@ -47,7 +47,7 @@
             </div>
             <div class="mb-6">
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo Electronico</label>
-                <input type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="@nisira.com.pe" name='email' required>
+                <input type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="@ejemplo.com.pe" name='email' required>
             </div> 
             <div>
                 <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
@@ -59,7 +59,8 @@
             </div> 
             <div>
                 <label for="visitors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Empresa</label>
-                <select id="underline_select" class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" name='empresa'>
+                <select id="underline_select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500r" name='empresa'>
+                    <option selected>Seleccione Empresa</option>
                     {% for opcion_value, opcion_label in empresas %}
                         <option value="{{ opcion_value }}">{{ opcion_label }}</option>
                     {% endfor %}
@@ -67,7 +68,8 @@
             </div>
             <div>
                 <label for="visitors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
-                <select id="underline_select" class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer" name='rol'>
+                <select id="underline_select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='rol'>
+                    <option selected>Seleccione Rol</option>
                     {% for opcion_value, opcion_label in roles %}
                         <option value="{{ opcion_value }}">{{ opcion_label }}</option>
                     {% endfor %}

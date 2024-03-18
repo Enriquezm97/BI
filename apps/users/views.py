@@ -100,7 +100,7 @@ def modificar_user_view(request,id):
         reg_Usuario.email =  correo
         reg_Usuario.phone = celular
         reg_Usuario.is_active = True if is_active == 'on' else False
-        reg_Usuario.datos_picture = base64.b64encode(picture.read()).decode('utf-8')
+        reg_Usuario.datos_picture = base64.b64encode(picture.read()).decode('utf-8')if picture != None else reg_Usuario.datos_picture
         reg_Usuario.rol = Rol.objects.get(id=int(rol))
         reg_Usuario.save()
         return redirect('lista_usuarios')
@@ -344,16 +344,16 @@ def modSuperUsuario_empresa(request,id):
             get_name = request.POST.get('name_bd')
             get_token = request.POST.get('token_bd')
             
-            if get_nombre in lista_empresa_valid:
-                return render(request, 'users/admin/form_empresas_update.html', {'rubros':lista_rubro,'configs':lista_config,'empresa_id':id,'error': 'El nombre de empresa ya está en uso'})
+            #if get_nombre in lista_empresa_valid:
+            #    return render(request, 'users/admin/form_empresas_update.html', {'rubros':lista_rubro,'configs':lista_config,'empresa_id':id,'empresa':update_empresa,'error': 'El nombre de empresa ya está en uso'})
             
             update_empresa.name_empresa = get_nombre
-            update_empresa.codigo_empresa = get_codigo
+            #update_empresa.codigo_empresa = get_codigo
             update_empresa.phone_number_empresa = get_celular
-            update_empresa.ruc_empresa = get_ruc
+            #update_empresa.ruc_empresa = get_ruc
             update_empresa.rubro_empresa = Rubro.objects.get(id=int(get_rubro))
             update_empresa.config_dashboard = ConfigDashboard.objects.get(id=int(get_config))
-            update_empresa.marca_empresa = base64.b64encode(get_picture.read()).decode('utf-8') if get_picture != None else ''
+            update_empresa.marca_empresa = base64.b64encode(get_picture.read()).decode('utf-8') if get_picture != None else update_empresa.marca_empresa
             #mantenedor
             update_empresa.api_publica = get_ippublica
             update_empresa.api_local = get_iplocal

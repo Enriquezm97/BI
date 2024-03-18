@@ -32,23 +32,25 @@
     <form method="POST" action="{% url "new_empresa"%}" enctype="multipart/form-data" > 
         {% csrf_token %}
         <div class="grid gap-6 mb-6 md:grid-cols-2">
-            <div>
-                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Empresa</label>
-                <input type="text" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" name='nombre' value="" required>
-            </div>
+            <div class="mb-6">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">RUC</label>
+                <input type="text"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" name='ruc' value="">
+            </div> 
             <div>
                 <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Codigo Empresa</label>
                 <input type="text" id="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" name='codigo' value="" required>
             </div>
+            <div>
+                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Empresa</label>
+                <input type="text" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" name='nombre' value="" required>
+            </div>
+            
             
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Número de Celular</label>
                 <input type="text"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" name='celular' value="">
             </div>
-            <div class="mb-6">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">RUC</label>
-                <input type="text"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" name='ruc' value="">
-            </div> 
+            
             <!--mantenedor-->
             <div>
                 <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">IP Pública</label>
@@ -86,6 +88,7 @@
             <div>
                 <label for="visitors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rubro</label>
                 <select id="underline_select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='rubro' >
+                    <option selected>Seleccione Rubro</option>
                     {% for opcion_value, opcion_label in rubros %} 
                         
                         <option value="{{ opcion_value }}" {% if empresa.rubro_empresa_id == opcion_value %}selected{% endif %}>{{ opcion_label }}</option>
@@ -95,7 +98,8 @@
             <div>
               <label for="visitors" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo Configuración</label>
               <select id="underline_select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='config' >
-                  {% for opcion_value, opcion_label in configs %} 
+                <option selected>Seleccione Configuración</option>  
+                {% for opcion_value, opcion_label in configs %} 
                       
                       <option value="{{ opcion_value }}" {% if empresa.config_dashboard_id == opcion_value %}selected{% endif %}>{{ opcion_label }}</option>
                   {% endfor %}
