@@ -20,7 +20,7 @@ SECRET_KEY=os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = False
-DEBUG = True    #'RENDER' not in os.environ
+DEBUG = False    #'RENDER' not in os.environ
 
 
 NPM_BIN_PATH = f"C:\\Program Files\\nodejs\\npm.cmd"

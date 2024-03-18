@@ -75,12 +75,14 @@ def registo_user_view(request):
     return render(request, 'users/form_create_user.html', context)
 
 def modificar_user_view(request,id):
+    usuariox =User.objects.get(username = get_current_user())
     rol_ = Rol.objects.all()
     lista_rol = [(fila.id, fila.name_rol) for fila in rol_]
     
     reg_Usuario= Usuario.objects.get(id=id)
     
     user = User.objects.get(pk=reg_Usuario.user_id)
+    
     if request.method == 'POST':
         nombres = request.POST.get('nombres')
         apellidos = request.POST.get('apellidos')
@@ -103,7 +105,11 @@ def modificar_user_view(request,id):
         reg_Usuario.datos_picture = base64.b64encode(picture.read()).decode('utf-8')if picture != None else reg_Usuario.datos_picture
         reg_Usuario.rol = Rol.objects.get(id=int(rol))
         reg_Usuario.save()
-        return redirect('lista_usuarios')
+        
+        if usuariox.is_staff == True and usuariox.is_superuser == True and usuariox.is_active == True:
+            return redirect('all_usuarios')
+        else:
+            return redirect('lista_usuarios')
     return render(request, 'users/form_modificar_user.html', context={'roles':lista_rol,'usuario':reg_Usuario,'user_id':id})
 
 
