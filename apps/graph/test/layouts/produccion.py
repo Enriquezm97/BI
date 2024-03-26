@@ -7,7 +7,7 @@ from apps.graph.test.utils.blocks.block_filters import offcanvas_recurso_agricol
 from apps.graph.test.utils.tables import tableDag
 from apps.graph.test.utils.functions.callbacks.callbacks_produccion import *
 from apps.graph.test.utils.functions.callbacks.callbacks_ import create_callback_opened_modal
-from apps.graph.test.utils.blocks.block_card import cardGraph,card,cardSection
+from apps.graph.test.utils.blocks.block_card import cardGraph,card,cardSection,card_segment,card_graph_1
 from ..Connection.apis import connection_api_agricola
 
 
@@ -25,7 +25,8 @@ import dash
 def ejecucionCampania(codigo=''):
 
     #df_var_agricolas_default= data_agricola(empresa=get_empresa())[0]
-    df_var_agricolas_default= connection_api_agricola(tipo = 'fertilizantes')
+    df_var_agricolas_default= pd.read_parquet('agricola.parquet', engine='pyarrow')#connection_api_agricola(tipo = 'fertilizantes')
+    
     campaña_list=sorted(df_var_agricolas_default['AÑO_CULTIVO'].unique())
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
@@ -33,47 +34,67 @@ def ejecucionCampania(codigo=''):
             Modal(id="modal-line-recurso-agricola", size= "85%"),
             offcanvas_recurso_agricola,
             Row([
-                Column([Button.btnFilter()],size=1),
                 Column([
-                    Div(id='title')
-                ],size=10),
-                Column([Button.btnDownload()],size=1),
+                    dmc.Card(children=[
+                        dmc.Grid(children=[
+                            Column([Button.btnFilter()],size=1),
+                            Column([
+                                Div(id='title')
+                            ],size=10),
+                            Column([Button.btnDownload(style={'position': 'absolute','top': '4px','right': '10px','z-index': '99'})],size=1),
+                            Column([
+                                Entry.select(id = 'select-campania',
+                                            texto = "Campaña-Cultivo",
+                                            size = 'sm',
+                                            data = [{'label': i, 'value': i} for i in campaña_list],
+                                            value = campaña_list[-1],
+                                            clearable=False
+                                            )#,value='2018-Palta'
+                            ],size=2),
+                            Column([
+                                Entry.select(id='select-variedad',texto="Variedades",size='sm')
+                            ],size=3),
+                            Column([
+                                Entry.select(id='select-lote',texto="Lotes",size='sm')
+                            ],size=3),
+                            Column([
+                                Div(id = 'label-range-inicio-campania',style={'padding-top':'35px'}),
+
+                                #Entry.datepickerRange(id='datepicker-date-campania',label='Inicio-Fin(Campaña)',disabled=True)
+                            ],size=2),
+                            Column([
+                                Div(id = 'label-range-fin-campania',style={'padding-top':'35px'})
+                            
+                            ],size=2),
+                        ],gutter='xs')
+                    ],
+                    withBorder=True,
+                    shadow="sm",
+                    radius="md",         
+                    style={"position": "static",'background-color':'white',"overflow":"visible"},#"position": "static",
+                    p=10
+                    )
+                ]),
+                
+                
+                
             ]),
             Row([
                 
-                Column([
-                    Entry.select(id = 'select-campania',
-                                 texto = "Campaña-Cultivo",
-                                 size = 'sm',
-                                 data = [{'label': i, 'value': i} for i in campaña_list],
-                                 value = campaña_list[-1],
-                                 clearable=False
-                                 )#,value='2018-Palta'
-                ],size=2),
-                Column([
-                    Entry.select(id='select-variedad',texto="Variedades",size='sm')
-                ],size=3),
-                Column([
-                    Entry.select(id='select-lote',texto="Lotes",size='sm')
-                ],size=3),
-                Column([
-                    Div(id = 'label-range-inicio-campania'),
-
-                    #Entry.datepickerRange(id='datepicker-date-campania',label='Inicio-Fin(Campaña)',disabled=True)
-                ],size=2),
-                Column([
-                    Div(id = 'label-range-fin-campania')
-                   
-                ],size=2),
+                
             ]),
             Row([
                 Column([
-                    Picking.segmented(id='segmented-recurso'),
                     DataDisplay.loadingOverlay(
-                        cardGraph(
-                            id_graph='line-recurso-agricola', 
-                            id_maximize = 'maximize-line-recurso-agricola')
-                    )
+                    card_segment(
+                        id_graph = 'line-recurso-agricola', 
+                        id_maximize = 'maximize-line-recurso-agricola',
+                        id_segmented='segmented-recurso',
+                        #value = 'Mes',
+                        #data = [{'label': 'Mensual', 'value': 'Mes'},{'label': 'Trimestral', 'value': 'Trimestre'},{'label': 'Semanal', 'value': 'Semana'},{'label': 'Fecha', 'value': 'Fecha'}],
+                        height=400
+                    )),
+                    
                 ],size=12),
                 #Column([
                     
@@ -118,7 +139,7 @@ def ejecucionCampania(codigo=''):
     create_callback_opened_modal(app, modal_id="modal-line-recurso-agricola",children_out_id="line-recurso-agricola", id_button="maximize-line-recurso-agricola",height_modal=700)
     
 def costosCampania(codigo=''):
-    df_costos_agricola_default= connection_api_agricola(tipo = 'costos')
+    df_costos_agricola_default= pd.read_parquet('costos.parquet', engine='pyarrow')#connection_api_agricola(tipo = 'costos')
     #df_costos_agricola_default=data_agricola(empresa=get_empresa())[1]
     anio_campania = sorted(df_costos_agricola_default['AÑO_CAMPAÑA'].unique())
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
@@ -130,54 +151,65 @@ def costosCampania(codigo=''):
         Modal(id="modal-map-costos-lt", size= "85%"),
         Modal(id="modal-bar-costos-lote", size= "85%"),
         offcanvas_costos_agricola,
-        Row([
+        Row([   
                 Column([
-                    Button.btnFilter(style={'position': 'absolute','z-index': '99'}),
-                    Div(id='title',style={'left': '50px'})#,'position': 'absolute'
-                ],size=5),
-                Column([
-                    Entry.select(
-                        id = 'select-anio',
-                        texto = "Año de Campaña",
-                        size = 'xs',
-                        #data = [{'label': i, 'value': i} for i in anio_campania],
-                        value = anio_campania[-1],
-                        clearable=True
-                    )    
-                ],size=2),
-                Column([
-                    Entry.select(
-                        id = 'select-cultivo',
-                        texto = "Cultivo",
-                        size = 'xs',
-                    ) 
-                ],size=2),
-                Column([
-                    Entry.select(
-                        id = 'select-variedad',
-                        texto = "Variedad",
-                        size = 'xs',
-                    ) 
-                ],size=2),
-                Column([Button.btnDownload()],size=1),
+                    dmc.Card(children=[
+                        dmc.Grid(children=[
+                            Column([
+                            Button.btnFilter(style={'position': 'absolute','z-index': '99'}),
+                            Div(id='title',style={'left': '50px'})#,'position': 'absolute'
+                        ],size=5),
+                        Column([
+                            Entry.select(
+                                id = 'select-anio',
+                                texto = "Año de Campaña",
+                                size = 'sm',
+                                #data = [{'label': i, 'value': i} for i in anio_campania],
+                                value = anio_campania[-1],
+                                clearable=True
+                            )    
+                        ],size=2),
+                        Column([
+                            Entry.select(
+                                id = 'select-cultivo',
+                                texto = "Cultivo",
+                                size = 'sm',
+                            ) 
+                        ],size=2),
+                        Column([
+                            Entry.select(
+                                id = 'select-variedad',
+                                texto = "Variedad",
+                                size = 'sm',
+                            ) 
+                        ],size=2),
+                        Column([Button.btnDownload(style={'position': 'absolute','top': '4px','right': '10px','z-index': '99'})],size=1),
+                        ])
+                    ])
+                ]),
+                
             ]),
         
         Row([
         Column([
-            DataDisplay.loadingOverlay(
-                        cardGraph(
-                            id_graph='bar-costos-cultivo', 
-                            id_maximize = 'maximize-bar-costos-cultivo',
-                            height=485)
-            )
+            card_graph_1(
+                    text='Costos por Cultivo',
+                    id_graph = 'bar-costos-cultivo', 
+                    id_maximize = 'maximize-bar-costos-cultivo',
+                    height = 485,
+                    color_bg="black"
+            ),
+           
         ],size=4),
         Column([
-            DataDisplay.loadingOverlay(
-                        cardGraph(
-                            id_graph='bar-costos-variedad', 
-                            id_maximize = 'maximize-bar-costos-variedad',
-                            height=485)
-                    )
+            card_graph_1(
+                    text='Costos por Variedad',
+                    id_graph = 'bar-costos-variedad', 
+                    id_maximize = 'maximize-bar-costos-variedad',
+                    height = 485,
+                    color_bg="black"
+            ),
+            
         ],size=4),
         Column([
             Row([Column([DataDisplay.loadingOverlay(Div(id='card-costos-total'))])]),
@@ -190,12 +222,14 @@ def costosCampania(codigo=''):
                 ],size=6)
             ]),
             Row([Column([
-                    DataDisplay.loadingOverlay(
-                        cardGraph(
-                            id_graph='pie-costos-tipo', 
-                            id_maximize = 'maximize-pie-costos-tipo',
-                            height=280)
-                    )
+                card_graph_1(
+                    text='Tipo de Costo',
+                    id_graph = 'pie-costos-tipo', 
+                    id_maximize = 'maximize-pie-costos-tipo',
+                    height = 280,
+                    color_bg="black"
+                ),
+                    
                 ])
             ]),
             #Row([Column([DataDisplay.loadingOverlay(Div(id='card-costos-cultivo'))])]),
@@ -205,18 +239,23 @@ def costosCampania(codigo=''):
 
         Row([
            Column([
-                 DataDisplay.loadingOverlay(
-                        cardGraph(
-                            id_graph='map-costos-lt', 
-                            id_maximize = 'maximize-map-costos-lt',height=300)
-                )   
+               card_graph_1(
+                    text='Mapa',
+                    id_graph = 'map-costos-lt', 
+                    id_maximize = 'maximize-map-costos-lt',
+                    height = 300,
+                    color_bg="black"
+                ),
+                 
             ],size=5), 
            Column([
-                    DataDisplay.loadingOverlay(
-                        cardGraph(
-                            id_graph='bar-costos-lote', 
-                            id_maximize = 'maximize-bar-costos-lote',height=300)
-                    )
+                card_graph_1(
+                    text='Costos por Lote',
+                    id_graph = 'bar-costos-lote', 
+                    id_maximize = 'maximize-bar-costos-lote',
+                    height = 300,
+                    color_bg="black"
+                ),
             ],size=7), 
         ]),
 

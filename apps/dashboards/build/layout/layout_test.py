@@ -356,5 +356,8 @@ def balance_general_test(formato = []):
         ]),
         Div(id='notifications-update-data'),
         Store(id='data-values'),
+        Store(id='data1'),
+        Store(id='data2'),
+        Store(id='data3'),
         Download(),
     ])

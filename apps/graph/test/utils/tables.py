@@ -23,6 +23,6 @@ def tableDag(
                 className = theme,
                 rowClassRules=rowClassRules,
                 style=style,
-                dashGridOptions=dashGridOptions,
+                #dashGridOptions=dashGridOptions,
                 #columnDefs=columnDefs,
             ), 

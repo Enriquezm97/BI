@@ -1698,11 +1698,21 @@ def dashboard_resize_test(codigo = ''):
 from ..build.utils.crum import get_data_connect
 from ..build.api.connector import  APIConnector
 from ..build.utils.transform.t_finanzas import *
+jsww = [
+    "https://code.highcharts.com/highcharts-more.js",
 
+]
+test_js = [
+    "https://code.highcharts.com/stock/highstock.js",
+    "https://code.highcharts.com/stock/modules/exporting.js",
+    "https://code.highcharts.com/stock/modules/accessibility.js",
+    "https://code.highcharts.com/modules/series-label.js",
+    "https://code.highcharts.com/modules/exporting.js"
+]
 def dashboard_bg_test(codigo = ''):
     ip, token_ =get_data_connect()
     api = APIConnector(ip, token_)
-    app = DjangoDash(name = codigo,external_stylesheets=['https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator.min.css'],external_scripts=["https://unpkg.com/tabulator-tables@5.6.1/dist/js/tabulator.min.js"])
+    app = DjangoDash(name = codigo,external_stylesheets=jsww,external_scripts=test_js)
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     finanzas_df = clean_bg(api.send_get_dataframe(endpoint="nsp_etl_situacion_financiera",params=None))
     app.layout =  balance_general_test(formato=finanzas_df['formato'].unique())
@@ -1743,6 +1753,79 @@ def dashboard_bg_test(codigo = ''):
             df.to_dict('series'),  
             DataDisplay.notification(text=f'Se cargaron {len(df)} filas',title='Update')
         ]
+    @app.callback(
+        Output("data1","data"),
+        
+        Input("data-values","data"),
+        Input('select-moneda','value'),
+    )
+    def update_data_bg(data,moneda):
+        df = pd.DataFrame(data)
+        col_moneda = 'saldomof' if moneda == 'soles' else 'saldomex'
+        activo_df = df[df['titulo1']=='ACTIVO']
+        activo_p3_df = activo_df.groupby(['titulo3'])[[col_moneda]].sum().sort_values(col_moneda).reset_index()
+        print(activo_p3_df.columns)
+        return list(activo_p3_df.values)#.to_dict("records")
+    
+    
+    
+    app.clientside_callback(
+    """
+    function(data){
+        document.getElementById("bar1").innerHTML = "";
+        console.log(data)
+        var options = {
+                chart: {
+                    type: 'bar',
+                    
+                },
+                title: {
+                    text: 'Activo'
+                },
+                subtitle: {
+                    text: 'Fuente: Nisira ERP'
+                },
+                xAxis: {
+                    type: 'category',
+                    title: {
+                        text: null
+                    },
+                    
+                },
+                yAxis: {
+                    
+                    title: {
+                        text: 'Votes',
+                        align: 'high'
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Votes',
+                    data: data,
+                }],
+            };
+            var chart2 = new Highcharts.Chart(document.getElementById('bar1'), options);
+            chart2.render();
+        return window.dash_clientside.no_update
+    }
+    """,
+    Output("bar1", "children"),
+    Input("data1", "data"),
+    )
+    
     
     app.clientside_callback(
     """

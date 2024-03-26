@@ -10,6 +10,7 @@ EXTERNAL_SCRIPTS = [
 EXTERNAL_STYLESHEETS =  [
                             dbc.themes.BOOTSTRAP,
                             "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css",
+                            "/static/css/dashstyles.css",
                             dbc.icons.BOOTSTRAP
                         ]
 

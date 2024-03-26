@@ -56,13 +56,13 @@ def graph_log(app):
            
         
         return [
-            figure_stock_var_y2(df=dff, height = 380, moneda = moneda),
-            figure_bar_familia(df = dff, height = 380, moneda = moneda),
-            figure_bar_top_producto(df = dff, height = 380, moneda = moneda),
-            figure_bar_relative(df = dff, height = 380, eje_color = 'ABC Ventas', title = '% Stock por el ABC Ventas', moneda = moneda),
-            figure_bar_relative(df = dff, height = 380, eje_color = 'ABC Stock', title = '% Stock por el ABC de Stock Valorizado', moneda = moneda),
-            figure_pie_rango_stock(df = dff, height = 380, moneda = moneda),
-            figure_pie_rango_stock_count(df = dff, height = 380, moneda = moneda)
+            figure_stock_var_y2(df=dff, height = 310, moneda = moneda),
+            figure_bar_familia(df = dff, height = 310, moneda = moneda),
+            figure_bar_top_producto(df = dff, height = 310, moneda = moneda),
+            figure_bar_relative(df = dff, height = 310, eje_color = 'ABC Ventas', title = '', moneda = moneda),
+            figure_bar_relative(df = dff, height = 310, eje_color = 'ABC Stock', title = '', moneda = moneda),
+            figure_pie_rango_stock(df = dff, height = 310, moneda = moneda),
+            figure_pie_rango_stock_count(df = dff, height = 310, moneda = moneda)
         ]
         
 def filter_callback_alm(app, filt =[], dataframe = None):
@@ -111,12 +111,12 @@ def graph_alm(app):
         
         table_dff = dff[['Sucursal', 'Almacén', 'Tipo','Grupo','Sub Grupo','Producto','Responsable Ingreso','Última Fecha Ingreso', 'Última Fecha Salida','Duracion_Inventario','Stock',moneda]]
         return [
-            figure_stock_alm_y2(df = df, height = 300 , moneda = moneda, tipo = segmented),
+            figure_stock_alm_y2(df = df, height = 290 , moneda = moneda, tipo = segmented),
             table_dff.to_dict("records"),
             [{"field": i,"cellStyle": {'font-size': 11}} for i in table_dff.columns],
             
-            figure_pie_estado_inv(df = df),
-            figure_bar_responsable(df = df, height = 400)
+            figure_pie_estado_inv(df = df, height = 300),
+            figure_bar_responsable(df = df, height = 370)
         ]
 """
 {"styleConditions": [

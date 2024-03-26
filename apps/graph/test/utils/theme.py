@@ -6,7 +6,8 @@ def themeProvider(content = []):
                     withGlobalStyles=True,
                     theme={},
                     inherit=True,
-                    children=dmc.Container(content,fluid=True,id='container')
+                    #children=dmc.Container(content,fluid=True,id='container')
+                    children=content
      )
 
 def Container(content=[]):

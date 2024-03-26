@@ -21123,7 +21123,7 @@ dl li {
 
 .content-wrapper {
   background: #f3f3f3;
-  padding: 1rem 1.04rem;
+  padding: 0.5rem 0.5rem;
   width: 100%;
   -webkit-flex-grow: 1;
   flex-grow: 1;
@@ -21131,7 +21131,7 @@ dl li {
 
 @media (max-width: 767px) {
   .content-wrapper {
-    padding: 1.5rem 1.5rem;
+    padding: 0.5rem 0.5rem;
   }
 }
 

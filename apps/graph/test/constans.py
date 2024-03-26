@@ -11,7 +11,8 @@ EXTERNAL_SCRIPTS = [
 EXTERNAL_STYLESHEETS =  [
                             dbc.themes.BOOTSTRAP,
                             "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css",
-                            dbc.icons.BOOTSTRAP
+                            "/static/css/dashstyles.css",
+                            
                         ]
 DICT_CULTIVOS_COLOR={'Arandano':'#7A325A',
                'Esparrago':'#87AA6C',
@@ -83,7 +84,8 @@ COMERCIAL_SELECTS_COLUMNS ={
 }
 
 MESES_ORDER = ['Enero','Febrero','Marzo', 'Abril', 'Mayo','Junio', 'Julio', 'Agosto','Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-LISTA_COLORES_BAR = px.colors.diverging.Portland+px.colors.diverging.Earth+px.colors.diverging.balance+px.colors.diverging.Tealrose+px.colors.qualitative.Plotly+px.colors.qualitative.Dark24+px.colors.qualitative.Light24+px.colors.qualitative.Alphabet
+LISTA_COLORES_BAR = ["#195C8F","#50A2E0","#C5E0F5","#C2E2D4","#4B606F","#587485","#8BA1B1","#D8E0E5","#3599B8","#DFBFBF","#4AC5BB","#5F6B6D","#FB8281","#F4D25A","#7F898A","#A4DDEE","#FDAB89","#B687AC","#28738A","#A78F8F","#168980","#293537","#BB4A4A","#B59525","#475052","#6A9FB0","#BD7150","#7B4F71","#1B4D5C","#706060","#0F5C55","#1C2325"]   
+#px.colors.diverging.Portland+px.colors.diverging.Earth+px.colors.diverging.balance+px.colors.diverging.Tealrose+px.colors.qualitative.Plotly+px.colors.qualitative.Dark24+px.colors.qualitative.Light24+px.colors.qualitative.Alphabet
 
 COMERCIAL_LOGISTICA ={
     'select-anio' : 'Año',

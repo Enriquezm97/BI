@@ -169,7 +169,7 @@ class Button():
             )
         
     def btnDownload(
-        variant="default",color="blue"
+        variant="default",color="blue",style={}
     ):
         return html.Div(
                 dmc.ActionIcon(
@@ -179,6 +179,7 @@ class Button():
                                 id="btn-download",
                                 n_clicks=0,
                                 mb=10,
+                                style=style
                             ),
             )
     def btnConfig(
@@ -396,7 +397,7 @@ class Entry():
         ])
     
     def select(
-        id='',texto='',place="Todos",value=None,data=[],clearable=True, searchable = False, size='md'
+        id='',texto='',place="Todos",value=None,data=[],clearable=True, searchable = False, size='md',styles = {}
     ):
         return  html.Div(
             dmc.Select(
@@ -409,7 +410,8 @@ class Entry():
                 style={'font-size': "90%"},
                 value=value,
                 size=size,
-                searchable = searchable
+                searchable = searchable,
+                styles=styles
                 #searchable=True,
                 #style={"width": 200},
                 #icon=DashIconify(icon="radix-icons:magnifying-glass"),
@@ -503,14 +505,14 @@ class Entry():
     
 class Title():
     
-    def title(text="",order=1,ids='id',align = 'left'):
-        return html.Div([dmc.Title(text, order=order,id=ids,align = align)])
+    def title(text="",order=1,ids='id',align = 'left',color = "black"):
+        return html.Div([dmc.Title(text, order=order,id=ids,align = align,color=color)])
     
 
 class Picking():
     def segmented(
         id='',value=None,data=[],
-        full_width=True,color='rgb(34, 184, 207)',size='xs'
+        full_width=True,size='xs',color='rgb(34, 184, 207)'
     ):
         return html.Div([
                 dmc.SegmentedControl(

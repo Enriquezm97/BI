@@ -7,7 +7,8 @@ from ..content.logistica import dashboard_stocks,dashboard_gestion_stock
 from django.http import HttpResponse
 import asyncio
 from ..build.api.connector import APIConnector
-
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 class Stocks_View(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')
@@ -23,7 +24,7 @@ class Stocks_View(LoginRequiredMixin,View):
         return render(request,'Logistica/logistica.html',context)
     
     
-import asyncio
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Gestion_Stock(LoginRequiredMixin,View):
     
     
@@ -34,6 +35,7 @@ class Gestion_Stock(LoginRequiredMixin,View):
     #    html = await template.render_async(context)
     #    return HttpResponse(html)
     #async 
+    
     def get(self,request,*args, **kwargs):
         id_user=self.request.user.id
         user_filter=Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True)[0]

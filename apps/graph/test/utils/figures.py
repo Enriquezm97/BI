@@ -79,7 +79,7 @@ class GraphBargo():
         title = '', space_ticked = 130, xaxis_title = '',yaxis_title = '', showticklabel_x = True, 
         showticklabel_y = True , color_dataframe= '#145f82',list_or_color = None, customdata = [],
         template = 'plotly_white', size_tickfont = 11, title_font_size = 20, clickmode = False,
-        ticklabel_color = 'rgba(0, 0, 0, 0.7)',plot_bgcolor = 'white', paper_bgcolor = 'white'
+        ticklabel_color = 'rgba(0, 0, 0, 0.7)',plot_bgcolor = 'white', paper_bgcolor = 'white',left = 40
     ):  
         #print(df)
         figure = go.Figure()
@@ -160,7 +160,7 @@ class GraphBargo():
         size_list = len(df[x].unique()) if orientation == 'v' else len(df[y].unique())
         figure.update_xaxes(tickfont=dict(size=size_tickfont),color=ticklabel_color,showticklabels = showticklabel_x,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
         figure.update_yaxes(tickfont=dict(size=size_tickfont),color=ticklabel_color,showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
-        figure.update_layout(margin=dict(l = 40, r = 40, b= 40, t = 40, pad = 1))
+        figure.update_layout(autosize=True,margin=dict(l = left, r = 40, b= 40, t = 20, ) )#
         figure.update_layout(plot_bgcolor = plot_bgcolor, paper_bgcolor = paper_bgcolor)
         if  size_list== 1:
             figure.update_layout(bargap=0.7)
@@ -258,7 +258,7 @@ class GraphPiego():
              value_col = '',list_or_color = None, dict_color = None,
              title = '', textinfo = 'percent+label+value' , textposition = 'inside',
              height = 300, showlegend = True, color_list = [], textfont_size = 12,
-             plot_bgcolor = 'white', paper_bgcolor = 'white'
+             plot_bgcolor = 'white', paper_bgcolor = 'white',top = 40
              
     ):
         if dict_color != None:
@@ -287,7 +287,7 @@ class GraphPiego():
         )
         figure.update_traces(textposition = textposition, textinfo = textinfo)
         figure.update_traces(hoverinfo='label+percent+value', textfont_size = textfont_size,marker=dict(line=dict(color='#000000', width=1)))
-        figure.update_layout(height = height,margin = dict(t=40, b=30, l=10, r=10),showlegend = showlegend)
+        figure.update_layout(height = height,margin = dict(t=top, b=30, l=30, r=30),showlegend = showlegend)
         figure.update_layout(plot_bgcolor = plot_bgcolor, paper_bgcolor = paper_bgcolor)
         return figure
     
@@ -373,7 +373,7 @@ class GraphFunnelgo():
         )
         figure.update_xaxes(tickfont=dict(size=size_tickfont),color=ticklabel_color,showticklabels = showticklabel_x,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
         figure.update_yaxes(tickfont=dict(size=size_tickfont),color=ticklabel_color,showticklabels = showticklabel_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)
-        figure.update_layout(margin=dict(l = 50, r = 40, b= 30, t = 40, pad = 1))
+        figure.update_layout(margin=dict(l = 50, r = 40, b= 20, t = 20, pad = 1))
         figure.update_layout(plot_bgcolor = plot_bgcolor, paper_bgcolor = paper_bgcolor)
         return figure
 

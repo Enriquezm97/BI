@@ -10,7 +10,7 @@ def pie_(df = pd.DataFrame(),label_col = '',
              value_col = '',list_or_color = None, dict_color = None,
              title = '', textinfo = 'percent+label+value' , textposition = 'inside',
              height = 300, showlegend = True, color_list = [], textfont_size = 12,hole=0, 
-             ticked_hover = 'Importe'
+             ticked_hover = 'Importe',top = 60
              
     ):
         if dict_color != None:
@@ -40,11 +40,11 @@ def pie_(df = pd.DataFrame(),label_col = '',
         )
         figure.update_traces(textposition = textposition, textinfo = textinfo)
         figure.update_traces(hoverinfo='label+percent+value', textfont_size = textfont_size,marker=dict(line=dict(color='#000000', width=1)))
-        figure.update_layout(height = height,margin = dict(t=60, b=30, l=10, r=10),showlegend = showlegend)
+        figure.update_layout(height = height,margin = dict(t=top, b=30, l=10, r=10),showlegend = showlegend)
         
         return figure
 
-def bar_figure_d(dataframe = None, x = '', y = '', text = '', orientation = 'h', title = '', height = 450):
+def bar_figure_d(dataframe = None, x = '', y = '', text = '', orientation = 'h', title = '', height = 450, showticklabels_x = True, showticklabels_y = True):
     fig = go.Figure()
     fig.add_trace(go.Bar(
       x = dataframe[x],
@@ -63,12 +63,12 @@ def bar_figure_d(dataframe = None, x = '', y = '', text = '', orientation = 'h',
         title_font_family="sans-serif", 
         title_font_size = 18,
         template= 'none',
-        margin = dict( l = 20, r = 40, b = 40, t = 70, pad = 5, autoexpand = True),
+        margin = dict( l = 20, r = 40, b = 40, t = 30, pad = 5, autoexpand = True),
         height = height
         #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
     )
-    fig.update_xaxes(tickfont=dict(size=12),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
-    fig.update_yaxes(tickfont=dict(size=12),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
+    fig.update_xaxes(tickfont=dict(size=12),color='black',showticklabels = showticklabels_x,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
+    fig.update_yaxes(tickfont=dict(size=12),color='black',showticklabels = showticklabels_y,title_font_family="sans-serif",title_font_size = 13,automargin=True)  
     fig.update_layout(xaxis_tickformat = ',')
     return fig
 
@@ -101,12 +101,12 @@ def figure_stock_var_y2(df = None, height = 450 , moneda = 'Soles'):
     fig.update_layout(
         #legend=dict(orientation="v"),
         yaxis=dict(
-            title=dict(text="Stock"),
+            title=dict(text="<b>Stock Valorizado</b>"),
             side="left",
             range=[0, stock_var_items_df[var_numerica].max()]
         ),
         yaxis2=dict(
-            title=dict(text="Nro Items"),
+            title=dict(text="<b>Nro Items</b>"),
             side="right",
             range=[0, stock_var_items_df['Nro Items'].max()],
             overlaying="y",
@@ -118,14 +118,15 @@ def figure_stock_var_y2(df = None, height = 450 , moneda = 'Soles'):
         orientation="h",
         yanchor="bottom",
         y=1.02,
-        xanchor="right",
-        x=1
+        xanchor="left",
+        x=0
     ))
     fig.update_layout(
-        title = f"<b>STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO</b>",
+        title = f"",
         title_font_family="sans-serif", 
         title_font_size = 18,
-        height = height
+        height = height,
+        margin = dict(t = 30, l = 90),
         #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
     )
     fig.update_xaxes(tickfont=dict(size=14),color='black',showticklabels = True,title_font_family="sans-serif",title_font_size = 13,automargin=True)#,showgrid=True, gridwidth=1, gridcolor='black',
@@ -150,11 +151,11 @@ def figure_bar_familia(df = None, height = 450, moneda = 'Soles'):
     hovertemplate ='<br>'+'Grupo Producto'+': <b>%{y}</b><br>'+var_numerico+': <b>%{x}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
     ))
     fig2.update_layout(
-        title = f"<b>STOCK POR GRUPO DE PRODUCTO</b>",
+        title = f"",
         title_font_family="sans-serif", 
         title_font_size = 18,
         template= 'none',
-        margin = dict( l = 20, r = 40, b = 40, t = 60, pad = 5, autoexpand = True),
+        margin = dict( l = 20, r = 40, b = 20, t = 30, pad = 1, autoexpand = True),
         height = height
         #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
     )
@@ -166,7 +167,7 @@ def figure_bar_familia(df = None, height = 450, moneda = 'Soles'):
 def figure_bar_top_producto(df = None, height = 450, moneda = 'Soles'):
     var_numerico = f'Stock Valorizado {moneda}'
     top_10_df= df.groupby(['Producto'])[[var_numerico]].sum().sort_values([var_numerico],ascending = True).tail(10).reset_index()
-    return bar_figure_d(dataframe = top_10_df, x = var_numerico, y = 'Producto', text = var_numerico, orientation = 'h', title = 'Top 10 Productos', height = height)
+    return bar_figure_d(dataframe = top_10_df, x = var_numerico, y = 'Producto', text = var_numerico, orientation = 'h', title = '', height = height,showticklabels_y = False)
 
 def figure_bar_relative(df = None, height = 300, eje_color = 'ABC Ventas', title = '',moneda = 'Soles'):
     var_numerico = f'Stock Valorizado {moneda}'
@@ -206,14 +207,14 @@ def figure_bar_relative(df = None, height = 300, eje_color = 'ABC Ventas', title
         orientation="h",
         yanchor="bottom",
         y=1.02,
-        xanchor="right",
-        x=1
+        xanchor="left",
+        x=0
     ))
     fig_e.update_layout(
         title = f"<b>{title}</b>",
         title_font_family="sans-serif", 
         title_font_size = 18,
-        margin = dict( l = 50, r = 40, b = 70, t = 70, pad = 5, autoexpand = True),
+        margin = dict( l = 50, r = 40, b = 70, t = 25, pad = 5, autoexpand = True),
         height = height
         #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
     )
@@ -225,16 +226,16 @@ def figure_pie_rango_stock(df = None, height = 350, moneda = 'Soles'):
     var_numerico = f'Stock Valorizado {moneda}'
     rango_stock_df = df.groupby(['Rango antigüedad del stock'])[[var_numerico]].sum().sort_values(['Rango antigüedad del stock']).reset_index()
     return pie_(df = rango_stock_df, label_col = 'Rango antigüedad del stock', value_col = var_numerico,
-             title = '% Stock Segun Antigüedad', textinfo = 'percent+label' , textposition = 'inside',
-             height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,
+             title = '', textinfo = 'percent+label' , textposition = 'inside',
+             height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,top=20,
     )
     
 def figure_pie_rango_stock_count(df = None, height = 350, moneda = 'Soles'):
     var_numerico = f'Stock Valorizado {moneda}'
     rango_stock_count_df = df.groupby(['Rango antigüedad del stock'])[[var_numerico]].count().sort_values(['Rango antigüedad del stock']).reset_index()
     return pie_(df = rango_stock_count_df, label_col = 'Rango antigüedad del stock', value_col = var_numerico,
-             title = 'Stock Segun Antigüedad', textinfo = 'percent+label' , textposition = 'inside',
-             height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,
+             title = '', textinfo = 'percent+label' , textposition = 'inside',
+             height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,top=20,
              hole = .6     ,ticked_hover = 'stock'
     )
 ##############################ALM
@@ -312,9 +313,9 @@ def figure_pie_estado_inv(df = None, height = 330):
     pie_estado_inv_dff = pie_estado_inv_dff.rename(columns = {'Tipo':'Número de Registros'})
     
     return pie_(df = pie_estado_inv_dff, label_col = 'Estado Inventario', value_col = 'Número de Registros',
-             title = 'Estado de Inventario', textinfo = 'percent+label' , textposition = 'outside',
+             title = '', textinfo = 'percent+label' , textposition = 'outside',
              height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,
-             hole = .6     
+             hole = .6,top=20 
     )
 
 
@@ -336,11 +337,11 @@ def figure_bar_responsable(df = None, height = 450):
     hovertemplate ='<br>'+'Responsable Ingreso'+': <b>%{y}</b><br>Número de Registros: <b>%{x}</b>',hoverlabel=dict(font_size=15,bgcolor="white")
     ))
     fig2.update_layout(
-        title = f"<b>Top N° Ingresos por Responsable</b>",
+        title = f"",
         title_font_family="sans-serif", 
         title_font_size = 18,
         template= 'none',
-        margin = dict( l = 20, r = 40, b = 40, t = 60, pad = 5, autoexpand = True),
+        margin = dict( l = 20, r = 40, b = 40, t = 30, pad = 5, autoexpand = True),
         height = height
         #title_text="STOCK VALORIZADO Y NRO ITEMS POR MES Y AÑO",
     )

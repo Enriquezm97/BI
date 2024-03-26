@@ -91,8 +91,8 @@ def create_callback_filter_agricola_recurso(app,dataframe=pd.DataFrame()):
                 #select_out_anio,
                 select_out_variedad, select_out_lote, 
                 out_check_recurso,values_out_check_recurso,
-                dmc.Badge(f"Inicio de Campaña: {parametros_datepicker[0]}",variant='dot',color='gray', size='lg',radius="lg"),
-                dmc.Badge(f"Fin de Campaña: {parametros_datepicker[1]}",variant='dot',color='gray', size='lg',radius="lg"),
+                dmc.Badge(f"Inicio de Campaña: {parametros_datepicker[0]}",variant='dot',color='lime', size='lg',radius="lg",pt=0),
+                dmc.Badge(f"Fin de Campaña: {parametros_datepicker[1]}",variant='dot',color='lime', size='lg',radius="lg"),
                 #DataDisplay.text(id='inicio',text=),
                 #DataDisplay.text(id='fin',text=),
                 df.to_dict('series'),
@@ -186,12 +186,20 @@ def create_callback_recurso_agricola(app):
             else: 
                 order={}
             return order
+        if segmented_recurso == 'Maquinaria':
+            ejey_ = 'Horas'
+        elif segmented_recurso == 'Insumos':
+            ejey_ = 'Unidades'
+        elif segmented_recurso == 'Mano de obra':
+            ejey_ = 'Jornales'
+        else :
+            ejey_ = 'Metros Cúbicos'
+        #'Insumos' 'Mano de obra' 'Riego'
         return[GraphLinepx.line_(
-                df = df_segmented, x = radio_ejex, y = "CANTIDAD", color="DSCVARIABLE", height = 400,
-                y_title = '',title_legend = '', order = orderX(x=radio_ejex,df=df_segmented ),#order_st_agricola_ejex(df = df_segmented, ejex = radio_ejex, var_col = "DSCVARIABLE")
+                df = df_segmented, x = radio_ejex, y = "CANTIDAD", color="DSCVARIABLE", height = 370,
+                y_title = ejey_,title_legend = '', order = orderX(x=radio_ejex,df=df_segmented ),#order_st_agricola_ejex(df = df_segmented, ejex = radio_ejex, var_col = "DSCVARIABLE")
                 title = segmented_recurso, discrete_color = DIC_RECURSOS_AGRICOLA, custom_data = ["CANTXHA"], hover_template = hover_size[0], size_text = 15,#hover_size[1]
-                legend_font_size  = 17,tickfont_x = 15, tickfont_y=15, 
-                ),
+                legend_font_size  = 17,tickfont_x = 15, tickfont_y=15),
                 tableDag(id='variedad', 
                  columnDefs=[{"field": i, "type": "rightAligned"} for i in variedad_table.columns],
                  dataframe= variedad_table,
@@ -245,7 +253,7 @@ def create_title_ejecucion_campania(app, title =''):
             if i != None:
                 badges.append(dmc.Badge(i,variant='dot',color='blue', size='md',radius="lg"))
         
-        return dmc.Title(children=[title]+badges,order=2, align='center')
+        return dmc.Title(children=[title]+badges,order=2, align='center',color='black')
     
 def create_title_costos_campania(app, title =''):
     @app.callback(
@@ -324,11 +332,11 @@ def create_callback_costos_agricola(app):
             cardDivider(value = f"{simbolo} {total_card_1}",text='Costos Totales',list_element=total_costos_dict),
             cardDivider(value = f"{total_card_2} ha",text='Hectáreas Sembradas',list_element=total_dict_ha),
             cardDivider(value = f"{simbolo} {cotos_por_ha}",text='Costo por Hectárea',list_element=[{'value': 100, 'color': "rgb(51, 102, 204)", 'label': '100%', "tooltip": "Costo por Hectárea"}]),
-            GraphBargo.bar_(df = cultivo_df, x = radio_moneda , y = 'CULTIVO', text= radio_moneda, orientation = 'h', height = 485, title = 'Costos por Cultivo', space_ticked = 100,xaxis_title = simbolo,yaxis_title = 'CULTIVO',list_or_color=DICT_CULTIVOS_COLOR,customdata=['AREA_CAMPAÑA']),#
-            GraphBargo.bar_(df = variedad_df, x = radio_moneda, y = 'VARIEDAD', text= radio_moneda, orientation = 'h', height = 485, title = 'Costos por Variedad', space_ticked = 100,xaxis_title = simbolo,yaxis_title = 'VARIEDAD',color_dataframe='CULTIVO',customdata=['AREA_CAMPAÑA','CULTIVO']),#
-            GraphPiego.pie_(df = pie_tipo_gasto, title = 'Tipo de Costo',label_col = 'TIPO', value_col = radio_moneda, height = 280, dict_color = DICT_TIPO_COSTO),
+            GraphBargo.bar_(df = cultivo_df, x = radio_moneda , y = 'CULTIVO', text= radio_moneda, orientation = 'h', height = 455, title = '', space_ticked = 100,xaxis_title = simbolo,yaxis_title = 'CULTIVO',list_or_color=DICT_CULTIVOS_COLOR,customdata=['AREA_CAMPAÑA']),#
+            GraphBargo.bar_(df = variedad_df, x = radio_moneda, y = 'VARIEDAD', text= radio_moneda, orientation = 'h', height = 455, title = '', space_ticked = 100,xaxis_title = simbolo,yaxis_title = 'VARIEDAD',color_dataframe='CULTIVO',customdata=['AREA_CAMPAÑA','CULTIVO']),#
+            GraphPiego.pie_(df = pie_tipo_gasto, title = '',label_col = 'TIPO', value_col = radio_moneda, height = 250, dict_color = DICT_TIPO_COSTO,top=20),
             map_graph,
-            GraphBargo.bar_(df = lote_df, x = 'CONSUMIDOR', y = radio_moneda, text= radio_moneda, orientation = 'v', height = 300, title = 'Costos por Lote', space_ticked = 30,xaxis_title = 'Lotes',yaxis_title = simbolo, showticklabel_x=False,color_dataframe='CULTIVO',customdata=['AREA_CAMPAÑA','CULTIVO']),
+            GraphBargo.bar_(df = lote_df, x = 'CONSUMIDOR', y = radio_moneda, text= radio_moneda, orientation = 'v', height = 270, title = '', space_ticked = 30,xaxis_title = 'Lotes',yaxis_title = simbolo, showticklabel_x=False,color_dataframe='CULTIVO',customdata=['AREA_CAMPAÑA','CULTIVO']),
         ]
 
 

@@ -17,7 +17,7 @@ def balance_general(formato = []):
                     dmc.Grid(
                         children=[
                             Column(title(text = 'Balance General',color="white"), size=3),
-                            Column(
+                            Column( 
                                 Entry.select(
                                     id = 'select-formato',
                                     texto = 'Formato',

@@ -156,23 +156,23 @@ def create_graph_informe_comercial(app, configuracion = {}):
         #    graph1_ = GraphPiego.pie_(df = productos_df_20, title = 'Los 20 Productos más Vendidos',label_col = 'Producto', value_col = importe, height = 400, showlegend=False, color_list=lista_colores,#px.colors.qualitative.Set3, 
         #                    textfont_size = 10)
         return[
-            GraphBargo.bar_(df=productos_df_20, x= importe, y= 'Producto',orientation= 'h', height = 400, 
-              title= 'Los 20 Productos más Vendidos', customdata=['Grupo Producto','Subgrupo Producto'],space_ticked= 180, text= importe,
+            GraphBargo.bar_(df=productos_df_20, x= importe, y= 'Producto',orientation= 'h', height = 300, 
+              title= '', customdata=['Grupo Producto','Subgrupo Producto'],space_ticked= 180, text= importe,
               showticklabel_y=configuracion['showticklabels'], ticklabel_color = configuracion['ticklabel_color'],
                 xaxis_title = importe, template= 'none', list_or_color=  eval(configuracion['data_colors']) ,size_tickfont=configuracion['ticklabel_size'],#px.colors.qualitative.Alphabet
-                plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor']
+                plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor'],left=30
             ),
-            GraphBargo.bar_(df=meses_df_12, x= 'Mes', y= importe,orientation= 'v', height = 400, 
-                title= 'Ventas por Mes', customdata=['Porcentaje'],space_ticked= 50, text= importe, yaxis_title= importe,xaxis_title= 'Mes',
+            GraphBargo.bar_(df=meses_df_12, x= 'Mes', y= importe,orientation= 'v', height = 300, 
+                title= '', customdata=['Porcentaje'],space_ticked= 50, text= importe, yaxis_title= importe,xaxis_title= 'Mes',
                 template='none',list_or_color= eval(configuracion['data_colors']),size_tickfont=configuracion['ticklabel_size'],#px.colors.qualitative.Set3
                 plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor'],ticklabel_color = configuracion['ticklabel_color']
             ),
-            GraphFunnelgo.funnel_(df = grupo_producto_df, x = importe, y = 'Grupo Producto', height = 400,xaxis_title = importe, yaxis_title = 'Grupo Producto', 
-                                  title = 'Grupo Producto mas vendido',list_or_color=eval(configuracion['data_colors']),size_tickfont=configuracion['ticklabel_size'],
+            GraphFunnelgo.funnel_(df = grupo_producto_df, x = importe, y = 'Grupo Producto', height = 300,xaxis_title = importe, yaxis_title = 'Grupo Producto', 
+                                  title = '',list_or_color=eval(configuracion['data_colors']),size_tickfont=configuracion['ticklabel_size'],
                                   plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor'],ticklabel_color = configuracion['ticklabel_color']),
-            GraphPiego.pie_(df = pais_df, title = 'Ventas - País',label_col = 'Pais', value_col = importe, height = 400, showlegend=False, color_list=eval(configuracion['data_colors']),#px.colors.qualitative.Set3, 
+            GraphPiego.pie_(df = pais_df, title = '',label_col = 'Pais', value_col = importe, height = 300, showlegend=False, color_list=eval(configuracion['data_colors']),#px.colors.qualitative.Set3, 
                             textfont_size = 10,plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor']),
-            GraphPiego.pie_(df = vendedor_df, title = 'Ventas - Vendedor',label_col = 'Vendedor', value_col = importe, height = 400, showlegend=False, color_list=eval(configuracion['data_colors']),#px.colors.qualitative.Set3, 
+            GraphPiego.pie_(df = vendedor_df, title = '',label_col = 'Vendedor', value_col = importe, height = 300, showlegend=False, color_list=eval(configuracion['data_colors']),#px.colors.qualitative.Set3, 
                             textfont_size = 10,plot_bgcolor=configuracion['plot_bgcolor'],paper_bgcolor=configuracion['paper_bgcolor']),
         ]
            
@@ -265,8 +265,8 @@ def create_graph_comercial_segmented(app):
         size_bottom_bar = 130 if checkedbox_ticked ==  True else 30
         return [
             GraphLinepx.line_(df = serie_time_df, x = segmented_st, y = importe, height=300, y_title = importe,title = f'Serie de Tiempo - {segmented_st}',markers = True, hover_template= '<br>'+segmented_st+': <b>%{x}</b><br>'+importe+':<b> %{y:,.2f}</b>',size_text=15),
-            GraphPiego.pie_(df = pie_df, label_col= segmented_pie, value_col= importe, title = segmented_pie),
-            GraphBargo.bar_(df = bar_df,x = segmented_bar, y= importe,text= importe, height=400, title = segmented_bar, yaxis_title=importe,showticklabel_x = checkedbox_ticked,space_ticked = size_bottom_bar, customdata=['Porcentaje %'])
+            GraphPiego.pie_(df = pie_df, label_col= segmented_pie, value_col= importe, title = segmented_pie,color_list=["#195C8F","#50A2E0","#C5E0F5","#C2E2D4","#4B606F","#587485","#8BA1B1","#D8E0E5","#3599B8","#DFBFBF","#4AC5BB","#5F6B6D","#FB8281","#F4D25A","#7F898A","#A4DDEE","#FDAB89","#B687AC","#28738A","#A78F8F","#168980","#293537","#BB4A4A","#B59525","#475052","#6A9FB0","#BD7150","#7B4F71","#1B4D5C","#706060","#0F5C55","#1C2325"]),
+            GraphBargo.bar_(df = bar_df,x = segmented_bar, y= importe,text= importe, height=330, title = segmented_bar, yaxis_title=importe,showticklabel_x = checkedbox_ticked,space_ticked = size_bottom_bar, customdata=['Porcentaje %'])
         ]
     
             
@@ -318,7 +318,7 @@ def create_graph_comercial_bar(app, columns_top = 'Cliente'):
         num = round(len(df[columns_top].unique())*(int(value_slider)/100))
         
         bar_df = df.groupby([columns_top])[[importe]].sum().sort_values(importe,ascending=True).reset_index().tail(num)#tail(num)
-        return GraphBargo.bar_(df=bar_df,x=importe,y=columns_top,orientation='h',text=importe,title=f'{columns_top}s Top ({value_slider}%)',height=800,clickmode=True,color_dataframe='#0d6efd')
+        return GraphBargo.bar_(df=bar_df,x=importe,y=columns_top,orientation='h',text=importe,title=f'',height=760,clickmode=True,color_dataframe='#306c9a')
             #f"{sig} {(round(importe_total,0)):,}",clientes_total
             
         

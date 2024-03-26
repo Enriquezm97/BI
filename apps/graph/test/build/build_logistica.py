@@ -15,49 +15,91 @@ def logistica_build():
         
         Row([
             Column([
-                 Title.title(text = 'Stocks')  
-            ],size=4), 
-            Column(
-            [
-                Entry.select(
-                    id = 'select-anio',
-                    texto = 'Año',
-                    size = 'sm',
-                    clearable = True
-                )
-            ],size = 2),
-            Column(
-            [
-                Entry.select(
-                    id = 'select-grupo',
-                    texto = 'Grupo',
-                    size = 'sm',
-                    clearable = True
-                )
-            ],size = 2),
-            Column(
-            [
-                Entry.select(
-                    id = 'select-rango',
-                    texto = 'Rango de Antigüedad',
-                    size = 'sm',
-                    clearable = True
-                )
-            ],size = 2),
-            Column(
-            [
-                Entry.select(
-                                id = 'select-moneda', texto = "Moneda", size = 'sm',
-                                data=[
-                                     
-                                    {"value": "Dolares", "label": "USD"},
-                                    {"value": "Soles", "label": "PEN"}
-                                    ],
-                                value='Dolares',
-                                clearable=False
-                            )
-            ],size = 2),
+                dmc.Card(children=[
+                    dmc.Grid(
+                        children =[
+                            Column([
+                                Title.title(text = 'Stocks',color ="white")  
+                            ],size=4),
+                            Column(
+                            [
+                                Entry.select(
+                                    id = 'select-anio',
+                                    texto = 'Año',
+                                    size = 'sm',
+                                    clearable = True,
+                                    styles = {
+                                        "label": {
+                                            "color": "white",
+                                            #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                        },
+                                    }
+                                    
+                                )
+                            ],size = 2),
+                            Column(
+                            [
+                                Entry.select(
+                                    id = 'select-grupo',
+                                    texto = 'Grupo',
+                                    size = 'sm',
+                                    clearable = True,
+                                    styles = {
+                                        "label": {
+                                            "color": "white",
+                                            #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                        },
+                                    }
+                                )
+                            ],size = 2),
+                            Column(
+                            [
+                                Entry.select(
+                                    id = 'select-rango',
+                                    texto = 'Rango de Antigüedad',
+                                    size = 'sm',
+                                    clearable = True,
+                                    styles = {
+                                        "label": {
+                                            "color": "white",
+                                            #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                        },
+                                    }
+                                )
+                            ],size = 2),
+                            Column(
+                            [
+                                Entry.select(
+                                                id = 'select-moneda', texto = "Moneda", size = 'sm',
+                                                data=[
+                                                    
+                                                    {"value": "Dolares", "label": "USD"},
+                                                    {"value": "Soles", "label": "PEN"}
+                                                    ],
+                                                value='Dolares',
+                                                clearable=False,
+                                                styles = {
+                                                "label": {
+                                                    "color": "white",
+                                                    #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                                },
+                                            }
+                                            )
+                            ],size = 2),
+                            
+                        ],gutter="xs"
+                    )
+                ],
+                withBorder=True,
+                shadow="sm",
+                radius="md",         
+                style={"position": "static",'background-color':'black',"overflow":"visible"},#"position": "static",
+                p=10),
+                    
                 
+            ]),
+             
+    
         ]),
         Row([
             Column([
@@ -67,74 +109,80 @@ def logistica_build():
         Row([
             
             Column([
-                DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'bar-stock-items', 
-                                id_maximize = 'maximize-bar-stock-items',
-                                height = 380
-                                )
-                )
+                card_graph_1(
+                    text='Stock Valorizado y N° Itemspor mes y año',
+                    id_graph = 'bar-stock-items', 
+                    id_maximize = 'maximize-bar-stock-items',
+                    height = 350,
+                    color_bg="black"
+                ),
+                
                   
             ],size=7), 
             Column([
-                DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'bar-stock-familia', 
-                                id_maximize = 'maximize-bar-stock-familia',
-                                height = 380
-                                )
-                )   
+                card_graph_1(
+                    text='Stock por Grupo de Producto',
+                    id_graph = 'bar-stock-familia', 
+                    id_maximize = 'maximize-bar-stock-familia',
+                    height = 350,
+                    color_bg="black"
+                ),
+
             ],size=5), 
             
         ]),
         Row([
             Column([
-                DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'bar-top-producto', 
-                                id_maximize = 'maximize-bar-top-producto',
-                                height = 380
-                                )
-                )
-            ],size=6), 
+                card_graph_1(
+                    text='Productos (Stock Valorizado Top 10)',
+                    id_graph = 'bar-top-producto', 
+                    id_maximize = 'maximize-bar-top-producto',
+                    height = 350,
+                    color_bg="black"
+                ),
+                
+            ],size=4), 
             
             Column([
-                DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'pie-stock-antiguedad', 
-                                id_maximize = 'maximize-pie-stock-antiguedad',
-                                height = 380
-                                )
-                )    
-            ],size=3), 
+                card_graph_1(
+                    text='Porcentaje Stock segun Antigüedad',
+                    id_graph = 'pie-stock-antiguedad', 
+                    id_maximize = 'maximize-pie-stock-antiguedad',
+                    height = 350,
+                    color_bg="black"
+                ),   
+            ],size=4), 
             Column([
-                DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'pie-items-antiguedad', 
-                                id_maximize = 'maximize-pie-items-antiguedad',
-                                height = 380
-                                )
-                )    
-            ],size=3),
+                card_graph_1(
+                    text='Stock segun Antigüedad',
+                    id_graph = 'pie-items-antiguedad', 
+                    id_maximize = 'maximize-pie-items-antiguedad',
+                    height = 350,
+                    color_bg="black"
+                ),
+                 
+            ],size=4),
         ]),
         Row([
             Column([
-               DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'bar-stock-abc-ventas', 
-                                id_maximize = 'maximize-bar-stock-abc-ventas',
-                                height = 380
-                                )
-                )    
+                card_graph_1(
+                    text='Porcentaje Stock por ABC Ventas',
+                    id_graph = 'bar-stock-abc-ventas', 
+                    id_maximize = 'maximize-bar-stock-abc-ventas',
+                    height = 350,
+                    color_bg="black"
+                ),
+                  
             ],size=6), 
             Column([
-                DataDisplay.loadingOverlay(
-                        cardGraph(
-                                id_graph = 'bar-stock-abc-valorizado', 
-                                id_maximize = 'maximize-bar-stock-abc-valorizado',
-                                height = 380
-                                )
-                )   
+                card_graph_1(
+                    text='Porcentaje Stock por ABC Stock Valorizado',
+                    id_graph = 'bar-stock-abc-valorizado', 
+                    id_maximize = 'maximize-bar-stock-abc-valorizado',
+                    height = 350,
+                    color_bg="black"
+                ),
+                
             ],size=6),  
         ]), 
         
@@ -149,7 +197,7 @@ def alm_stock_build(df = None):
     html.Div([dmc.Modal(title = '', id = i, fullScreen=False, zIndex=10000, size= "85%" )for i in ['modal-bar-importe-stock','modal-pie-estadoinv','modal-bar-respon']]),
     Row([
         Column([
-                 Title.title(text = 'Stock Almacén', align='center')  
+                 Title.title(text = 'Estado de Inventario', align='center')  
         ],size=12), 
     ]),
     Row([
@@ -203,28 +251,28 @@ def alm_stock_build(df = None):
     ]),
     Row([
         Column([
-                Picking.segmented(id='segmented-col',value='Sucursal',data=[  {'label': 'Sucursal', 'value': 'Sucursal'},
-                                                                            {'label': 'Almacén', 'value': 'Almacén'},
-                                                                            {'label': 'Tipo', 'value': 'Tipo'},
-                                                                            {'label': 'Grupo', 'value': 'Grupo'}]),
-                DataDisplay.loadingOverlay(
-                    
-                        cardGraph(
-                                id_graph = 'bar-importe-stock', 
-                                id_maximize = 'maximize-bar-importe-stock',
-                                height = 300
-                                )
-                )  
+                card_segment(
+                    id_graph = 'bar-importe-stock', 
+                    id_maximize = 'aximize-bar-importe-stock',
+                    id_segmented='segmented-col',
+                    value = 'Sucursal',
+                    data = [{'label': 'Sucursal', 'value': 'Sucursal'},
+                            {'label': 'Almacén', 'value': 'Almacén'},
+                            {'label': 'Tipo', 'value': 'Tipo'},
+                            {'label': 'Grupo', 'value': 'Grupo'}],
+                    height=300
+                ),
+                
+                 
         ],size=8),
         Column([
-            DataDisplay.loadingOverlay(
-                    
-                        cardGraph(
-                                id_graph = 'pie-estadoinv', 
-                                id_maximize = 'maximize-pie-estadoinv',
-                                height = 330
-                                )
-                )
+            card_graph_1(
+                text= 'Estado de Inventario',
+                id_graph = 'pie-estadoinv', 
+                id_maximize = 'maximize-pie-estadoinv',
+                height = 330
+            ),
+            
         
         ],size=4),
     ]),
@@ -252,14 +300,13 @@ def alm_stock_build(df = None):
             )])  
         ],size=8),
         Column([
-            DataDisplay.loadingOverlay(
-                    
-                        cardGraph(
-                                id_graph = 'bar-respon', 
-                                id_maximize = 'maximize-bar-respon',
-                                height = 400
-                                )
-                )
+            card_graph_1(
+                text= 'N° Registros por Responsable',
+                id_graph = 'bar-respon', 
+                id_maximize = 'maximize-bar-respon',
+                height = 400
+            ),
+           
         
         ],size=4),
     ]),

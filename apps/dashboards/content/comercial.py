@@ -17,13 +17,45 @@ inputs_={
     'Pais':{'tipo_componente':'select'},
     'Tipo de Movimiento':{'tipo_componente':'select'},
 }
+##DICT DASHBOARD
+def create_dash_id(n_id = 4,space_elements=[9,3,5,7],type = [1,1,1,1],titulos = ['hola1','hola2','hola3','hola4'],id_dashboard = '',rubro_empresa = '',titulo = '',color_titulo = 'black',inputs ={'inp-anio':'Año','inp-cliente':'Cliente','inp-tipo-venta':'Tipo de Venta','inp-grupo-producto':'Grupo Producto','inp-grupo-cliente':'Grupo Cliente','inp-producto':'Producto','moneda':'Moneda'},sp_name = '',monedas = []):
+    return {
+        'dashboard_id':id_dashboard,
+        'dashboard_sp':sp_name,
+        'rubro_empresa':rubro_empresa,
+        'titulo_dashboard':titulo,
+        'titulo_color':color_titulo,
+        'id_dash' : {
+                'modal':[f'modal-{i}'for i in range(1,n_id+1)],
+                'compt_input':inputs,
+                'compt_output':{
+                    'id':[str(i) for i in range(1,n_id+1)],
+                    'size':space_elements,
+                    'type': type,
+                    'titulos':titulos,
+                },
+                
+        },
+        'size_height_compt_output':350,
+        'color_card_primary':'black',
+        'monedas': {'PEN': monedas[0], 'USD':monedas[1]}
+            
+    }
+diccionario_dash = create_dash_id(n_id = 4,id_dashboard = 'informe-ventas',rubro_empresa = 'Comercial',titulo = 'Informe de Ventas', color_titulo="white",sp_name='nsp_rpt_ventas_detallado', monedas=['Importe Soles','Importe Dolares'])
+from ..build.utils.callback import data_filtro
+from ..build.utils.crum import get_data_connect
+from ..build.api.connector import  APIConnector
+from..build.utils.process_data import ProcessNsp_rpt_ventas_detallado
 
-
-def dashboard_inf_ventas(codigo = '',empresa_rubro = ''):
-    app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
-    app.css.append_css(DASH_CSS_FILE)
-    app.layout =  informe_comercial(rubro_empresa = empresa_rubro)
-    
+def dashboard_inf_ventas(codigo = '',diccionario = diccionario_dash):
+    app = DjangoDash(name = codigo)
+    app.layout =  informe_comercial(dict_ =diccionario )
+    ip, token_ =get_data_connect()
+    api = APIConnector(ip, token_)
+    dff = api.send_get_dataframe(endpoint=diccionario['dashboard_sp'])
+    df_ = clean_comercial_detallado(dataframe=dff)
+    print(ProcessNsp_rpt_ventas_detallado(dataframe=df_).productos_top(moneda='Importe Dolares',top=5))
+    data_filtro(app,dict_ = diccionario,dataframe = df_)
     return app
 
 def dashboard_seguimiento_comercial(codigo = ''):
@@ -68,7 +100,7 @@ def dashboard_ventas_cultivos(codigo = ''):
 def dashboard_ventas_agricola(codigo = ''):
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css(DASH_CSS_FILE)
-    dff = clean_comercial_detallado(dataframe=connect_api(sp_name ='nsp_rpt_ventas_detallado'))
+    dff = clean_comercial_detallado(pd.read_parquet('nsp_rpt_ventas_detallado_test.parquet', engine='pyarrow'))#clean_comercial_detallado(dataframe=connect_api(sp_name ='nsp_rpt_ventas_detallado'))
     
     #try:
     app.layout =  ventas_exportacion_agro(dict_data = dict_dataframe(dataframe = dff))#ventas_cultivos(filtros={}, dataframe = None)
@@ -125,17 +157,17 @@ def dashboard_ventas_agricola(codigo = ''):
             df = tv_df, 
             label_col = 'Tipo de Venta', 
             value_col = moneda, 
-            title = 'Ventas por Tipo',
-            height=380,
+            title = '',
+            height=350,
             showlegend = False,
             color_list= dara_colores,
             hole = .8
             ),
-            bar_chart(df = gp_df, x = moneda, y = 'Grupo Producto', height=380, titulo = 'Ventas por Grupo Producto',color ='#3AA99b', orientacion = 'h'),
-            bar_chart(df = gc_df, x = moneda, y = 'Grupo Cliente', height=380, titulo = 'Ventas por Grupo Cliente',color ='#5175C7', orientacion = 'h'),
-            bar_chart(df = client_top_df, x = moneda, y = 'Cliente', height=380, titulo = 'Top 20 Ventas por Cliente',color ='#706060', orientacion = 'h'),
-            bar_chart(df = product_top_df, x = moneda, y = 'Producto', height=380, titulo = 'Top 20 Ventas por Producto',color ='#A4DDEE', orientacion = 'h'),
-            bar_chart(df = meses_df, x = 'Mes', y = moneda, height=380, titulo = 'Ventas por Mes',color ='#F4D25A', orientacion = 'v'),
+            bar_chart(df = gp_df, x = moneda, y = 'Grupo Producto', height=350, titulo = '',color ='#306c9a', orientacion = 'h'),
+            bar_chart(df = gc_df, x = moneda, y = 'Grupo Cliente', height=350, titulo = '',color ='#61abe3', orientacion = 'h'),
+            bar_chart(df = client_top_df, x = moneda, y = 'Cliente', height=350, titulo = '',color ='#5ccbc2', orientacion = 'h'),
+            bar_chart(df = product_top_df, x = moneda, y = 'Producto', height=350, titulo = '',color ='#e2c5c5', orientacion = 'h'),
+            bar_chart(df = meses_df, x = 'Mes', y = moneda, height=350, titulo = '',color ='#5f6b6d', orientacion = 'v'),
         ]
     opened_modal(app, id="pie_tipo_venta", height_modal=900)
     opened_modal(app, id="bar_cliente_top", height_modal=900)

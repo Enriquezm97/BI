@@ -27,93 +27,40 @@ GRAF_DATA ={
 DASHBOARD = {
     
 }
+from ...build.utils.compt_mantine import (
+    Contenedor_dmc,
+    titulo,
+    cardHeader,
+    Col
+)
 
 
-def informe_comercial(rubro_empresa = ''):
-    return Container([
-        #Div([Modal(id=f"modal-bar-comercial-productos", size= "85%") for i in ELEMENTOS_DATAFRAME_PARA_FILTROS]),
-        Modal(id="modal-bar-comercial-productos", size= "85%"),
-        Modal(id="modal-bar-comercial-mes", size= "85%"),
-        Modal(id="modal-pie-comercial-pais", size= "85%"),
-        Modal(id="modal-pie-comercial-vendedor", size= "85%"),
-        Modal(id="modal-funnel-comercial-selector_second", size= "85%"),
-        Row([
-            Column([Div(id='title')],size=11),
-            Column([Button.btnDownload()],size=1),
-        ]),
-        Row([
-            Column([
-              comercial_block_filt(rubro= rubro_empresa, orientation = 'v')      
-            ],size=2),
-            Column([
-                Row([
-                    Column([Entry.chipGroup(id = 'chipgroup-mes')])
-                ]),
-                Row([
-                    Column([
-                        Row([
-                            Column([
-                                DataDisplay.loadingOverlay(
-                                    card_graph(
-                                        id_graph='bar-comercial-productos', 
-                                        id_maximize = 'maximize-bar-comercial-productos',
-                                        id_item = 'first'
-                                    )
-                                )
-                            ])
-                        ]),
-                        Row([
-                            Column([
-                                DataDisplay.loadingOverlay(
-                                    card_graph(
-                                        id_graph = 'bar-comercial-mes', 
-                                        id_maximize = 'maximize-bar-comercial-mes'
-                                    )
-                                )
-                            ])
-                        ])
-                        
-                    ],size = 6),
-                    Column([
-                        Row([
-                            Column([
-                                DataDisplay.loadingOverlay(
-                                    card_graph(
-                                        id_graph = 'pie-comercial-pais', 
-                                        id_maximize = 'maximize-pie-comercial-pais'
-                                    )
-                                )
-                            ],size = 6),
-                            Column([
-                                DataDisplay.loadingOverlay(
-                                    card_graph(
-                                        id_graph = 'pie-comercial-vendedor', 
-                                        id_maximize = 'maximize-pie-comercial-vendedor',
-                                    )
-                                )
-                            ],size = 6)
-                        ]),
-                        
-                        Row([
-                            Column([
-                                DataDisplay.loadingOverlay(
-                                    card_graph(
-                                       id_graph='funnel-comercial-selector_second', 
-                                       id_maximize = 'maximize-funnel-comercial-selector_second'
-                                    )
-                                )
-                            ])
-                        ])
-                    ],size = 6)    
-                ]),
-            ],size = 10),
-        ]),
-        Div(id='notifications-update-data'),
+def informe_comercial(dict_ = {}):
+    matriz_compt_output = [k for k in dict_['id_dash']['compt_output'].values()]
+    return Contenedor_dmc(content=[
+    
+        Div([dmc.Modal(title = '', id = i, fullScreen=False, zIndex=10000, size= "85%" )for i in dict_['id_dash']['modal']]),
+        cardHeader(titulo(texto=dict_['titulo_dashboard'],align = 'center',order=1,color=dict_['titulo_color'],),color_card=dict_['color_card_primary']),
+        #Div([Entry.chipGroup(id='chipgroup-mes')]),
+        #xs, sm, md, lg and xl 
+        dmc.Grid([dmc.Col(Entry.select(id = i, texto = f, size = 'sm',clearable=True),xs=12,sm ="auto",md ="auto",lg ="auto", xl = "auto") for i,f in zip(dict_['id_dash']['compt_input'].keys(),dict_['id_dash']['compt_input'].values())]),
+        dmc.Grid(children=[Col([
+                card_graph_1(text=matriz_compt_output[3][i],
+                            id_graph=matriz_compt_output[0][i],
+                            id_maximize=f"maxi_{matriz_compt_output[0][i]}",
+                            color_text = dict_['titulo_color'],
+                            color_bg = dict_['color_card_primary']
+                )if matriz_compt_output[2][i] == 1 else Div(id =matriz_compt_output[0][i],content= matriz_compt_output[3][i])
+            ],size=matriz_compt_output[1][i])for i in range(4)#dict_['id_dash']['compt_output']
+        ],gutter="xs"),
+        dmc.NotificationsProvider([Div(id='notifications-update-data'),]),
         Store(id='data-values'),
-        Download(),
-        Modal(id='modal'),
     ])
-
+     
+     
+     
+     
+     
 def seguimiento_comercial(filtros = {}):
     return Container([
         Modal(id="modal-line-comercial-st", size= "85%"),
@@ -581,20 +528,64 @@ def ventas_exportacion_agro(dict_data = {}, comp_filtros = {}):
         ),
         Row([
             Column([
-                Button.btnFilter(style={'position': 'absolute','z-index': '99'}),
-                
-            ],size=1),
-            Column([
-                title(text=['Ventas Resumen'],order=2)
-            ],size=2),
-            Column([card_filt_select(id_select = 'id_year', label = 'Año', clearable = True, searchable = True, size='md', data=dict_data['lista_anio'], value = dict_data['value_anio'])],size=2),
-            Column([card_filt_multiselect(id_multi = 'id_tipo_venta', label = 'Tipo de Venta',searchable = True, size='md', data = dict_data['lista_tipo_venta'])],size=5),
-            Column([card_filt_select(id_select = 'id_moneda', label = 'Moneda', clearable = False, searchable = True, size='md', value=dict_data['value_moneda'],data=dict_data['lista_moneda'])],size=2),
+                dmc.Card(children=[
+                    dmc.Grid([
+                        Column([
+                                Button.btnFilter(style={'position': 'absolute','z-index': '99'}),
+                                
+                        ],size=1),
+                        Column([
+                                title(text=['Resumen de Ventas'],order=2)
+                        ],size=2),
+                        Column([
+                           Entry.select(
+                                    id = 'id_year',
+                                    texto = 'Año',
+                                    size = 'sm',
+                                    clearable = True,
+                                    styles={"label": {"color": "black"}},
+                                    value = dict_data['value_anio'],
+                                    data=dict_data['lista_anio']
+                            )    
+                        ],size=2),
+                        Column([
+                           Entry.multiSelect(
+                                    id = 'id_tipo_venta',
+                                    texto = 'Tipo de Venta',
+                                    size='sm',
+                                    data=dict_data['lista_tipo_venta'],
+                                    place="Todos"
+                        )    
+                        ],size=5),
+                        Column([
+                           Entry.select(
+                                    id = 'id_moneda',
+                                    texto = 'Moneda',
+                                    size = 'sm',
+                                    clearable = False,
+                                    styles={"label": {"color": "black"}},
+                                    value = dict_data['value_moneda'],
+                                    data=dict_data['lista_moneda'],
+                                    searchable = True
+                            )    
+                        ],size=2),
+                    ],gutter="xs")
+                ],
+                    withBorder=True,
+                    shadow="sm",
+                    radius="md",         
+                    style={"position": "static",'background-color':'white'},
+                    p=8)
+            ]),
+            
+            
         ]),
         
         Row([
             Column([
-                card_graph(
+                
+                card_graph_1(
+                    text= 'Ventas por Tipo',
                     id_graph = 'pie_tipo_venta', 
                     id_maximize = 'maxi_pie_tipo_venta',
                     height=380
@@ -602,7 +593,8 @@ def ventas_exportacion_agro(dict_data = {}, comp_filtros = {}):
                                 
             ],size=4),
             Column([
-                card_graph(
+                card_graph_1(
+                    text= 'Ventas por Grupo Producto',
                     id_graph = 'bar_gp', 
                     id_maximize = 'maxi_bar_gp',
                     height=380
@@ -610,7 +602,8 @@ def ventas_exportacion_agro(dict_data = {}, comp_filtros = {}):
                                   
             ],size=4),
             Column([
-                card_graph(
+                card_graph_1(
+                    text= 'Ventas por Grupo Cliente',
                     id_graph = 'bar_gc', 
                     id_maximize = 'maxi_bar_gc',
                     height=380
@@ -619,7 +612,8 @@ def ventas_exportacion_agro(dict_data = {}, comp_filtros = {}):
         ]),
         Row([
             Column([
-                card_graph(
+                card_graph_1(
+                    text= 'Ventas por Cliente (Top 20)',
                     id_graph = 'bar_cliente_top', 
                     id_maximize = 'maxi_bar_cliente_top',
                     height=380
@@ -627,7 +621,8 @@ def ventas_exportacion_agro(dict_data = {}, comp_filtros = {}):
                                 
             ],size=4),
             Column([
-                card_graph(
+                card_graph_1(
+                    text= 'Ventas por Producto (Top 20)',
                     id_graph = 'bar_producto_top', 
                     id_maximize = 'maxi_bar_producto_top',
                     height=380
@@ -635,7 +630,8 @@ def ventas_exportacion_agro(dict_data = {}, comp_filtros = {}):
                                   
             ],size=4),
             Column([
-                card_graph(
+                card_graph_1(
+                    text= 'Ventas por Mes',
                     id_graph = 'bar_mes', 
                     id_maximize = 'maxi_bar_mes',
                     height=380
@@ -648,4 +644,92 @@ def ventas_exportacion_agro(dict_data = {}, comp_filtros = {}):
         
     ])
 
-        
+
+
+"""
+Container([
+        #Div([Modal(id=f"modal-bar-comercial-productos", size= "85%") for i in ELEMENTOS_DATAFRAME_PARA_FILTROS]),
+        #Modal(id="modal-bar-comercial-productos", size= "85%"),
+        #Modal(id="modal-bar-comercial-mes", size= "85%"),
+        #Modal(id="modal-pie-comercial-pais", size= "85%"),
+        #Modal(id="modal-pie-comercial-vendedor", size= "85%"),
+        #Modal(id="modal-funnel-comercial-selector_second", size= "85%"),
+        Row([
+            Column([Div(id='title')],size=11),
+            Column([Button.btnDownload()],size=1),
+        ]),
+        Row([
+            Column([
+              comercial_block_filt(rubro= rubro_empresa, orientation = 'v')      
+            ],size=2),
+            Column([
+                Row([
+                    Column([Entry.chipGroup(id = 'chipgroup-mes')])
+                ]),
+                Row([
+                    Column([
+                        Row([
+                            Column([
+                                DataDisplay.loadingOverlay(
+                                    card_graph(
+                                        id_graph='bar-comercial-productos', 
+                                        id_maximize = 'maximize-bar-comercial-productos',
+                                        id_item = 'first'
+                                    )
+                                )
+                            ])
+                        ]),
+                        Row([
+                            Column([
+                                DataDisplay.loadingOverlay(
+                                    card_graph(
+                                        id_graph = 'bar-comercial-mes', 
+                                        id_maximize = 'maximize-bar-comercial-mes'
+                                    )
+                                )
+                            ])
+                        ])
+                        
+                    ],size = 6),
+                    Column([
+                        Row([
+                            Column([
+                                DataDisplay.loadingOverlay(
+                                    card_graph(
+                                        id_graph = 'pie-comercial-pais', 
+                                        id_maximize = 'maximize-pie-comercial-pais'
+                                    )
+                                )
+                            ],size = 6),
+                            Column([
+                                DataDisplay.loadingOverlay(
+                                    card_graph(
+                                        id_graph = 'pie-comercial-vendedor', 
+                                        id_maximize = 'maximize-pie-comercial-vendedor',
+                                    )
+                                )
+                            ],size = 6)
+                        ]),
+                        
+                        Row([
+                            Column([
+                                DataDisplay.loadingOverlay(
+                                    card_graph(
+                                       id_graph='funnel-comercial-selector_second', 
+                                       id_maximize = 'maximize-funnel-comercial-selector_second'
+                                    )
+                                )
+                            ])
+                        ])
+                    ],size = 6)    
+                ]),
+            ],size = 10),
+        ]),
+        Div(id='notifications-update-data'),
+        Store(id='data-values'),
+        Download(),
+        Modal(id='modal'),
+    ])
+
+
+"""

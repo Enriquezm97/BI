@@ -284,7 +284,7 @@ class GraphPiego():
         )
         figure.update_traces(textposition = textposition, textinfo = textinfo, hole = hole)
         figure.update_traces(hoverinfo='label+percent+value', textfont_size = textfont_size,marker=dict(line=dict(color='#000000', width=1)))
-        figure.update_layout(height = height,margin = dict(t=40, b=40, l=10, r=10),showlegend = showlegend)
+        figure.update_layout(height = height,margin = dict(t=20, b=40, l=20, r=20),showlegend = showlegend)
         
         return figure
     
@@ -413,10 +413,10 @@ def bar_chart(df = None,x = '',y = '', height = 450 , titulo = '' , name = '', c
         fig.update_layout(xaxis_tickformat = ',')
     elif orientacion == 'v':
         fig.update_layout(yaxis_tickformat = ',')
-    fig.update_layout(margin=dict(r = 40, b = 40, t=50)),
+    fig.update_layout(margin=dict(r = 40, b = 40, t=20)),
     fig.update_traces(
-                    marker_line_color='black',
-                    marker_line_width=1, 
+                    #marker_line_color='black',
+                    #marker_line_width=1, 
                     opacity=0.8
     )
     return fig

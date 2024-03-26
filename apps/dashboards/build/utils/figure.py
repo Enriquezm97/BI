@@ -392,7 +392,7 @@ def figure_n_traces(df = None, height = 300 , trace = [],colors = [],ejex = [], 
         yanchor="bottom",
         y=1.02,
         xanchor="left",
-        x=-0
+        x=0
     ))
     fig.update_layout(
         #title = f"<b>{}</b>",

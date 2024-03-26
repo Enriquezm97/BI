@@ -3,7 +3,7 @@ import dash_mantine_components as dmc
 import plotly.graph_objs as go
 from apps.graph.test.utils.components.components_main import Button
 from apps.graph.test.utils.figures import create_graph_empty
-from apps.graph.test.utils.components.components_main import Entry
+from apps.graph.test.utils.components.components_main import Entry,DataDisplay
 from dash_iconify import DashIconify
 
 graph_empty = create_graph_empty('Esperando carga de DATA')
@@ -175,7 +175,7 @@ def card(content = [],shadow='xl', radius='md', border =  True):
 
 def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '', num = 0, color_text ='white',color_section_title = '#228be6',contenido ='numero', content = [], padding_section=5,color_section_content = 'white', icon =''):
     if contenido == 'numero':
-            section =  dmc.Text(children=[dmc.Center(children=num,id=id_value)], weight=500, style={"fontSize": 30})
+            section =  dmc.Text(children=[dmc.Center(children=num,id=id_value)], weight=500, style={"fontSize": 25})
                             
     elif contenido == 'tabla':
             section = content
@@ -190,7 +190,7 @@ def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '
                     ],
                     withBorder=True,
                     inheritPadding=True,
-                    p = 5,
+                    p = 2,
                     style={'backgroundColor':color_section_title},
                     
                     #py="xs",
@@ -201,6 +201,7 @@ def cardSection(id_value = '',shadow='xl', radius='md', border =  True, text = '
             withBorder = border,
             shadow = shadow,
             radius = radius,
+           
 
         )
     
@@ -377,3 +378,59 @@ def card_graph_(
 #dcc.Graph(figure=fig, config={"locale": 'es'})
 #dcc.Graph(id=id_graph,figure = graph_empty, config={"locale": 'es'})
 #dcc.Graph(figure = fig, config={"locale": 'es'})
+def card_graph_1(id_maximize='id-maximize', id_graph='id-graph',height = 300,icon ='',text ='',color_text = 'white',color_bg = "#00353e"):
+    return dmc.Card(
+            children=[
+                dmc.CardSection(
+                    children=[  
+                            dmc.Text(children =[dmc.Center(children=[DashIconify(icon=icon, width=25,className="me-1"),text])] , weight=500, color= color_text),
+                    ],
+                    withBorder=True,
+                    inheritPadding=True,
+                    p = 2,
+                    style={'backgroundColor':color_bg},
+
+                ),
+                DataDisplay.loadingOverlay(
+                dmc.CardSection(children = [
+                    
+                        Button.actionIcon(id=id_maximize),dcc.Graph(id=id_graph,figure = graph_empty, config={'showEditInChartStudio': True,'plotlyServerURL': "https://chart-studio.plotly.com",'locale': 'es',})
+                   
+                ],p=0,style={'backgroundColor':'white','height':height,}),
+                 )
+            ],
+            withBorder = True,
+            shadow = 'xl',
+            radius = 'xs',
+            style={"position": "static",'height':height},
+            p=0
+
+        )
+    
+
+def card_segment(id_maximize='id-maximize', id_graph='id-graph',height = 300, id_segmented = '',value = '',data = []):
+    return dmc.Card(
+            children=[
+    
+                #DataDisplay.loadingOverlay(
+                
+                dmc.SegmentedControl(
+                                    id=id_segmented,
+                                    value=value,
+                                    data=data,
+                                    fullWidth=True,
+                                    color='rgb(34, 184, 207)',
+                                    size='xs'
+                ),    
+                Button.actionIcon(id=id_maximize,style={'position': 'absolute','top': '1px','right': '10px','z-index': '99'},),dcc.Graph(id=id_graph,figure = graph_empty, config={'showEditInChartStudio': True,'plotlyServerURL': "https://chart-studio.plotly.com",'locale': 'es',})
+                   
+                
+                # )
+            ],
+            withBorder = True,
+            shadow = 'xl',
+            radius = 'xs',
+            style={"position": "static",'height':height},
+            p=0
+
+        )

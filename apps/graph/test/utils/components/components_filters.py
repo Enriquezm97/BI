@@ -6,7 +6,7 @@ from apps.graph.test.utils.components.components_main import DataDisplay,Entry
 from apps.graph.test.utils.frame import Row,Column,Div
 
 def dict_components_comercial():
-    select_anio = Entry.select(id = 'select-anio', texto = "Año", size = 'sm',clearable=True, value = 2023)
+    select_anio = Entry.select(id = 'select-anio', texto = "Año", size = 'sm',clearable=True, value = 2024)
     select_cliente = Entry.select(id = 'select-cliente', texto = "Cliente", size = 'sm',searchable=True) 
     select_grupo_cliente = Entry.select(id = 'select-grupo-cliente', texto = "Grupo Cliente", size = 'sm',searchable=True) 
     select_producto = Entry.select(id = 'select-producto', texto = "Producto", size = 'sm',searchable=True) 

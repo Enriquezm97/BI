@@ -14,7 +14,7 @@ class Informe_ventas(LoginRequiredMixin,View):
         user_filter=list(Usuario.objects.filter(user_id=id_user).values_list('empresa_id',flat=True))
         empresa=Empresa.objects.filter(pk=user_filter[0]).values_list('rubro_empresa_id',flat=True)
         rubro=Rubro.objects.filter(pk=empresa[0]).values_list('name_rubro',flat=True)[0]
-        dashboard=dashboard_inf_ventas(codigo = id_app, empresa_rubro = rubro)
+        dashboard=dashboard_inf_ventas(codigo = id_app)
         context = {'dashboard':dashboard, 'code':id_app}
         
         return render(request,'Comercial/comercial.html',context)

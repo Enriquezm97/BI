@@ -235,17 +235,17 @@ def card_stack(id_value = '',text = 'cpm'):
         )
     
 
-def card_graph_1(id_maximize='id-maximize', id_graph='id-graph',height = 300,icon ='',text =''):
+def card_graph_1(id_maximize='id-maximize', id_graph='id-graph',height = 300,icon ='',text ='',color_text = 'white',color_bg = "#00353e"):
     return dmc.Card(
             children=[
                 dmc.CardSection(
                     children=[  
-                            dmc.Text(children =[dmc.Center(children=[DashIconify(icon=icon, width=25,className="me-1"),text])] , weight=500, color='white'),
+                            dmc.Text(children =[dmc.Center(children=[DashIconify(icon=icon, width=25,className="me-1"),text])] , weight=500, color= color_text),
                     ],
                     withBorder=True,
                     inheritPadding=True,
                     p = 2,
-                    style={'backgroundColor':"#00353e"},
+                    style={'backgroundColor':color_bg},
 
                 ),
                 DataDisplay.loadingOverlay(
@@ -258,7 +258,7 @@ def card_graph_1(id_maximize='id-maximize', id_graph='id-graph',height = 300,ico
             ],
             withBorder = True,
             shadow = 'xl',
-            radius = 'md',
+            radius = 'xs',
             style={"position": "static",'height':height},
             p=0
 

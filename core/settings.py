@@ -261,7 +261,15 @@ CELERY_RESULT_SERIALIZER = 'json'
 #BROKER_CONNECTION_RETRY = True
 #BROKER_CONNECTION_MAX_RETRIES = 0
 #BROKER_CONNECTION_TIMEOUT = 120
-
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://localhost:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
 
 #CACHES = {
 #    'default': {

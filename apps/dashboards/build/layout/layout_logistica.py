@@ -24,7 +24,13 @@ def almacen_stock():
                     id = 'select-anio',
                     texto = 'Año',
                     size = 'sm',
-                    clearable = True
+                    clearable = True,
+                    styles = {
+                        "label": {
+                            "color": "white",
+                            #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                        },
+                    }
                 )
             ],size = 2),
             Column(
@@ -33,7 +39,13 @@ def almacen_stock():
                     id = 'select-grupo',
                     texto = 'Grupo',
                     size = 'sm',
-                    clearable = True
+                    clearable = True,
+                    styles = {
+                        "label": {
+                            "color": "white",
+                            #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                        },
+                    }
                 )
             ],size = 2),
             Column(
@@ -42,20 +54,32 @@ def almacen_stock():
                     id = 'select-rango',
                     texto = 'Rango de Antigüedad',
                     size = 'sm',
-                    clearable = True
+                    clearable = True,
+                    styles = {
+                        "label": {
+                            "color": "white",
+                            #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                        },
+                    }
                 )
             ],size = 2),
             Column(
             [
                 Entry.select(
-                                id = 'select-moneda', texto = "Moneda", size = 'sm',
-                                data=[
+                    id = 'select-moneda', texto = "Moneda", size = 'sm',
+                    data=[
                                      
-                                    {"value": "Dolares", "label": "USD"},
-                                    {"value": "Soles", "label": "PEN"}
-                                    ],
-                                value='Dolares',
-                                clearable=False
+                            {"value": "Dolares", "label": "USD"},
+                            {"value": "Soles", "label": "PEN"}
+                        ],
+                    value='Dolares',
+                    clearable=False,
+                    styles = {
+                        "label": {
+                            "color": "white",
+                            #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                        },
+                    }
                             )
             ],size = 2),
                 
@@ -195,79 +219,132 @@ def gestion_stock():
         Modal(id="modal_bar-inv-val", size= "85%"),
         Row([
             Column([
-                 title(text = 'Gestión de Stocks',order=1),
-                  
-            ],size=3),
+                dmc.Card(children=[
+                    dmc.Grid(
+                        children =[      
+                            Column([
+                                title(text = 'Gestión de Stocks',order=1,color='white'),
+                            ],size=3),
+                            Column(
+                                [
+                                    Entry.select(
+                                        id = 'select-grupo',
+                                        texto = 'Grupo',
+                                        size = 'sm',
+                                        clearable = True,
+                                        searchable = True,
+                                        styles = {
+                                            "label": {
+                                                "color": "white",
+                                                #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                            },
+                                        }
+                                    )
+                                ],size = 2),
+                                Column(
+                                [
+                                    Entry.select(
+                                        id = 'select-subgrupo',
+                                        texto = 'Subgrupo',
+                                        size = 'sm',
+                                        clearable = True,
+                                        searchable = True,
+                                        styles = {
+                                            "label": {
+                                                "color": "white",
+                                                #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                            },
+                                        }
+                                    )
+                                ],size = 2),
+                                Column(
+                                [
+                                    Entry.select(
+                                        id = 'select-marca',
+                                        texto = 'Marca',
+                                        size = 'sm',
+                                        clearable = True,
+                                        searchable = True,
+                                        styles = {
+                                            "label": {
+                                                "color": "white",
+                                                #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                            },
+                                        }
+                                    )
+                                ],size = 2),
+                                Column([
+                                    dmc.NumberInput(
+                                        id = 'cpm-min',
+                                        label="Cpm Inicial",
+                                        placeholder='-',
+                                        #value=0,
+                                        min=-10000,
+                                        max=100000,
+                                        step=1,
+                                        size="sm",
+                                        styles = {
+                                            "label": {
+                                                "color": "white",
+                                                #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                            },
+                                        }                   
+                                    ),
+                                    
+                                ],size=1),
+                                Column([
+                                    dmc.NumberInput(
+                                        id = 'cpm-max',
+                                        label="Cpm Maximo",
+                                        placeholder='-',
+                                        #value=0,
+                                        min=-10000,
+                                        max=100000,
+                                        step=1,
+                                        size="sm", 
+                                        styles = {
+                                            "label": {
+                                                "color": "white",
+                                                #"backgroundColor": dmc.theme.DEFAULT_COLORS["yellow"][1],
+                                            },
+                                        }                  
+                                    ),
+                                    
+                                ],size=1),
+                                Column(
+                                [
+                                    Entry.select(
+                                        id = 'select-moneda', texto = "Moneda",
+                                        data=[
+                                                        
+                                            {"value": "dolares", "label": "USD"},
+                                            {"value": "soles", "label": "PEN"}
+                                        ],
+                                        value='dolares',
+                                        clearable=False,
+                                        size = 'sm',
+                                        styles = {
+                                                "label": {
+                                                    "color": "white",
+                                                },
+                                        }
+                                    )
+                                ],size = 1), 
         
-            Column(
-            [
-                Entry.select(
-                    id = 'select-grupo',
-                    texto = 'Grupo',
-                    size = 'md',
-                    clearable = True,
-                    searchable = True
-                )
-            ],size = 2),
-            Column(
-            [
-                Entry.select(
-                    id = 'select-subgrupo',
-                    texto = 'Subgrupo',
-                    size = 'md',
-                    clearable = True,
-                    searchable = True
-                )
-            ],size = 2),
-            Column(
-            [
-                Entry.select(
-                    id = 'select-marca',
-                    texto = 'Marca',
-                    size = 'md',
-                    clearable = True,
-                    searchable = True
-                )
-            ],size = 2),
-            Column([
-                dmc.NumberInput(
-                    id = 'cpm-min',
-                    label="Cpm Inicial",
-                    placeholder='-',
-                    #value=0,
-                    min=-10000,
-                    max=100000,
-                    step=1,
-                    size="md",                   
-                ),
-                  
-            ],size=1),
-            Column([
-                dmc.NumberInput(
-                    id = 'cpm-max',
-                    label="Cpm Maximo",
-                    placeholder='-',
-                    #value=0,
-                    min=-10000,
-                    max=100000,
-                    step=1,
-                    size="md",                   
-                ),
-                  
-            ],size=1),
-            Column(
-            [
-                Entry.select(
-                                id = 'select-moneda', texto = "Moneda", size = 'md',
-                                data=[
-                                     
-                                    {"value": "dolares", "label": "USD"},
-                                    {"value": "soles", "label": "PEN"}
-                                    ],
-                                value='dolares',
-                                clearable=False
-                            )
-            ],size = 1),    
+                        ],gutter="xs"
+                    )
+                ],
+                withBorder=True,
+                shadow="sm",
+                radius="md",         
+                style={"position": "static",'background-color':'black',"overflow":"visible"},#"position": "static",
+                p=10),
+                    
+                
+            ]),
+
+        
+               
         ]),
         Row([
             Column(
