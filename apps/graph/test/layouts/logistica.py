@@ -44,7 +44,7 @@ def alm_stock_dash(codido= '',filtros = ['select-almacen','select-tipo','select-
         app = DjangoDash(name = codido,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)#,kwargs={'dash_app_id':{'value':123}}
         app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
     #try:
-        dff  =      ()#.apply_async()
+        dff  =  connection_api_almstock()   
         
         alm_dff = clean_stock_alm(df = dff)
         

@@ -54,7 +54,7 @@ input_ventas_samplast={
 #anio_campania = sorted(df_ventas_detalle['YEAR'].unique())
 
 def informeComercial(codigo= '',rubro_empresa = 'Agricola', config_dash = {}):
-    dff = pd.read_parquet('nsp_rpt_ventas_detallado_test.parquet', engine='pyarrow')#connection_api(test='no')
+    dff = connection_api(test='no')
     df_ventas_detalle = etl_comercial(dff)
     #df_ventas_detalle.to_parquet("ventas_detalle.parquet")
     
@@ -199,7 +199,7 @@ def ventaSegmented(codigo = '',rubro_empresa = 'Agricola', filtros = input_dict_
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
-    dff = pd.read_parquet('nsp_rpt_ventas_detallado_test.parquet', engine='pyarrow')#connection_api(test='no')
+    dff = connection_api(test='no')
     df_ventas_detalle = etl_comercial(dff)
     
     #df_ventas_detalle=etl_comercial(dff)
@@ -310,7 +310,7 @@ def ventasClientes(codigo = '',rubro_empresa = 'Agricola', filtros = input_venta
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
-    dff = pd.read_parquet('nsp_rpt_ventas_detallado_test.parquet', engine='pyarrow')#connection_api(test='no')
+    dff = connection_api(test='no')
     df_ventas_detalle = etl_comercial(dff)
     
     #df_ventas_detalle=etl_comercial(dff)
@@ -436,7 +436,7 @@ def ventasProductos(codigo = '',rubro_empresa = 'Agricola', filtros = input_vent
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
-    dff = pd.read_parquet('nsp_rpt_ventas_detallado_test.parquet', engine='pyarrow')#connection_api(test='no')
+    dff = connection_api(test='no')
     df_ventas_detalle = etl_comercial(dff)
     
     #df_ventas_detalle=etl_comercial(dff)
@@ -691,7 +691,7 @@ def ventasComparativo(codigo = '',rubro_empresa = 'Agricola', filtros = input_ve
     #df_ventas_detalle = data_comercial(empresa=get_empresa())
     #dff = connection_api(test='si')
     
-    dff = pd.read_parquet('nsp_rpt_ventas_detallado_test.parquet', engine='pyarrow')#connection_api(test='no')
+    dff = connection_api(test='no')
     df_ventas_detalle = etl_comercial(dff)
     
     #df_ventas_detalle=etl_comercial(dff)

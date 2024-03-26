@@ -24,7 +24,7 @@ class Stocks_View(LoginRequiredMixin,View):
         return render(request,'Logistica/logistica.html',context)
     
     
-@method_decorator(cache_page(60 * 15), name='dispatch')
+@method_decorator(cache_page(60 * 2), name='dispatch')
 class Gestion_Stock(LoginRequiredMixin,View):
     
     

@@ -100,8 +100,8 @@ def dashboard_ventas_cultivos(codigo = ''):
 def dashboard_ventas_agricola(codigo = ''):
     app = DjangoDash(name = codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css(DASH_CSS_FILE)
-    dff = clean_comercial_detallado(pd.read_parquet('nsp_rpt_ventas_detallado_test.parquet', engine='pyarrow'))#clean_comercial_detallado(dataframe=connect_api(sp_name ='nsp_rpt_ventas_detallado'))
-    
+    dff = clean_comercial_detallado(dataframe=connect_api(sp_name ='nsp_rpt_ventas_detallado'))#clean_comercial_detallado(dataframe=connect_api(sp_name ='nsp_rpt_ventas_detallado'))
+    #pd.read_parquet('nsp_rpt_ventas_detallado_test.parquet', engine='pyarrow')
     #try:
     app.layout =  ventas_exportacion_agro(dict_data = dict_dataframe(dataframe = dff))#ventas_cultivos(filtros={}, dataframe = None)
     #except:
