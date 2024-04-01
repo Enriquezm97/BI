@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 
 
 
+
 class Logistica_View(LoginRequiredMixin,View):
     login_url = reverse_lazy('login')#'/user/login/'
     

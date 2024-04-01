@@ -55,6 +55,7 @@ input_ventas_samplast={
 
 def informeComercial(codigo= '',rubro_empresa = 'Agricola', config_dash = {}):
     dff = connection_api(test='no')
+    print(dff.columns)
     df_ventas_detalle = etl_comercial(dff)
     #df_ventas_detalle.to_parquet("ventas_detalle.parquet")
     

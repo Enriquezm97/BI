@@ -25,8 +25,9 @@ import dash
 def ejecucionCampania(codigo=''):
 
     #df_var_agricolas_default= data_agricola(empresa=get_empresa())[0]
-    df_var_agricolas_default= pd.read_parquet('agricola.parquet', engine='pyarrow')#connection_api_agricola(tipo = 'fertilizantes')
-    
+    #df_var_agricolas_default= pd.read_parquet('agricola.parquet', engine='pyarrow')#connection_api_agricola(tipo = 'fertilizantes')
+    df_var_agricolas_default = connection_api_agricola(tipo = 'fertilizantes')
+    print(df_var_agricolas_default)
     campaña_list=sorted(df_var_agricolas_default['AÑO_CULTIVO'].unique())
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })
@@ -139,8 +140,11 @@ def ejecucionCampania(codigo=''):
     create_callback_opened_modal(app, modal_id="modal-line-recurso-agricola",children_out_id="line-recurso-agricola", id_button="maximize-line-recurso-agricola",height_modal=700)
     
 def costosCampania(codigo=''):
-    df_costos_agricola_default= pd.read_parquet('costos.parquet', engine='pyarrow')#connection_api_agricola(tipo = 'costos')
-    #df_costos_agricola_default=data_agricola(empresa=get_empresa())[1]
+    #df_costos_agricola_default= pd.read_parquet('costos.parquet', engine='pyarrow')#connection_api_agricola(tipo = 'costos')
+    
+    
+    df_costos_agricola_default=connection_api_agricola(tipo = 'costos')
+
     anio_campania = sorted(df_costos_agricola_default['AÑO_CAMPAÑA'].unique())
     app = DjangoDash(name=codigo,external_stylesheets=EXTERNAL_STYLESHEETS,external_scripts=EXTERNAL_SCRIPTS)
     app.css.append_css({ "external_url" : "/static/css/dashstyles.css" })

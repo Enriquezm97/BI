@@ -118,10 +118,12 @@ def cleanVariablesAgricolas(df_consumidores,df_variedad,df_cultivos,df_fertiliza
     df_consumidores['AÑO_CAMPAÑA']=df_consumidores['AÑO_CAMPAÑA'].astype(object)
     
     df_fertilizacion['FECHA'] =pd.to_datetime(df_fertilizacion['FECHA'].str[:10], format="%Y-%m-%d")#, format="%Y-%m-%d"
-  
+    
+    df_consumidores['FECHAINICIO_CAMPAÑA'] =pd.to_datetime(df_consumidores['FECHAINICIO_CAMPAÑA'].str[:10], format="%Y-%m-%d")
+    df_consumidores['FECHAFIN_CAMPAÑA'] =pd.to_datetime(df_consumidores['FECHAFIN_CAMPAÑA'].str[:10], format="%Y-%m-%d")
     #df_fertilizacion['FECHA']=df_fertilizacion['FECHA'].apply(lambda a: pd.to_datetime(a).date()) 
-    df_consumidores['FECHAINICIO_CAMPAÑA'] =df_consumidores['FECHAINICIO_CAMPAÑA'].apply(lambda a: pd.to_datetime(a).date())
-    df_consumidores['FECHAFIN_CAMPAÑA'] =df_consumidores['FECHAFIN_CAMPAÑA'].apply(lambda a: pd.to_datetime(a).date())
+    #df_consumidores['FECHAINICIO_CAMPAÑA'] =df_consumidores['FECHAINICIO_CAMPAÑA'].apply(lambda a: pd.to_datetime(a).date())
+    #df_consumidores['FECHAFIN_CAMPAÑA'] =df_consumidores['FECHAFIN_CAMPAÑA'].apply(lambda a: pd.to_datetime(a).date())
     
     df_fertilizacion['SEMANA']=df_fertilizacion['FECHA'].dt.strftime("%U")
     df_fertilizacion['SEMANA']=df_fertilizacion['SEMANA'].astype(object)
