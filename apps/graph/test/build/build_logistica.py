@@ -145,7 +145,7 @@ def logistica_build():
             
             Column([
                 card_graph_1(
-                    text='% Stock segun Antigüedad',
+                    text='Stock Valorizado segun Antigüedad',
                     id_graph = 'pie-stock-antiguedad', 
                     id_maximize = 'maximize-pie-stock-antiguedad',
                     height = 350,
