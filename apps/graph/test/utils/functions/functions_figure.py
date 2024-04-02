@@ -228,15 +228,16 @@ def figure_pie_rango_stock(df = None, height = 350, moneda = 'Soles'):
     return pie_(df = rango_stock_df, label_col = 'Rango antigüedad del stock', value_col = var_numerico,
              title = '', textinfo = 'percent+label' , textposition = 'inside',
              height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,top=20,
+             ticked_hover=var_numerico
     )
     
 def figure_pie_rango_stock_count(df = None, height = 350, moneda = 'Soles'):
     var_numerico = f'Stock Valorizado {moneda}'
-    rango_stock_count_df = df.groupby(['Rango antigüedad del stock'])[[var_numerico]].count().sort_values(['Rango antigüedad del stock']).reset_index()
-    return pie_(df = rango_stock_count_df, label_col = 'Rango antigüedad del stock', value_col = var_numerico,
+    rango_stock_count_df = df.groupby(['Rango antigüedad del stock'])[['Producto']].count().sort_values(['Rango antigüedad del stock']).reset_index()
+    return pie_(df = rango_stock_count_df, label_col = 'Rango antigüedad del stock', value_col = 'Producto',
              title = '', textinfo = 'percent+label' , textposition = 'inside',
              height = height, showlegend = False, color_list = px.colors.qualitative.Set3, textfont_size = 12,top=20,
-             hole = .6     ,ticked_hover = 'stock'
+             hole = .6     ,ticked_hover = 'N° Items'
     )
 ##############################ALM
 
